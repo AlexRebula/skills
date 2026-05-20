@@ -1,76 +1,195 @@
 ---
 name: create-giselle-component
-description: Scaffold and TDD a new Giselle MUI component from scratch. Enforces oss-quality-standards structure, API contract, and test patterns. Use when creating any new component in giselle-mui.
+description: Scaffold and TDD a new Giselle MUI component from scratch. Enforces oss-quality-standards structure, API contract, and test patterns. Use when creating any new component in giselle-mui. Covers both the scaffold phase (folder + types + stubs) and the implementation phase (TDD loop, stories, barrel).
 ---
 
 # Create Giselle MUI Component
 
-## Before writing any code
+Two phases. The scaffold phase creates the folder structure and stubs. The implementation
+phase fills them in using a strict TDD red-green-refactor loop.
+Do not start the implementation phase until the scaffold phase is committed.
 
-Ask the user exactly:
-1. Component name (will derive all file names and exports from this)
-2. Layer folder: `material/`, `chart/`, `motion/`, `lab/`, `theming/` or `section/`
-3. Category subfolder within that layer (e.g. `data-display`, `inputs`, `feedback`)
+---
+
+## Before writing any code — alignment (8 required answers)
+
+Ask the user:
+1. Component name — PascalCase (derives all file names from this)
+2. Layer folder: `material/`, `chart/`, `motion/`, `lab/`, `theming/`, or `section/`
+3. Category subfolder within that layer (mirrors MUI taxonomy: `data-display/`, `inputs/`, `surfaces/`, `navigation/`, `layout/`, `feedback/`)
 4. MUI root component it wraps (e.g. `Card`, `Button`, `Box`) — or `none`
 5. Required props and their types
 6. Optional props and their variants
 7. Does it need `ref` forwarding? (yes for anything wrapping a DOM element or MUI component)
-8. Does it use `useTheme` or `sx`? (determines test helper needed)
+8. Does it use `useTheme` or `sx`? (determines whether the ThemeProvider test helper is needed)
 
-Do not proceed until you have answers to all 8. This is the alignment step — no code until it is locked.
+Do not proceed until all 8 are answered. No code until alignment is locked.
 
-## Naming rules (from oss-quality-standards §7)
+---
 
-- Folder: kebab-case (`metric-card/`)
-- Main file: `<name>.tsx` (or `.ts` for non-JSX)
-- Barrel: `index.ts`
-- Tests: `<name>.test.ts`
-- Style tests: `<name>.styles.test.ts`
-- Stories: `<name>.stories.tsx`
-- Styles: `<name>.styles.ts`
-- Constants: `<name>.const.ts`
-- Defaults: `<name>.defaults.tsx`
-- Utilities: `<name>.utils.ts`
-- Animations: `<name>.animations.ts`
-- Story-specific styles (rare): `<name>.stories.styles.ts`
+## Naming rules (oss-quality-standards §5.4 + §7)
 
-Suffix vocabulary: `Card`, `Row`, `List`, `Table`, `Section`, `Layout`, `Label`, `Sheet`,
+| File | Convention |
+|---|---|
+| Folder | kebab-case — `metric-card/` |
+| Main component | `<name>.tsx` — or role-based for deep nesting (see below) |
+| Types | `types.ts` — always a separate file, never inline in the component |
+| Barrel | `index.ts` |
+| Tests | `<name>.test.ts` |
+| Style tests | `<name>.styles.test.ts` |
+| Stories | `<name>.stories.tsx` |
+| Styles | `<name>.styles.ts` |
+| Constants | `<name>.const.ts` |
+| Defaults | `<name>.defaults.tsx` |
+| Utilities | `<name>.utils.ts` |
+| Animations | `<name>.animations.ts` |
+| Docs | `README.md` + `roadmap.md` |
+
+**Role-based file naming** — when a component folder has 3+ nesting levels, the file is
+named after its role within that level, not after the full component name:
+```
+src/components/inputs/button/toggle/icon/
+  icon.tsx          ← role: "icon" (not toggle-icon-button.tsx)
+  icon.styles.ts
+  icon.test.ts
+  types.ts
+  index.ts
+```
+Shallower components (1–2 nesting levels) use the full folder name:
+```
+src/components/chart/radial-progress/
+  radial-progress-card.tsx    ← full name
+```
+
+**Suffix vocabulary**: `Card`, `Row`, `List`, `Table`, `Section`, `Layout`, `Label`, `Sheet`,
 `Strip`, `Dialog`, `Drawer`, `Form`, `Field`, `Icon`, `Avatar`, `Chip`, `Tab`.
-Adding a new suffix requires explicit approval from the user.
+Adding a new suffix requires explicit user approval.
 
-## Scaffold order (strict — do not reorder)
+---
 
-```
-1. CONTEXT.md — does this component introduce any new domain terms? Add them.
-2. Folder and files — create the empty structure first.
-3. Types — write the Props interface in <name>.tsx before any JSX.
-4. Tests — write all required tests BEFORE implementation (red phase).
-5. Implementation — minimal code to make each test pass (green phase).
-6. Refactor — clean up after all tests pass. Never refactor while red.
-7. Styles — if needed, add <name>.styles.ts and write style tests.
-8. Stories — Default story + one story per variant.
-9. Barrel — update index.ts exports.
-10. Library index — update src/index.ts (or the correct layer index).
-```
+## Phase 1 — Scaffold (commit before implementing)
 
-## Folder structure to create
+### Files to create in the scaffold phase
 
 ```
 src/components/<layer>/<category>/<name>/
-├── <name>.tsx          ← component + Props interface
-├── <name>.test.ts      ← unit tests (interaction + rendering)
-├── <name>.styles.ts    ← style functions (only if needed)
-├── <name>.styles.test.ts ← style tests (only if .styles.ts exists)
-├── <name>.stories.tsx  ← Storybook stories
-└── index.ts            ← barrel export
+├── types.ts          ← Props interface stub with JSDoc skeleton
+├── <name>.test.ts    ← it.todo stubs only — no implementation yet
+├── README.md         ← why it exists, planned API, design decisions
+├── roadmap.md        ← planned status and open improvements (initially empty)
+└── index.ts          ← stub barrel (commented-out exports)
 ```
 
-## Component implementation rules (oss-quality-standards §5–§6)
+**Do NOT create in the scaffold phase:**
+- `<name>.tsx` — its existence = component is implemented; absence = still a placeholder
+- `<name>.styles.ts` — created when implementation begins
+- `<name>.const.ts` — created when implementation begins
+- `<name>.stories.tsx` — created when implementation begins
+
+### `types.ts` — scaffold template
 
 ```ts
-// ✅ Correct pattern
-import React from 'react';
-import { Card, type CardProps } from '@mui/material';
+import type { SxProps, Theme } from '@mui/material/styles';
+// Import the MUI root component's props if extending:
+// import type { CardProps } from '@mui/material/Card';
+
+/**
+ * Props for `<ComponentName>`.
+ *
+ * @todo Fill in props when implementation begins.
+ * See README.md for the planned API.
+ */
+export interface <ComponentName>Props {
+  /** MUI sx prop — forwarded to root element. */
+  sx?: SxProps<Theme>;
+}
+```
+
+### `<name>.test.ts` — scaffold template (it.todo stubs only)
+
+```ts
+// @vitest-environment jsdom
+import { describe, it } from 'vitest';
+
+// Placeholder test file — stubs filled in before implementation begins.
+// See README.md for planned behaviours.
+
+describe('<ComponentName>', () => {
+  it.todo('renders without crashing');
+  it.todo('forwards arbitrary props to the root element');
+  // Add component-specific behaviour stubs from the planned API
+});
+```
+
+### `README.md` — scaffold template
+
+```md
+# <ComponentName>
+
+## Why it exists
+
+_One paragraph: the recurring problem this component solves.
+What would a developer write by hand without it?_
+
+## Why it belongs in giselle-mui
+
+_One paragraph: why this is reusable across projects (not project-specific)._
+
+## Planned API
+
+| Prop | Type | Default | Description |
+|---|---|---|---|
+| `sx` | `SxProps<Theme>` | — | MUI sx forwarded to root |
+
+## Design decisions
+
+_Key choices made during design — preserved so they survive future refactors._
+
+## Phase
+
+Phase: `<phase-label>` | Priority tier: `T<N>`
+
+## File structure
+
+_Filled in when implementation begins._
+```
+
+### `roadmap.md` — scaffold template
+
+```md
+# <ComponentName> — Component Roadmap
+
+## Status
+
+Planned — not yet implemented.
+
+## Open improvements
+
+_Filled in as the component evolves._
+
+## Completed tasks
+
+_None yet._
+```
+
+### `index.ts` — scaffold template (stub)
+
+```ts
+// Placeholder — not yet implemented.
+// When <ComponentName> is built, replace with:
+// export { <ComponentName> } from './<name>';
+// export type { <ComponentName>Props } from './types';
+```
+
+---
+
+## Phase 2 — Implementation (TDD loop)
+
+### Types — fill in `types.ts` first, before any JSX
+
+```ts
+import type { SxProps, Theme } from '@mui/material/styles';
+import type { CardProps } from '@mui/material/Card';
 
 export interface MyCardProps extends CardProps {
   /** Required prop goes first. */
@@ -78,6 +197,19 @@ export interface MyCardProps extends CardProps {
   /** Optional variant prop. */
   variant?: 'filled' | 'outlined';
 }
+```
+
+**Rules:**
+- Props interface extends the MUI root component's props (or `React.HTMLAttributes`)
+- Props are always in `types.ts`, never inline in the component file
+- Props type is exported from the barrel (`index.ts`) via `export type { MyCardProps } from './types'`
+
+### Component file — `<name>.tsx`
+
+```ts
+import React from 'react';
+import Card from '@mui/material/Card';
+import type { MyCardProps } from './types';
 
 export const MyCard = React.forwardRef<HTMLDivElement, MyCardProps>(
   function MyCard({ label, variant = 'filled', sx, ...other }, ref) {
@@ -96,43 +228,58 @@ export const MyCard = React.forwardRef<HTMLDivElement, MyCardProps>(
 MyCard.displayName = 'MyCard';
 ```
 
-Rules to enforce:
-- Props interface extends the MUI root component's props (or `React.HTMLAttributes`)
-- `sx` merged with array syntax — never `sx={{ ...sx, myProp: value }}`
-- `...other` spread onto root element
-- No hardcoded colours — use MUI theme tokens only
+**Rules (oss-quality-standards §5–§6):**
+- `sx` merged with array syntax — never `sx={{ ...sx, prop: value }}`
+- `...other` spread onto root element — forwards `data-*`, `aria-*`, event handlers
+- No hardcoded colours — use MUI theme tokens only (`palette.text.primary`, `background.paper`)
 - No `React.FC` — use function declarations or `forwardRef`
 - `displayName` set on every component
+- `forwardRef` required for anything wrapping a DOM element or MUI component
+- Never use `dangerouslySetInnerHTML`
 
-## Test patterns (oss-quality-standards §10 + Matt Pocock TDD)
-
-### Required test cases for every component
+### Barrel `index.ts` — final (replace stub)
 
 ```ts
-// 1. Smoke render — proves it mounts without crashing
+export { MyCard } from './my-card';
+export type { MyCardProps } from './types';
+```
+
+### TDD loop — replace `it.todo` stubs with real tests one at a time
+
+```
+RED:   Replace first it.todo with a real test → run → confirm it fails
+GREEN: Write minimal implementation to pass it → run → confirm it passes
+REPEAT for each remaining test case
+REFACTOR: After all tests pass — extract duplication, deepen modules
+```
+
+Never write all tests before any implementation (horizontal slicing).
+Never refactor while any test is red.
+
+### Required test cases — replace each it.todo stub
+
+```ts
+// 1. Smoke render
 it('renders without crashing', () => { ... });
 
-// 2. Required props — proves key content appears
+// 2. Required props appear in output
 it('renders the label', () => { ... });
 
-// 3. Each optional variant — proves variants produce different output
-it('applies outlined styles when variant is outlined', () => { ... });
+// 3. Each optional variant — one test per variant
+it('applies outlined variant', () => { ... });
 
-// 4. ...other passthrough — proves data-* and aria-* reach the root
+// 4. ...other passthrough
 it('forwards arbitrary props to the root element', () => { ... });
 
 // 5. ref forwarding — only if forwardRef is used
 it('forwards ref to the root element', () => { ... });
 ```
 
-### Test helper — ThemeProvider wrapper (DO NOT mock MUI)
+### Test helper — use ThemeProvider, never mock MUI
 
-When the component uses `useTheme`, `sx`, or any MUI component, wrap with a real
-ThemeProvider instead of mocking MUI modules. Create this helper once per project at
-`src/test-utils.ts` if it does not already exist:
+Create `src/test-utils.ts` if it does not already exist:
 
 ```ts
-// src/test-utils.ts
 import React from 'react';
 import { ThemeProvider, createTheme } from '@mui/material/styles';
 import { renderToStaticMarkup } from 'react-dom/server';
@@ -140,67 +287,32 @@ import { render } from '@testing-library/react';
 
 const theme = createTheme();
 
-export function renderWithTheme(element: React.ReactElement) {
+/** Pure rendering checks — no interaction needed. */
+export function renderWithTheme(element: React.ReactElement): string {
   return renderToStaticMarkup(
     React.createElement(ThemeProvider, { theme }, element)
   );
 }
 
+/** Interaction tests — user events, state transitions. */
 export function renderInteractiveWithTheme(element: React.ReactElement) {
-  return render(
-    React.createElement(ThemeProvider, { theme }, element)
-  );
+  return render(React.createElement(ThemeProvider, { theme }, element));
 }
 ```
 
-Then in tests:
-```ts
-// Pure rendering (no interaction needed)
-import { renderWithTheme } from '../../../../test-utils';
+**Never use `vi.mock('@mui/material/...')` or `vi.mock('@mui/material/styles')`.** This
+makes tests verify mocks rather than the component. Use `renderWithTheme` instead.
 
-it('renders the label', () => {
-  const html = renderWithTheme(<MyCard label="Revenue" />);
-  expect(html).toContain('Revenue');
-});
+Use `renderToStaticMarkup` for pure rendering. Use `@testing-library/react` + `userEvent`
+only when you need user events or state transitions.
 
-// Interaction tests
-import { renderInteractiveWithTheme } from '../../../../test-utils';
-import userEvent from '@testing-library/user-event';
+### Mocking rules (oss-quality-standards §10.6)
 
-it('calls onClick when clicked', async () => {
-  const onClick = vi.fn();
-  const { getByRole } = renderInteractiveWithTheme(<MyCard label="x" onClick={onClick} />);
-  await userEvent.click(getByRole('button'));
-  expect(onClick).toHaveBeenCalledOnce();
-});
-```
+- Mock at module boundaries only: external APIs, `window.fetch`, `Date`, `Math.random`
+- Never mock MUI components, MUI hooks, or `react-dom/server`
+- Never mock a function from the same package
 
-**Never use `vi.mock` to mock MUI components or `useTheme`.** This produces tests that
-test the mocks, not the component. Use `renderWithTheme` instead.
-
-**Use `renderToStaticMarkup` for pure rendering. Use `@testing-library/react` only when
-you need user events or state transitions.**
-
-### TDD loop (vertical slices — one test at a time)
-
-```
-RED:   Write first required test case → run → confirm it fails
-GREEN: Write minimal implementation to pass it
-REPEAT for each remaining required test case
-REFACTOR: After all pass — extract duplication, deepen modules
-```
-
-Never write all tests before writing any implementation.
-Never refactor while any test is red.
-
-### Mocking rules
-
-- Mock at module boundaries only (external APIs, `window.fetch`, date, random)
-- Never mock MUI components or hooks — use ThemeProvider instead
-- Never mock a function that lives in the same package
-- Never mock `react-dom/server`
-
-## Style tests pattern
+### Style tests
 
 ```ts
 // <name>.styles.test.ts
@@ -215,20 +327,34 @@ it('returns correct padding from theme spacing', () => {
 });
 ```
 
-## Stories pattern
+---
+
+## Stories — `<name>.stories.tsx`
+
+**CRITICAL: The `title` must mirror the `src/components/` folder path exactly.**
+
+```
+src/components/material/surfaces/card/metric/   → 'Material/Surfaces/Cards/Metric'
+src/components/chart/radial-progress/           → 'Chart/Radial Progress'
+src/components/motion/floating-side-nav/        → 'Motion/Floating Side Nav'
+src/components/section/hero/                    → 'Section/Hero'
+```
+
+Rule: folder path = story title. If they ever disagree, fix the story title — never the folder.
 
 ```ts
-// <name>.stories.tsx
+// metric-card.stories.tsx
 import type { Meta, StoryObj } from '@storybook/react';
-import { MyCard } from './my-card';
+import { MetricCard } from './metric-card';
 
-const meta: Meta<typeof MyCard> = {
-  component: MyCard,
+const meta: Meta<typeof MetricCard> = {
+  title: 'Material/Surfaces/Cards/Metric',   ← mirrors folder path exactly
+  component: MetricCard,
   tags: ['autodocs'],
 };
 export default meta;
 
-type Story = StoryObj<typeof MyCard>;
+type Story = StoryObj<typeof MetricCard>;
 
 export const Default: Story = {
   args: { label: 'Revenue' },
@@ -242,19 +368,46 @@ export const Outlined: Story = {
 Story names: PascalCase. Never repeat the component name in the story name.
 No real names, emails, or client data in any story — use generic placeholders.
 
+---
+
+## Update README.md — fill in the File structure section
+
+After implementation, update the `README.md` File structure section with the actual files:
+
+```md
+## File structure
+
+src/components/<layer>/<category>/<name>/
+  <name>.tsx          — component
+  <name>.styles.ts    — style functions
+  <name>.test.ts      — unit tests
+  <name>.styles.test.ts — style tests
+  <name>.stories.tsx  — Storybook stories
+  types.ts            — Props interface
+  index.ts            — barrel export
+  README.md           — this file
+  roadmap.md          — open improvements and completed tasks
+```
+
+---
+
 ## After implementation — checklist before PR
 
 - [ ] Quality gate green: `npm run check`
-- [ ] All required test cases present and passing
+- [ ] All `it.todo` stubs replaced with real passing tests
 - [ ] 80%+ line coverage on the component file
-- [ ] No `vi.mock` for MUI modules
+- [ ] No `vi.mock` for MUI modules — `renderWithTheme` used instead
 - [ ] No hardcoded colours
 - [ ] `sx` array-safe
 - [ ] `...other` passthrough present
 - [ ] `displayName` set
 - [ ] `ref` forwarding if wrapping a DOM element
-- [ ] Barrel `index.ts` exports Props type and component
-- [ ] Library index updated
+- [ ] Props interface in `types.ts` (not in component file)
+- [ ] Barrel `index.ts` exports component and `type { Props }` from `./types`
+- [ ] Library index updated (`src/index.ts` or the correct layer index)
 - [ ] At least `Default` story present
+- [ ] Storybook `title` mirrors folder path exactly
+- [ ] README.md File structure section filled in
+- [ ] `roadmap.md` updated if any open improvements identified
 - [ ] Zero-personal-data in tests and stories
 - [ ] CONTEXT.md updated if new domain terms introduced
