@@ -58,14 +58,18 @@ Scan the repo for any file that documents how code should be written:
 
 Collect the list of files. The Standards sub-agent reads them all.
 
-### 5. Spawn both sub-agents in parallel
+**Scope extraction (mandatory):** If any standards file contains an explicit reviewer scope note — e.g. `CLAUDE.md` says "only §1–§4 and §11 apply" or "AI Reviewer Instructions: Scope: ..." — extract that list verbatim. Carry it forward to the sub-agent prompt in step 5. If no scope note is found, the sub-agent checks every section in every standards file.
+
+### 5. Spawn both sub-agents in parallel (mandatory — do not skip)
 
 Send a single message with two Agent tool calls (`subagent_type: general-purpose`).
 
 **Standards sub-agent prompt — include all of:**
 - The full diff text
-- The list of standards-source files (or their contents if short enough)
-- This brief: "Read the standards docs. Read the diff. Report every place the diff violates a documented standard — per file and line where relevant. Cite the standard (file + rule). Label each finding: `blocking` / `non-blocking` / `suggestion`. Distinguish hard violations from judgement calls. Skip anything tooling (Prettier, ESLint, tsc) already enforces. Under 400 words."
+- The full contents of every standards-source file found in step 4
+- If a scope was extracted in step 4: "Check **only** these sections: `<section list>`. For each section, state whether you checked it and what you found. Do not check sections outside this list."
+- If no scope was extracted: "Check every section in every standards doc provided."
+- This brief: "Read the standards docs. Read the diff. Report every place the diff violates a documented standard — per file and line where relevant. Cite the standard (file + section). Label each finding: `blocking` / `non-blocking` / `suggestion`. Distinguish hard violations from judgement calls. Skip anything tooling (Prettier, ESLint, tsc) already enforces. Under 400 words."
 
 **Spec sub-agent prompt — include all of:**
 - The full diff text
