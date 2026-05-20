@@ -65,7 +65,7 @@ For each changed file in the diff, apply the section map:
 | `.github/*` | §4 PR review workflow |
 | Any file | §1 AI Collaboration Protocol, §2 Branch Hygiene, §11 DoD, §12 Encryption |
 
-Note: AGENTS.md §25 scope note — §5–§10 apply only to React + MUI repos. §1–§4 and §11 are framework-agnostic.
+Note: per the AGENTS.md Scope section — §5–§10 apply only to React + MUI repos. §1–§4 and §11 are framework-agnostic.
 
 ### 6. Blocking findings — check these first
 

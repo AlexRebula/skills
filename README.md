@@ -8,7 +8,7 @@
 
 > **This is a fork of [mattpocock/skills](https://github.com/mattpocock/skills)** by [Matt Pocock](https://github.com/mattpocock).
 > The original skills are unchanged and fully included here.
-> This fork adds two giselle-mui–specific skills designed to work alongside the
+> This fork adds purpose-built skills designed to work alongside the
 > [LittleBranches OSS Quality Standards](https://github.com/LittleBranches/oss-quality-standards).
 
 ## What this fork adds

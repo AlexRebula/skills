@@ -134,17 +134,18 @@ export interface UserAvatarInputs {
 
 ```ts
 import { Component, computed, input, output, ChangeDetectionStrategy } from '@angular/core';
-import { NgIf } from '@angular/common';
 
 @Component({
   selector: 'app-user-avatar',
   standalone: true,
-  imports: [NgIf],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     <div [attr.data-size]="size()">
-      <img *ngIf="src()" [src]="src()" [alt]="name()" (error)="imageError.emit($event)" />
-      <span *ngIf="!src()">{{ initials() }}</span>
+      @if (src()) {
+        <img [src]="src()" [alt]="name()" (error)="imageError.emit($event)" />
+      } @else {
+        <span>{{ initials() }}</span>
+      }
     </div>
   `,
 })
@@ -166,6 +167,7 @@ export class UserAvatarComponent {
 - `ChangeDetectionStrategy.OnPush` — always for new components
 - `input()` / `input.required<T>()` / `output<T>()` — signal-based API (Angular 17+)
 - `computed()` for derived values — never calculate in the template
+- Use `@if` / `@for` / `@switch` block syntax — never `*ngIf`, `*ngFor`, or `NgIf` imports
 - Never use `document.querySelector` or direct DOM manipulation — use Angular APIs
 - Inline template only for components under ~10 lines of HTML; otherwise use `.html` file
 - Never use `innerHTML` binding without explicit DOMPurify sanitisation at the call site

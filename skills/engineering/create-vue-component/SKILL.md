@@ -140,6 +140,7 @@ export interface UserAvatarEmits {
 
 ```vue
 <script setup lang="ts">
+import { computed } from 'vue';
 import type { UserAvatarProps, UserAvatarEmits } from './types';
 
 const props = withDefaults(defineProps<UserAvatarProps>(), {
@@ -193,7 +194,7 @@ REFACTOR: After all tests pass
 Use `@testing-library/vue`. If the project uses `@vue/test-utils`, adapt accordingly.
 
 ```ts
-import { render, screen } from '@testing-library/vue';
+import { render, screen, fireEvent } from '@testing-library/vue';
 import UserAvatar from './user-avatar.vue';
 
 // 1. Smoke render
