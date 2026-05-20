@@ -114,3 +114,23 @@ After posting, summarise:
 - Total: N blocking, N non-blocking, N suggestions
 - Link to the posted review thread
 - Worst single finding (if any)
+
+### 9. Close-out audit (mandatory — do not skip)
+
+Before handing back to the user, scan **every reply posted under the reviewer's name** in this session (inline thread replies and top-level PR comments). For each reply, check whether it contains any of these commitment signals:
+
+- "will" (e.g. "will fix", "will extract", "will update")
+- "follow-up" / "follow up"
+- "separate issue" / "track" / "open an issue"
+- "fix in this PR"
+
+For every reply that contains one of these signals, verify a tracking artifact exists:
+
+| Commitment type | Required artifact |
+|---|---|
+| "will fix in this PR" | Commit SHA posted as follow-up reply in the same thread |
+| "will open an issue" / "separate issue" | GitHub issue opened; issue link posted as follow-up reply |
+| "will update the PR description" | PR description updated; confirmation posted as follow-up reply |
+| "will extract / follow-up PR" | GitHub issue opened; issue link posted as follow-up reply |
+
+If any artifact is missing — create it before reporting back to the user. This step must be completed even if the session is resuming across a context boundary.
