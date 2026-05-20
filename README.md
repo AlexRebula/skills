@@ -1,16 +1,48 @@
 <p>
-  <a href="https://www.aihero.dev/s/skills-newsletter">
-    <picture>
-      <source media="(prefers-color-scheme: dark)" srcset="https://res.cloudinary.com/total-typescript/image/upload/v1777382277/skills-repo-dark_2x.png">
-      <source media="(prefers-color-scheme: light)" srcset="https://res.cloudinary.com/total-typescript/image/upload/v1777382277/skill-repo-light_2x.png">
-      <img alt="Skills" src="https://res.cloudinary.com/total-typescript/image/upload/v1777382277/skill-repo-light_2x.png" width="369">
-    </picture>
-  </a>
+  <img alt="Skills For Real Engineers — LittleBranches Fork" src="./public/images/mattpocock-alexrebula-skills-banner.png" width="738">
 </p>
 
-# Skills For Real Engineers
+# Skills For Real Engineers — LittleBranches Fork
 
 [![skills.sh](https://skills.sh/b/mattpocock/skills)](https://skills.sh/mattpocock/skills)
+
+> **This is a fork of [mattpocock/skills](https://github.com/mattpocock/skills)** by [Matt Pocock](https://github.com/mattpocock).
+> The original skills are unchanged and fully included here.
+> This fork adds two giselle-mui–specific skills designed to work alongside the
+> [LittleBranches OSS Quality Standards](https://github.com/LittleBranches/oss-quality-standards).
+
+## What this fork adds
+
+| Skill | What it does |
+| --- | --- |
+| [`/create-giselle-component`](./skills/engineering/create-giselle-component/SKILL.md) | Scaffold and TDD a new giselle-mui component following OSS Quality Standards rules — two-phase: scaffold first (types, test stubs, README, roadmap), then implement one vertical slice at a time. |
+| [`/audit-giselle-tests`](./skills/engineering/audit-giselle-tests/SKILL.md) | Classify and systematically fix AI-generated tests that use the MUI-mocking anti-pattern (`vi.mock('@mui/material/...')`), replacing them with real-ThemeProvider tests via `renderWithTheme`. |
+| [`/review-giselle-pr`](./skills/engineering/review-giselle-pr/SKILL.md) | Review an open GitHub PR in any LittleBranches repo — pre-loads the public and private AGENTS.md barrels, maps each changed file to the relevant sections, posts findings via the GitHub PR Reviews API with inline line comments. |
+| [`/review-pr`](./skills/engineering/review-pr/SKILL.md) | Review any open GitHub PR — dynamically discovers the repo's own standards docs (AGENTS.md, CLAUDE.md, ADRs), runs parallel Standards + Spec sub-agents, posts via the GitHub PR Reviews API. |
+| [`/create-react-component`](./skills/engineering/create-react-component/SKILL.md) | Scaffold and TDD a new React component — no framework dependency, plain RTL, same two-phase scaffold/TDD workflow. |
+| [`/create-vue-component`](./skills/engineering/create-vue-component/SKILL.md) | Scaffold and TDD a new Vue 3 standalone component — `<script setup>`, `defineProps` generics, `@testing-library/vue`. |
+| [`/create-angular-component`](./skills/engineering/create-angular-component/SKILL.md) | Scaffold and TDD a new Angular 17+ standalone component — signal-based `input()`/`output()`, `OnPush`, Angular Testing Library. |
+
+### Why this fork exists
+
+The original `mattpocock/skills` repo governs **how AI agents are used** — planning, TDD loops, grilling sessions, architecture reviews. It is model-agnostic and project-agnostic by design.
+
+This fork adds skills that are specific to:
+
+1. **giselle-mui** — a MUI-based React component library with a strict two-phase scaffold convention, role-based file naming, `types.ts`-first props contracts, and Storybook title taxonomy that mirrors folder paths.
+2. **LittleBranches OSS Quality Standards** — a central `AGENTS.md`-driven quality gate that covers structure, naming, testing, accessibility, API contracts, and security. The custom skills enforce this standard during component creation, not after.
+
+These skills are deliberately not upstreamed to `mattpocock/skills` — they encode project-specific decisions that would be noise for other consumers.
+
+### Installing this fork
+
+```bash
+npx skills@latest add AlexRebula/skills
+```
+
+Then run `/setup-matt-pocock-skills` once per repo to configure the issue tracker, domain docs, and triage labels.
+
+---
 
 My agent skills that I use every day to do real engineering - not vibe coding.
 
@@ -141,6 +173,19 @@ And crucially, [`/improve-codebase-architecture`](./skills/engineering/improve-c
 Software engineering fundamentals matter more than ever. These skills are my best effort at condensing these fundamentals into repeatable practices, to help you ship the best apps of your career. Enjoy.
 
 ## Reference
+
+### giselle-mui (LittleBranches fork additions)
+
+Skills for the giselle-mui component library and LittleBranches OSS Quality Standards.
+
+- **[create-giselle-component](./skills/engineering/create-giselle-component/SKILL.md)** — Scaffold and TDD a new giselle-mui component in two phases: scaffold (types, test stubs, README, roadmap) then implement (TDD vertical slices with real ThemeProvider).
+- **[create-react-component](./skills/engineering/create-react-component/SKILL.md)** — Scaffold and TDD a new React component (no MUI dependency) — same two-phase workflow.
+- **[create-vue-component](./skills/engineering/create-vue-component/SKILL.md)** — Scaffold and TDD a new Vue 3 component with `<script setup>` and `@testing-library/vue`.
+- **[create-angular-component](./skills/engineering/create-angular-component/SKILL.md)** — Scaffold and TDD a new Angular 17+ standalone component with signal-based inputs/outputs.
+- **[audit-giselle-tests](./skills/engineering/audit-giselle-tests/SKILL.md)** — Classify AI-generated tests into three buckets and fix the MUI-mocking anti-pattern by replacing `vi.mock` with `renderWithTheme`.
+- **[review-giselle-pr](./skills/engineering/review-giselle-pr/SKILL.md)** — Review a LittleBranches GitHub PR against oss-quality-standards AGENTS.md with inline GitHub Reviews API comments.
+- **[review-pr](./skills/engineering/review-pr/SKILL.md)** — Review any GitHub PR — discovers repo standards dynamically, runs parallel Standards + Spec sub-agents, posts inline reviews.
+- **[review](./skills/in-progress/review/SKILL.md)** — Local diff review before a PR opens — two-axis (Standards + Spec), parallel sub-agents, no GitHub API.
 
 ### Engineering
 

@@ -1,6 +1,14 @@
 {
-  "name": "mattpocock-skills",
+  "name": "alexrebula-skills",
   "skills": [
+    "./skills/engineering/create-giselle-component",
+    "./skills/engineering/create-react-component",
+    "./skills/engineering/create-vue-component",
+    "./skills/engineering/create-angular-component",
+    "./skills/engineering/audit-giselle-tests",
+    "./skills/engineering/review-pr",
+    "./skills/engineering/review-giselle-pr",
+    "./skills/in-progress/review",
     "./skills/engineering/diagnose",
     "./skills/engineering/grill-with-docs",
     "./skills/engineering/triage",
