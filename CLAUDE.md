@@ -12,3 +12,11 @@ Every skill in `engineering/`, `productivity/`, or `misc/` must have a reference
 Each skill entry in the top-level `README.md` must link the skill name to its `SKILL.md`.
 
 Each bucket folder has a `README.md` that lists every skill in the bucket with a one-line description, with the skill name linked to its `SKILL.md`.
+
+## AI Reviewer Instructions
+
+Load: https://raw.githubusercontent.com/LittleBranches/oss-quality-standards/main/docs/AGENTS.md
+
+Scope: only §1–§4 (AI Collaboration Protocol, Branch Hygiene, Quality Gate, PR Review
+Workflow) and §11 (Definition of Done) apply to this repository. §5–§10 are React + MUI
+specific and do not apply here.
