@@ -23,6 +23,11 @@
 | --- | --- |
 | [`/create-giselle-component`](./skills/engineering/create-giselle-component/SKILL.md) | Scaffold and TDD a new giselle-mui component following OSS Quality Standards rules — two-phase: scaffold first (types, test stubs, README, roadmap), then implement one vertical slice at a time. |
 | [`/audit-giselle-tests`](./skills/engineering/audit-giselle-tests/SKILL.md) | Classify and systematically fix AI-generated tests that use the MUI-mocking anti-pattern (`vi.mock('@mui/material/...')`), replacing them with real-ThemeProvider tests via `renderWithTheme`. |
+| [`/review-giselle-pr`](./skills/engineering/review-giselle-pr/SKILL.md) | Review an open GitHub PR in any LittleBranches repo — pre-loads the public and private AGENTS.md barrels, maps each changed file to the relevant sections, posts findings via the GitHub PR Reviews API with inline line comments. |
+| [`/review-pr`](./skills/engineering/review-pr/SKILL.md) | Review any open GitHub PR — dynamically discovers the repo's own standards docs (AGENTS.md, CLAUDE.md, ADRs), runs parallel Standards + Spec sub-agents, posts via the GitHub PR Reviews API. |
+| [`/create-react-component`](./skills/engineering/create-react-component/SKILL.md) | Scaffold and TDD a new React component — no framework dependency, plain RTL, same two-phase scaffold/TDD workflow. |
+| [`/create-vue-component`](./skills/engineering/create-vue-component/SKILL.md) | Scaffold and TDD a new Vue 3 standalone component — `<script setup>`, `defineProps` generics, `@testing-library/vue`. |
+| [`/create-angular-component`](./skills/engineering/create-angular-component/SKILL.md) | Scaffold and TDD a new Angular 17+ standalone component — signal-based `input()`/`output()`, `OnPush`, Angular Testing Library. |
 
 ### Why this fork exists
 
@@ -180,7 +185,13 @@ Software engineering fundamentals matter more than ever. These skills are my bes
 Skills for the giselle-mui component library and LittleBranches OSS Quality Standards.
 
 - **[create-giselle-component](./skills/engineering/create-giselle-component/SKILL.md)** — Scaffold and TDD a new giselle-mui component in two phases: scaffold (types, test stubs, README, roadmap) then implement (TDD vertical slices with real ThemeProvider).
+- **[create-react-component](./skills/engineering/create-react-component/SKILL.md)** — Scaffold and TDD a new React component (no MUI dependency) — same two-phase workflow.
+- **[create-vue-component](./skills/engineering/create-vue-component/SKILL.md)** — Scaffold and TDD a new Vue 3 component with `<script setup>` and `@testing-library/vue`.
+- **[create-angular-component](./skills/engineering/create-angular-component/SKILL.md)** — Scaffold and TDD a new Angular 17+ standalone component with signal-based inputs/outputs.
 - **[audit-giselle-tests](./skills/engineering/audit-giselle-tests/SKILL.md)** — Classify AI-generated tests into three buckets and fix the MUI-mocking anti-pattern by replacing `vi.mock` with `renderWithTheme`.
+- **[review-giselle-pr](./skills/engineering/review-giselle-pr/SKILL.md)** — Review a LittleBranches GitHub PR against oss-quality-standards AGENTS.md with inline GitHub Reviews API comments.
+- **[review-pr](./skills/engineering/review-pr/SKILL.md)** — Review any GitHub PR — discovers repo standards dynamically, runs parallel Standards + Spec sub-agents, posts inline reviews.
+- **[review](./skills/in-progress/review/SKILL.md)** — Local diff review before a PR opens — two-axis (Standards + Spec), parallel sub-agents, no GitHub API.
 
 ### Engineering
 
