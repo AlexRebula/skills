@@ -1,0 +1,155 @@
+{
+  "version": 1,
+  "skills": {
+    "audit-giselle-tests": {
+      "source": "AlexRebula/skills",
+      "sourceType": "github",
+      "skillPath": "skills/engineering/audit-giselle-tests/SKILL.md",
+      "computedHash": "33d2fdcf2a3cde4abce39cd4b05c3583417e631d00e0010ca8e80048594130db"
+    },
+    "caveman": {
+      "source": "AlexRebula/skills",
+      "sourceType": "github",
+      "skillPath": "skills/productivity/caveman/SKILL.md",
+      "computedHash": "536908fcfcb232600a5875aa85f1fd50fd13305e9d67379bcd95f07c8c916f3f"
+    },
+    "create-angular-component": {
+      "source": "AlexRebula/skills",
+      "sourceType": "github",
+      "skillPath": "skills/engineering/create-angular-component/SKILL.md",
+      "computedHash": "8bbd837d99de3cdf6df35c3629b12982aefd72c7c21183835b6da8b971ae2857"
+    },
+    "create-giselle-component": {
+      "source": "AlexRebula/skills",
+      "sourceType": "github",
+      "skillPath": "skills/engineering/create-giselle-component/SKILL.md",
+      "computedHash": "8fe94699ac8dd91b2df98f546bc6e5036973146264bad6a7604d3ead12bce8dd"
+    },
+    "create-react-component": {
+      "source": "AlexRebula/skills",
+      "sourceType": "github",
+      "skillPath": "skills/engineering/create-react-component/SKILL.md",
+      "computedHash": "66d3c1b5b91e4a86c9b849a51925708e675b87915ebb6b5487c2670febfccaff"
+    },
+    "create-vue-component": {
+      "source": "AlexRebula/skills",
+      "sourceType": "github",
+      "skillPath": "skills/engineering/create-vue-component/SKILL.md",
+      "computedHash": "740c973ae64e7664964f22dcbaecff3335fcb707b97cc863621368e909c8a173"
+    },
+    "diagnose": {
+      "source": "AlexRebula/skills",
+      "sourceType": "github",
+      "skillPath": "skills/engineering/diagnose/SKILL.md",
+      "computedHash": "1c3c85517ac42116fe5f2bfb5150f7b3e38ad23808e40b33fbb01f1afb611983"
+    },
+    "grill-me": {
+      "source": "AlexRebula/skills",
+      "sourceType": "github",
+      "skillPath": "skills/productivity/grill-me/SKILL.md",
+      "computedHash": "daf64ca15f4fa081a6747766db538e2dbd1131725ed4fcdd3d538dc62c7035ba"
+    },
+    "grill-with-docs": {
+      "source": "AlexRebula/skills",
+      "sourceType": "github",
+      "skillPath": "skills/engineering/grill-with-docs/SKILL.md",
+      "computedHash": "59849672f8fce76b73055f6c9270236212e444c9aa63d02481bdf3cf788edb9f"
+    },
+    "handoff": {
+      "source": "AlexRebula/skills",
+      "sourceType": "github",
+      "skillPath": "skills/productivity/handoff/SKILL.md",
+      "computedHash": "3fdffd9dce6fc3e9f9f756ba79d694c5f162e11c7e7fbc72a0958f204312e0b1"
+    },
+    "improve-codebase-architecture": {
+      "source": "AlexRebula/skills",
+      "sourceType": "github",
+      "skillPath": "skills/engineering/improve-codebase-architecture/SKILL.md",
+      "computedHash": "2da1d23b8f53cfe67f2e0b68924ab9f4ec400bb6480de097007eeaeb517d1722"
+    },
+    "prototype": {
+      "source": "AlexRebula/skills",
+      "sourceType": "github",
+      "skillPath": "skills/engineering/prototype/SKILL.md",
+      "computedHash": "f52c019c3e0af2ad1807332d553b9ee7282a28c162d78cdeddd89dc8456b73ff"
+    },
+    "review": {
+      "source": "AlexRebula/skills",
+      "sourceType": "github",
+      "skillPath": "skills/in-progress/review/SKILL.md",
+      "computedHash": "fc4ca8a9495e93692282bebeb3bc99a6d46e27e2fccf4730001df98451b72f80"
+    },
+    "review-giselle-pr": {
+      "source": "AlexRebula/skills",
+      "sourceType": "github",
+      "skillPath": "skills/engineering/review-giselle-pr/SKILL.md",
+      "computedHash": "f6254d9687297f4a414a803927915a0bdfba44d57c805b1a65f1ca6c89e3c64f"
+    },
+    "review-pr": {
+      "source": "AlexRebula/skills",
+      "sourceType": "github",
+      "skillPath": "skills/engineering/review-pr/SKILL.md",
+      "computedHash": "d555375ecd3a1f3c72477135360ae9b0903cf17b51577fcfe576b1e600ea6bbd"
+    },
+    "setup-matt-pocock-skills": {
+      "source": "AlexRebula/skills",
+      "sourceType": "github",
+      "skillPath": "skills/engineering/setup-matt-pocock-skills/SKILL.md",
+      "computedHash": "f686b246e95afeaeeb3ff21b0f9f2c1ab29b02958468170cc9802fb477508488"
+    },
+    "tdd": {
+      "source": "AlexRebula/skills",
+      "sourceType": "github",
+      "skillPath": "skills/engineering/tdd/SKILL.md",
+      "computedHash": "78b31b2120c5fe7aced1cebfd4c7c94acb0037fd4f89c83c67584414aa4173bd"
+    },
+    "to-issues": {
+      "source": "AlexRebula/skills",
+      "sourceType": "github",
+      "skillPath": "skills/engineering/to-issues/SKILL.md",
+      "computedHash": "41915d1686991b0d3796eb0b52f3aa8e9021abc5f268d14e6dc62e95dbf8e044"
+    },
+    "to-prd": {
+      "source": "AlexRebula/skills",
+      "sourceType": "github",
+      "skillPath": "skills/engineering/to-prd/SKILL.md",
+      "computedHash": "a80acb8760af6521a37ea4f079e617712fcaa800f8a766e247f815c5dabb20d2"
+    },
+    "triage": {
+      "source": "AlexRebula/skills",
+      "sourceType": "github",
+      "skillPath": "skills/engineering/triage/SKILL.md",
+      "computedHash": "56ff15b41bbebfa4cb329d96150d9b297c1d919ce30784d883b8755b4bfd8e7e"
+    },
+    "write-a-skill": {
+      "source": "AlexRebula/skills",
+      "sourceType": "github",
+      "skillPath": "skills/productivity/write-a-skill/SKILL.md",
+      "computedHash": "3b58a16bde08f84ed490cd449ecdc40289216d660e070c485f53bc2d1ed2b843"
+    },
+    "writing-beats": {
+      "source": "AlexRebula/skills",
+      "sourceType": "github",
+      "skillPath": "skills/in-progress/writing-beats/SKILL.md",
+      "computedHash": "b416f5b8d349d40c604ca2fd1d1664e8672c236e188fa524ae4e8db5a8174580"
+    },
+    "writing-fragments": {
+      "source": "AlexRebula/skills",
+      "sourceType": "github",
+      "skillPath": "skills/in-progress/writing-fragments/SKILL.md",
+      "computedHash": "248bdd9334033ab044dfe29458866f9b2353a8006416e00d1058a3914981ae6e"
+    },
+    "writing-shape": {
+      "source": "AlexRebula/skills",
+      "sourceType": "github",
+      "skillPath": "skills/in-progress/writing-shape/SKILL.md",
+      "computedHash": "db0659096afcae5bfe7d913e46c1dc1f49357d7b362791613fe5f62fcc00daf7"
+    },
+    "zoom-out": {
+      "source": "AlexRebula/skills",
+      "sourceType": "github",
+      "skillPath": "skills/engineering/zoom-out/SKILL.md",
+      "computedHash": "a8b8ed45609fdfa9f184d0c9f69326e43822a42eebea14db2792d777373de562"
+    }
+  }
+}
