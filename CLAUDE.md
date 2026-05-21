@@ -13,12 +13,6 @@ Each skill entry in the top-level `README.md` must link the skill name to its `S
 
 Each bucket folder has a `README.md` that lists every skill in the bucket with a one-line description, with the skill name linked to its `SKILL.md`.
 
-## Language
-
-All Node.js tooling, scripts, and tests committed to this repository use **TypeScript**. JavaScript files (`.js`, `.cjs`, `.mjs`) are not permitted. When adding a test runner, helper script, or any executable file, use `.ts` and a TypeScript-capable runner (Vitest, tsx, ts-node). The absence of a `package.json` or `tsconfig.json` is not a reason to default to JavaScript — add the infrastructure instead.
-
-This rule covers committed executable files only. Code examples and file-tree illustrations inside skill `.md` files are not subject to it — those should match the target project's language.
-
 ## AI Reviewer Instructions
 
 Load: https://raw.githubusercontent.com/LittleBranches/oss-quality-standards/main/docs/AGENTS.md
