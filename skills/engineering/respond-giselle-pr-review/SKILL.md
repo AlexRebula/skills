@@ -24,11 +24,20 @@ Always load these before reading any thread:
 
 ```
 Public:   https://raw.githubusercontent.com/LittleBranches/oss-quality-standards/main/docs/AGENTS.md
-Private:  https://raw.githubusercontent.com/LittleBranches/oss-quality-standards-private/main/AGENTS.md
 Workflow: https://raw.githubusercontent.com/LittleBranches/oss-quality-standards/main/docs/pr-review-workflow.md
 ```
 
-If the private AGENTS barrel is inaccessible, proceed with the public barrel only and note that banned-content and encryption rules were not checked.
+For the private AGENTS.md, use the authenticated `gh` CLI to fetch via the GitHub Contents API.
+`fetch_webpage` will always 404 — the repo is private and raw.githubusercontent.com requires auth.
+
+```sh
+gh api repos/LittleBranches/oss-quality-standards-private/contents/AGENTS.md \
+  --jq '.content | @base64d'
+```
+
+This works on any machine where `gh` is authenticated. No hardcoded paths.
+Only skip the private barrel if `gh` itself returns a permission error — and if so, note explicitly
+that banned-content and encryption rules were not checked.
 
 ### 2. Identify the repo and verify the branch
 
