@@ -275,28 +275,39 @@ it('forwards arbitrary props to the root element', () => { ... });
 it('forwards ref to the root element', () => { ... });
 ```
 
-### Test helper — use ThemeProvider, never mock MUI
+### Test helper — use GiselleThemeProvider, never mock MUI
 
-Create `src/test-utils.ts` if it does not already exist:
+Check whether `src/test-utils.ts` already exists in the repo. If it does, import from it.
+If it does not, create it:
 
 ```ts
+// src/test-utils.ts
 import React from 'react';
-import { ThemeProvider, createTheme } from '@mui/material/styles';
 import { renderToStaticMarkup } from 'react-dom/server';
-import { render } from '@testing-library/react';
+import { GiselleThemeProvider } from './components/theming/theme-provider/giselle/giselle';
 
-const theme = createTheme();
-
-/** Pure rendering checks — no interaction needed. */
+/** Use for pure rendering checks — no interaction needed. */
 export function renderWithTheme(element: React.ReactElement): string {
   return renderToStaticMarkup(
-    React.createElement(ThemeProvider, { theme }, element)
+    React.createElement(GiselleThemeProvider, null, element)
   );
 }
+```
 
-/** Interaction tests — user events, state transitions. */
+**Why `GiselleThemeProvider` and not `ThemeProvider + createTheme()`:**
+giselle-mui uses MUI CSS variables mode (`extendTheme`). This populates `theme.vars.*`
+as CSS variable strings. Plain `createTheme()` does NOT do this — any component whose
+`sx` prop references `theme.vars.*` will crash at render time without a proper provider.
+`GiselleThemeProvider` is the only correct wrapper for this codebase's tests.
+
+For interaction tests that need user events or state transitions:
+
+```ts
+import { GiselleThemeProvider } from '../../components/theming/theme-provider/giselle/giselle';
+import { render } from '@testing-library/react';
+
 export function renderInteractiveWithTheme(element: React.ReactElement) {
-  return render(React.createElement(ThemeProvider, { theme }, element));
+  return render(React.createElement(GiselleThemeProvider, null, element));
 }
 ```
 
