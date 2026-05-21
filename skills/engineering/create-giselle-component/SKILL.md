@@ -25,6 +25,21 @@ Ask the user:
 
 Do not proceed until all 8 are answered. No code until alignment is locked.
 
+**Batch invocation:** If all 8 answers are already provided in the invocation message
+(e.g. when delegating from a parent agent or running multiple components in parallel),
+skip the questions and proceed directly to Phase 1. Example:
+
+```
+/create-giselle-component
+Component: MetricCard
+Layer: material/surfaces
+Wraps: Card
+Required props: label (string), value (string)
+Optional props: trend ('up' | 'down' | 'flat')
+ref forwarding: yes
+Uses sx: yes
+```
+
 ---
 
 ## Naming rules (oss-quality-standards §5.4 + §7)
@@ -236,6 +251,15 @@ MyCard.displayName = 'MyCard';
 - `displayName` set on every component
 - `forwardRef` required for anything wrapping a DOM element or MUI component
 - Never use `dangerouslySetInnerHTML`
+- No bare `<Box>` with semantic meaning — `<Box>` is a layout primitive only; elements with roles, ARIA attributes, or meaningful visual styling must be named components (§6.6)
+- `shouldForwardProp` required on any `styled()` component with custom props that must not reach the DOM (§6.7)
+- Icon slots: accept icons as `React.ReactNode`; decorative icons must have `aria-hidden="true"`; icon-only buttons carry `aria-label` on the `<button>`, not on the icon (§6.10)
+
+**Input security — applies to any component in the `inputs/` layer (§6.12):**
+- URL props (`href`, `src`, `action`) must reject the `javascript:` scheme — validate at the component boundary
+- Password fields must use `type="password"` and must not expose the value in `data-*` or ARIA attributes
+- The `sx` prop must never accept raw user-provided strings as property values
+- Client-side validation is UX only — never document it as a security boundary
 
 ### Barrel `index.ts` — final (replace stub)
 
@@ -427,8 +451,41 @@ src/components/<layer>/<category>/<name>/
 
 ---
 
+## Commit convention (oss-quality-standards §2.2)
+
+Format: `<type>(<scope>): <description>` — scope is the component name in kebab-case.
+
+```
+feature(metric-card): scaffold folder structure and it.todo stubs
+feature(metric-card): implement label and variant props
+test(metric-card): replace MUI mocks with GiselleThemeProvider
+```
+
+Use `feature` for new component work, `fix` for bug corrections, `test` for test-only changes.
+
+---
+
+## After implementation — open a PR
+
+Create a branch before starting Phase 1:
+
+```sh
+git checkout -b feature/<component-name>
+```
+
+After Phase 2 is complete and the quality gate is green, open a pull request:
+
+```sh
+gh pr create --title "feature(<component-name>): add <ComponentName>" --body "..."
+```
+
+One component = one branch = one PR. Do not mix multiple components in a single PR.
+
+---
+
 ## After implementation — checklist before PR
 
+### Code
 - [ ] Quality gate green: `npm run check`
 - [ ] All `it.todo` stubs replaced with real passing tests
 - [ ] 80%+ line coverage on the component file
@@ -441,6 +498,21 @@ src/components/<layer>/<category>/<name>/
 - [ ] Props interface in `types.ts` (not in component file)
 - [ ] Barrel `index.ts` exports component and `type { Props }` from `./types`
 - [ ] Library index updated (`src/index.ts` or the correct layer index)
+- [ ] No bare `<Box>` with semantic meaning
+- [ ] No `dangerouslySetInnerHTML`
+- [ ] Input components: URL props validated, `type="password"` for password fields (§6.12)
+- [ ] No commented-out code, `console.log`, `TODO`, or `FIXME`
+- [ ] No new undisclosed dependencies
+- [ ] No secrets in committed files
+
+### Accessibility
+- [ ] All interactive elements reachable by keyboard
+- [ ] Focus rings visible
+- [ ] Icon-only buttons have `aria-label`
+- [ ] Decorative icons have `aria-hidden="true"`
+- [ ] Animations respect `prefers-reduced-motion`
+
+### Docs & stories
 - [ ] At least `Default` story present
 - [ ] Storybook `title` mirrors folder path exactly
 - [ ] README.md File structure section filled in
