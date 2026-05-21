@@ -112,6 +112,22 @@ If it was not accessible, include:
 
 ### 9. Close-out audit (mandatory — do not skip)
 
+First gather all of your own PR comments with pagination so the audit does not miss older threads:
+
+```sh
+AUTHOR=$(gh api user --jq '.login')
+
+# Inline PR review comments (diff threads)
+gh api repos/<owner>/<repo>/pulls/<N>/comments --paginate \
+	--jq ".[] | select(.user.login == \"$AUTHOR\")"
+
+# Top-level PR discussion comments
+gh api repos/<owner>/<repo>/issues/<N>/comments --paginate \
+	--jq ".[] | select(.user.login == \"$AUTHOR\")"
+```
+
+Do not skip `--paginate`; without it, large PRs can silently omit older comments.
+
 Before handing back to the user, scan **every reply posted under Alex's name** in this session (inline thread replies and top-level PR comments). For each reply, check whether it contains any of these commitment signals:
 
 - "will" (e.g. "will fix", "will extract", "will update")
