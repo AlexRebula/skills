@@ -73,4 +73,15 @@ describe('create-giselle-component', () => {
     expect(SKILL).toMatch(/branch|pull request|PR/i);
   });
 
+  // ── §5.5 Two-phase scaffold enforcement ─────────────────────────────────
+  it('explicitly names the two-phase scaffold rule or references AGENTS.md §5.5', () => {
+    expect(SKILL).toMatch(/§5\.5|two-phase scaffold/i);
+  });
+
+  it('links scaffold it.todo requirement to quality-gate enforcement', () => {
+    // The quality-gate test (two-phase-scaffold.test.ts) catches violations automatically.
+    // The skill must tell the agent this so it knows the rule has teeth.
+    expect(SKILL).toMatch(/two-phase-scaffold\.test|two-phase-scaffold-legacy/i);
+  });
+
 });
