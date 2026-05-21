@@ -13,4 +13,17 @@ describe('create-giselle-component', () => {
     expect(SKILL).toContain('GiselleThemeProvider');
   });
 
+  // ── §9 Accessibility ─────────────────────────────────────────────────────
+  it('states WCAG 2.2 AA as the accessibility target (§9.1)', () => {
+    expect(SKILL).toContain('WCAG 2.2');
+  });
+
+  it('requires aria-label on icon-only buttons (§9.3)', () => {
+    expect(SKILL).toContain('aria-label');
+  });
+
+  it('requires prefers-reduced-motion for animations (§9.6)', () => {
+    expect(SKILL).toContain('prefers-reduced-motion');
+  });
+
 });

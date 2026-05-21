@@ -323,6 +323,31 @@ only when you need user events or state transitions.
 - Never mock MUI components, MUI hooks, or `react-dom/server`
 - Never mock a function from the same package
 
+### Accessibility (oss-quality-standards §9)
+
+Every component must meet **WCAG 2.2 Level AA**. Accessibility gaps found in PR review
+are always blocking — no counter-argument overrides this.
+
+| Rule | Requirement |
+|---|---|
+| Keyboard-first | Every interactive element reachable and activatable by keyboard |
+| Focus rings | Never suppress `outline` without a visible replacement |
+| Icon-only buttons | `aria-label` on the `<button>`, not on the icon |
+| Decorative icons | `aria-hidden="true"` on the icon element |
+| Loading states | `aria-busy` + `aria-live` on the container |
+| Error messages | `aria-describedby` pointing to the error element |
+| Toggle buttons | `aria-pressed` reflects current state |
+| Animations | Respect `prefers-reduced-motion` — wrap in the appropriate media query or hook |
+
+Add accessibility test cases alongside behaviour tests:
+
+```ts
+it('icon-only button has aria-label', () => {
+  const html = renderWithTheme(<MyIconButton aria-label="Edit" />);
+  expect(html).toContain('aria-label="Edit"');
+});
+```
+
 ### Style tests
 
 ```ts
