@@ -37,7 +37,7 @@ For the private barrel, use the authenticated `gh` CLI to fetch via the GitHub C
 
 ```sh
 gh api repos/LittleBranches/oss-quality-standards-private/contents/AGENTS.md \
-  --jq '.content' | tr -d '\n' | base64 -d
+  --jq '.content | @base64d'
 ```
 
 This works on any machine where `gh` is authenticated. No hardcoded paths.

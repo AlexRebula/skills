@@ -26,14 +26,22 @@ gh repo view --json nameWithOwner --jq '.nameWithOwner'
 
 ### 2. Load the standards (always, before reading the diff)
 
-Fetch both AGENTS.md barrels:
+Fetch the public barrel:
 
 ```
 Public:  https://raw.githubusercontent.com/LittleBranches/oss-quality-standards/main/docs/AGENTS.md
-Private: https://raw.githubusercontent.com/LittleBranches/oss-quality-standards-private/main/AGENTS.md
 ```
 
-If the private barrel is inaccessible (permission error), proceed with the public barrel only and note this in the review body.
+For the private barrel, use the authenticated `gh` CLI to fetch via the GitHub Contents API.
+`fetch_webpage` will always 404 — the repo is private and raw.githubusercontent.com requires auth.
+
+```sh
+gh api repos/LittleBranches/oss-quality-standards-private/contents/AGENTS.md \
+  --jq '.content | @base64d'
+```
+
+This works on any machine where `gh` is authenticated. No hardcoded paths.
+Only skip the private barrel if `gh` itself returns a permission error — and if so, note this in the review body.
 
 ### 3. Fetch PR metadata and diff
 
