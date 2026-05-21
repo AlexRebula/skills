@@ -15,7 +15,7 @@ Each bucket folder has a `README.md` that lists every skill in the bucket with a
 
 ## Language
 
-All tooling, scripts, and tests that are committed to this repository use **TypeScript**. JavaScript files (`.js`, `.cjs`, `.mjs`) are not permitted. When adding a test runner, helper script, or any executable file, use `.ts` and a TypeScript-capable runner (Vitest, tsx, ts-node). The absence of a `package.json` or `tsconfig.json` is not a reason to default to JavaScript — add the infrastructure instead.
+All Node.js tooling, scripts, and tests committed to this repository use **TypeScript**. JavaScript files (`.js`, `.cjs`, `.mjs`) are not permitted. When adding a test runner, helper script, or any executable file, use `.ts` and a TypeScript-capable runner (Vitest, tsx, ts-node). The absence of a `package.json` or `tsconfig.json` is not a reason to default to JavaScript — add the infrastructure instead.
 
 ## AI Reviewer Instructions
 
