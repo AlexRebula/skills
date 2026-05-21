@@ -124,11 +124,15 @@ gh api repos/<owner>/<repo>/pulls/<N>/comments --paginate \
 # Top-level PR discussion comments
 gh api repos/<owner>/<repo>/issues/<N>/comments --paginate \
 	--jq ".[] | select(.user.login == \"$AUTHOR\")"
+
+# PR review bodies (submitted via the Reviews API)
+gh pr view <N> --repo <owner>/<repo> --json reviews \
+	--jq ".reviews[] | select(.author.login == \"$AUTHOR\") | .body"
 ```
 
 Do not skip `--paginate`; without it, large PRs can silently omit older comments.
 
-Before handing back to the user, scan **every reply posted under Alex's name** in this session (inline thread replies and top-level PR comments). For each reply, check whether it contains any of these commitment signals:
+Before handing back to the user, scan **every reply posted under your account (`$AUTHOR`)** in this session (inline thread replies, top-level PR comments, and PR review bodies). For each reply, check whether it contains any of these commitment signals:
 
 - "will" (e.g. "will fix", "will extract", "will update")
 - "follow-up" / "follow up"

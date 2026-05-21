@@ -23,9 +23,9 @@ Use this skill for any LittleBranches repository. Use `/respond-pr-review` for a
 Always load these before reading any thread:
 
 ```
-Public:  https://raw.githubusercontent.com/LittleBranches/oss-quality-standards/main/docs/AGENTS.md
-Private: https://raw.githubusercontent.com/LittleBranches/oss-quality-standards-private/main/AGENTS.md
-Workflow: docs/pr-review-workflow.md
+Public:   https://raw.githubusercontent.com/LittleBranches/oss-quality-standards/main/docs/AGENTS.md
+Private:  https://raw.githubusercontent.com/LittleBranches/oss-quality-standards-private/main/AGENTS.md
+Workflow: https://raw.githubusercontent.com/LittleBranches/oss-quality-standards/main/docs/pr-review-workflow.md
 ```
 
 If the private AGENTS barrel is inaccessible, proceed with the public barrel only and note that banned-content and encryption rules were not checked.
