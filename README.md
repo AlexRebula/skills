@@ -17,6 +17,8 @@
 | --- | --- |
 | [`/create-giselle-component`](./skills/engineering/create-giselle-component/SKILL.md) | Scaffold and TDD a new giselle-mui component following OSS Quality Standards rules — two-phase: scaffold first (types, test stubs, README, roadmap), then implement one vertical slice at a time. |
 | [`/audit-giselle-tests`](./skills/engineering/audit-giselle-tests/SKILL.md) | Classify and systematically fix AI-generated tests that use the MUI-mocking anti-pattern (`vi.mock('@mui/material/...')`), replacing them with real-ThemeProvider tests via `renderWithTheme`. |
+| [`/respond-pr-review`](./skills/engineering/respond-pr-review/SKILL.md) | Respond to an existing Copilot PR review in any repo — discover local review-response rules, triage every thread, reply inline before fixing, batch valid fixes into one commit, and post SHA follow-ups. |
+| [`/respond-giselle-pr-review`](./skills/engineering/respond-giselle-pr-review/SKILL.md) | Respond to an existing Copilot PR review in a LittleBranches repo — pre-load the public and private AGENTS.md barrels plus the review workflow, triage every thread, reply inline before fixing, batch valid fixes, and post SHA follow-ups. |
 | [`/review-giselle-pr`](./skills/engineering/review-giselle-pr/SKILL.md) | Review an open GitHub PR in any LittleBranches repo — pre-loads the public and private AGENTS.md barrels, maps each changed file to the relevant sections, posts findings via the GitHub PR Reviews API with inline line comments. |
 | [`/review-pr`](./skills/engineering/review-pr/SKILL.md) | Review any open GitHub PR — dynamically discovers the repo's own standards docs (AGENTS.md, CLAUDE.md, ADRs), runs parallel Standards + Spec sub-agents, posts via the GitHub PR Reviews API. |
 | [`/create-react-component`](./skills/engineering/create-react-component/SKILL.md) | Scaffold and TDD a new React component — no framework dependency, plain RTL, same two-phase scaffold/TDD workflow. |
@@ -184,6 +186,8 @@ Skills for the giselle-mui component library and LittleBranches OSS Quality Stan
 - **[create-angular-component](./skills/engineering/create-angular-component/SKILL.md)** — Scaffold and TDD a new Angular 17+ standalone component with signal-based inputs/outputs.
 - **[audit-giselle-tests](./skills/engineering/audit-giselle-tests/SKILL.md)** — Classify AI-generated tests into three buckets and fix the MUI-mocking anti-pattern by replacing `vi.mock` with `renderWithTheme`.
 - **[review-giselle-pr](./skills/engineering/review-giselle-pr/SKILL.md)** — Review a LittleBranches GitHub PR against oss-quality-standards AGENTS.md with inline GitHub Reviews API comments.
+- **[respond-giselle-pr-review](./skills/engineering/respond-giselle-pr-review/SKILL.md)** — Respond to an existing Copilot review on a LittleBranches PR — preload AGENTS.md + workflow rules, triage every thread, reply before fixing, batch valid fixes, and post SHA follow-ups.
+- **[respond-pr-review](./skills/engineering/respond-pr-review/SKILL.md)** — Respond to an existing Copilot review in any repo — discover local review-response rules, triage every thread, reply before fixing, batch valid fixes, and post SHA follow-ups.
 - **[review-pr](./skills/engineering/review-pr/SKILL.md)** — Review any GitHub PR — discovers repo standards dynamically, runs parallel Standards + Spec sub-agents, posts inline reviews.
 - **[review](./skills/in-progress/review/SKILL.md)** — Local diff review before a PR opens — two-axis (Standards + Spec), parallel sub-agents, no GitHub API.
 
