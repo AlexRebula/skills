@@ -21,9 +21,9 @@ Ask the user:
 5. Required props and their types
 6. Optional props and their variants
 7. Does it need `ref` forwarding? (yes for anything wrapping a DOM element or MUI component)
-8. Does it use `useTheme` or `sx`? (determines whether the ThemeProvider test helper is needed)
+8. Does it use `useTheme` or `sx`? (determines whether the GiselleThemeProvider test helper is needed)
 
-Do not proceed until all 8 are answered. No code until alignment is locked.
+Do not proceed until all 8 are answered — unless batch invocation applies (see below). No code until alignment is locked.
 
 **Batch invocation:** If all 8 answers are already provided in the invocation message
 (e.g. when delegating from a parent agent or running multiple components in parallel),
@@ -322,7 +322,9 @@ export function renderWithTheme(element: React.ReactElement): string {
 giselle-mui uses MUI CSS variables mode (`extendTheme`). This populates `theme.vars.*`
 as CSS variable strings. Plain `createTheme()` does NOT do this — any component whose
 `sx` prop references `theme.vars.*` will crash at render time without a proper provider.
-`GiselleThemeProvider` is the only correct wrapper for this codebase's tests.
+`GiselleThemeProvider` is the only correct wrapper for component render tests in this codebase.
+Style tests (which test style functions in isolation via `createTheme()`) are exempt — they
+never call `theme.vars.*` directly.
 
 For interaction tests that need user events or state transitions:
 
