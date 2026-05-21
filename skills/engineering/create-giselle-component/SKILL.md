@@ -21,9 +21,24 @@ Ask the user:
 5. Required props and their types
 6. Optional props and their variants
 7. Does it need `ref` forwarding? (yes for anything wrapping a DOM element or MUI component)
-8. Does it use `useTheme` or `sx`? (determines whether the ThemeProvider test helper is needed)
+8. Does it use `useTheme` or `sx`? (determines whether the GiselleThemeProvider test helper is needed)
 
-Do not proceed until all 8 are answered. No code until alignment is locked.
+Do not proceed until all 8 are answered — unless batch invocation applies (see below). No code until alignment is locked.
+
+**Batch invocation:** If all 8 answers are already provided in the invocation message
+(e.g. when delegating from a parent agent or running multiple components in parallel),
+skip the questions and proceed directly to Phase 1. Example:
+
+```
+/create-giselle-component
+Component: MetricCard
+Layer: material/surfaces
+Wraps: Card
+Required props: label (string), value (string)
+Optional props: trend ('up' | 'down' | 'flat')
+ref forwarding: yes
+Uses sx: yes
+```
 
 ---
 
@@ -236,6 +251,15 @@ MyCard.displayName = 'MyCard';
 - `displayName` set on every component
 - `forwardRef` required for anything wrapping a DOM element or MUI component
 - Never use `dangerouslySetInnerHTML`
+- No bare `<Box>` with semantic meaning — `<Box>` is a layout primitive only; elements with roles, ARIA attributes, or meaningful visual styling must be named components (§6.6)
+- `shouldForwardProp` required on any `styled()` component with custom props that must not reach the DOM (§6.7)
+- Icon slots: accept icons as `React.ReactNode`; decorative icons must have `aria-hidden="true"`; icon-only buttons carry `aria-label` on the `<button>`, not on the icon (§6.10)
+
+**Input security — applies to any component in the `inputs/` layer (§6.12):**
+- URL props (`href`, `src`, `action`) must reject the `javascript:` scheme — validate at the component boundary
+- Password fields must use `type="password"` and must not expose the value in `data-*` or ARIA attributes
+- The `sx` prop must never accept raw user-provided strings as property values
+- Client-side validation is UX only — never document it as a security boundary
 
 ### Barrel `index.ts` — final (replace stub)
 
@@ -275,28 +299,41 @@ it('forwards arbitrary props to the root element', () => { ... });
 it('forwards ref to the root element', () => { ... });
 ```
 
-### Test helper — use ThemeProvider, never mock MUI
+### Test helper — use GiselleThemeProvider, never mock MUI
 
-Create `src/test-utils.ts` if it does not already exist:
+Check whether `src/test-utils.ts` already exists in the repo. If it does, import from it.
+If it does not, create it:
 
 ```ts
+// src/test-utils.ts
 import React from 'react';
-import { ThemeProvider, createTheme } from '@mui/material/styles';
 import { renderToStaticMarkup } from 'react-dom/server';
-import { render } from '@testing-library/react';
+import { GiselleThemeProvider } from './components/theming/theme-provider/giselle/giselle';
 
-const theme = createTheme();
-
-/** Pure rendering checks — no interaction needed. */
+/** Use for pure rendering checks — no interaction needed. */
 export function renderWithTheme(element: React.ReactElement): string {
   return renderToStaticMarkup(
-    React.createElement(ThemeProvider, { theme }, element)
+    React.createElement(GiselleThemeProvider, null, element)
   );
 }
+```
 
-/** Interaction tests — user events, state transitions. */
+**Why `GiselleThemeProvider` and not `ThemeProvider + createTheme()`:**
+giselle-mui uses MUI CSS variables mode (`extendTheme`). This populates `theme.vars.*`
+as CSS variable strings. Plain `createTheme()` does NOT do this — any component whose
+`sx` prop references `theme.vars.*` will crash at render time without a proper provider.
+`GiselleThemeProvider` is the only correct wrapper for component render tests in this codebase.
+Style tests (which test style functions in isolation via `createTheme()`) are exempt — they
+never call `theme.vars.*` directly.
+
+For interaction tests that need user events or state transitions:
+
+```ts
+import { GiselleThemeProvider } from '../../components/theming/theme-provider/giselle/giselle';
+import { render } from '@testing-library/react';
+
 export function renderInteractiveWithTheme(element: React.ReactElement) {
-  return render(React.createElement(ThemeProvider, { theme }, element));
+  return render(React.createElement(GiselleThemeProvider, null, element));
 }
 ```
 
@@ -311,6 +348,31 @@ only when you need user events or state transitions.
 - Mock at module boundaries only: external APIs, `window.fetch`, `Date`, `Math.random`
 - Never mock MUI components, MUI hooks, or `react-dom/server`
 - Never mock a function from the same package
+
+### Accessibility (oss-quality-standards §9)
+
+Every component must meet **WCAG 2.2 Level AA**. Accessibility gaps found in PR review
+are always blocking — no counter-argument overrides this.
+
+| Rule | Requirement |
+|---|---|
+| Keyboard-first | Every interactive element reachable and activatable by keyboard |
+| Focus rings | Never suppress `outline` without a visible replacement |
+| Icon-only buttons | `aria-label` on the `<button>`, not on the icon |
+| Decorative icons | `aria-hidden="true"` on the icon element |
+| Loading states | `aria-busy` + `aria-live` on the container |
+| Error messages | `aria-describedby` pointing to the error element |
+| Toggle buttons | `aria-pressed` reflects current state |
+| Animations | Respect `prefers-reduced-motion` — wrap in the appropriate media query or hook |
+
+Add accessibility test cases alongside behaviour tests:
+
+```ts
+it('icon-only button has aria-label', () => {
+  const html = renderWithTheme(<MyIconButton aria-label="Edit" />);
+  expect(html).toContain('aria-label="Edit"');
+});
+```
 
 ### Style tests
 
@@ -391,8 +453,41 @@ src/components/<layer>/<category>/<name>/
 
 ---
 
+## Commit convention (oss-quality-standards §2.2)
+
+Format: `<type>(<scope>): <description>` — scope is the component name in kebab-case.
+
+```
+feature(metric-card): scaffold folder structure and it.todo stubs
+feature(metric-card): implement label and variant props
+test(metric-card): replace MUI mocks with GiselleThemeProvider
+```
+
+Use `feature` for new component work, `fix` for bug corrections, `test` for test-only changes.
+
+---
+
+## After implementation — open a PR
+
+Create a branch before starting Phase 1:
+
+```sh
+git checkout -b feature/<component-name>
+```
+
+After Phase 2 is complete and the quality gate is green, open a pull request:
+
+```sh
+gh pr create --title "feature(<component-name>): add <ComponentName>" --body "..."
+```
+
+One component = one branch = one PR. Do not mix multiple components in a single PR.
+
+---
+
 ## After implementation — checklist before PR
 
+### Code
 - [ ] Quality gate green: `npm run check`
 - [ ] All `it.todo` stubs replaced with real passing tests
 - [ ] 80%+ line coverage on the component file
@@ -405,6 +500,21 @@ src/components/<layer>/<category>/<name>/
 - [ ] Props interface in `types.ts` (not in component file)
 - [ ] Barrel `index.ts` exports component and `type { Props }` from `./types`
 - [ ] Library index updated (`src/index.ts` or the correct layer index)
+- [ ] No bare `<Box>` with semantic meaning
+- [ ] No `dangerouslySetInnerHTML`
+- [ ] Input components: URL props validated, `type="password"` for password fields (§6.12)
+- [ ] No commented-out code, `console.log`, `TODO`, or `FIXME`
+- [ ] No new undisclosed dependencies
+- [ ] No secrets in committed files
+
+### Accessibility
+- [ ] All interactive elements reachable by keyboard
+- [ ] Focus rings visible
+- [ ] Icon-only buttons have `aria-label`
+- [ ] Decorative icons have `aria-hidden="true"`
+- [ ] Animations respect `prefers-reduced-motion`
+
+### Docs & stories
 - [ ] At least `Default` story present
 - [ ] Storybook `title` mirrors folder path exactly
 - [ ] README.md File structure section filled in
