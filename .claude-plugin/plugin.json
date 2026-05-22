@@ -8,6 +8,7 @@
     "./skills/engineering/audit-giselle-tests",
     "./skills/engineering/review-pr",
     "./skills/engineering/review-giselle-pr",
+    "./skills/engineering/morning-pr-sweep",
     "./skills/engineering/respond-pr-review",
     "./skills/engineering/respond-giselle-pr-review",
     "./skills/in-progress/review",
