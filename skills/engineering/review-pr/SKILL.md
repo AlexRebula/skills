@@ -60,13 +60,13 @@ Collect the list of files. The Standards sub-agent reads them all.
 
 **Scope extraction (mandatory):** If any standards file contains an explicit reviewer scope note — e.g. `CLAUDE.md` says "only §1–§4 and §11 apply" or "AI Reviewer Instructions: Scope: ..." — extract that list verbatim. Carry it forward to the sub-agent prompt in step 5. If no scope note is found, the sub-agent checks every section in every standards file.
 
-### 5. Spawn sub-agents via Agent tool calls (mandatory — always use Agent, never analyse manually)
+### 5. Spawn both sub-agents in parallel (mandatory — do not skip)
 
-Send a single message with one or two Agent tool calls (`subagent_type: general-purpose`). Spawn both in parallel unless `standards-only` was requested or no spec was found — in those cases send only the Standards sub-agent.
+Send a single message with two Agent tool calls (`subagent_type: general-purpose`).
 
 **Standards sub-agent prompt — include all of:**
 - The full diff text
-- Standards files: include `AGENTS.md`, `CLAUDE.md`, `CONTEXT.md` in full; for `docs/adr/` pass the file list plus the title and decision line of each ADR (not full content — ADR bodies can be large)
+- The full contents of every standards-source file found in step 4
 - If a scope was extracted in step 4: "Check **only** these sections: `<section list>`. For each section, state whether you checked it and what you found. Do not check sections outside this list."
 - If no scope was extracted: "Check every section in every standards doc provided."
 - This brief: "Read the standards docs. Read the diff. Report every place the diff violates a documented standard — per file and line where relevant. Cite the standard (file + section). Label each finding: `blocking` / `non-blocking` / `suggestion`. Distinguish hard violations from judgement calls. Skip anything tooling (Prettier, ESLint, tsc) already enforces. Under 400 words."
