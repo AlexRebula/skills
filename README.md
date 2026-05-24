@@ -24,6 +24,16 @@
 | [`/create-react-component`](./skills/engineering/create-react-component/SKILL.md) | Scaffold and TDD a new React component — no framework dependency, plain RTL, same two-phase scaffold/TDD workflow. |
 | [`/create-vue-component`](./skills/engineering/create-vue-component/SKILL.md) | Scaffold and TDD a new Vue 3 standalone component — `<script setup>`, `defineProps` generics, `@testing-library/vue`. |
 | [`/create-angular-component`](./skills/engineering/create-angular-component/SKILL.md) | Scaffold and TDD a new Angular 17+ standalone component — signal-based `input()`/`output()`, `OnPush`, Angular Testing Library. |
+| [`/standup-prep`](./skills/engineering/standup-prep/SKILL.md) | Daily session startup coordinator. Runs preflight → session context → repo status + WIP sweep → open PR sweep → morning brief → file write → Asana sync. |
+| [`/standup-prep-preflight`](./skills/engineering/standup-prep-preflight/SKILL.md) | Composite pre-flight: runs `/check-prior-work`, `/load-oss-standards`, and `/load-dependency-chain` in sequence. |
+| [`/check-prior-work`](./skills/engineering/check-prior-work/SKILL.md) | Scans context for a `<conversation-summary>` block and extracts earlier session work for continuity before standup. |
+| [`/load-oss-standards`](./skills/engineering/load-oss-standards/SKILL.md) | Verify access to public and private LittleBranches AGENTS.md files and print the session health table. |
+| [`/load-dependency-chain`](./skills/engineering/load-dependency-chain/SKILL.md) | Read `dependency-chain.md` and extract the hard deadline, critical path, and current phase status for each active repo. |
+| [`/load-session-context`](./skills/engineering/load-session-context/SKILL.md) | Load the session index and latest wrap file only; check for an existing morning brief for today. |
+| [`/repo-status`](./skills/engineering/repo-status/SKILL.md) | Dynamically discover all workspace repos and produce a dirty state table (branch, dirty file count, clean/uncommitted). |
+| [`/wip-sweep`](./skills/engineering/wip-sweep/SKILL.md) | Scope selection + tiered WIP commit/push/PR model: T1 scope selection → T2 local commit → T3 push → T4 draft PRs. |
+| [`/open-pr-sweep`](./skills/engineering/open-pr-sweep/SKILL.md) | Discover all non-draft open PRs across LittleBranches and AlexRebula orgs and output a summary table. |
+| [`/asana-sync`](./skills/engineering/asana-sync/SKILL.md) | Opt-in Asana sync: locate config, check write access, create Morning Briefs section, seed tasks, post status update, log results. |
 
 ### Why this fork exists
 
