@@ -43,11 +43,10 @@ gh api repos/LittleBranches/oss-quality-standards-private/contents/AGENTS.md \
 This works on any machine where `gh` is authenticated. No hardcoded paths.
 Only skip the private barrel if `gh` itself returns a permission error — and if so, note this in the review body.
 
-### 3. Fetch PR metadata and diff
+### 3. Fetch PR metadata
 
 ```sh
 gh pr view <N> --repo <owner>/<repo> --json title,body,headRefOid,headRefName,baseRefName
-gh pr diff <N> --repo <owner>/<repo>
 ```
 
 Save `headRefOid` for the Reviews API call.
@@ -63,8 +62,18 @@ gh pr checks <N> --repo <owner>/<repo>
 - Add a blocking finding at the top of the review body:
   > **Blocking: Branch has merge conflicts and cannot be merged.**
   > Conflicting files must be resolved before this PR is mergeable. Run `git merge origin/<base>` on the PR branch, resolve all conflicts, then push.
-- List the conflicting files using `gh pr view <N> --json files` cross-referenced with `git diff --name-only --diff-filter=U` on the PR branch.
+- List the changed files using:
+  ```sh
+  gh pr view <N> --repo <owner>/<repo> --json files --jq '[.files[].path]'
+  ```
+  Flag all listed files as potentially conflicted in the blocking finding.
 - Continue with the code quality review — flag the conflicts as a separate blocking finding regardless of what else is found.
+
+### 3c. Fetch the diff (only after step 3b passes)
+
+```sh
+gh pr diff <N> --repo <owner>/<repo>
+```
 
 **If any CI check is failing:**
 - Add a blocking finding for each failing check:

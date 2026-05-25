@@ -49,9 +49,11 @@ git branch --show-current
 
 If the current branch is not the PR branch, switch to it before editing.
 
-### 2b. Check merge state and CI — resolve before gathering threads
+### 2b. Check merge state and CI
 
-This step is **mandatory and blocking**. Do not read any review threads until both checks pass.
+This step is **mandatory**. Merge conflicts and CI failures have different blocking behaviors:
+- **Merge conflicts** (`mergeable: CONFLICTING` or `mergeStateStatus: DIRTY`) — block everything. Resolve before proceeding to step 3.
+- **CI failures** — allow proceeding to gather threads. Diagnose and capture logs first, then include the CI fix in the step 6 batch commit.
 
 ```sh
 gh pr view <N> --repo <owner>/<repo> --json mergeable,mergeStateStatus
@@ -95,7 +97,7 @@ gh run list --repo <owner>/<repo> --branch <pr-branch> --limit 5
 gh run view <run-id> --log-failed --repo <owner>/<repo>
 ```
 
-Diagnose the root cause. Fix CI failures as part of the same batch commit as the valid review fixes (step 6). CI must be green before handing back to the branch owner.
+Diagnose the root cause, then proceed to gather review threads (step 3). Include the CI fix in the step 6 batch commit together with the valid review fixes. CI must be green before handing back to the branch owner.
 
 ### 3. Gather every review thread first
 
