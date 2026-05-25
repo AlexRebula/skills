@@ -52,6 +52,26 @@ gh pr diff <N> --repo <owner>/<repo>
 
 Save `headRefOid` for the Reviews API call.
 
+### 3b. Check merge state and CI (blocking — do this before reading the diff)
+
+```sh
+gh pr view <N> --repo <owner>/<repo> --json mergeable,mergeStateStatus,statusCheckRollup
+gh pr checks <N> --repo <owner>/<repo>
+```
+
+**If `mergeable` is `CONFLICTING` or `mergeStateStatus` is `DIRTY`:**
+- Add a blocking finding at the top of the review body:
+  > **Blocking: Branch has merge conflicts and cannot be merged.**
+  > Conflicting files must be resolved before this PR is mergeable. Run `git merge origin/<base>` on the PR branch, resolve all conflicts, then push.
+- List the conflicting files using `gh pr view <N> --json files` cross-referenced with `git diff --name-only --diff-filter=U` on the PR branch.
+- Continue with the code quality review — flag the conflicts as a separate blocking finding regardless of what else is found.
+
+**If any CI check is failing:**
+- Add a blocking finding for each failing check:
+  > **Blocking: CI check `<check-name>` is failing.**
+  > This must pass before the PR is mergeable. Run `gh run view --log-failed` on the failing run ID to see the error.
+- Never mark a PR as approved or post a `COMMENT`-only review that omits CI failures. CI failures are always `REQUEST_CHANGES`.
+
 ### 4. Find the spec
 
 Same as `/review-pr` step 3 — look for issue references in the PR body, then docs/, specs/, .scratch/.

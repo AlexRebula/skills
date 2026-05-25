@@ -49,6 +49,54 @@ git branch --show-current
 
 If the current branch is not the PR branch, switch to it before editing.
 
+### 2b. Check merge state and CI — resolve before gathering threads
+
+This step is **mandatory and blocking**. Do not read any review threads until both checks pass.
+
+```sh
+gh pr view <N> --repo <owner>/<repo> --json mergeable,mergeStateStatus
+gh pr checks <N> --repo <owner>/<repo>
+```
+
+**If `mergeable` is `CONFLICTING` or `mergeStateStatus` is `DIRTY`:**
+
+Resolve all conflicts before doing anything else. Switch to the PR branch and merge the base:
+
+```sh
+git checkout <pr-branch>
+git fetch origin
+git merge origin/<base-branch> --no-commit --no-ff
+```
+
+Resolve each conflicting file using the following strategy:
+
+| File type | Resolution strategy |
+|---|---|
+| Generated/vendored artifacts (`.yalc/`, `dist/`, `package-lock.json`) | `git checkout --theirs <file>` — always take base branch (latest build) |
+| Data files (`*.json`, `*.csv`) | Read both sides carefully; preserve all new entries from both HEAD and base — never discard either side's additions |
+| Source files (`*.ts`, `*.tsx`, `*.md`) | Manual merge — read conflict sections, apply both sets of meaningful changes |
+
+After resolving:
+
+```sh
+git add -A
+git commit -m "chore: merge <base-branch> — resolve conflicts before PR review response"
+git push origin <pr-branch>
+```
+
+Note the merge commit SHA. Include it in your report to the branch owner.
+
+**If any CI check is failing:**
+
+Read the failing output before touching any code:
+
+```sh
+gh run list --repo <owner>/<repo> --branch <pr-branch> --limit 5
+gh run view <run-id> --log-failed --repo <owner>/<repo>
+```
+
+Diagnose the root cause. Fix CI failures as part of the same batch commit as the valid review fixes (step 6). CI must be green before handing back to the branch owner.
+
 ### 3. Gather every review thread first
 
 Do not answer any comment until you have read all of them.
