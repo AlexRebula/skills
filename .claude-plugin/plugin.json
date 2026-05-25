@@ -32,6 +32,8 @@
     "./skills/engineering/wip-sweep",
     "./skills/engineering/open-pr-sweep",
     "./skills/engineering/asana-sync",
+    "./skills/engineering/commit-wip",
+    "./skills/engineering/sync-roadmap",
     "./skills/productivity/caveman",
     "./skills/productivity/grill-me",
     "./skills/productivity/handoff",
