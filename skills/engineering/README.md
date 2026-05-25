@@ -4,6 +4,7 @@ Skills I use daily for code work.
 
 - **[diagnose](./diagnose/SKILL.md)** — Disciplined diagnosis loop for hard bugs and performance regressions: reproduce → minimise → hypothesise → instrument → fix → regression-test.
 - **[grill-with-docs](./grill-with-docs/SKILL.md)** — Grilling session that challenges your plan against the existing domain model, sharpens terminology, and updates `CONTEXT.md` and ADRs inline.
+- **[morning-pr-sweep](./morning-pr-sweep/SKILL.md)** — Clear all open PR review debt across every LittleBranches repo in one session. Discovers every open PR, triages all threads before touching any code, batches fixes into one commit per PR, posts SHA confirmations, and reports which PRs are merge-ready. Run this first every morning.
 - **[respond-pr-review](./respond-pr-review/SKILL.md)** — Respond to an existing Copilot PR review in any repo: gather every thread, reply inline before fixing, batch valid fixes into one commit, and post SHA follow-ups.
 - **[respond-giselle-pr-review](./respond-giselle-pr-review/SKILL.md)** — Respond to an existing Copilot PR review in a LittleBranches repo: preload AGENTS.md + workflow rules, reply inline before fixing, batch valid fixes, and audit commitments.
 - **[triage](./triage/SKILL.md)** — Triage issues through a state machine of triage roles.
@@ -14,6 +15,8 @@ Skills I use daily for code work.
 - **[to-prd](./to-prd/SKILL.md)** — Turn the current conversation context into a PRD and submit it as a GitHub issue.
 - **[zoom-out](./zoom-out/SKILL.md)** — Tell the agent to zoom out and give broader context or a higher-level perspective on an unfamiliar section of code.
 - **[prototype](./prototype/SKILL.md)** — Build a throwaway prototype to flesh out a design — either a runnable terminal app for state/business-logic questions, or several radically different UI variations toggleable from one route.
+- **[commit-wip](./commit-wip/SKILL.md)** — Scan all workspace repos for uncommitted changes, group files by topic, match each group to an existing remote branch (or create a categorised new one), and commit there. Keeps WIP on the semantically correct branch from the start.
+- **[sync-roadmap](./sync-roadmap/SKILL.md)** — Pull current task statuses from Asana and write them back into each repo's `docs/roadmap.md` and `data.tsx` `done` flags. Asana is master; this skill flows changes downstream.
 - **[standup-prep](./standup-prep/SKILL.md)** — Daily session startup coordinator. Runs preflight → session context → repo status + WIP sweep → open PR sweep → morning brief → file write → Asana sync.
 - **[standup-prep-preflight](./standup-prep-preflight/SKILL.md)** — Composite pre-flight: runs /check-prior-work, /load-oss-standards, and /load-dependency-chain in sequence.
 - **[check-prior-work](./check-prior-work/SKILL.md)** — Scans context for a `<conversation-summary>` block and extracts earlier session work for continuity.
