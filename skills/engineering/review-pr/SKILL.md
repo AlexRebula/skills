@@ -60,7 +60,7 @@ Collect the list of files. The Standards sub-agent reads them all.
 
 **Scope extraction (mandatory):** If any standards file contains an explicit reviewer scope note — e.g. `CLAUDE.md` says "only §1–§4 and §11 apply" or "AI Reviewer Instructions: Scope: ..." — extract that list verbatim. Carry it forward to the sub-agent prompt in step 5. If no scope note is found, the sub-agent checks every section in every standards file.
 
-### 5. Spawn sub-agents via Agent tool calls (mandatory — always use Agent, never analyse manually)
+### 5. Spawn sub-agents in parallel where both axes apply
 
 Send a single message with one or two Agent tool calls (`subagent_type: general-purpose`). Spawn both in parallel unless `standards-only` was requested or no spec was found — in those cases send only the Standards sub-agent.
 
@@ -118,3 +118,23 @@ After posting, summarise:
 - Total: N blocking, N non-blocking, N suggestions
 - Link to the posted review thread
 - Worst single finding (if any)
+
+### 9. Close-out audit (mandatory — do not skip)
+
+Before handing back to the user, scan **every reply posted under the reviewer's name** in this session (inline thread replies and top-level PR comments). For each reply, check whether it contains any of these commitment signals:
+
+- "will" (e.g. "will fix", "will extract", "will update")
+- "follow-up" / "follow up"
+- "separate issue" / "track" / "open an issue"
+- "fix in this PR"
+
+For every reply that contains one of these signals, verify a tracking artifact exists:
+
+| Commitment type | Required artifact |
+|---|---|
+| "will fix in this PR" | Commit SHA posted as follow-up reply in the same thread |
+| "will open an issue" / "separate issue" | GitHub issue opened; issue link posted as follow-up reply |
+| "will update the PR description" | PR description updated; confirmation posted as follow-up reply |
+| "will extract / follow-up PR" | GitHub issue opened; issue link posted as follow-up reply |
+
+If any artifact is missing — create it before reporting back to the user. This step must be completed even if the session is resuming across a context boundary.

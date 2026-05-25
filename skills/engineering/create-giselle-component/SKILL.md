@@ -84,6 +84,13 @@ Adding a new suffix requires explicit user approval.
 
 ## Phase 1 — Scaffold (commit before implementing)
 
+> **Two-phase scaffold — AGENTS.md §5.5.**
+> Phase 1 is a commit with stubs only. The `<name>.tsx` component file must NOT exist.
+> The quality-gate (`src/quality-gate/two-phase-scaffold.test.ts`) enforces this automatically:
+> any new `.test.ts` added without `it.todo` stubs fails CI immediately via the
+> `two-phase-scaffold-legacy-missing-todo.json` baseline check.
+> Do not start Phase 2 until Phase 1 is committed.
+
 ### Files to create in the scaffold phase
 
 ```
