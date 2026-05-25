@@ -11,7 +11,8 @@ times before the handoff was called. Work done in earlier parts of the session m
 summarised away and will be silently missing from the handoff unless you recover it first.
 
 If the platform provides a session transcript file (e.g. `{{VSCODE_TARGET_SESSION_LOG}}` in
-VS Code Copilot):
+VS Code Copilot — a template variable substituted at runtime with the session log file path;
+on other platforms the path may differ or be absent — see the fallback below):
 
 1. Read the transcript file (JSONL — one JSON object per line).
 2. Extract every `<conversation-summary>` compaction block. Each block is a faithful summary
