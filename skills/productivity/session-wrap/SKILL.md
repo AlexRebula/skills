@@ -81,6 +81,31 @@ When writing Step 3, apply these rules:
 
 ---
 
+## Step 2a — Recover full history from transcript (mandatory)
+
+The in-context summary is **always incomplete** if the conversation was compacted one or more
+times. Do not skip this step even if the current context feels complete.
+
+1. Read `{{VSCODE_TARGET_SESSION_LOG}}` (JSONL — one JSON object per line).
+2. Extract every `<conversation-summary>` block found in the file. Each block is a
+   compaction checkpoint that summarises what happened before that point in the session.
+3. Also read the uncompacted tail — any tool calls and assistant messages that appear
+   **after** the final `<conversation-summary>` block.
+4. If this is a continuation wrap, find the timestamp of the previous wrap file and
+   include only activity recorded **after** that timestamp.
+5. Build a flat list of all distinct work items found across every compaction block
+   **plus** the current context. This is the authoritative activity inventory.
+6. Use this inventory — not the in-context summary alone — for the Topics Covered table
+   in Step 3 and the Files Edited list.
+
+**If `{{VSCODE_TARGET_SESSION_LOG}}` is unavailable** (non-VS-Code session or path not
+resolved), proceed from context alone and add this note to the wrap document:
+
+> ⚠️ Transcript not available — wrap may be incomplete. Verify against screenshots or
+> a separate session log if critical work happened before the last context compaction.
+
+---
+
 ## Step 3 — Write the wrap document
 
 Be concise — this is a continuity pointer for agents, not a narrative. Do not duplicate content
@@ -88,37 +113,44 @@ already captured in commits, PRs, issues, or ADRs; reference by path or URL inst
 
 ```markdown
 # <Human title>
+
 <YYYY-MM-DD>
 
 **Model:** <model name>
 **Session ID:** `<UUID>` | `N/A`
 
 ## Summary
+
 One paragraph.
 
 ## Topics Covered
 
-| Topic | Type | One-line summary |
-|---|---|---|
-| ... | 🎯 Primary | ... |
-| ... | 🐇 Rabbit hole | ... |
+| Topic | Type           | One-line summary |
+| ----- | -------------- | ---------------- |
+| ...   | 🎯 Primary     | ...              |
+| ...   | 🐇 Rabbit hole | ...              |
 
 Types: 🎯 Primary · 🐇 Rabbit hole · 🔀 Detour (related but not the plan) · ❓ Unanswered
 
 ## Current State
+
 In-progress and blocked items.
 
 ## Files Edited
+
 Paths only — no file content.
 
 ## Decisions
+
 What was decided and why.
 
 ## Pending Tasks
+
 Enough context to pick up immediately. If arguments were passed to the skill, make those
 the focus here.
 
 ## Suggested Skills
+
 Skills the next agent should invoke (e.g. `/tdd`, `/diagnose`, `/wip-sweep`).
 ```
 
@@ -127,6 +159,7 @@ Skills the next agent should invoke (e.g. `/tdd`, `/diagnose`, `/wip-sweep`).
 ## Step 4 — Save the wrap file
 
 Determine the suffix:
+
 - Wrap number `01` → `01-initial.md`
 - Wrap number `02` or higher → `<NN>-continued.md`
 
@@ -154,7 +187,7 @@ If `_index.md` does not exist, create it with this header:
 > numbered files inside the folder (`01-initial.md`, `02-continued.md`, …).
 
 | Date | Title | Projects | Topics | Wraps | Model(s) | Session ID | Folder |
-|---|---|---|---|---|---|---|---|
+| ---- | ----- | -------- | ------ | ----- | -------- | ---------- | ------ |
 ```
 
 **If a row already exists for this session** (match on session name slug in the Folder column):
@@ -163,16 +196,16 @@ increment **Wraps** by 1, append the model to **Model(s)** if not already listed
 
 **If no row exists**: append a new row:
 
-| Column | Value |
-|---|---|
-| Date | today's date |
-| Title | human title from Step 1 |
-| Projects | comma-separated repo/project names |
-| Topics | comma-separated tags from Topics Covered table |
-| Wraps | `1` |
-| Model(s) | model name from Step 1 |
-| Session ID | first 8 chars of UUID, or `N/A` |
-| Folder | `[<session-name>](./<session-name>/)` |
+| Column     | Value                                          |
+| ---------- | ---------------------------------------------- |
+| Date       | today's date                                   |
+| Title      | human title from Step 1                        |
+| Projects   | comma-separated repo/project names             |
+| Topics     | comma-separated tags from Topics Covered table |
+| Wraps      | `1`                                            |
+| Model(s)   | model name from Step 1                         |
+| Session ID | first 8 chars of UUID, or `N/A`                |
+| Folder     | `[<session-name>](./<session-name>/)`          |
 
 ---
 
@@ -185,12 +218,14 @@ For each affected prompt file:
 
 1. Read its YAML frontmatter for `name:` and `description:`.
 2. If `_index.md` does not exist, create it with this header:
+
    ```markdown
    # Prompt Catalogue
 
    | Name | Invoked as | Description | Created | Last Updated | File |
-   |---|---|---|---|---|---|
+   | ---- | ---------- | ----------- | ------- | ------------ | ---- |
    ```
+
 3. If a row already exists for the file: update `Last Updated` to today's date only.
 4. If it is a new prompt: append a row with Name, `/`-prefixed invocation, description,
    Created date, Last Updated date, and `[<filename>.prompt.md](./<filename>.prompt.md)` link.
