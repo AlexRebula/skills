@@ -157,20 +157,3 @@ For every reply that contains one of these signals, verify a tracking artifact e
 | "will extract / follow-up PR" | GitHub issue opened; issue link posted as follow-up reply |
 
 If any artifact is missing — create it before reporting back to the user. This step must be completed even if the session is resuming across a context boundary.
-
-**Retrieving comments to scan:**
-
-```sh
-# Determine author identity
-AUTHOR=$(gh api user --jq '.login')
-
-# All PR review thread comments (paginated)
-gh api repos/<owner>/<repo>/pulls/<N>/comments --paginate \
-  --jq --arg author "$AUTHOR" '.[] | select(.user.login == $author)'
-
-# All top-level PR issue comments (paginated)
-gh api repos/<owner>/<repo>/issues/<N>/comments --paginate \
-  --jq --arg author "$AUTHOR" '.[] | select(.user.login == $author)'
-```
-
-Pagination is required — without `--paginate`, comments beyond the first page are silently missed.
