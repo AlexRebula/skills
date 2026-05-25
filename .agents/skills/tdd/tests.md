@@ -26,12 +26,12 @@ Characteristics:
 
 **Implementation-detail tests**: Coupled to internal structure.
 
-```typescript
-// BAD: Tests implementation details
+```
+// BAD (pseudo-code — illustrates the anti-pattern, not valid syntax):
 test("checkout calls paymentService.process", async () => {
-  const mockPayment = jest.mock(paymentService);
-  await checkout(cart, payment);
-  expect(mockPayment.process).toHaveBeenCalledWith(cart.total);
+  mock paymentService.process
+  checkout(cart)
+  assert paymentService.process was called with cart.total
 });
 ```
 

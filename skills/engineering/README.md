@@ -4,6 +4,8 @@ Skills I use daily for code work.
 
 - **[diagnose](./diagnose/SKILL.md)** — Disciplined diagnosis loop for hard bugs and performance regressions: reproduce → minimise → hypothesise → instrument → fix → regression-test.
 - **[grill-with-docs](./grill-with-docs/SKILL.md)** — Grilling session that challenges your plan against the existing domain model, sharpens terminology, and updates `CONTEXT.md` and ADRs inline.
+- **[respond-pr-review](./respond-pr-review/SKILL.md)** — Respond to an existing Copilot PR review in any repo: gather every thread, reply inline before fixing, batch valid fixes into one commit, and post SHA follow-ups.
+- **[respond-giselle-pr-review](./respond-giselle-pr-review/SKILL.md)** — Respond to an existing Copilot PR review in a LittleBranches repo: preload AGENTS.md + workflow rules, reply inline before fixing, batch valid fixes, and audit commitments.
 - **[triage](./triage/SKILL.md)** — Triage issues through a state machine of triage roles.
 - **[improve-codebase-architecture](./improve-codebase-architecture/SKILL.md)** — Find deepening opportunities in a codebase, informed by the domain language in `CONTEXT.md` and the decisions in `docs/adr/`.
 - **[setup-matt-pocock-skills](./setup-matt-pocock-skills/SKILL.md)** — Scaffold the per-repo config (issue tracker, triage label vocabulary, domain doc layout) that the other engineering skills consume.
@@ -12,3 +14,13 @@ Skills I use daily for code work.
 - **[to-prd](./to-prd/SKILL.md)** — Turn the current conversation context into a PRD and submit it as a GitHub issue.
 - **[zoom-out](./zoom-out/SKILL.md)** — Tell the agent to zoom out and give broader context or a higher-level perspective on an unfamiliar section of code.
 - **[prototype](./prototype/SKILL.md)** — Build a throwaway prototype to flesh out a design — either a runnable terminal app for state/business-logic questions, or several radically different UI variations toggleable from one route.
+- **[standup-prep](./standup-prep/SKILL.md)** — Daily session startup coordinator. Runs preflight → session context → repo status + WIP sweep → open PR sweep → morning brief → file write → Asana sync.
+- **[standup-prep-preflight](./standup-prep-preflight/SKILL.md)** — Composite pre-flight: runs /check-prior-work, /load-oss-standards, and /load-dependency-chain in sequence.
+- **[check-prior-work](./check-prior-work/SKILL.md)** — Scans context for a `<conversation-summary>` block and extracts earlier session work for continuity.
+- **[load-oss-standards](./load-oss-standards/SKILL.md)** — Verify access to public and private LittleBranches AGENTS.md files and print the session health table.
+- **[load-dependency-chain](./load-dependency-chain/SKILL.md)** — Read the dependency-chain.md file and extract hard deadline, critical path, and phase status.
+- **[load-session-context](./load-session-context/SKILL.md)** — Load the session index and latest wrap file, and check for an existing morning brief.
+- **[repo-status](./repo-status/SKILL.md)** — Discover all workspace repos dynamically and produce a dirty state table.
+- **[wip-sweep](./wip-sweep/SKILL.md)** — Scope selection + tiered WIP commit/push/PR model (T1 scope → T2 local commit → T3 push → T4 draft PRs).
+- **[open-pr-sweep](./open-pr-sweep/SKILL.md)** — Discover all non-draft open PRs across LittleBranches and AlexRebula orgs.
+- **[asana-sync](./asana-sync/SKILL.md)** — Opt-in Asana sync: create Morning Briefs section, seed tasks, post status update, and log results.
