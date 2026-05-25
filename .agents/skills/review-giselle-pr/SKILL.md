@@ -26,14 +26,22 @@ gh repo view --json nameWithOwner --jq '.nameWithOwner'
 
 ### 2. Load the standards (always, before reading the diff)
 
-Fetch both AGENTS.md barrels:
+Fetch the public barrel:
 
 ```
 Public:  https://raw.githubusercontent.com/LittleBranches/oss-quality-standards/main/docs/AGENTS.md
-Private: https://raw.githubusercontent.com/LittleBranches/oss-quality-standards-private/main/AGENTS.md
 ```
 
-If the private barrel is inaccessible (permission error), proceed with the public barrel only and note this in the review body.
+For the private barrel, use the authenticated `gh` CLI to fetch via the GitHub Contents API.
+`fetch_webpage` will always 404 — the repo is private and raw.githubusercontent.com requires auth.
+
+```sh
+gh api repos/LittleBranches/oss-quality-standards-private/contents/AGENTS.md \
+  --jq '.content | @base64d'
+```
+
+This works on any machine where `gh` is authenticated. No hardcoded paths.
+Only skip the private barrel if `gh` itself returns a permission error — and if so, note this in the review body.
 
 ### 3. Fetch PR metadata and diff
 
@@ -124,11 +132,15 @@ gh api repos/<owner>/<repo>/pulls/<N>/comments --paginate \
 # Top-level PR discussion comments
 gh api repos/<owner>/<repo>/issues/<N>/comments --paginate \
 	--jq ".[] | select(.user.login == \"$AUTHOR\")"
+
+# PR review bodies (submitted via the Reviews API)
+gh pr view <N> --repo <owner>/<repo> --json reviews \
+	--jq ".reviews[] | select(.author.login == \"$AUTHOR\") | .body"
 ```
 
 Do not skip `--paginate`; without it, large PRs can silently omit older comments.
 
-Before handing back to the user, scan **every reply posted under Alex's name** in this session (inline thread replies and top-level PR comments). For each reply, check whether it contains any of these commitment signals:
+Before handing back to the user, scan **every reply posted under your account (`$AUTHOR`)** in this session (inline thread replies, top-level PR comments, and PR review bodies). For each reply, check whether it contains any of these commitment signals:
 
 - "will" (e.g. "will fix", "will extract", "will update")
 - "follow-up" / "follow up"

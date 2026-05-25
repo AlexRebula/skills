@@ -14,13 +14,22 @@ There are three buckets. Classify every test file into one before proposing any 
 
 ### Bucket A — Placeholder stubs (leave alone)
 
+Compliant with **AGENTS.md §5.5 two-phase scaffold** — `it.todo` stubs only, no
+implementation yet:
+
 ```ts
-describe.skip('ComponentName', () => {
-  it('placeholder scaffold test (implementation pending)', () => {});
+// @vitest-environment jsdom
+import { describe, it } from 'vitest';
+
+describe('<ComponentName>', () => {
+  it.todo('renders without crashing');
+  it.todo('forwards arbitrary props to the root element');
 });
 ```
 
-These are intentional. The component has not been implemented yet.
+The quality-gate (`src/quality-gate/two-phase-scaffold.test.ts`) enforces this pattern
+automatically — any new `.test.ts` file without `it.todo` stubs will fail CI.
+
 **Action: leave as-is. Do not delete or rewrite.**
 
 ### Bucket B — MUI-mock anti-pattern (rewrite)
@@ -55,8 +64,8 @@ Tests that:
 Scan for each pattern across all `*.test.ts` files:
 
 ```
-1. Files with describe.skip → Bucket A
-2. Files with vi.mock('@mui → Bucket B
+1. Files with only it.todo stubs (no expect calls) → Bucket A
+2. Files with vi.mock('@mui/material' or vi.mock('@mui/material/styles' → Bucket B
 3. Files with real it() blocks and no MUI mocks → Bucket C
 ```
 
@@ -89,29 +98,31 @@ Before touching a single file, present:
 
 ---
 
-## Fix pattern — replacing MUI mocks with ThemeProvider
+## Fix pattern — replacing MUI mocks with GiselleThemeProvider
 
 ### First: create or verify `src/test-utils.ts` exists
+
+`giselle-mui` uses MUI CSS variables mode (`extendTheme`). Plain `createTheme` does **not**
+populate `theme.vars.*` — any `sx` callback referencing those tokens crashes at render time.
+`GiselleThemeProvider` is the only correct wrapper for component tests in this codebase.
 
 ```ts
 // src/test-utils.ts
 import React from 'react';
-import { ThemeProvider, createTheme } from '@mui/material/styles';
 import { renderToStaticMarkup } from 'react-dom/server';
 import { render } from '@testing-library/react';
-
-const theme = createTheme();
+import { GiselleThemeProvider } from './components/theming/theme-provider/giselle/giselle';
 
 /** Use for pure rendering checks (no interaction needed). */
 export function renderWithTheme(element: React.ReactElement): string {
   return renderToStaticMarkup(
-    React.createElement(ThemeProvider, { theme }, element)
+    React.createElement(GiselleThemeProvider, null, element)
   );
 }
 
 /** Use when you need user events or state transitions. */
 export function renderInteractiveWithTheme(element: React.ReactElement) {
-  return render(React.createElement(ThemeProvider, { theme }, element));
+  return render(React.createElement(GiselleThemeProvider, null, element));
 }
 ```
 
