@@ -60,6 +60,8 @@ gh pr view <N> --repo <owner>/<repo> --json mergeable,mergeStateStatus
 gh pr checks <N> --repo <owner>/<repo>
 ```
 
+> **Important:** A clean local working tree (`git status` showing nothing to commit) does **not** mean the branch is conflict-free with `main`. It only means the branch has no uncommitted local changes. Always trust the API response: if `mergeable` is `CONFLICTING` or `mergeStateStatus` is `DIRTY`, real merge conflicts exist and must be resolved — even when `git status` shows clean. Verify by actually running `git merge origin/<base-branch>`, not by inspecting local state.
+
 **If `mergeable` is `CONFLICTING` or `mergeStateStatus` is `DIRTY`:**
 
 Resolve all conflicts before doing anything else. Switch to the PR branch and merge the base:
@@ -212,11 +214,23 @@ For every such reply, verify a matching artifact exists:
 
 If any artifact is missing, create it before reporting back.
 
-### 9. Leave resolution to the branch owner
+### 9. Audit the PR description (mandatory — do not skip)
+
+Before handing back, explicitly verify the PR description accounts for every changed file. Run this unconditionally — do not rely on your own judgment about whether scope changed:
+
+```sh
+gh pr view <N> --repo <owner>/<repo> --json files --jq '[.files[].path]'
+```
+
+For each path in the output, confirm it is described — by name, folder, or the feature it belongs to — in the PR description's "What Changed" section (or equivalent). If any file is missing or the description no longer matches the actual changes, update the description:
+
+```sh
+gh pr edit <N> --repo <owner>/<repo> --body "<updated body>"
+```
+
+### 10. Leave resolution to the branch owner
 
 Do not resolve threads yourself. The branch owner verifies the fixes, resolves threads manually, and decides whether to re-request Copilot review.
-
-If the fix batch changed the PR scope, update the PR description before handing back.
 
 ### 10. Edge cases
 
