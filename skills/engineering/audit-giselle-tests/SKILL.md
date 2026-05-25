@@ -65,7 +65,7 @@ Scan for each pattern across all `*.test.ts` files:
 
 ```
 1. Files with only it.todo stubs (no expect calls) → Bucket A
-2. Files with vi.mock('@mui → Bucket B
+2. Files with vi.mock('@mui/material' or vi.mock('@mui/material/styles' → Bucket B
 3. Files with real it() blocks and no MUI mocks → Bucket C
 ```
 
