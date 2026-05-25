@@ -24,12 +24,13 @@
 | [`/create-react-component`](./skills/engineering/create-react-component/SKILL.md) | Scaffold and TDD a new React component — no framework dependency, plain RTL, same two-phase scaffold/TDD workflow. |
 | [`/create-vue-component`](./skills/engineering/create-vue-component/SKILL.md) | Scaffold and TDD a new Vue 3 standalone component — `<script setup>`, `defineProps` generics, `@testing-library/vue`. |
 | [`/create-angular-component`](./skills/engineering/create-angular-component/SKILL.md) | Scaffold and TDD a new Angular 17+ standalone component — signal-based `input()`/`output()`, `OnPush`, Angular Testing Library. |
-| [`/standup-prep`](./skills/engineering/standup-prep/SKILL.md) | Daily session startup coordinator. Runs preflight → session context → repo status + WIP sweep → open PR sweep → morning brief → file write → Asana sync. |
-| [`/standup-prep-preflight`](./skills/engineering/standup-prep-preflight/SKILL.md) | Composite pre-flight: runs `/check-prior-work`, `/load-oss-standards`, and `/load-dependency-chain` in sequence. |
-| [`/check-prior-work`](./skills/engineering/check-prior-work/SKILL.md) | Scans context for a `<conversation-summary>` block and extracts earlier session work for continuity before standup. |
+| [`/standup-prep`](./skills/productivity/standup-prep/SKILL.md) | Daily session startup coordinator. Runs preflight → session context → repo status + WIP sweep → open PR sweep → morning brief → file write → Asana sync. |
+| [`/standup-prep-preflight`](./skills/productivity/standup-prep-preflight/SKILL.md) | Composite pre-flight: runs `/check-prior-work`, `/load-oss-standards`, and `/load-dependency-chain` in sequence. |
+| [`/check-prior-work`](./skills/productivity/check-prior-work/SKILL.md) | Scans context for a `<conversation-summary>` block and extracts earlier session work for continuity before standup. |
 | [`/load-oss-standards`](./skills/engineering/load-oss-standards/SKILL.md) | Verify access to public and private LittleBranches AGENTS.md files and print the session health table. |
 | [`/load-dependency-chain`](./skills/engineering/load-dependency-chain/SKILL.md) | Read `dependency-chain.md` and extract the hard deadline, critical path, and current phase status for each active repo. |
-| [`/load-session-context`](./skills/engineering/load-session-context/SKILL.md) | Load the session index and latest wrap file only; check for an existing morning brief for today. |
+| [`/load-session-context`](./skills/productivity/load-session-context/SKILL.md) | Load the session index and latest wrap file only; check for an existing morning brief for today. |
+| [`/session-wrap`](./skills/productivity/session-wrap/SKILL.md) | Write a session wrap doc, update the session index, and hand off to `/wip-sweep` to commit the session's artifacts. Use at context >55% or after completing major work. |
 | [`/repo-status`](./skills/engineering/repo-status/SKILL.md) | Dynamically discover all workspace repos and produce a dirty state table (branch, dirty file count, clean/uncommitted). |
 | [`/wip-sweep`](./skills/engineering/wip-sweep/SKILL.md) | Scope selection + tiered WIP commit/push/PR model: T1 scope selection → T2 local commit → T3 push → T4 draft PRs. |
 | [`/open-pr-sweep`](./skills/engineering/open-pr-sweep/SKILL.md) | Discover all non-draft open PRs across LittleBranches and AlexRebula orgs and output a summary table. |
@@ -220,9 +221,14 @@ Skills I use daily for code work.
 
 General workflow tools, not code-specific.
 
+- **[standup-prep](./skills/productivity/standup-prep/SKILL.md)** — Daily session startup coordinator. Runs preflight → session context → repo status + WIP sweep → open PR sweep → morning brief → file write → Asana sync.
+- **[standup-prep-preflight](./skills/productivity/standup-prep-preflight/SKILL.md)** — Composite pre-flight: runs `/check-prior-work`, `/load-oss-standards`, and `/load-dependency-chain` in sequence.
+- **[check-prior-work](./skills/productivity/check-prior-work/SKILL.md)** — Scans context for a `<conversation-summary>` block and extracts earlier session work for continuity.
+- **[load-session-context](./skills/productivity/load-session-context/SKILL.md)** — Load the session index and latest wrap file; check for an existing morning brief for today.
 - **[caveman](./skills/productivity/caveman/SKILL.md)** — Ultra-compressed communication mode. Cuts token usage ~75% by dropping filler while keeping full technical accuracy.
 - **[grill-me](./skills/productivity/grill-me/SKILL.md)** — Get relentlessly interviewed about a plan or design until every branch of the decision tree is resolved.
 - **[handoff](./skills/productivity/handoff/SKILL.md)** — Compact the current conversation into a handoff document so another agent can continue the work.
+- **[session-wrap](./skills/productivity/session-wrap/SKILL.md)** — Write a session wrap doc, update the session index, and hand off to `/wip-sweep`. More powerful sibling of `/handoff`. Use at context >55% or after completing major work.
 - **[write-a-skill](./skills/productivity/write-a-skill/SKILL.md)** — Create new skills with proper structure, progressive disclosure, and bundled resources.
 
 ### Misc
