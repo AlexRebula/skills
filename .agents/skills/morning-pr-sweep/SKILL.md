@@ -1,6 +1,6 @@
 ---
 name: morning-pr-sweep
-description: Clear all open PR review debt across every LittleBranches repo in one session. Discovers every open PR, triages ALL threads across ALL PRs before touching any code, batches fixes into one commit per PR, posts SHA confirmations, and reports which PRs are merge-ready. Replaces running /respond-giselle-pr-review N times with a single morning ritual that takes 20–30 minutes regardless of how many PRs are open.
+description: Clear all open PR review debt across your repos in one session. Discovers every open PR, triages ALL threads across ALL PRs before touching any code, batches fixes into one commit per PR, posts SHA confirmations, and reports which PRs are merge-ready. Replaces running /respond-giselle-pr-review N times with a single morning ritual that takes 20–30 minutes regardless of how many PRs are open.
 ---
 
 # Morning PR Sweep
@@ -8,6 +8,29 @@ description: Clear all open PR review debt across every LittleBranches repo in o
 Run this at the start of each working day. Its job is simple: **no PR should leave the session with an unacknowledged review thread**. By the end of the sweep, every open thread has been triaged, replied to, fixed (if valid), and confirmed — leaving only the manual merge step for you.
 
 The key difference from calling `/respond-giselle-pr-review` N times: all threads across all PRs are triaged **together, before any code is touched**. This means one context load, one standards load, one pass through all the code, one commit per PR. Not N context loads, N fix cycles, N pushes.
+
+---
+
+## ⚠️ Before you run this
+
+**This skill makes real, public writes.** Understand what it does before you invoke it:
+
+| Action | Scope | Visibility |
+|---|---|---|
+| Posts acknowledgement replies to open review threads | Per thread, before any fix | Public — visible to anyone with repo access |
+| Pushes fix commits to the PR branch | Per PR, after fixes | Public — appears in the PR timeline |
+| Posts SHA confirmation replies to every thread | Per thread, after push | Public — visible to anyone with repo access |
+
+**This applies to both private and public repositories.** On a public repo, your replies are visible to the entire internet.
+
+Do not run this skill:
+- On PRs you are not authorised to respond to
+- In repositories where AI-authored replies are unwelcome or against contribution guidelines
+- Without reviewing the triage table in Phase 0e before confirming
+
+The skill will always show a full impact table and wait for your explicit confirmation before posting anything (Phase 0e). You can stop at that point if the scope is not what you expected.
+
+---
 
 ## Arguments
 
@@ -37,19 +60,20 @@ Only skip this if `gh` returns a permission error — if so, note that banned-co
 
 ### 0b. Build the repo list
 
-If no repos were specified as arguments, use the default set:
+If no repos were specified as arguments, discover them from the authenticated account:
 
 ```sh
-gh repo list --limit 100 --json nameWithOwner,isPrivate \
-  --jq '.[] | select(.nameWithOwner | test("(?i)(LittleBranches|AlexRebula)")) | .nameWithOwner'
+gh repo list --limit 50 --json nameWithOwner,isPrivate \
+  --jq '.[] | .nameWithOwner'
 ```
 
-The standard working set is:
-- `LittleBranches/giselle-mui`
-- `LittleBranches/oss-quality-standards`
-- `alexrebula/first-branch`
+Scope to specific orgs by adding a filter — for example, to sweep only `MyOrg` repos:
 
-Include any other repo explicitly passed as an argument.
+```sh
+--jq '.[] | select(.nameWithOwner | test("MyOrg"; "i")) | .nameWithOwner'
+```
+
+Include any additional repos explicitly passed as an argument.
 
 ### 0c. List open PRs
 
@@ -88,15 +112,23 @@ Present the full picture before doing anything:
 MORNING PR SWEEP — 22 May 2026
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 Repo                             PR    State            Branch
-LittleBranches/giselle-mui       #63   needs-response   feature/stat-card
-LittleBranches/giselle-mui       #64   needs-response   feature/theme-preset
-alexrebula/first-branch          #12   needs-review     feature/admin-ui
-LittleBranches/oss-quality-standards #8 merge-ready    chore/pr-workflow
+MyOrg/repo-a                     #63   needs-response   feature/stat-card
+MyOrg/repo-a                     #64   needs-response   feature/theme-preset
+MyOrg/repo-b                     #12   needs-review     feature/admin-ui
+MyOrg/repo-c                     #8    merge-ready      chore/pr-workflow
 
-Proceeding with 2 PRs (needs-response). OK to continue?
+⚠️  WRITE IMPACT: Proceeding will post public replies to open threads in #63
+    and #64, push fix commits to both branches, and post SHA confirmations.
+    This is visible to all collaborators (and the public, if the repo is public).
+
+Proceed? (yes / no / list only)
 ```
 
-Wait for confirmation before proceeding.
+**`yes`** — proceed with full sweep.
+**`no`** — abort. No writes made.
+**`list only`** — print the triage table but make no writes. Useful for reviewing scope before committing.
+
+Wait for explicit confirmation before proceeding.
 
 ---
 
@@ -255,10 +287,10 @@ Print the final status table:
 MORNING PR SWEEP — COMPLETE
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 Repo                          PR    Status          Threads  Commit    Action
-LittleBranches/giselle-mui    #63   ✅ merge-ready  3/3      a1b2c3d   Resolve threads + merge in GitHub
-LittleBranches/giselle-mui    #64   ✅ merge-ready  2/2      e4f5g6h   Resolve threads + merge in GitHub
-alexrebula/first-branch        #12   ⏸️ no review    —        —         Waiting for Copilot review to appear
-LittleBranches/oss-quality-standards #8 ✅ merge-ready 0/0   —         Ready to merge
+MyOrg/repo-a                  #63   ✅ merge-ready  3/3      a1b2c3d   Resolve threads + merge in GitHub
+MyOrg/repo-a                  #64   ✅ merge-ready  2/2      e4f5g6h   Resolve threads + merge in GitHub
+MyOrg/repo-b                  #12   ⏸️ no review    —        —         Waiting for Copilot review to appear
+MyOrg/repo-c                  #8    ✅ merge-ready  0/0      —         Ready to merge
 
 NEXT STEP: Go to GitHub UI → resolve threads → merge PRs #63 and #64.
 Then return here to start fresh work.

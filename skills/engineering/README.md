@@ -2,6 +2,8 @@
 
 Skills I use daily for code work.
 
+- **[create-pr](./create-pr/SKILL.md)** — Verify branch hygiene, run the quality gate, and create a PR with a complete description via `gh pr create`. Optionally triggers a review bot.
+- **[create-giselle-pr](./create-giselle-pr/SKILL.md)** — Same as create-pr but for LittleBranches repos: pre-loads AGENTS.md, runs banned-content scan, includes `data/` branch prefix, triggers Copilot review by default, and optionally creates a companion doc in `docs/pr-messages/`.
 - **[diagnose](./diagnose/SKILL.md)** — Disciplined diagnosis loop for hard bugs and performance regressions: reproduce → minimise → hypothesise → instrument → fix → regression-test.
 - **[grill-with-docs](./grill-with-docs/SKILL.md)** — Grilling session that challenges your plan against the existing domain model, sharpens terminology, and updates `CONTEXT.md` and ADRs inline.
 - **[morning-pr-sweep](./morning-pr-sweep/SKILL.md)** — Clear all open PR review debt across every LittleBranches repo in one session. Discovers every open PR, triages all threads before touching any code, batches fixes into one commit per PR, posts SHA confirmations, and reports which PRs are merge-ready. Run this first every morning.
