@@ -67,19 +67,20 @@ gh pr checks <N> --repo <owner>/<repo>
   gh pr view <N> --repo <owner>/<repo> --json files --jq '[.files[].path]'
   ```
   Flag all listed files as potentially conflicted in the blocking finding.
-- Continue with the code quality review — flag the conflicts as a separate blocking finding regardless of what else is found.
-
-### 3c. Fetch the diff (only after step 3b passes)
-
-```sh
-gh pr diff <N> --repo <owner>/<repo>
-```
+- Stop — do not proceed to step 3c. Post the blocking finding and hand back to the branch owner to resolve conflicts first.
 
 **If any CI check is failing:**
 - Add a blocking finding for each failing check:
   > **Blocking: CI check `<check-name>` is failing.**
   > This must pass before the PR is mergeable. Run `gh run view --log-failed` on the failing run ID to see the error.
 - Never mark a PR as approved or post a `COMMENT`-only review that omits CI failures. CI failures are always `REQUEST_CHANGES`.
+- CI failures do not block proceeding to step 3c — fetch the diff and continue the quality review.
+
+### 3c. Fetch the diff
+
+```sh
+gh pr diff <N> --repo <owner>/<repo>
+```
 
 ### 4. Find the spec
 

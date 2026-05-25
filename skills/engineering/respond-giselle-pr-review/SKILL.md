@@ -43,7 +43,7 @@ that banned-content and encryption rules were not checked.
 
 ```sh
 gh repo view --json nameWithOwner --jq '.nameWithOwner'
-gh pr view <N> --repo <owner>/<repo> --json headRefName,headRefOid
+gh pr view <N> --repo <owner>/<repo> --json headRefName,headRefOid,baseRefName
 git branch --show-current
 ```
 
@@ -232,7 +232,7 @@ gh pr edit <N> --repo <owner>/<repo> --body "<updated body>"
 
 Do not resolve threads yourself. The branch owner verifies the fixes, resolves threads manually, and decides whether to re-request Copilot review.
 
-### 10. Edge cases
+### 11. Edge cases
 
 If the thread reply endpoint returns `404`, stop and tell the branch owner before falling back to a top-level PR comment.
 
