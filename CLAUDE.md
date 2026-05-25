@@ -1,3 +1,23 @@
+## ⚠️ PUBLIC REPOSITORY — read before writing anything
+
+This repo is a **public fork** of [Matt Pocock's skills repo](https://github.com/total-typescript/skills).
+It is published and installable by anyone: `npx skills@latest add AlexRebula/skills`.
+
+**Rules — non-negotiable:**
+
+- **PR descriptions and commit messages must be written for a public audience.** Assume a
+  stranger to the project is reading them. No unexplained internal jargon, no references to
+  internal project names or private tooling unless you define them inline.
+- **Skill files may reference organisation-specific context** (LittleBranches, giselle-mui, etc.)
+  because those skills are explicitly scoped to that organisation. The PR that ships them
+  should describe what the skill does, not assume the reader knows the internal setup.
+- **Never reference private repository names** (e.g. `first-branch`, `alexrebula`) in
+  PR descriptions, commit messages, or README entries.
+
+---
+
+## Skill bucket structure
+
 Skills are organized into bucket folders under `skills/`:
 
 - `engineering/` — daily code work
