@@ -140,6 +140,13 @@ gh api repos/<owner>/<repo>/issues/<N>/comments --paginate \
 
 Do not skip `--paginate`; large PRs can silently omit older comments without it.
 
+After running these commands, build a deduplication index from your own replies:
+
+- **Acknowledged threads**: any thread where your account already has an inline reply (look for your login in `in_reply_to_id` reply chains, or as the root comment author). Step 5 must skip these — do not post a second verdict reply.
+- **SHA-replied threads**: any thread where one of your existing replies contains `"Fixed in "` or `"Deferred"`. Step 7 must skip these — do not post a second SHA follow-up.
+
+Triage and code fixes are always idempotent and must never be skipped. Only the reply steps (5 and 7) are gated by this check.
+
 ### 4. Triage each thread
 
 Assign one verdict per thread:
@@ -154,7 +161,9 @@ Security and WCAG comments are treated as valid unless you have a specific techn
 
 ### 5. Reply inline before fixing
 
-Every thread gets a reply in the same thread before any code change:
+Every thread gets a reply in the same thread before any code change — **unless you already have a reply in that thread**. Before posting, check the acknowledged set from Step 3: if your account has any existing reply in the thread, skip this step for that thread. Do not post a second verdict reply.
+
+For threads with no existing reply from you:
 
 ```sh
 gh api --method POST \
@@ -198,7 +207,9 @@ The fix commit should be a single batch commit that covers all valid threads.
 
 ### 7. Post follow-up SHA replies
 
-After the push, reply to every fixed thread with the short SHA:
+After the push, reply to every fixed thread with the short SHA — **unless you already posted a SHA follow-up for that thread**. Before posting, check the SHA-replied set from Step 3: if your account already has a `"Fixed in"` or `"Deferred"` reply in the thread, skip it.
+
+For threads without an existing SHA reply:
 
 ```sh
 gh api --method POST \
