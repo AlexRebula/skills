@@ -1,6 +1,6 @@
 ---
 name: standup-prep-preflight
-description: Composite pre-flight for daily standup. Runs /check-prior-work, /load-oss-standards, and /load-dependency-chain in sequence. Use as the first step of /standup-prep or any session-startup workflow that needs session continuity, OSS rule verification, and critical-path context loaded before any repo work begins.
+description: Composite pre-flight for daily standup. Runs /check-prior-work and /load-dependency-chain; optionally runs /load-oss-standards (skip or replace if you don't use LittleBranches OSS Quality Standards). Use as the first step of /standup-prep or any session-startup workflow that needs session continuity, standards loading, and critical-path context loaded before any repo work begins.
 ---
 
 # Standup Prep Pre-flight

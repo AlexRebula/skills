@@ -22,7 +22,7 @@ Each entry describes:
 
 ## Skills with open generalization work
 
-### `/standup-prep` ⚠️ Quick fix
+### `/standup-prep` ⚠️ Quick fix _(authoritative copy: [`skills/productivity/standup-prep`](../skills/productivity/standup-prep/SKILL.md))_
 
 **What's specific:** The first line hardcodes `AI_ROOT = c:\work\projects\ar\ai-workflow`. Anyone else running this skill gets the wrong path silently.
 
