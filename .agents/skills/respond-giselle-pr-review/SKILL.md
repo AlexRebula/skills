@@ -26,6 +26,7 @@ Always load these before reading any thread.
 **If `--standards-url` was provided:** Fetch that URL for the public barrel. Skip the private barrel unconditionally — the caller supplied their own standards source. Also load the workflow doc:
 
 ```
+Public:   <standards-url>
 Workflow: https://raw.githubusercontent.com/LittleBranches/oss-quality-standards/main/docs/pr-review-workflow.md
 ```
 
