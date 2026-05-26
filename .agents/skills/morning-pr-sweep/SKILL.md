@@ -9,6 +9,29 @@ Run this at the start of each working day. Its job is simple: **no PR should lea
 
 The key difference from calling `/respond-giselle-pr-review` N times: all threads across all PRs are triaged **together, before any code is touched**. This means one context load, one standards load, one pass through all the code, one commit per PR. Not N context loads, N fix cycles, N pushes.
 
+---
+
+## ⚠️ Before you run this
+
+**This skill makes real, public writes.** Understand what it does before you invoke it:
+
+| Action | Scope | Visibility |
+|---|---|---|
+| Posts acknowledgement replies to open review threads | Per thread, before any fix | Public — visible to anyone with repo access |
+| Pushes fix commits to the PR branch | Per PR, after fixes | Public — appears in the PR timeline |
+| Posts SHA confirmation replies to every thread | Per thread, after push | Public — visible to anyone with repo access |
+
+**This applies to both private and public repositories.** On a public repo, your replies are visible to the entire internet.
+
+Do not run this skill:
+- On PRs you are not authorised to respond to
+- In repositories where AI-authored replies are unwelcome or against contribution guidelines
+- Without reviewing the triage table in Phase 0e before confirming
+
+The skill always shows a full impact table and waits for your explicit confirmation before posting anything (Phase 0e). You can stop at that point if the scope is not what you expected.
+
+---
+
 ## Arguments
 
 `/morning-pr-sweep` — sweeps all repos in the default list (see Phase 0).
@@ -87,15 +110,23 @@ Present the full picture before doing anything:
 MORNING PR SWEEP — 22 May 2026
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 Repo                             PR    State            Branch
-LittleBranches/giselle-mui       #63   needs-response   feature/stat-card
-LittleBranches/giselle-mui       #64   needs-response   feature/theme-preset
-alexrebula/first-branch          #12   needs-review     feature/admin-ui
-LittleBranches/oss-quality-standards #8 merge-ready    chore/pr-workflow
+MyOrg/repo-a                     #63   needs-response   feature/stat-card
+MyOrg/repo-a                     #64   needs-response   feature/theme-preset
+MyOrg/repo-b                     #12   needs-review     feature/admin-ui
+MyOrg/repo-c                     #8    merge-ready      chore/pr-workflow
 
-Proceeding with 2 PRs (needs-response). OK to continue?
+⚠️  WRITE IMPACT: Proceeding will post public replies to open threads in #63
+    and #64, push fix commits to both branches, and post SHA confirmations.
+    This is visible to all collaborators (and the public, if the repo is public).
+
+Proceed? (yes / no / list only)
 ```
 
-Wait for confirmation before proceeding.
+**`yes`** — proceed with full sweep.
+**`no`** — abort. No writes made.
+**`list only`** — print the triage table but make no writes. Useful for reviewing scope before committing.
+
+Wait for explicit confirmation before proceeding.
 
 ---
 
