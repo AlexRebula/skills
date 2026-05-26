@@ -145,18 +145,24 @@ If the fix batch changed the PR scope, update the PR description before handing 
 Before attempting any reply, first list the reviews for the PR to obtain the review ID:
 
 ```sh
-gh api repos/<owner>/<repo>/pulls/<N>/reviews \
+gh api repos/<owner>/<repo>/pulls/<N>/reviews --paginate \
   --jq '[.[] | {id, submitted_at, state, user: .user.login}]'
 ```
 
 Then check whether threads from the review are outdated:
 
 ```sh
-gh api repos/<owner>/<repo>/pulls/<N>/reviews/<review-id>/comments \
+gh api repos/<owner>/<repo>/pulls/<N>/reviews/<review-id>/comments --paginate \
   --jq '[.[] | {id, line, path}]'
 ```
 
 If any thread has `"line": null`, GitHub has marked it outdated — the diff positions it referenced changed after a new commit or merge commit was pushed onto the branch. The reply endpoint (`POST .../pulls/comments/<id>/replies`) returns `404` for all outdated threads and cannot be used.
+
+Identify the SHA that caused the diff-position shift — it is the PR's current head commit:
+
+```sh
+gh pr view <N> --repo <owner>/<repo> --json headRefOid --jq '.headRefOid[:7]'
+```
 
 **Surface this to the branch owner before proceeding:**
 
