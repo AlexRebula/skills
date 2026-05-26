@@ -4,7 +4,7 @@ Skills I use daily for code work.
 
 - **[diagnose](./diagnose/SKILL.md)** — Disciplined diagnosis loop for hard bugs and performance regressions: reproduce → minimise → hypothesise → instrument → fix → regression-test.
 - **[grill-with-docs](./grill-with-docs/SKILL.md)** — Grilling session that challenges your plan against the existing domain model, sharpens terminology, and updates `CONTEXT.md` and ADRs inline.
-- **[morning-pr-sweep](./morning-pr-sweep/SKILL.md)** — Clear all open PR review debt across every LittleBranches repo in one session. Discovers every open PR, triages all threads before touching any code, batches fixes into one commit per PR, posts SHA confirmations, and reports which PRs are merge-ready. Run this first every morning.
+- **[morning-pr-sweep](./morning-pr-sweep/SKILL.md)** — Clear all open PR review debt across your repos and configured orgs in one session. Discovers every open PR, triages all threads before touching any code, batches fixes into one commit per PR, posts SHA confirmations, and reports which PRs are merge-ready. Run this first every morning.
 - **[respond-pr-review](./respond-pr-review/SKILL.md)** — Respond to an existing Copilot PR review in any repo: gather every thread, reply inline before fixing, batch valid fixes into one commit, and post SHA follow-ups.
 - **[respond-giselle-pr-review](./respond-giselle-pr-review/SKILL.md)** — Respond to an existing Copilot PR review in a LittleBranches repo: preload AGENTS.md + workflow rules, reply inline before fixing, batch valid fixes, and audit commitments.
 - **[triage](./triage/SKILL.md)** — Triage issues through a state machine of triage roles.
