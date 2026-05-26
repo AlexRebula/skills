@@ -13,6 +13,7 @@ Use this skill for any LittleBranches repository. Use `/review-pr` for all other
 
 `/review-giselle-pr <N>` — PR number. Required. Ask if omitted.
 `/review-giselle-pr <N> <owner>/<repo>` — if the repo cannot be inferred from context.
+`/review-giselle-pr <N> --standards-url <url>` — load standards from a custom raw URL instead of the default LittleBranches AGENTS.md.
 
 ---
 
@@ -25,6 +26,10 @@ gh repo view --json nameWithOwner --jq '.nameWithOwner'
 ```
 
 ### 2. Load the standards (always, before reading the diff)
+
+**If `--standards-url` was provided:** Fetch that URL for the public barrel. Skip the private barrel unconditionally — the caller supplied their own standards source.
+
+**Default flow (no `--standards-url`):** Use the LittleBranches defaults below.
 
 Fetch the public barrel:
 
@@ -43,44 +48,14 @@ gh api repos/LittleBranches/oss-quality-standards-private/contents/AGENTS.md \
 This works on any machine where `gh` is authenticated. No hardcoded paths.
 Only skip the private barrel if `gh` itself returns a permission error — and if so, note this in the review body.
 
-### 3. Fetch PR metadata
+### 3. Fetch PR metadata and diff
 
 ```sh
-gh pr view <N> --repo <owner>/<repo> --json title,body,headRefOid,headRefName,baseRefName
+gh pr view <N> --repo <owner>/<repo> --json title,body,headRefOid,headRefName
+gh pr diff <N> --repo <owner>/<repo>
 ```
 
 Save `headRefOid` for the Reviews API call.
-
-### 3b. Check merge state and CI (blocking — do this before reading the diff)
-
-```sh
-gh pr view <N> --repo <owner>/<repo> --json mergeable,mergeStateStatus,statusCheckRollup
-gh pr checks <N> --repo <owner>/<repo>
-```
-
-**If `mergeable` is `CONFLICTING` or `mergeStateStatus` is `DIRTY`:**
-- Add a blocking finding at the top of the review body:
-  > **Blocking: Branch has merge conflicts and cannot be merged.**
-  > Conflicting files must be resolved before this PR is mergeable. Run `git merge origin/<base>` on the PR branch, resolve all conflicts, then push.
-- List the changed files using:
-  ```sh
-  gh pr view <N> --repo <owner>/<repo> --json files --jq '[.files[].path]'
-  ```
-  Flag all listed files as potentially conflicted in the blocking finding.
-- Stop — do not proceed to step 3c. Post the blocking finding and hand back to the branch owner to resolve conflicts first.
-
-**If any CI check is failing:**
-- Add a blocking finding for each failing check:
-  > **Blocking: CI check `<check-name>` is failing.**
-  > This must pass before the PR is mergeable. Run `gh run view --log-failed` on the failing run ID to see the error.
-- Never mark a PR as approved or post a `COMMENT`-only review that omits CI failures. CI failures are always `REQUEST_CHANGES`.
-- CI failures do not block proceeding to step 3c — fetch the diff and continue the quality review.
-
-### 3c. Fetch the diff
-
-```sh
-gh pr diff <N> --repo <owner>/<repo>
-```
 
 ### 4. Find the spec
 
@@ -90,18 +65,18 @@ Same as `/review-pr` step 3 — look for issue references in the PR body, then d
 
 For each changed file in the diff, apply the section map:
 
-| File pattern | Sections to apply |
-|---|---|
-| `*.tsx` (component) | §5 Component Structure, §6 API Contract, §9 Accessibility, §10 Testing |
-| `*.stories.tsx` | §8.3 Storybook conventions |
-| `*.test.ts` / `*.test.tsx` | §10 Testing (all subsections) |
-| `*.styles.ts` | §6.2 sx array-safety, §6.4 no hardcoded colours |
-| `index.ts` (barrel) | §5.3 Barrel exports, §6.1 Props re-export |
-| `types.ts` | §5.4 Naming, §6.1 Props interface |
-| `README.md` / `roadmap.md` | §8.1 Three tiers, §8.2 Zero-personal-data |
-| `scripts/*` | §3 Quality gate |
-| `.github/*` | §4 PR review workflow |
-| Any file | §1 AI Collaboration Protocol, §2 Branch Hygiene, §11 DoD, §12 Encryption |
+| File pattern               | Sections to apply                                                        |
+| -------------------------- | ------------------------------------------------------------------------ |
+| `*.tsx` (component)        | §5 Component Structure, §6 API Contract, §9 Accessibility, §10 Testing   |
+| `*.stories.tsx`            | §8.3 Storybook conventions                                               |
+| `*.test.ts` / `*.test.tsx` | §10 Testing (all subsections)                                            |
+| `*.styles.ts`              | §6.2 sx array-safety, §6.4 no hardcoded colours                          |
+| `index.ts` (barrel)        | §5.3 Barrel exports, §6.1 Props re-export                                |
+| `types.ts`                 | §5.4 Naming, §6.1 Props interface                                        |
+| `README.md` / `roadmap.md` | §8.1 Three tiers, §8.2 Zero-personal-data                                |
+| `scripts/*`                | §3 Quality gate                                                          |
+| `.github/*`                | §4 PR review workflow                                                    |
+| Any file                   | §1 AI Collaboration Protocol, §2 Branch Hygiene, §11 DoD, §12 Encryption |
 
 Note: per the AGENTS.md Scope section — §5–§10 apply only to React + MUI repos. §1–§4 and §11 are framework-agnostic.
 
@@ -109,22 +84,23 @@ Note: per the AGENTS.md Scope section — §5–§10 apply only to React + MUI r
 
 Flag immediately if any of the following appear in the diff. These are always `blocking`:
 
-| Finding | Rule |
-|---|---|
-| `dangerouslySetInnerHTML` | §6.11 |
-| `vi.mock('@mui/material` | §10.6 + custom test quality rule |
-| Props interface inline in `.tsx` (not in `types.ts`) | §5.4 |
-| Storybook `title` does not mirror folder path | §8.3 |
-| Hardcoded hex or RGB colour | §6.4 |
-| `sx` not array-safe (not using spread syntax) | §6.2 |
-| `React.FC` | §6.5 |
-| Real name, email, or client data in test or story | §8.2 |
-| URL prop without `javascript:` scheme validation (input components) | §6.12 |
-| Missing `aria-label` on icon-only button | §9.3 |
+| Finding                                                             | Rule                             |
+| ------------------------------------------------------------------- | -------------------------------- |
+| `dangerouslySetInnerHTML`                                           | §6.11                            |
+| `vi.mock('@mui/material`                                            | §10.6 + custom test quality rule |
+| Props interface inline in `.tsx` (not in `types.ts`)                | §5.4                             |
+| Storybook `title` does not mirror folder path                       | §8.3                             |
+| Hardcoded hex or RGB colour                                         | §6.4                             |
+| `sx` not array-safe (not using spread syntax)                       | §6.2                             |
+| `React.FC`                                                          | §6.5                             |
+| Real name, email, or client data in test or story                   | §8.2                             |
+| URL prop without `javascript:` scheme validation (input components) | §6.12                            |
+| Missing `aria-label` on icon-only button                            | §9.3                             |
 
 ### 7. Spawn two sub-agents in parallel
 
 **Standards sub-agent prompt — include all of:**
+
 - The full diff text
 - The section map for changed files (from step 5)
 - The full public AGENTS.md content
@@ -136,17 +112,17 @@ Flag immediately if any of the following appear in the diff. These are always `b
 
 Follow `/review-pr` steps 6–8 exactly — aggregate line-specific vs general findings, post via the GitHub PR Reviews API, report in chat.
 
-One addition to the review body: if the private AGENTS.md was loaded, include a footnote:
+One addition to the review body covering the private barrel:
 
-```
-*Private AGENTS.md (banned content + encryption rules) was included in this review.*
-```
-
-If it was not accessible, include:
-
-```
-*Private AGENTS.md was not accessible — banned content and encryption rules were not checked.*
-```
+- If `--standards-url` was used: omit the private-AGENTS footnote entirely — the barrel was intentionally skipped by the caller, not inaccessible.
+- If the private AGENTS.md was loaded (default flow): include:
+  ```
+  *Private AGENTS.md (banned content + encryption rules) was included in this review.*
+  ```
+- If it was not accessible (default flow, `gh` returned a permission error): include:
+  ```
+  *Private AGENTS.md was not accessible — banned content and encryption rules were not checked.*
+  ```
 
 ### 9. Close-out audit (mandatory — do not skip)
 
@@ -179,11 +155,11 @@ Before handing back to the user, scan **every reply posted under your account (`
 
 For every reply that contains one of these signals, verify a tracking artifact exists:
 
-| Commitment type | Required artifact |
-|---|---|
-| "will fix in this PR" | Commit SHA posted as follow-up reply in the same thread |
-| "will open an issue" / "separate issue" | GitHub issue opened; issue link posted as follow-up reply |
-| "will update the PR description" | PR description updated; confirmation posted as follow-up reply |
-| "will extract / follow-up PR" | GitHub issue opened; issue link posted as follow-up reply |
+| Commitment type                         | Required artifact                                              |
+| --------------------------------------- | -------------------------------------------------------------- |
+| "will fix in this PR"                   | Commit SHA posted as follow-up reply in the same thread        |
+| "will open an issue" / "separate issue" | GitHub issue opened; issue link posted as follow-up reply      |
+| "will update the PR description"        | PR description updated; confirmation posted as follow-up reply |
+| "will extract / follow-up PR"           | GitHub issue opened; issue link posted as follow-up reply      |
 
 If any artifact is missing — create it before reporting back to the user. This step must be completed even if the session is resuming across a context boundary.
