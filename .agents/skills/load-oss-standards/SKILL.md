@@ -7,13 +7,6 @@ description: Verify access to the LittleBranches OSS Quality Standards AGENTS.md
 
 Verify access to both AGENTS.md files. **Do not load the full content into context** — the key rules are already stated below and loading ~300 lines wastes context budget. Fetch on demand only if a specific rule is disputed.
 
-## Arguments
-
-`/load-oss-standards` — loads from the default LittleBranches OSS Quality Standards URLs.
-`/load-oss-standards --standards-url <url>` — loads a custom public `AGENTS.md` from the given raw URL instead. Skips the private barrel check.
-
-> **Adapting this skill?** Replace the default URLs in the `verify` section below with the raw URL to your own `AGENTS.md` file.
-
 ## verify — Check standards access
 
 **Public (always accessible):**

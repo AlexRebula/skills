@@ -13,7 +13,6 @@ Use this skill for any LittleBranches repository. Use `/review-pr` for all other
 
 `/review-giselle-pr <N>` — PR number. Required. Ask if omitted.
 `/review-giselle-pr <N> <owner>/<repo>` — if the repo cannot be inferred from context.
-`/review-giselle-pr <N> --standards-url <url>` — load standards from a custom raw URL instead of the default LittleBranches AGENTS.md.
 
 ---
 
@@ -26,8 +25,6 @@ gh repo view --json nameWithOwner --jq '.nameWithOwner'
 ```
 
 ### 2. Load the standards (always, before reading the diff)
-
-If `--standards-url` was provided, fetch that URL instead of the defaults below and skip the private barrel.
 
 Fetch the public barrel:
 

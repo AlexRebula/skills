@@ -3,9 +3,8 @@ name: standup-prep
 description: Daily session startup coordinator. Sweeps all repos for uncommitted work, surfaces open PRs, produces a prioritised morning brief, writes it to disk, and optionally syncs tasks to Asana. Run this before any coding work. Calls the preflight, session context, repo status, WIP sweep, PR sweep, and Asana sync sub-skills in order.
 ---
 
-> **`{{AI_ROOT}}`** must be configured before using this skill.
-> In VS Code: `"github.copilot.chat.templateVariables": { "AI_ROOT": "/path/to/your/ai-workflow" }`
-> All file paths in this skill use `{{AI_ROOT}}` as a template variable.
+> **`AI_ROOT`** = `c:\work\projects\ar\ai-workflow`
+> Substitute `{{AI_ROOT}}` with this value in all file paths in this skill.
 
 You are preparing the developer's workday. Complete all steps in order. **Do not skip steps.**
 
