@@ -1,6 +1,6 @@
 ---
 name: morning-pr-sweep
-description: Clear all open PR review debt across every LittleBranches repo in one session. Discovers every open PR, triages ALL threads across ALL PRs before touching any code, batches fixes into one commit per PR, posts SHA confirmations, and reports which PRs are merge-ready. Replaces running /respond-giselle-pr-review N times with a single morning ritual that takes 20–30 minutes regardless of how many PRs are open.
+description: Clear all open PR review debt across your repos in one session. Discovers every open PR, triages ALL threads across ALL PRs before touching any code, batches fixes into one commit per PR, posts SHA confirmations, and reports which PRs are merge-ready. Replaces running /respond-giselle-pr-review N times with a single morning ritual that takes 20–30 minutes regardless of how many PRs are open.
 ---
 
 # Morning PR Sweep
@@ -19,37 +19,36 @@ The key difference from calling `/respond-giselle-pr-review` N times: all thread
 
 ## Phase 0 — Discover
 
-### 0a. Load the standards (once, before reading any PR)
+### 0a. Load the standards *(if available)*
 
-```
-Public:   https://raw.githubusercontent.com/LittleBranches/oss-quality-standards/main/docs/AGENTS.md
-Workflow: https://raw.githubusercontent.com/LittleBranches/oss-quality-standards/main/docs/pr-review-workflow.md
-```
-
-Private AGENTS.md barrel — use the authenticated `gh` CLI:
+Check whether each target repo carries an `AGENTS.md` at its root:
 
 ```sh
-gh api repos/LittleBranches/oss-quality-standards-private/contents/AGENTS.md \
-  --jq '.content | @base64d'
+gh api repos/<owner>/<repo>/contents/AGENTS.md --jq '.name' 2>/dev/null
 ```
 
-Only skip this if `gh` returns a permission error — if so, note that banned-content and encryption rules were not checked.
+- **Found:** fetch the full file and load its rules for that repo's PR reviews.
+- **Not found:** proceed without standards. Note in the report that no standards file was found for this repo.
+
+**Override:** Pass `--standards-url <url>` to load a shared standards file for all repos in the sweep — useful when your org maintains a central AGENTS.md. This overrides per-repo discovery.
+
+> **LittleBranches contributors:** Your standards are at:
+> `https://raw.githubusercontent.com/LittleBranches/oss-quality-standards/main/docs/AGENTS.md`
+> Pass this as `--standards-url` or ensure each repo's `AGENTS.md` references it.
 
 ### 0b. Build the repo list
 
-If no repos were specified as arguments, use the default set:
+If no repos were specified as arguments, discover repos:
+
+- If `--orgs <org1>,<org2>` was passed: list repos for each specified org.
+- Otherwise: list repos for the current authenticated GitHub user.
 
 ```sh
-gh repo list --limit 20 --json nameWithOwner,isPrivate \
-  --jq '.[] | select(.nameWithOwner | test("LittleBranches|AlexRebula"; "i")) | .nameWithOwner'
+# For each org or the current user:
+gh repo list <org-or-user> --limit 100 --json nameWithOwner,isPrivate --jq '.[] | .nameWithOwner'
 ```
 
-The standard working set is:
-- `LittleBranches/giselle-mui`
-- `LittleBranches/oss-quality-standards`
-- `alexrebula/first-branch`
-
-Include any other repo explicitly passed as an argument.
+Include any repo explicitly passed as a `--repos` argument.
 
 ### 0c. List open PRs
 

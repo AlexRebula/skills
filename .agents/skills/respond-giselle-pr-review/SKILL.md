@@ -13,6 +13,7 @@ Use this skill for any LittleBranches repository. Use `/respond-pr-review` for a
 
 `/respond-giselle-pr-review <N>` — PR number. Required. Ask if omitted.
 `/respond-giselle-pr-review <N> <owner>/<repo>` — if the repo cannot be inferred from context.
+`/respond-giselle-pr-review <N> --standards-url <url>` — load standards from a custom raw URL instead of the default LittleBranches AGENTS.md.
 
 ---
 
@@ -20,7 +21,7 @@ Use this skill for any LittleBranches repository. Use `/respond-pr-review` for a
 
 ### 1. Load the standards and workflow first
 
-Always load these before reading any thread:
+Always load these before reading any thread. If `--standards-url` was provided, fetch that URL instead of the defaults below and skip the private barrel.
 
 ```
 Public:   https://raw.githubusercontent.com/LittleBranches/oss-quality-standards/main/docs/AGENTS.md
