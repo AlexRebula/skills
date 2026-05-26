@@ -14,14 +14,14 @@ Covers two phases:
 
 Six points in this workflow are opinionated. They are called out inline with **⚙️ Configurable** labels.
 
-| # | Default behaviour | What to override |
-|---|---|---|
-| 1 | Branch prefixes: `feature/`, `fix/`, `chore/`, `refactor/`, `docs/` | Add or remove prefixes to match your conventions |
-| 2 | Quality gate command: `npm run check:verify` | Replace with any command that exits 0 on pass |
-| 3 | Green-light gate: wait for explicit user approval before creating the PR | Pass `auto-approve` argument to skip the gate |
-| 4 | PR description uses `.github/pull_request_template.md` if present; falls back to a conventional set of sections | Provide your own template or skip the fallback |
-| 5 | PR title format: `<type>(<scope>): <short description>` (conventional commits) | Replace with your team's format |
-| 6 | Base branch: `main` (detected; falls back to `main` if detection fails) | Pass a different base branch name if needed |
+| #   | Default behaviour                                                                                               | What to override                                 |
+| --- | --------------------------------------------------------------------------------------------------------------- | ------------------------------------------------ |
+| 1   | Branch prefixes: `feature/`, `fix/`, `chore/`, `refactor/`, `docs/`                                             | Add or remove prefixes to match your conventions |
+| 2   | Quality gate command: `npm run check:verify`                                                                    | Replace with any command that exits 0 on pass    |
+| 3   | Green-light gate: wait for explicit user approval before creating the PR                                        | Pass `auto-approve` argument to skip the gate    |
+| 4   | PR description uses `.github/pull_request_template.md` if present; falls back to a conventional set of sections | Provide your own template or skip the fallback   |
+| 5   | PR title format: `<type>(<scope>): <short description>` (conventional commits)                                  | Replace with your team's format                  |
+| 6   | Base branch: `main` (detected; falls back to `main` if detection fails)                                         | Pass a different base branch name if needed      |
 
 ---
 
@@ -43,7 +43,7 @@ Six points in this workflow are opinionated. They are called out inline with **�
 
 ```sh
 gh repo view --json nameWithOwner --jq '.nameWithOwner'
-DEFAULT_BRANCH=$(gh repo view --json defaultBranchRef --jq '.defaultBranchRef.name')
+DEFAULT_BRANCH=$(gh repo view --json defaultBranchRef --jq '.defaultBranchRef.name' 2>/dev/null || echo 'main')
 git log ${DEFAULT_BRANCH}..<branch> --oneline
 ```
 
@@ -55,13 +55,13 @@ Note every commit on the branch. This is the working set for the rest of Phase 0
 
 Read the branch prefix to determine the stated purpose:
 
-| Prefix | Purpose |
-|---|---|
-| `feature/` | New functionality |
-| `fix/` | Bug fix |
-| `chore/` | Tooling, config, dependencies, docs |
+| Prefix      | Purpose                                   |
+| ----------- | ----------------------------------------- |
+| `feature/`  | New functionality                         |
+| `fix/`      | Bug fix                                   |
+| `chore/`    | Tooling, config, dependencies, docs       |
 | `refactor/` | Code restructure with no behaviour change |
-| `docs/` | Documentation only |
+| `docs/`     | Documentation only                        |
 
 > **⚙️ Configurable — branch prefixes:** Add or remove prefixes to match your conventions.
 > A common addition is `data/` for data-file-only changes (e.g. seed or fixture updates).
@@ -76,7 +76,7 @@ For each commit, decide: does it relate to the branch's stated purpose?
 **If unrelated commits are found:**
 
 1. Identify the correct branch prefix for each unrelated commit.
-2. Check whether a branch for that purpose already exists. If yes, cherry-pick onto it. If no, create a new branch from `main`.
+2. Check whether a branch for that purpose already exists. If yes, cherry-pick onto it. If no, create a new branch from `$DEFAULT_BRANCH`.
 3. Remove the commit from the original branch via interactive rebase.
 4. Force-push the original branch — **only after confirming no open PR exists for it**. If a PR already exists, ask the user before force-pushing; force-pushing rewrites history and invalidates outstanding review threads.
 
@@ -87,10 +87,11 @@ git push --force-with-lease origin <branch>
 
 ### Step 3 — Run the quality gate
 
-> **⚙️ Configurable — quality gate command:** The command below is from a specific
-> project setup (`giselle-mui` / `first-branch`). Replace it with your own gate command.
+> **⚙️ Configurable — quality gate command:** The command below is a typical example.
+> Replace it with your own gate command.
 > A quality gate is any command that exits 0 when formatting, linting, type-checking,
 > and tests all pass. Common alternatives:
+>
 > - `npm run lint && npm run typecheck && npm test`
 > - `pnpm check`
 > - `make ci`
@@ -132,23 +133,28 @@ cat .github/pull_request_template.md 2>/dev/null
 
 ```md
 ## What does this PR do?
+
 <one paragraph: the concrete deliverable>
 
 ## Why
+
 <reason this change is needed — link to an issue, roadmap entry, or prior conversation>
 
 ## Type of change
+
 - [ ] New feature
 - [ ] Bug fix
 - [ ] Refactor (no behaviour change)
 - [ ] Chore / docs / config
 
 ## Checklist
+
 - [ ] Quality gate passes
 - [ ] Tests added or updated where applicable
 - [ ] No secrets or credentials in changed files
 
 ## Notes for reviewer
+
 <anything non-obvious the reviewer should check first>
 ```
 
@@ -165,12 +171,12 @@ cat .github/pull_request_template.md 2>/dev/null
 gh pr create \
   --title "<type>(<scope>): <short description>" \
   --body "<filled description from step 5>" \
-  --base main \
+  --base ${DEFAULT_BRANCH} \
   --head <branch>
 ```
 
-> **⚙️ Configurable — base branch:** Replace `main` if your default branch is named
-> differently (`master`, `develop`, `trunk`, etc.).
+> **⚙️ Configurable — base branch:** `DEFAULT_BRANCH` is detected automatically in Phase 0.
+> If detection fails it falls back to `main`. Override as needed (`master`, `develop`, `trunk`, etc.).
 
 Save the PR number from the command output.
 

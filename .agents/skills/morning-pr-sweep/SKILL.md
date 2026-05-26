@@ -7,7 +7,7 @@ description: Clear all open PR review debt across your repos in one session. Dis
 
 Run this at the start of each working day. Its job is simple: **no PR should leave the session with an unacknowledged review thread**. By the end of the sweep, every open thread has been triaged, replied to, fixed (if valid), and confirmed — leaving only the manual merge step for you.
 
-The key difference from calling `/respond-giselle-pr-review` N times: all threads across all PRs are triaged **together, before any code is touched**. This means one context load, one standards load, one pass through all the code, one commit per PR. Not N context loads, N fix cycles, N pushes.
+The key difference from calling `/respond-pr-review` (or `/respond-giselle-pr-review` for LittleBranches repos) N times: all threads across all PRs are triaged **together, before any code is touched**. This means one context load, one standards load, one pass through all the code, one commit per PR. Not N context loads, N fix cycles, N pushes.
 
 ---
 
@@ -70,9 +70,19 @@ If no repos were specified as arguments, discover repos:
 - Otherwise: list repos for the current authenticated GitHub user.
 
 ```sh
-gh repo list --limit 100 --json nameWithOwner,isPrivate \
-  --jq '.[] | select(.nameWithOwner | test("(?i)(LittleBranches|AlexRebula)")) | .nameWithOwner'
+gh repo list --limit 200 --json nameWithOwner,isPrivate \
+  --jq '.[].nameWithOwner'
 ```
+
+> **Scoping to specific orgs:** If you want to limit discovery to certain organisations,
+> add a `select` filter:
+>
+> ```sh
+> gh repo list --limit 200 --json nameWithOwner,isPrivate \
+>   --jq '.[] | select(.nameWithOwner | startswith("MyOrg/")) | .nameWithOwner'
+> ```
+>
+> Replace `MyOrg` with your organisation name. For multiple orgs use `test("(?i)(Org1|Org2)")`.
 
 Include any repo explicitly passed as a `--repos` argument.
 

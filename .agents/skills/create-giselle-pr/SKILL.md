@@ -1,6 +1,6 @@
 ---
 name: create-giselle-pr
-description: Prepare a branch for a pull request in a LittleBranches repository — pre-loads the OSS quality standards, verifies branch hygiene, runs the quality gate including banned-content scan, creates the PR with a complete description, optionally writes a companion doc in docs/pr-messages/, and triggers a Copilot review. Use instead of /create-pr when working in LittleBranches/giselle-mui, LittleBranches/giselle-ui, LittleBranches/giselle-sections-sdk, AlexRebula/first-branch, or other LittleBranches-adjacent repositories.
+description: Prepare a branch for a pull request in a LittleBranches repository — pre-loads the OSS quality standards, verifies branch hygiene, runs the quality gate including banned-content scan, creates the PR with a complete description, optionally writes a companion doc in docs/pr-messages/, and triggers a Copilot review. Use instead of /create-pr when working in LittleBranches/giselle-mui, LittleBranches/giselle-ui, LittleBranches/giselle-sections-sdk, or other LittleBranches-adjacent repositories.
 ---
 
 # Create Giselle PR
@@ -17,16 +17,16 @@ Use `/create-pr` for repositories outside this ecosystem.
 
 ### Differences from `/create-pr`
 
-| | `/create-pr` | `/create-giselle-pr` |
-|---|---|---|
-| AGENTS.md pre-load | ❌ | ✅ public + private, before hygiene |
-| Banned-content scan | ⚙️ implied by quality gate | ✅ explicitly called out (step 0a) |
-| `data/` branch prefix | ⚙️ labeled as project-specific | ✅ included, unlabeled |
-| Quality gate command | ⚙️ labeled, alternatives shown | ✅ `npm run check:verify`, locked |
-| Copilot review trigger | ⚙️ opt-in via `request-review` arg | ✅ ON by default, opt-out via `skip-review` |
-| PR companion doc | ❌ | ✅ opt-in via `with-companion-doc` arg |
-| `⚙️ Configurable` callouts | 6 | 0 |
-| Handoff | generic | points to `/respond-giselle-pr-review` |
+|                            | `/create-pr`                       | `/create-giselle-pr`                        |
+| -------------------------- | ---------------------------------- | ------------------------------------------- |
+| AGENTS.md pre-load         | ❌                                 | ✅ public + private, before hygiene         |
+| Banned-content scan        | ⚙️ implied by quality gate         | ✅ explicitly called out (step 0a)          |
+| `data/` branch prefix      | ⚙️ labeled as project-specific     | ✅ included, unlabeled                      |
+| Quality gate command       | ⚙️ labeled, alternatives shown     | ✅ `npm run check:verify`, locked           |
+| Copilot review trigger     | ⚙️ opt-in via `request-review` arg | ✅ ON by default, opt-out via `skip-review` |
+| PR companion doc           | ❌                                 | ✅ opt-in via `with-companion-doc` arg      |
+| `⚙️ Configurable` callouts | 6                                  | 0                                           |
+| Handoff                    | generic                            | points to `/respond-giselle-pr-review`      |
 
 ---
 
@@ -77,14 +77,14 @@ Note every commit on the branch.
 
 Read the branch prefix to determine the stated purpose:
 
-| Prefix | Purpose |
-|---|---|
-| `feature/` | New functionality |
-| `fix/` | Bug fix |
-| `chore/` | Tooling, config, dependencies, docs |
-| `refactor/` | Code restructure with no behaviour change |
-| `docs/` | Documentation only |
-| `data/` | Data-file-only changes (e.g. `tasks.json` updates, seed data) |
+| Prefix      | Purpose                                                       |
+| ----------- | ------------------------------------------------------------- |
+| `feature/`  | New functionality                                             |
+| `fix/`      | Bug fix                                                       |
+| `chore/`    | Tooling, config, dependencies, docs                           |
+| `refactor/` | Code restructure with no behaviour change                     |
+| `docs/`     | Documentation only                                            |
+| `data/`     | Data-file-only changes (e.g. `tasks.json` updates, seed data) |
 
 For each commit: does it relate to the branch's stated purpose?
 
@@ -145,12 +145,15 @@ If no template exists, use this fallback and fill it completely:
 
 ```md
 ## What does this PR do?
+
 <one paragraph: the concrete deliverable>
 
 ## Why
+
 <link to roadmap entry, GitHub issue, or conversation context>
 
 ## Type of change
+
 - [ ] New feature
 - [ ] Bug fix
 - [ ] Refactor (no behaviour change)
@@ -158,6 +161,7 @@ If no template exists, use this fallback and fill it completely:
 - [ ] Data only
 
 ## Checklist
+
 - [ ] Quality gate passes (Prettier + ESLint + tsc + Vitest + build)
 - [ ] Banned-content scan clean (no proprietary identifiers in src/ or docs/)
 - [ ] Tests added or updated where applicable
@@ -165,6 +169,7 @@ If no template exists, use this fallback and fill it completely:
 - [ ] Roadmap entry updated if a milestone was completed
 
 ## Notes for reviewer
+
 <anything non-obvious the reviewer should check first>
 ```
 
@@ -221,24 +226,27 @@ Use this structure:
 sidebar_label: "PR<N> - <short description>"
 ---
 
-**[Open](https://github.com/<owner>/<repo>/pull/<N>)** — [`<branch>`](<url>) — <DD Mon YYYY>
+**[Open](https://github.com/<owner>/<repo>/pull/<N>)** — [`<branch>`](url) — <DD Mon YYYY>
 
 # PR: `<branch-name>`
 
 > **Branch:** `<branch>` → `main`
-> **PR:** [#<N>](<url>)
+> **PR:** [#<N>](url)
 > **Type:** `feature` | `fix` | `chore` | `refactor` | `docs` | `data`
 > **Opened:** <DD Mon YYYY>
 
 ---
 
 ## Summary
+
 <one paragraph: what this PR delivers and why>
 
 ## What Changed
+
 <subsections per logical group of changes, with bullet items>
 
 ## Quality gate
+
 - [ ] Prettier
 - [ ] ESLint
 - [ ] TypeScript
