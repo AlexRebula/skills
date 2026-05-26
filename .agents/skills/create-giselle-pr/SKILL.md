@@ -46,7 +46,7 @@ Always load these before doing anything else. They govern every decision in Phas
 
 ```sh
 # Public AGENTS.md
-# Fetch from: https://raw.githubusercontent.com/LittleBranches/oss-quality-standards/main/docs/AGENTS.md
+curl -fsSL https://raw.githubusercontent.com/LittleBranches/oss-quality-standards/main/docs/AGENTS.md
 
 # Private AGENTS.md (requires gh CLI authentication — never use fetch_webpage, the repo is private)
 gh api repos/LittleBranches/oss-quality-standards-private/contents/AGENTS.md \
@@ -68,7 +68,8 @@ If the private AGENTS.md returns a permission error, note explicitly that banned
 
 ```sh
 gh repo view --json nameWithOwner --jq '.nameWithOwner'
-git log main..<branch> --oneline
+DEFAULT_BRANCH=$(gh repo view --json defaultBranchRef --jq '.defaultBranchRef.name' 2>/dev/null || echo 'main')
+git log ${DEFAULT_BRANCH}..<branch> --oneline
 ```
 
 Note every commit on the branch.
@@ -99,7 +100,7 @@ For each commit: does it relate to the branch's stated purpose?
 4. Force-push **only after confirming no open PR exists for this branch**. If a PR exists, ask the branch owner before force-pushing — force-pushing rewrites history and invalidates outstanding review threads.
 
 ```sh
-git rebase -i main
+git rebase -i ${DEFAULT_BRANCH}
 git push --force-with-lease origin <branch>
 ```
 
@@ -183,7 +184,7 @@ Do not use the GitHub web UI. Always use `gh pr create` to ensure the descriptio
 gh pr create \
   --title "<type>(<scope>): <short description>" \
   --body "<filled description from step 5>" \
-  --base main \
+  --base ${DEFAULT_BRANCH} \
   --head <branch>
 ```
 

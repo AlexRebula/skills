@@ -107,6 +107,13 @@ Do not continue to Phase 1 if the gate fails. Fix the failures first.
 
 ## Phase 1 — PR creation
 
+> **Note:** `DEFAULT_BRANCH` is set unconditionally here so Phase 1 works correctly even
+> when Phase 0 was skipped via `skip-hygiene`.
+
+```sh
+DEFAULT_BRANCH=$(gh repo view --json defaultBranchRef --jq '.defaultBranchRef.name' 2>/dev/null || echo 'main')
+```
+
 ### Step 4 — Wait for the green light
 
 > **⚙️ Configurable — green light gate:** By default this skill waits for an explicit

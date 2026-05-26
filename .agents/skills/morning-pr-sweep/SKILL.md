@@ -71,7 +71,7 @@ If no repos were specified as arguments, discover repos:
 
 ```sh
 gh repo list --limit 200 --json nameWithOwner,isPrivate \
-  --jq '.[].nameWithOwner'
+  --jq '.[] | "\(.nameWithOwner) (\(if .isPrivate then "private" else "public" end))"'
 ```
 
 > **Scoping to specific orgs:** If you want to limit discovery to certain organisations,
@@ -79,7 +79,7 @@ gh repo list --limit 200 --json nameWithOwner,isPrivate \
 >
 > ```sh
 > gh repo list --limit 200 --json nameWithOwner,isPrivate \
->   --jq '.[] | select(.nameWithOwner | startswith("MyOrg/")) | .nameWithOwner'
+>   --jq '.[] | select(.nameWithOwner | startswith("MyOrg/")) | "\(.nameWithOwner) (\(if .isPrivate then "private" else "public" end))"'
 > ```
 >
 > Replace `MyOrg` with your organisation name. For multiple orgs use `test("(?i)(Org1|Org2)")`.
@@ -134,11 +134,11 @@ Present the full picture before doing anything:
 ```
 MORNING PR SWEEP — 22 May 2026
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-Repo                             PR    State            Branch
-MyOrg/repo-a                     #63   needs-response   feature/stat-card
-MyOrg/repo-a                     #64   needs-response   feature/theme-preset
-MyOrg/repo-b                     #12   needs-review     feature/admin-ui
-MyOrg/repo-c                     #8    merge-ready      chore/pr-workflow
+Repo                             Vis      PR    State            Branch
+MyOrg/repo-a                     public   #63   needs-response   feature/stat-card
+MyOrg/repo-a                     public   #64   needs-response   feature/theme-preset
+MyOrg/repo-b                     private  #12   needs-review     feature/admin-ui
+MyOrg/repo-c                     public   #8    merge-ready      chore/pr-workflow
 
 ⚠️  WRITE IMPACT: Proceeding will post public replies to open threads in #63
     and #64, push fix commits to both branches, and post SHA confirmations.

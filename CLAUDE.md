@@ -11,7 +11,7 @@ It is published and installable by anyone: `npx skills@latest add AlexRebula/ski
 - **Skill files may reference organisation-specific context** (LittleBranches, giselle-mui, etc.)
   because those skills are explicitly scoped to that organisation. The PR that ships them
   should describe what the skill does, not assume the reader knows the internal setup.
-- **Never reference private repository names** (e.g. `first-branch`, `alexrebula`) in
+- **Never reference private repository names** (e.g. `my-private-app`, `my-portfolio`) in
   PR descriptions, commit messages, or README entries.
 
 ---
