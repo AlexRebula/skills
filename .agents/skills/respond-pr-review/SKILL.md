@@ -140,13 +140,49 @@ If the fix batch changed the PR scope, update the PR description before handing 
 
 ### 9. Edge cases
 
-If the thread reply endpoint returns `404`, stop and tell the branch owner before falling back to a top-level PR comment.
+#### Outdated threads (line: null)
+
+Before attempting any reply, check whether the threads from a given review are outdated:
+
+```sh
+gh api repos/<owner>/<repo>/pulls/<N>/reviews/<review-id>/comments \
+  --jq '[.[] | {id, line, path}]'
+```
+
+If any thread has `"line": null`, GitHub has marked it outdated — the diff positions it referenced changed after a new commit or merge commit was pushed onto the branch. The reply endpoint (`POST .../pulls/comments/<id>/replies`) returns `404` for all outdated threads and cannot be used.
+
+**Surface this to the branch owner before proceeding:**
+
+> "N threads from review `<review-id>` are outdated — GitHub shifted their diff positions after `<commit-sha>` was pushed. The standard pre-fix and post-fix inline replies are not possible for these threads. I can apply all fixes and post a structured top-level summary comment mapping each thread to its fix and the SHA. Proceed?"
+
+If confirmed:
+
+1. Skip Steps 5 and 7 for outdated threads — inline replies are technically impossible.
+2. Apply all fixes normally (Step 6).
+3. Post a single top-level PR comment after the push:
+
+```sh
+gh pr comment <N> --repo <owner>/<repo> --body "## Copilot review — fixed at \`<sha>\`
+
+All N threads from review \`<review-id>\` are addressed below. The threads are outdated (diff positions changed after \`<merge-commit>\`) so inline replies are not possible — fixes are documented here.
+
+| Thread | File | Issue | Fix |
+|---|---|---|---|
+| <id> | <path> | <one-line summary> | <what changed> |
+..."
+```
+
+This replaces both the pre-fix acknowledgement and the post-fix SHA reply for the affected threads. Non-outdated threads from the same PR should still receive standard inline replies.
+
+#### Top-level comments only
 
 If the PR only has top-level comments and no line-thread comments, reply with:
 
 ```sh
 gh pr comment <N> --body "<response>"
 ```
+
+#### No threads
 
 If Copilot review failed and there are no threads, tell the branch owner and ask whether to re-request review or run a manual review pass instead.
 

@@ -52,6 +52,7 @@ If the current branch is not the PR branch, switch to it before editing.
 ### 2b. Check merge state and CI
 
 This step is **mandatory**. Merge conflicts and CI failures have different blocking behaviors:
+
 - **Merge conflicts** (`mergeable: CONFLICTING` or `mergeStateStatus: DIRTY`) — block everything. Resolve before proceeding to step 3.
 - **CI failures** — allow proceeding to gather threads. Diagnose and capture logs first, then include the CI fix in the step 6 batch commit.
 
@@ -74,11 +75,11 @@ git merge origin/<base-branch> --no-commit --no-ff
 
 Resolve each conflicting file using the following strategy:
 
-| File type | Resolution strategy |
-|---|---|
-| Generated/vendored artifacts (`.yalc/`, `dist/`, `package-lock.json`) | `git checkout --theirs <file>` — always take base branch (latest build) |
-| Data files (`*.json`, `*.csv`) | Read both sides carefully; preserve all new entries from both HEAD and base — never discard either side's additions |
-| Source files (`*.ts`, `*.tsx`, `*.md`) | Manual merge — read conflict sections, apply both sets of meaningful changes |
+| File type                                                             | Resolution strategy                                                                                                 |
+| --------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------- |
+| Generated/vendored artifacts (`.yalc/`, `dist/`, `package-lock.json`) | `git checkout --theirs <file>` — always take base branch (latest build)                                             |
+| Data files (`*.json`, `*.csv`)                                        | Read both sides carefully; preserve all new entries from both HEAD and base — never discard either side's additions |
+| Source files (`*.ts`, `*.tsx`, `*.md`)                                | Manual merge — read conflict sections, apply both sets of meaningful changes                                        |
 
 After resolving:
 
@@ -205,12 +206,12 @@ Before handing back to the user, scan every reply posted under your account in t
 
 For every such reply, verify a matching artifact exists:
 
-| Commitment type | Required artifact |
-|---|---|
-| fix in this PR | Commit SHA posted as follow-up reply in the same thread |
-| open an issue / separate issue | GitHub issue opened; issue link posted as follow-up reply |
-| update the PR description | PR description updated; confirmation posted as follow-up reply |
-| extract / follow-up PR | GitHub issue opened; issue link posted as follow-up reply |
+| Commitment type                | Required artifact                                              |
+| ------------------------------ | -------------------------------------------------------------- |
+| fix in this PR                 | Commit SHA posted as follow-up reply in the same thread        |
+| open an issue / separate issue | GitHub issue opened; issue link posted as follow-up reply      |
+| update the PR description      | PR description updated; confirmation posted as follow-up reply |
+| extract / follow-up PR         | GitHub issue opened; issue link posted as follow-up reply      |
 
 If any artifact is missing, create it before reporting back.
 
@@ -234,13 +235,49 @@ Do not resolve threads yourself. The branch owner verifies the fixes, resolves t
 
 ### 11. Edge cases
 
-If the thread reply endpoint returns `404`, stop and tell the branch owner before falling back to a top-level PR comment.
+#### Outdated threads (line: null)
+
+Before attempting any reply, check whether the threads from a given review are outdated:
+
+```sh
+gh api repos/<owner>/<repo>/pulls/<N>/reviews/<review-id>/comments \
+  --jq '[.[] | {id, line, path}]'
+```
+
+If any thread has `"line": null`, GitHub has marked it outdated — the diff positions it referenced changed after a new commit or merge commit was pushed onto the branch. The reply endpoint (`POST .../pulls/comments/<id>/replies`) returns `404` for all outdated threads and cannot be used.
+
+**Surface this to the branch owner before proceeding:**
+
+> "N threads from review `<review-id>` are outdated — GitHub shifted their diff positions after `<commit-sha>` was pushed. The standard pre-fix and post-fix inline replies are not possible for these threads. I can apply all fixes and post a structured top-level summary comment mapping each thread to its fix and the SHA. Proceed?"
+
+If confirmed:
+
+1. Skip Steps 6 and 8 for outdated threads — inline replies are technically impossible.
+2. Apply all fixes normally (Step 7).
+3. Post a single top-level PR comment after the push:
+
+```sh
+gh pr comment <N> --repo <owner>/<repo> --body "## Copilot review — fixed at \`<sha>\`
+
+All N threads from review \`<review-id>\` are addressed below. The threads are outdated (diff positions changed after \`<merge-commit>\`) so inline replies are not possible — fixes are documented here.
+
+| Thread | File | Issue | Fix |
+|---|---|---|---|
+| <id> | <path> | <one-line summary> | <what changed> |
+..."
+```
+
+This replaces both the pre-fix acknowledgement and the post-fix SHA reply for the affected threads. Non-outdated threads from the same PR should still receive standard inline replies.
+
+#### Top-level comments only
 
 If the PR only has top-level comments and no line-thread comments, reply with:
 
 ```sh
 gh pr comment <N> --body "<response>"
 ```
+
+#### No threads
 
 If Copilot review failed and there are no threads, tell the branch owner and ask whether to re-request review or run a manual `review-giselle-pr` pass instead.
 
