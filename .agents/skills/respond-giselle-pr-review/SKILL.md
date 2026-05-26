@@ -237,7 +237,14 @@ Do not resolve threads yourself. The branch owner verifies the fixes, resolves t
 
 #### Outdated threads (line: null)
 
-Before attempting any reply, check whether the threads from a given review are outdated:
+Before attempting any reply, first list the reviews for the PR to obtain the review ID:
+
+```sh
+gh api repos/<owner>/<repo>/pulls/<N>/reviews \
+  --jq '[.[] | {id, submitted_at, state, user: .user.login}]'
+```
+
+Then check whether threads from the review are outdated:
 
 ```sh
 gh api repos/<owner>/<repo>/pulls/<N>/reviews/<review-id>/comments \
@@ -248,12 +255,12 @@ If any thread has `"line": null`, GitHub has marked it outdated — the diff pos
 
 **Surface this to the branch owner before proceeding:**
 
-> "N threads from review `<review-id>` are outdated — GitHub shifted their diff positions after `<commit-sha>` was pushed. Inline replies are not possible for these threads. I will apply all fixes and post an individual PR comment per thread with the fix commit SHA. Proceed?"
+> "<thread-count> threads from review `<review-id>` are outdated — GitHub shifted their diff positions after `<commit-sha>` was pushed. Inline replies are not possible for these threads. I will apply all fixes and post an individual PR comment per thread with the fix commit SHA. Proceed?"
 
 If confirmed:
 
-1. Skip the inline reply API calls for outdated threads (Steps 6 and 8) — they will return 404.
-2. Apply all fixes normally (Step 7).
+1. Skip the inline reply API calls for outdated threads (Steps 5 and 7) — they will return 404.
+2. Apply all fixes normally (Step 6).
 3. After pushing, post one dedicated PR comment per outdated thread — every thread must have its own SHA comment, no exceptions:
 
 ```sh
@@ -261,9 +268,9 @@ gh pr comment <N> --repo <owner>/<repo> \
   --body "Thread #<id> (\`<path>\`) — Fixed at commit \`<sha>\`: <one-line description of what changed>"
 ```
 
-Run this once for each outdated thread. N threads = N individual PR comments. The SHA comment invariant applies to every thread without exception — bulk tables are not an acceptable substitute.
+Run this once for each outdated thread. <thread-count> threads = <thread-count> individual PR comments. The SHA comment invariant applies to every thread without exception — bulk tables are not an acceptable substitute.
 
-Non-outdated threads in the same PR still receive standard inline replies (Steps 6 and 8).
+Non-outdated threads in the same PR still receive standard inline replies (Steps 5 and 7).
 
 #### Top-level comments only
 
