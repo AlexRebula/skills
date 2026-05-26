@@ -13,6 +13,7 @@ Use this skill for any LittleBranches repository. Use `/respond-pr-review` for a
 
 `/respond-giselle-pr-review <N>` — PR number. Required. Ask if omitted.
 `/respond-giselle-pr-review <N> <owner>/<repo>` — if the repo cannot be inferred from context.
+`/respond-giselle-pr-review <N> --standards-url <url>` — load standards from a custom raw URL instead of the default LittleBranches AGENTS.md.
 
 ---
 
@@ -20,7 +21,16 @@ Use this skill for any LittleBranches repository. Use `/respond-pr-review` for a
 
 ### 1. Load the standards and workflow first
 
-Always load these before reading any thread:
+Always load these before reading any thread.
+
+**If `--standards-url` was provided:** Fetch that URL for the public barrel. Skip the private barrel unconditionally — the caller supplied their own standards source. Also load the workflow doc:
+
+```
+Public:   <standards-url>
+Workflow: https://raw.githubusercontent.com/LittleBranches/oss-quality-standards/main/docs/pr-review-workflow.md
+```
+
+**Default flow (no `--standards-url`):** Use the LittleBranches defaults below.
 
 ```
 Public:   https://raw.githubusercontent.com/LittleBranches/oss-quality-standards/main/docs/AGENTS.md
@@ -43,7 +53,7 @@ that banned-content and encryption rules were not checked.
 
 ```sh
 gh repo view --json nameWithOwner --jq '.nameWithOwner'
-gh pr view <N> --repo <owner>/<repo> --json headRefName,headRefOid,baseRefName
+gh pr view <N> --repo <owner>/<repo> --json headRefName,headRefOid
 git branch --show-current
 ```
 
@@ -215,25 +225,13 @@ For every such reply, verify a matching artifact exists:
 
 If any artifact is missing, create it before reporting back.
 
-### 9. Audit the PR description (mandatory — do not skip)
-
-Before handing back, explicitly verify the PR description accounts for every changed file. Run this unconditionally — do not rely on your own judgment about whether scope changed:
-
-```sh
-gh pr view <N> --repo <owner>/<repo> --json files --jq '[.files[].path]'
-```
-
-For each path in the output, confirm it is described — by name, folder, or the feature it belongs to — in the PR description's "What Changed" section (or equivalent). If any file is missing or the description no longer matches the actual changes, update the description:
-
-```sh
-gh pr edit <N> --repo <owner>/<repo> --body "<updated body>"
-```
-
-### 10. Leave resolution to the branch owner
+### 9. Leave resolution to the branch owner
 
 Do not resolve threads yourself. The branch owner verifies the fixes, resolves threads manually, and decides whether to re-request Copilot review.
 
-### 11. Edge cases
+If the fix batch changed the PR scope, update the PR description before handing back.
+
+### 10. Edge cases
 
 #### Outdated threads (line: null)
 
