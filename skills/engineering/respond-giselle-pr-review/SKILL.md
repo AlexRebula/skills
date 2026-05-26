@@ -21,7 +21,15 @@ Use this skill for any LittleBranches repository. Use `/respond-pr-review` for a
 
 ### 1. Load the standards and workflow first
 
-Always load these before reading any thread. If `--standards-url` was provided, fetch that URL instead of the defaults below and skip the private barrel.
+Always load these before reading any thread.
+
+**If `--standards-url` was provided:** Fetch that URL for the public barrel. Skip the private barrel unconditionally — the caller supplied their own standards source. Also load the workflow doc:
+
+```
+Workflow: https://raw.githubusercontent.com/LittleBranches/oss-quality-standards/main/docs/pr-review-workflow.md
+```
+
+**Default flow (no `--standards-url`):** Use the LittleBranches defaults below.
 
 ```
 Public:   https://raw.githubusercontent.com/LittleBranches/oss-quality-standards/main/docs/AGENTS.md
@@ -154,12 +162,12 @@ Before handing back to the user, scan every reply posted under your account in t
 
 For every such reply, verify a matching artifact exists:
 
-| Commitment type | Required artifact |
-|---|---|
-| fix in this PR | Commit SHA posted as follow-up reply in the same thread |
-| open an issue / separate issue | GitHub issue opened; issue link posted as follow-up reply |
-| update the PR description | PR description updated; confirmation posted as follow-up reply |
-| extract / follow-up PR | GitHub issue opened; issue link posted as follow-up reply |
+| Commitment type                | Required artifact                                              |
+| ------------------------------ | -------------------------------------------------------------- |
+| fix in this PR                 | Commit SHA posted as follow-up reply in the same thread        |
+| open an issue / separate issue | GitHub issue opened; issue link posted as follow-up reply      |
+| update the PR description      | PR description updated; confirmation posted as follow-up reply |
+| extract / follow-up PR         | GitHub issue opened; issue link posted as follow-up reply      |
 
 If any artifact is missing, create it before reporting back.
 

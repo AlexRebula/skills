@@ -27,7 +27,9 @@ gh repo view --json nameWithOwner --jq '.nameWithOwner'
 
 ### 2. Load the standards (always, before reading the diff)
 
-If `--standards-url` was provided, fetch that URL instead of the defaults below and skip the private barrel.
+**If `--standards-url` was provided:** Fetch that URL for the public barrel. Skip the private barrel unconditionally — the caller supplied their own standards source.
+
+**Default flow (no `--standards-url`):** Use the LittleBranches defaults below.
 
 Fetch the public barrel:
 
@@ -63,18 +65,18 @@ Same as `/review-pr` step 3 — look for issue references in the PR body, then d
 
 For each changed file in the diff, apply the section map:
 
-| File pattern | Sections to apply |
-|---|---|
-| `*.tsx` (component) | §5 Component Structure, §6 API Contract, §9 Accessibility, §10 Testing |
-| `*.stories.tsx` | §8.3 Storybook conventions |
-| `*.test.ts` / `*.test.tsx` | §10 Testing (all subsections) |
-| `*.styles.ts` | §6.2 sx array-safety, §6.4 no hardcoded colours |
-| `index.ts` (barrel) | §5.3 Barrel exports, §6.1 Props re-export |
-| `types.ts` | §5.4 Naming, §6.1 Props interface |
-| `README.md` / `roadmap.md` | §8.1 Three tiers, §8.2 Zero-personal-data |
-| `scripts/*` | §3 Quality gate |
-| `.github/*` | §4 PR review workflow |
-| Any file | §1 AI Collaboration Protocol, §2 Branch Hygiene, §11 DoD, §12 Encryption |
+| File pattern               | Sections to apply                                                        |
+| -------------------------- | ------------------------------------------------------------------------ |
+| `*.tsx` (component)        | §5 Component Structure, §6 API Contract, §9 Accessibility, §10 Testing   |
+| `*.stories.tsx`            | §8.3 Storybook conventions                                               |
+| `*.test.ts` / `*.test.tsx` | §10 Testing (all subsections)                                            |
+| `*.styles.ts`              | §6.2 sx array-safety, §6.4 no hardcoded colours                          |
+| `index.ts` (barrel)        | §5.3 Barrel exports, §6.1 Props re-export                                |
+| `types.ts`                 | §5.4 Naming, §6.1 Props interface                                        |
+| `README.md` / `roadmap.md` | §8.1 Three tiers, §8.2 Zero-personal-data                                |
+| `scripts/*`                | §3 Quality gate                                                          |
+| `.github/*`                | §4 PR review workflow                                                    |
+| Any file                   | §1 AI Collaboration Protocol, §2 Branch Hygiene, §11 DoD, §12 Encryption |
 
 Note: per the AGENTS.md Scope section — §5–§10 apply only to React + MUI repos. §1–§4 and §11 are framework-agnostic.
 
@@ -82,22 +84,23 @@ Note: per the AGENTS.md Scope section — §5–§10 apply only to React + MUI r
 
 Flag immediately if any of the following appear in the diff. These are always `blocking`:
 
-| Finding | Rule |
-|---|---|
-| `dangerouslySetInnerHTML` | §6.11 |
-| `vi.mock('@mui/material` | §10.6 + custom test quality rule |
-| Props interface inline in `.tsx` (not in `types.ts`) | §5.4 |
-| Storybook `title` does not mirror folder path | §8.3 |
-| Hardcoded hex or RGB colour | §6.4 |
-| `sx` not array-safe (not using spread syntax) | §6.2 |
-| `React.FC` | §6.5 |
-| Real name, email, or client data in test or story | §8.2 |
-| URL prop without `javascript:` scheme validation (input components) | §6.12 |
-| Missing `aria-label` on icon-only button | §9.3 |
+| Finding                                                             | Rule                             |
+| ------------------------------------------------------------------- | -------------------------------- |
+| `dangerouslySetInnerHTML`                                           | §6.11                            |
+| `vi.mock('@mui/material`                                            | §10.6 + custom test quality rule |
+| Props interface inline in `.tsx` (not in `types.ts`)                | §5.4                             |
+| Storybook `title` does not mirror folder path                       | §8.3                             |
+| Hardcoded hex or RGB colour                                         | §6.4                             |
+| `sx` not array-safe (not using spread syntax)                       | §6.2                             |
+| `React.FC`                                                          | §6.5                             |
+| Real name, email, or client data in test or story                   | §8.2                             |
+| URL prop without `javascript:` scheme validation (input components) | §6.12                            |
+| Missing `aria-label` on icon-only button                            | §9.3                             |
 
 ### 7. Spawn two sub-agents in parallel
 
 **Standards sub-agent prompt — include all of:**
+
 - The full diff text
 - The section map for changed files (from step 5)
 - The full public AGENTS.md content
@@ -152,11 +155,11 @@ Before handing back to the user, scan **every reply posted under your account (`
 
 For every reply that contains one of these signals, verify a tracking artifact exists:
 
-| Commitment type | Required artifact |
-|---|---|
-| "will fix in this PR" | Commit SHA posted as follow-up reply in the same thread |
-| "will open an issue" / "separate issue" | GitHub issue opened; issue link posted as follow-up reply |
-| "will update the PR description" | PR description updated; confirmation posted as follow-up reply |
-| "will extract / follow-up PR" | GitHub issue opened; issue link posted as follow-up reply |
+| Commitment type                         | Required artifact                                              |
+| --------------------------------------- | -------------------------------------------------------------- |
+| "will fix in this PR"                   | Commit SHA posted as follow-up reply in the same thread        |
+| "will open an issue" / "separate issue" | GitHub issue opened; issue link posted as follow-up reply      |
+| "will update the PR description"        | PR description updated; confirmation posted as follow-up reply |
+| "will extract / follow-up PR"           | GitHub issue opened; issue link posted as follow-up reply      |
 
 If any artifact is missing — create it before reporting back to the user. This step must be completed even if the session is resuming across a context boundary.

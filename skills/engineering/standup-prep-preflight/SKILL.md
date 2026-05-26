@@ -5,7 +5,7 @@ description: Composite pre-flight for daily standup. Runs /check-prior-work, /lo
 
 # Standup Prep Pre-flight
 
-Run these three skills in order. Do not skip any.
+Run these steps in order. Step 2 is optional for non-LittleBranches projects — see the adapting note in that step.
 
 ## 1. Check prior work
 
@@ -13,7 +13,7 @@ Run `/check-prior-work`.
 
 Scan the current context for a `<conversation-summary>` block. If present, extract completed tasks, files edited, git actions taken, and decisions made. Store as **"pre-standup work"** to be merged into the morning brief later. If absent, continue.
 
-## 2. Load standards *(optional — skip or replace if you don't use LittleBranches OSS Quality Standards)*
+## 2. Load standards _(optional — skip or replace if you don't use LittleBranches OSS Quality Standards)_
 
 Run `/load-oss-standards` — or your own standards-loading skill.
 
