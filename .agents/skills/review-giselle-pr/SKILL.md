@@ -13,6 +13,7 @@ Use this skill for any LittleBranches repository. Use `/review-pr` for all other
 
 `/review-giselle-pr <N>` — PR number. Required. Ask if omitted.
 `/review-giselle-pr <N> <owner>/<repo>` — if the repo cannot be inferred from context.
+`/review-giselle-pr <N> --standards-url <url>` — load standards from a custom raw URL instead of the default LittleBranches AGENTS.md.
 
 ---
 
@@ -25,6 +26,8 @@ gh repo view --json nameWithOwner --jq '.nameWithOwner'
 ```
 
 ### 2. Load the standards (always, before reading the diff)
+
+If `--standards-url` was provided, fetch that URL instead of the defaults below and skip the private barrel.
 
 Fetch the public barrel:
 
@@ -43,44 +46,14 @@ gh api repos/LittleBranches/oss-quality-standards-private/contents/AGENTS.md \
 This works on any machine where `gh` is authenticated. No hardcoded paths.
 Only skip the private barrel if `gh` itself returns a permission error — and if so, note this in the review body.
 
-### 3. Fetch PR metadata
+### 3. Fetch PR metadata and diff
 
 ```sh
 gh pr view <N> --repo <owner>/<repo> --json title,body,headRefOid,headRefName,baseRefName
+gh pr diff <N> --repo <owner>/<repo>
 ```
 
 Save `headRefOid` for the Reviews API call.
-
-### 3b. Check merge state and CI (blocking — do this before reading the diff)
-
-```sh
-gh pr view <N> --repo <owner>/<repo> --json mergeable,mergeStateStatus,statusCheckRollup
-gh pr checks <N> --repo <owner>/<repo>
-```
-
-**If `mergeable` is `CONFLICTING` or `mergeStateStatus` is `DIRTY`:**
-- Add a blocking finding at the top of the review body:
-  > **Blocking: Branch has merge conflicts and cannot be merged.**
-  > Conflicting files must be resolved before this PR is mergeable. Run `git merge origin/<base>` on the PR branch, resolve all conflicts, then push.
-- List the changed files using:
-  ```sh
-  gh pr view <N> --repo <owner>/<repo> --json files --jq '[.files[].path]'
-  ```
-  Flag all listed files as potentially conflicted in the blocking finding.
-- Stop — do not proceed to step 3c. Post the blocking finding and hand back to the branch owner to resolve conflicts first.
-
-**If any CI check is failing:**
-- Add a blocking finding for each failing check:
-  > **Blocking: CI check `<check-name>` is failing.**
-  > This must pass before the PR is mergeable. Run `gh run view --log-failed` on the failing run ID to see the error.
-- Never mark a PR as approved or post a `COMMENT`-only review that omits CI failures. CI failures are always `REQUEST_CHANGES`.
-- CI failures do not block proceeding to step 3c — fetch the diff and continue the quality review.
-
-### 3c. Fetch the diff
-
-```sh
-gh pr diff <N> --repo <owner>/<repo>
-```
 
 ### 4. Find the spec
 
