@@ -7,29 +7,60 @@ description: Verify access to the LittleBranches OSS Quality Standards AGENTS.md
 
 Verify access to both AGENTS.md files. **Do not load the full content into context** — the key rules are already stated below and loading ~300 lines wastes context budget. Fetch on demand only if a specific rule is disputed.
 
+## Arguments
+
+`/load-oss-standards` — loads from the default LittleBranches OSS Quality Standards URLs.
+`/load-oss-standards --standards-url <url>` — loads a custom public `AGENTS.md` from the given raw URL instead. Skips the private standards repo check.
+
+> **Adapting this skill?** Replace the default URLs in the `verify` section below with the raw URL to your own `AGENTS.md` file.
+
 ## verify — Check standards access
 
+**If `--standards-url` was provided:** Confirm the custom URL is reachable without ingesting the body:
+
+```sh
+curl --head "<url>"
+```
+
+If it returns `HTTP 200` → ✅. If it returns an error or non-200 status → ❌ (log, continue). Skip the LittleBranches checks below — the caller supplied their own standards source.
+
+**On-demand load for custom URL (only when a specific rule is in question):**
+
+```sh
+curl -sS "<url>" | grep -A 30 "^## <section>"
+```
+
+Do not proactively load the full file.
+
+**Default flow (no `--standards-url`):**
+
 **Public (always accessible):**
+
 ```sh
 # Verify reachable — do NOT decode full content
 gh api repos/LittleBranches/oss-quality-standards/contents/docs/AGENTS.md \
   --jq '.name' 2>/dev/null
 ```
+
 If this returns `"AGENTS.md"` → ✅. If it fails → ❌ (log, continue).
 
 **Private (requires `gh auth`):**
+
 ```sh
 gh auth status 2>&1 | head -3
 gh api repos/LittleBranches/oss-quality-standards-private/contents/AGENTS.md \
   --jq '.name' 2>/dev/null
 ```
+
 If `gh auth status` fails or the second command errors → ⚠️ Private standards not loaded. Public standards apply only.
 
 **On-demand full load (only when a specific rule is in question):**
+
 ```sh
 gh api repos/LittleBranches/oss-quality-standards/contents/docs/AGENTS.md \
   --jq '.content' | base64 -d | grep -A 30 "^## <section>"
 ```
+
 Do not proactively load the full file.
 
 ## rules — Key rules carried inline (apply throughout the session)
@@ -43,12 +74,12 @@ Do not proactively load the full file.
 
 Before proceeding, print this table with real status values:
 
-| Check | Status |
-|---|---|
-| OSS standards — public | ✅ accessible / ❌ unreachable |
-| OSS standards — private | ✅ authenticated / ⚠️ not authenticated |
-| AlexRebula skills | ✅ N skills on disk / ⚠️ N expected missing |
-| Session context budget | ~N% used · ~N% available |
+| Check                   | Status                                      |
+| ----------------------- | ------------------------------------------- |
+| OSS standards — public  | ✅ accessible / ❌ unreachable              |
+| OSS standards — private | ✅ authenticated / ⚠️ not authenticated     |
+| AlexRebula skills       | ✅ N skills on disk / ⚠️ N expected missing |
+| Session context budget  | ~N% used · ~N% available                    |
 
 **Skills check:** List `.prompt.md` files in `{{AI_ROOT}}\Agents\Prompts\` and compare against `_index.md` in the same folder. Report count only — do not load the skill files.
 
