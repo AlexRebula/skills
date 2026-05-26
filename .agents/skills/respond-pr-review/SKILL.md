@@ -153,26 +153,22 @@ If any thread has `"line": null`, GitHub has marked it outdated — the diff pos
 
 **Surface this to the branch owner before proceeding:**
 
-> "N threads from review `<review-id>` are outdated — GitHub shifted their diff positions after `<commit-sha>` was pushed. The standard pre-fix and post-fix inline replies are not possible for these threads. I can apply all fixes and post a structured top-level summary comment mapping each thread to its fix and the SHA. Proceed?"
+> "N threads from review `<review-id>` are outdated — GitHub shifted their diff positions after `<commit-sha>` was pushed. Inline replies are not possible for these threads. I will apply all fixes and post an individual PR comment per thread with the fix commit SHA. Proceed?"
 
 If confirmed:
 
-1. Skip Steps 5 and 7 for outdated threads — inline replies are technically impossible.
+1. Skip the inline reply API calls for outdated threads (Steps 5 and 7) — they will return 404.
 2. Apply all fixes normally (Step 6).
-3. Post a single top-level PR comment after the push:
+3. After pushing, post one dedicated PR comment per outdated thread — every thread must have its own SHA comment, no exceptions:
 
 ```sh
-gh pr comment <N> --repo <owner>/<repo> --body "## Copilot review — fixed at \`<sha>\`
-
-All N threads from review \`<review-id>\` are addressed below. The threads are outdated (diff positions changed after \`<merge-commit>\`) so inline replies are not possible — fixes are documented here.
-
-| Thread | File | Issue | Fix |
-|---|---|---|---|
-| <id> | <path> | <one-line summary> | <what changed> |
-..."
+gh pr comment <N> --repo <owner>/<repo> \
+  --body "Thread #<id> (\`<path>\`) — Fixed at commit \`<sha>\`: <one-line description of what changed>"
 ```
 
-This replaces both the pre-fix acknowledgement and the post-fix SHA reply for the affected threads. Non-outdated threads from the same PR should still receive standard inline replies.
+Run this once for each outdated thread. N threads = N individual PR comments. The SHA comment invariant applies to every thread without exception — bulk tables are not an acceptable substitute.
+
+Non-outdated threads in the same PR still receive standard inline replies (Steps 5 and 7).
 
 #### Top-level comments only
 
