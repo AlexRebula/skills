@@ -53,9 +53,11 @@ that banned-content and encryption rules were not checked.
 
 ```sh
 gh repo view --json nameWithOwner --jq '.nameWithOwner'
-gh pr view <N> --repo <owner>/<repo> --json headRefName,headRefOid
+gh pr view <N> --repo <owner>/<repo> --json headRefName,headRefOid,baseRefName
 git branch --show-current
 ```
+
+The `baseRefName` field gives `<base-branch>` for use in the conflict resolution section.
 
 If the current branch is not the PR branch, switch to it before editing.
 
@@ -235,55 +237,9 @@ If the fix batch changed the PR scope, update the PR description before handing 
 
 #### Outdated threads (line: null)
 
-Before attempting any reply, first list the reviews for the PR to obtain the review ID:
+A thread becomes outdated when a new commit shifts the diff position of the lines it referenced. GitHub collapses outdated threads in the UI with an "Outdated" badge, and the `line` field on the comment is `null`.
 
-```sh
-gh api repos/<owner>/<repo>/pulls/<N>/reviews --paginate \
-  --jq '[.[] | {id, submitted_at, state, user: .user.login}]'
-```
-
-Then check whether threads from the review are outdated:
-
-```sh
-gh api repos/<owner>/<repo>/pulls/<N>/reviews/<review-id>/comments --paginate \
-  --jq '[.[] | {id, line, path}]'
-```
-
-If any thread has `"line": null`, GitHub has marked it outdated — the diff positions it referenced changed after a new commit or merge commit was pushed onto the branch. The reply endpoint (`POST .../pulls/comments/<id>/replies`) returns `404` for all outdated threads and cannot be used.
-
-Identify the SHA that caused the diff-position shift — it is the PR's current head commit:
-
-```sh
-gh pr view <N> --repo <owner>/<repo> --json headRefOid --jq '.headRefOid[:7]'
-```
-
-**Surface this to the branch owner before proceeding:**
-
-> "<thread-count> threads from review `<review-id>` are outdated — GitHub shifted their diff positions after `<commit-sha>` was pushed. Inline replies are not possible for these threads. I will apply all fixes and post an individual PR comment per thread with the fix commit SHA. Proceed?"
-
-If confirmed:
-
-1. Skip the inline reply API calls for outdated threads (Steps 5 and 7) — they will return 404.
-2. Apply all fixes normally (Step 6).
-3. After pushing, post one dedicated PR comment per outdated thread — every thread must have its own SHA comment, no exceptions.
-
-   **Before posting**, check whether a comment referencing that thread ID already exists in the PR’s top-level timeline. This prevents duplicate comments when the skill is re-run:
-
-   ```sh
-   gh api repos/<owner>/<repo>/issues/<N>/comments --paginate \
-     --jq '[.[] | select(.body | test("Thread #<id>")) | .id]'
-   ```
-
-   Only post the comment if the above query returns an empty array. If a comment already exists, skip it — the thread is already acknowledged.
-
-   ```sh
-   gh pr comment <N> --repo <owner>/<repo> \
-     --body "Thread #<id> (\`<path>\`) — Fixed at commit \`<sha>\`: <one-line description of what changed>"
-   ```
-
-   Run this once for each outdated thread that has no existing comment. The SHA comment invariant applies to every thread without exception — bulk tables are not an acceptable substitute.
-
-Non-outdated threads in the same PR still receive standard inline replies (Steps 5 and 7).
+**Outdated threads are fully replyable inline.** The `POST .../pulls/comments/<id>/replies` endpoint works normally for outdated threads — no fallback to top-level PR comments is needed. Reply using Steps 5 and 7 exactly as you would for any active thread.
 
 #### Top-level comments only
 
