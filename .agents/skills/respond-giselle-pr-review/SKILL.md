@@ -13,6 +13,7 @@ Use this skill for any LittleBranches repository. Use `/respond-pr-review` for a
 
 `/respond-giselle-pr-review <N>` — PR number. Required. Ask if omitted.
 `/respond-giselle-pr-review <N> <owner>/<repo>` — if the repo cannot be inferred from context.
+`/respond-giselle-pr-review <N> --standards-url <url>` — load standards from a custom raw URL instead of the default LittleBranches AGENTS.md.
 
 ---
 
@@ -20,7 +21,15 @@ Use this skill for any LittleBranches repository. Use `/respond-pr-review` for a
 
 ### 1. Load the standards and workflow first
 
-Always load these before reading any thread:
+Always load these before reading any thread.
+
+**If `--standards-url` was provided:** Fetch that URL for the public barrel. Skip the private barrel unconditionally — the caller supplied their own standards source. Also load the workflow doc:
+
+```
+Workflow: https://raw.githubusercontent.com/LittleBranches/oss-quality-standards/main/docs/pr-review-workflow.md
+```
+
+**Default flow (no `--standards-url`):** Use the LittleBranches defaults below.
 
 ```
 Public:   https://raw.githubusercontent.com/LittleBranches/oss-quality-standards/main/docs/AGENTS.md
@@ -43,63 +52,11 @@ that banned-content and encryption rules were not checked.
 
 ```sh
 gh repo view --json nameWithOwner --jq '.nameWithOwner'
-gh pr view <N> --repo <owner>/<repo> --json headRefName,headRefOid,baseRefName
+gh pr view <N> --repo <owner>/<repo> --json headRefName,headRefOid
 git branch --show-current
 ```
 
 If the current branch is not the PR branch, switch to it before editing.
-
-### 2b. Check merge state and CI
-
-This step is **mandatory**. Merge conflicts and CI failures have different blocking behaviors:
-- **Merge conflicts** (`mergeable: CONFLICTING` or `mergeStateStatus: DIRTY`) — block everything. Resolve before proceeding to step 3.
-- **CI failures** — allow proceeding to gather threads. Diagnose and capture logs first, then include the CI fix in the step 6 batch commit.
-
-```sh
-gh pr view <N> --repo <owner>/<repo> --json mergeable,mergeStateStatus
-gh pr checks <N> --repo <owner>/<repo>
-```
-
-> **Important:** A clean local working tree (`git status` showing nothing to commit) does **not** mean the branch is conflict-free with `main`. It only means the branch has no uncommitted local changes. Always trust the API response: if `mergeable` is `CONFLICTING` or `mergeStateStatus` is `DIRTY`, real merge conflicts exist and must be resolved — even when `git status` shows clean. Verify by actually running `git merge origin/<base-branch>`, not by inspecting local state.
-
-**If `mergeable` is `CONFLICTING` or `mergeStateStatus` is `DIRTY`:**
-
-Resolve all conflicts before doing anything else. Switch to the PR branch and merge the base:
-
-```sh
-git checkout <pr-branch>
-git fetch origin
-git merge origin/<base-branch> --no-commit --no-ff
-```
-
-Resolve each conflicting file using the following strategy:
-
-| File type | Resolution strategy |
-|---|---|
-| Generated/vendored artifacts (`.yalc/`, `dist/`, `package-lock.json`) | `git checkout --theirs <file>` — always take base branch (latest build) |
-| Data files (`*.json`, `*.csv`) | Read both sides carefully; preserve all new entries from both HEAD and base — never discard either side's additions |
-| Source files (`*.ts`, `*.tsx`, `*.md`) | Manual merge — read conflict sections, apply both sets of meaningful changes |
-
-After resolving:
-
-```sh
-git add -A
-git commit -m "chore: merge <base-branch> — resolve conflicts before PR review response"
-git push origin <pr-branch>
-```
-
-Note the merge commit SHA. Include it in your report to the branch owner.
-
-**If any CI check is failing:**
-
-Read the failing output before touching any code:
-
-```sh
-gh run list --repo <owner>/<repo> --branch <pr-branch> --limit 5
-gh run view <run-id> --log-failed --repo <owner>/<repo>
-```
-
-Diagnose the root cause, then proceed to gather review threads (step 3). Include the CI fix in the step 6 batch commit together with the valid review fixes. CI must be green before handing back to the branch owner.
 
 ### 3. Gather every review thread first
 
@@ -205,34 +162,22 @@ Before handing back to the user, scan every reply posted under your account in t
 
 For every such reply, verify a matching artifact exists:
 
-| Commitment type | Required artifact |
-|---|---|
-| fix in this PR | Commit SHA posted as follow-up reply in the same thread |
-| open an issue / separate issue | GitHub issue opened; issue link posted as follow-up reply |
-| update the PR description | PR description updated; confirmation posted as follow-up reply |
-| extract / follow-up PR | GitHub issue opened; issue link posted as follow-up reply |
+| Commitment type                | Required artifact                                              |
+| ------------------------------ | -------------------------------------------------------------- |
+| fix in this PR                 | Commit SHA posted as follow-up reply in the same thread        |
+| open an issue / separate issue | GitHub issue opened; issue link posted as follow-up reply      |
+| update the PR description      | PR description updated; confirmation posted as follow-up reply |
+| extract / follow-up PR         | GitHub issue opened; issue link posted as follow-up reply      |
 
 If any artifact is missing, create it before reporting back.
 
-### 9. Audit the PR description (mandatory — do not skip)
-
-Before handing back, explicitly verify the PR description accounts for every changed file. Run this unconditionally — do not rely on your own judgment about whether scope changed:
-
-```sh
-gh pr view <N> --repo <owner>/<repo> --json files --jq '[.files[].path]'
-```
-
-For each path in the output, confirm it is described — by name, folder, or the feature it belongs to — in the PR description's "What Changed" section (or equivalent). If any file is missing or the description no longer matches the actual changes, update the description:
-
-```sh
-gh pr edit <N> --repo <owner>/<repo> --body "<updated body>"
-```
-
-### 10. Leave resolution to the branch owner
+### 9. Leave resolution to the branch owner
 
 Do not resolve threads yourself. The branch owner verifies the fixes, resolves threads manually, and decides whether to re-request Copilot review.
 
-### 11. Edge cases
+If the fix batch changed the PR scope, update the PR description before handing back.
+
+### 10. Edge cases
 
 If the thread reply endpoint returns `404`, stop and tell the branch owner before falling back to a top-level PR comment.
 
