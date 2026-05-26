@@ -72,14 +72,14 @@ Each entry describes:
 
 ---
 
-### `/morning-pr-sweep` ⚠️ Quick fix (partially done)
+### `/morning-pr-sweep` ✅ Fully generalized
 
-**What's specific:**
+**What was specific:**
 
-- ~~Default repo discovery hardcodes `LittleBranches|AlexRebula` orgs.~~ **Fixed in PR #14** — now uses `gh repo list` with a configurable org argument.
-- Standards-loading still hardcodes the LittleBranches AGENTS.md URLs in Phase 0b.
+- ~~Default repo discovery hardcodes `LittleBranches|AlexRebula` orgs.~~ **Fixed in PR #14** — now uses `gh repo list` with a configurable `--orgs` argument.
+- ~~Standards-loading hardcodes LittleBranches AGENTS.md URLs.~~ **Fixed in PR #14** — per-repo AGENTS.md discovery checks each repo root and loads it if present; falls back to no-standards mode. `--standards-url` override supported.
 
-**Remaining work:** Make standards-loading conditional. Check whether the target repo has an AGENTS.md at its root and load that; fall back to no-standards mode if none found. The `--repos` argument already allows full control over repo scope.
+**Status:** Fully generalized. No project-specific assumptions remain.
 
 **GitHub issue:** [ ] to be created
 
