@@ -10,13 +10,27 @@ Verify access to both AGENTS.md files. **Do not load the full content into conte
 ## Arguments
 
 `/load-oss-standards` — loads from the default LittleBranches OSS Quality Standards URLs.
-`/load-oss-standards --standards-url <url>` — loads a custom public `AGENTS.md` from the given raw URL instead. Skips the private barrel check.
+`/load-oss-standards --standards-url <url>` — loads a custom public `AGENTS.md` from the given raw URL instead. Skips the private standards repo check.
 
 > **Adapting this skill?** Replace the default URLs in the `verify` section below with the raw URL to your own `AGENTS.md` file.
 
 ## verify — Check standards access
 
-**If `--standards-url` was provided:** Confirm the custom URL is reachable by fetching it with `fetch_webpage`. If it returns content → ✅. If it 404s or is empty → ❌ (log, continue). Skip the LittleBranches checks below — the caller supplied their own standards source.
+**If `--standards-url` was provided:** Confirm the custom URL is reachable without ingesting the body:
+
+```sh
+curl --head "<url>"
+```
+
+If it returns `HTTP 200` → ✅. If it returns an error or non-200 status → ❌ (log, continue). Skip the LittleBranches checks below — the caller supplied their own standards source.
+
+**On-demand load for custom URL (only when a specific rule is in question):**
+
+```sh
+curl -sS "<url>" | grep -A 30 "^## <section>"
+```
+
+Do not proactively load the full file.
 
 **Default flow (no `--standards-url`):**
 
