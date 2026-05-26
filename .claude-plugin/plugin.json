@@ -1,6 +1,7 @@
 {
   "name": "alexrebula-skills",
   "skills": [
+    "./skills/in-progress/review",
     "./skills/engineering/diagnose",
     "./skills/engineering/grill-with-docs",
     "./skills/engineering/improve-codebase-architecture",
