@@ -15,12 +15,10 @@ Skills I use daily for code work.
 - **[to-prd](./to-prd/SKILL.md)** — Turn the current conversation context into a PRD and submit it as a GitHub issue.
 - **[zoom-out](./zoom-out/SKILL.md)** — Tell the agent to zoom out and give broader context or a higher-level perspective on an unfamiliar section of code.
 - **[prototype](./prototype/SKILL.md)** — Build a throwaway prototype to flesh out a design — either a runnable terminal app for state/business-logic questions, or several radically different UI variations toggleable from one route.
-- **[standup-prep](./standup-prep/SKILL.md)** — Daily session startup coordinator. Runs preflight → session context → repo status + WIP sweep → open PR sweep → morning brief → file write → Asana sync.
-- **[standup-prep-preflight](./standup-prep-preflight/SKILL.md)** — Composite pre-flight: runs /check-prior-work, /load-oss-standards, and /load-dependency-chain in sequence.
-- **[check-prior-work](./check-prior-work/SKILL.md)** — Scans context for a `<conversation-summary>` block and extracts earlier session work for continuity.
+- **[commit-wip](./commit-wip/SKILL.md)** — Scan all workspace repos for uncommitted changes, group files by topic, match each group to an existing remote branch (or create a categorised new one), and commit there. Keeps WIP on the semantically correct branch from the start.
+- **[sync-roadmap](./sync-roadmap/SKILL.md)** — Pull current task statuses from Asana and write them back into each repo's `docs/roadmap.md` and `data.tsx` `done` flags. Asana is master; this skill flows changes downstream.
 - **[load-oss-standards](./load-oss-standards/SKILL.md)** — Verify access to public and private LittleBranches AGENTS.md files and print the session health table.
 - **[load-dependency-chain](./load-dependency-chain/SKILL.md)** — Read the dependency-chain.md file and extract hard deadline, critical path, and phase status.
-- **[load-session-context](./load-session-context/SKILL.md)** — Load the session index and latest wrap file, and check for an existing morning brief.
 - **[repo-status](./repo-status/SKILL.md)** — Discover all workspace repos dynamically and produce a dirty state table.
 - **[wip-sweep](./wip-sweep/SKILL.md)** — Scope selection + tiered WIP commit/push/PR model (T1 scope → T2 local commit → T3 push → T4 draft PRs).
 - **[open-pr-sweep](./open-pr-sweep/SKILL.md)** — Discover all non-draft open PRs across LittleBranches and AlexRebula orgs.

@@ -70,8 +70,8 @@ If no repos were specified as arguments, discover repos:
 - Otherwise: list repos for the current authenticated GitHub user.
 
 ```sh
-# For each org or the current user:
-gh repo list <org-or-user> --limit 100 --json nameWithOwner,isPrivate --jq '.[] | .nameWithOwner'
+gh repo list --limit 100 --json nameWithOwner,isPrivate \
+  --jq '.[] | select(.nameWithOwner | test("(?i)(LittleBranches|AlexRebula)")) | .nameWithOwner'
 ```
 
 Include any repo explicitly passed as a `--repos` argument.
