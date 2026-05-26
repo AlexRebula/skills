@@ -44,4 +44,4 @@ repo-a Phase C → app-b Phase 3 → launch
 | app-b  | Phase 3 | ⬜ Blocked on repo-a Phase C |
 ```
 
-> **Adapting this skill?** Create a `dependency-chain.md` using the format above. Set `{{AI_ROOT}}` to point to the folder that contains it.
+> **Adapting this skill?** Place your file at `{{AI_ROOT}}\Agents\Context\dependency-chain.md` using the format above, or edit the path in this skill to match your own layout.
