@@ -266,14 +266,23 @@ If confirmed:
 
 1. Skip the inline reply API calls for outdated threads (Steps 5 and 7) — they will return 404.
 2. Apply all fixes normally (Step 6).
-3. After pushing, post one dedicated PR comment per outdated thread — every thread must have its own SHA comment, no exceptions:
+3. After pushing, post one dedicated PR comment per outdated thread — every thread must have its own SHA comment, no exceptions.
 
-```sh
-gh pr comment <N> --repo <owner>/<repo> \
-  --body "Thread #<id> (\`<path>\`) — Fixed at commit \`<sha>\`: <one-line description of what changed>"
-```
+   **Before posting**, check whether a comment referencing that thread ID already exists in the PR’s top-level timeline. This prevents duplicate comments when the skill is re-run:
 
-Run this once for each outdated thread. <thread-count> threads = <thread-count> individual PR comments. The SHA comment invariant applies to every thread without exception — bulk tables are not an acceptable substitute.
+   ```sh
+   gh api repos/<owner>/<repo>/issues/<N>/comments --paginate \
+     --jq '[.[] | select(.body | test("Thread #<id>")) | .id]'
+   ```
+
+   Only post the comment if the above query returns an empty array. If a comment already exists, skip it — the thread is already acknowledged.
+
+   ```sh
+   gh pr comment <N> --repo <owner>/<repo> \
+     --body "Thread #<id> (\`<path>\`) — Fixed at commit \`<sha>\`: <one-line description of what changed>"
+   ```
+
+   Run this once for each outdated thread that has no existing comment. The SHA comment invariant applies to every thread without exception — bulk tables are not an acceptable substitute.
 
 Non-outdated threads in the same PR still receive standard inline replies (Steps 5 and 7).
 
