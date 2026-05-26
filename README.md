@@ -49,6 +49,8 @@ Skills added by this fork — not in the upstream `mattpocock/skills`. Most work
 | [`/create-react-component`](./skills/engineering/create-react-component/SKILL.md) | Scaffold and TDD a new React component — no framework dependency, plain RTL, same two-phase scaffold/TDD workflow. |
 | [`/create-vue-component`](./skills/engineering/create-vue-component/SKILL.md) | Scaffold and TDD a new Vue 3 standalone component — `<script setup>`, `defineProps` generics, `@testing-library/vue`. |
 | [`/create-angular-component`](./skills/engineering/create-angular-component/SKILL.md) | Scaffold and TDD a new Angular 17+ standalone component — signal-based `input()`/`output()`, `OnPush`, Angular Testing Library. |
+| [`/create-pr`](./skills/engineering/create-pr/SKILL.md) | Prepare a branch for a PR — verify branch hygiene, run the quality gate, create the PR via `gh pr create` with a well-formed description, and optionally request a review. |
+| [`/create-giselle-pr`](./skills/engineering/create-giselle-pr/SKILL.md) | LittleBranches variant of `/create-pr` — pre-loads OSS quality standards and banned-content scan, triggers Copilot review by default, optionally creates a companion doc in `docs/pr-messages/`. |
 
 #### PR review
 
@@ -58,16 +60,16 @@ Skills added by this fork — not in the upstream `mattpocock/skills`. Most work
 | [`/review-pr`](./skills/engineering/review-pr/SKILL.md) | Two-axis review of any open GitHub PR. **Standards axis**: reads your repo's own `AGENTS.md`, `CLAUDE.md`, ADRs — and extracts any reviewer-scope note (e.g. "only §1–§4 apply") to constrain the review. **Spec axis**: fetches the linked issue or PRD and checks whether the diff faithfully implements it. Both axes run as parallel sub-agents and post findings as inline line comments via the GitHub PR Reviews API. |
 | [`/respond-giselle-pr-review`](./skills/engineering/respond-giselle-pr-review/SKILL.md) | Respond to an existing Copilot PR review in a LittleBranches repo — pre-load the public and private AGENTS.md barrels plus the review workflow, triage every thread, reply inline before fixing, batch valid fixes, and post SHA follow-ups. |
 | [`/respond-pr-review`](./skills/engineering/respond-pr-review/SKILL.md) | The **author's response** workflow — automates the side of code review that no other tool touches. Gathers every review thread, triages each with a 5-way verdict (✅ valid / ❌ not valid / ⚠️ partial / ⏸️ needs branch-owner input / ⏭️ valid but deferred → open an issue first), replies inline **before** touching any code, batches all fixes into one commit, and posts SHA follow-ups in the correct nested thread (not as a new top-level review). |
-| [`/morning-pr-sweep`](./skills/engineering/morning-pr-sweep/SKILL.md) | Clear all open PR review debt across every LittleBranches repo in one session — triages ALL threads across ALL PRs before touching any code, batches fixes into one commit per PR, posts SHA confirmations. |
+| [`/morning-pr-sweep`](./skills/engineering/morning-pr-sweep/SKILL.md) | Clear all open PR review debt across your repos in one session — triages ALL threads across ALL PRs before touching any code, batches fixes into one commit per PR, posts SHA confirmations. |
 
 #### Daily workflow
 
 | Skill | What it does |
 | --- | --- |
-| [`/standup-prep`](./skills/engineering/standup-prep/SKILL.md) | Daily session startup coordinator. Runs preflight → session context → repo status + WIP sweep → open PR sweep → morning brief → file write → Asana sync. |
-| [`/standup-prep-preflight`](./skills/engineering/standup-prep-preflight/SKILL.md) | Composite pre-flight: runs `/check-prior-work`, `/load-oss-standards`, and `/load-dependency-chain` in sequence. |
-| [`/check-prior-work`](./skills/engineering/check-prior-work/SKILL.md) | Scans context for a `<conversation-summary>` block and extracts earlier session work for continuity before standup. |
-| [`/load-session-context`](./skills/engineering/load-session-context/SKILL.md) | Load the session index and latest wrap file only; check for an existing morning brief for today. |
+| [`/standup-prep`](./skills/productivity/standup-prep/SKILL.md) | Daily session startup coordinator. Runs preflight → session context → repo status + WIP sweep → open PR sweep → morning brief → file write → Asana sync. |
+| [`/standup-prep-preflight`](./skills/productivity/standup-prep-preflight/SKILL.md) | Composite pre-flight: runs `/check-prior-work`, `/load-oss-standards`, and `/load-dependency-chain` in sequence. |
+| [`/check-prior-work`](./skills/productivity/check-prior-work/SKILL.md) | Scans context for a `<conversation-summary>` block and extracts earlier session work for continuity before standup. |
+| [`/load-session-context`](./skills/productivity/load-session-context/SKILL.md) | Load the session index and latest wrap file only; check for an existing morning brief for today. |
 | [`/session-wrap`](./skills/productivity/session-wrap/SKILL.md) | Write a session wrap doc, update the session index, and hand off to `/wip-sweep`. Use at context >55% or after completing major work. |
 | [`/repo-status`](./skills/engineering/repo-status/SKILL.md) | Dynamically discover all workspace repos and produce a dirty state table (branch, dirty file count, clean/uncommitted). |
 | [`/wip-sweep`](./skills/engineering/wip-sweep/SKILL.md) | Scope selection + tiered WIP commit/push/PR model: T1 scope selection → T2 local commit → T3 push → T4 draft PRs. |

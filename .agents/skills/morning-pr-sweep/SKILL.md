@@ -42,7 +42,9 @@ The skill will always show a full impact table and wait for your explicit confir
 
 ## Phase 0 — Discover
 
-### 0a. Load the standards (once, before reading any PR)
+### 0a. Load the standards (optional — LittleBranches repos only)
+
+Attempt to load the LittleBranches OSS quality standards. If the request returns a permission error, skip this step, note that banned-content and encryption rules were not checked, and proceed.
 
 ```
 Public:   https://raw.githubusercontent.com/LittleBranches/oss-quality-standards/main/docs/AGENTS.md
@@ -56,16 +58,18 @@ gh api repos/LittleBranches/oss-quality-standards-private/contents/AGENTS.md \
   --jq '.content | @base64d'
 ```
 
-Only skip this if `gh` returns a permission error — if so, note that banned-content and encryption rules were not checked.
+If `gh` returns a permission error, skip and proceed — this step is only relevant for LittleBranches repositories.
 
 ### 0b. Build the repo list
 
 If no repos were specified as arguments, discover them from the authenticated account:
 
 ```sh
-gh repo list --limit 50 --json nameWithOwner,isPrivate \
+gh repo list --limit 200 --json nameWithOwner,isPrivate \
   --jq '.[] | .nameWithOwner'
 ```
+
+> **Note:** `--limit 200` covers most accounts. Increase if you have more than 200 repos.
 
 Scope to specific orgs by adding a filter — for example, to sweep only `MyOrg` repos:
 
@@ -129,6 +133,8 @@ Proceed? (yes / no / list only)
 **`list only`** — print the triage table but make no writes. Useful for reviewing scope before committing.
 
 Wait for explicit confirmation before proceeding.
+
+**If the user answers `list only`: stop here.** Print the discovery table and make no further writes. Do not proceed to Phase 1, 2, 3, or 4.
 
 ---
 

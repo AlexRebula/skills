@@ -71,11 +71,13 @@ Each entry describes:
 
 ---
 
-### `/morning-pr-sweep` ⚠️ Quick fix
+### `/morning-pr-sweep` ✅ Partially fixed
 
-**What's specific:** Default repo discovery hardcodes `LittleBranches|AlexRebula` orgs. Standards-loading hardcodes the LittleBranches AGENTS.md URLs.
+**What was specific:** Default repo discovery hardcoded `LittleBranches|AlexRebula` orgs. Standards-loading hardcodes the LittleBranches AGENTS.md URLs.
 
-**Path to general:** Same fix as `/open-pr-sweep` for org discovery. For standards: check whether the target repo has an AGENTS.md at its root and load that; fall back to no-standards mode. The `--repos` argument already allows full control when the default is wrong.
+**Status:** Org discovery is now generalized — `gh repo list` discovers repos from the authenticated account. Standards loading (Phase 0a) remains LittleBranches-specific but is now conditional: skip gracefully on permission error and proceed without standards checks.
+
+**Remaining:** Phase 0a still hardcodes the LittleBranches AGENTS.md URLs. Future improvement: check whether the target repo has an AGENTS.md at its root and load that instead; fall back to no-standards mode.
 
 **GitHub issue:** [ ] to be created
 
