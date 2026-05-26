@@ -15,18 +15,19 @@ The key difference from calling `/respond-giselle-pr-review` N times: all thread
 
 **This skill makes real, public writes.** Understand what it does before you invoke it:
 
-| Action | Scope | Visibility |
-|---|---|---|
+| Action                                               | Scope                      | Visibility                                  |
+| ---------------------------------------------------- | -------------------------- | ------------------------------------------- |
 | Posts acknowledgement replies to open review threads | Per thread, before any fix | Public — visible to anyone with repo access |
-| Pushes fix commits to the PR branch | Per PR, after fixes | Public — appears in the PR timeline |
-| Posts SHA confirmation replies to every thread | Per thread, after push | Public — visible to anyone with repo access |
+| Pushes fix commits to the PR branch                  | Per PR, after fixes        | Public — appears in the PR timeline         |
+| Posts SHA confirmation replies to every thread       | Per thread, after push     | Public — visible to anyone with repo access |
 
 **This applies to both private and public repositories.** On a public repo, your replies are visible to the entire internet.
 
 Do not run this skill:
+
 - On PRs you are not authorised to respond to
 - In repositories where AI-authored replies are unwelcome or against contribution guidelines
-- Without reviewing the triage table in Phase 0e before confirming
+- Without reviewing the discovery table in Phase 0e before confirming
 
 The skill always shows a full impact table and waits for your explicit confirmation before posting anything (Phase 0e). You can stop at that point if the scope is not what you expected.
 
@@ -34,15 +35,17 @@ The skill always shows a full impact table and waits for your explicit confirmat
 
 ## Arguments
 
-`/morning-pr-sweep` — sweeps all repos in the default list (see Phase 0).
+`/morning-pr-sweep` — discovers and sweeps all repos owned by the authenticated GitHub user.
 `/morning-pr-sweep <owner>/<repo>` — sweeps a single repo only.
 `/morning-pr-sweep --repos <owner>/<repo>,<owner>/<repo>` — sweeps a specific set of repos.
+`/morning-pr-sweep --orgs <org1>,<org2>` — sweeps all repos in the specified orgs instead of the authenticated user's repos.
+`/morning-pr-sweep --standards-url <url>` — loads a shared standards file (AGENTS.md) for all repos in the sweep instead of per-repo discovery.
 
 ---
 
 ## Phase 0 — Discover
 
-### 0a. Load the standards *(if available)*
+### 0a. Load the standards _(if available)_
 
 Check whether each target repo carries an `AGENTS.md` at its root:
 
@@ -90,17 +93,29 @@ Skip draft PRs — they are not ready for morning sweep.
 For each open, non-draft PR, determine its state:
 
 ```sh
-# Check if any Copilot review threads exist
-gh api --paginate /repos/<owner>/<repo>/pulls/<N>/comments \
-  --jq '[.[] | select(.user.login | test("copilot|github-advanced-security"; "i"))] | length'
+# For each bot review comment, check if the author has already replied with a SHA
+gh api --paginate repos/<owner>/<repo>/pulls/<N>/comments \
+  --jq '
+    [.[] | select(.user.login | test("copilot|github-advanced-security"; "i"))] as $bot |
+    if ($bot | length) == 0 then "no-bot-threads"
+    else
+      ($bot | map(.id) | map(
+        . as $id |
+        # a thread is handled when a non-bot reply containing a 7-char hex SHA exists
+        [$bot[] | select(.id == $id or .in_reply_to_id == $id)] |
+        any(.user.login | test("copilot|github-advanced-security"; "i") | not) and
+        any(.body | test("[0-9a-f]{7}"; "i"))
+      ) | all) |
+      if . then "merge-ready" else "needs-response" end
+    end'
 ```
 
-| State | Condition | What sweep does |
-|---|---|---|
-| `needs-response` | Copilot/bot review comments exist | Runs respond protocol (Phases 1–4) |
-| `needs-review` | PR open but no review posted yet | Flags in report; skip |
-| `merge-ready` | All threads already have your SHA reply | Reports for manual merge |
-| `blocked` | CI failing, merge conflicts, or draft | Flags; skip |
+| State            | Condition                                                    | What sweep does                    |
+| ---------------- | ------------------------------------------------------------ | ---------------------------------- |
+| `needs-response` | Bot review threads exist with no author SHA reply            | Runs respond protocol (Phases 1–4) |
+| `needs-review`   | PR open but no review posted yet                             | Flags in report; skip              |
+| `merge-ready`    | Every bot thread has an author reply containing a commit SHA | Reports for manual merge           |
+| `blocked`        | CI failing, merge conflicts, or draft                        | Flags; skip                        |
 
 ### 0e. Show the discovery table — wait for confirmation
 
@@ -124,7 +139,7 @@ Proceed? (yes / no / list only)
 
 **`yes`** — proceed with full sweep.
 **`no`** — abort. No writes made.
-**`list only`** — print the triage table but make no writes. Useful for reviewing scope before committing.
+**`list only`** — print the discovery table but make no writes. Useful for reviewing scope before committing.
 
 Wait for explicit confirmation before proceeding.
 
@@ -219,7 +234,13 @@ Handle GitHub suggested change blocks explicitly — accept them into the fix ba
 
 Group all `✅` and `⚠️` fixes by PR. Fix one PR at a time, all changes in one working pass.
 
-Before each commit, run the repo's quality gate:
+Before each commit, run the repo's quality gate. Discover it first:
+
+1. Check the repo's `AGENTS.md` for a `quality gate` or `check` command.
+2. If `package.json` exists and defines `check:verify` or `check`, use that.
+3. Fallback for non-Node repos: look for a `Makefile` target named `check`, `lint`, or `test`.
+
+For Node/npm repos the command is typically:
 
 ```sh
 npm run check:verify
@@ -267,11 +288,11 @@ Before reporting, scan every reply posted under your account in this session for
 
 For each signal, verify the artifact exists:
 
-| Commitment | Required artifact |
-|---|---|
-| Fix in this PR | Commit SHA posted in thread |
+| Commitment            | Required artifact            |
+| --------------------- | ---------------------------- |
+| Fix in this PR        | Commit SHA posted in thread  |
 | Open a tracking issue | Issue opened and link posted |
-| Update PR description | PR description updated |
+| Update PR description | PR description updated       |
 
 If any artifact is missing, create it now.
 
