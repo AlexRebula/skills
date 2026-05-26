@@ -140,13 +140,21 @@ If the fix batch changed the PR scope, update the PR description before handing 
 
 ### 9. Edge cases
 
-If the thread reply endpoint returns `404`, stop and tell the branch owner before falling back to a top-level PR comment.
+#### Outdated threads (line: null)
+
+A thread becomes outdated when a new commit shifts the diff position of the lines it referenced. GitHub collapses outdated threads in the UI with an "Outdated" badge, and the `line` field on the comment is `null`.
+
+**Outdated threads are fully replyable inline.** The `POST .../pulls/comments/<id>/replies` endpoint works normally for outdated threads — no fallback to top-level PR comments is needed. Reply using Steps 5 and 7 exactly as you would for any active thread.
+
+#### Top-level comments only
 
 If the PR only has top-level comments and no line-thread comments, reply with:
 
 ```sh
 gh pr comment <N> --body "<response>"
 ```
+
+#### No threads
 
 If Copilot review failed and there are no threads, tell the branch owner and ask whether to re-request review or run a manual review pass instead.
 
