@@ -1,1 +1,5 @@
 node_modules/
+
+# Auto-generated flat mirror for VS Code Copilot skill registration.
+# Regenerate with: bash scripts/sync-agents-skills.sh
+.agents/

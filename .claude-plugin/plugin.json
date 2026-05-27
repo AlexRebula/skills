@@ -37,6 +37,8 @@
     "./skills/productivity/grill-me",
     "./skills/productivity/handoff",
     "./skills/productivity/load-session-context",
+    "./skills/productivity/collapse-session-folder",
+    "./skills/productivity/resolve-ai-paths",
     "./skills/productivity/session-wrap",
     "./skills/productivity/standup-prep",
     "./skills/productivity/standup-prep-preflight",

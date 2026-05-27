@@ -2,6 +2,7 @@
   "private": true,
   "type": "module",
   "scripts": {
+    "postinstall": "bash scripts/sync-agents-skills.sh",
     "test": "vitest run"
   },
   "devDependencies": {
