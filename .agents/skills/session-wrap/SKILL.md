@@ -11,6 +11,17 @@ argument-hint: 'Optional: focus hint for the next session (e.g. "continue stat-c
 > of your AI workflow folder — the folder that contains `Agents/Sessions/`, `Agents/Prompts/`,
 > and `Agents/Morning Briefs/`.
 
+## Obsidian Compatibility Rules
+
+Applies to **every file created by this skill** (and any other skill that writes to `AI_ROOT`):
+
+- **No leading underscores** in filenames. Use `sessions-index.md`, not `_index.md`.
+- **No trailing dots or spaces** in filenames.
+- **No folder links with trailing slashes** — Obsidian treats `[label](./folder/)` as a new note to create, not a folder link. Link to a specific note file instead.
+- **Use wikilinks for internal cross-references:** `[[path/to/note|display text]]`. These render correctly in Obsidian and survive graph-view traversal.
+- **Every note name must be semantically unique** — names like `initial`, `continued`, or `index` used alone are invisible in the graph view. Combine a number prefix with a 3–5 word slug: `01-stat-card-tdd-complete`, `02-pr-review-conflicts`.
+- **README.md is the only exception** — GitHub requires this exact name for repo root documentation.
+
 ## Step 1 — Name this session
 
 **First — check if this is a continuation of an existing session.**
@@ -71,13 +82,13 @@ If **prior files exist**, read each in full and build an inventory of already-ca
 When writing Step 3, apply these rules:
 
 - **Omit anything already captured** — reference instead:
-  `> Already documented in [01-initial.md](01-initial.md). No change.`
+  `> Already documented in [[<NN-1>-<prev-slug>]]. No change.`
 - **Include updated items** with a clear `[UPDATED]` marker:
-  `> [UPDATED since 01-initial.md] PR #19 is now merged. Was: open.`
-- **Open the Summary** with a continuation note:
-  `> Continuation from [01-initial.md]. This file covers work done after the prior checkpoint.`
+  `> [UPDATED since [[<NN-1>-<prev-slug>]]] PR #19 is now merged. Was: open.`
+- **Open the Summary** with a continuation note (use Obsidian wikilink, not markdown link):
+  `> Continuation from [[<NN-1>-<prev-slug>]]. This file covers work done after the prior checkpoint.`
 - **Pending Tasks** — only list tasks that are NEW or status-changed since the last wrap.
-  For unchanged tasks: `Other pending tasks unchanged — see [01-initial.md].`
+  For unchanged tasks: `Other pending tasks unchanged — see [[<NN-1>-<prev-slug>]].`
 
 ---
 
@@ -158,33 +169,124 @@ Skills the next agent should invoke (e.g. `/tdd`, `/diagnose`, `/wip-sweep`).
 
 ## Step 4 — Save the wrap file
 
-Determine the suffix:
+Determine the filename:
 
-- Wrap number `01` → `01-initial.md`
-- Wrap number `02` or higher → `<NN>-continued.md`
+- Format: `<NN>-<slug>.md` where `<slug>` is **3–5 kebab-case words** derived from the Summary.
+- Choose the most distinctive words that make this file uniquely identifiable in the Obsidian graph view.
+- Every wrap file — including the first — must have a semantic slug. **Never use `initial` or `continued` as the slug.**
+- Good: `01-merge-conflicts-resolved.md`, `01-stat-card-tdd-complete.md`, `02-pr-review-respond.md`
+- Bad: `01-initial.md`, `02-continued.md`, `03-session.md`
 
 Write the document to **two locations** (same content, same filename at both):
 
 ```
-%USERPROFILE%\AppData\Local\Temp\<session-name>\<NN>-<label>.md
-{{AI_ROOT}}\Agents\Sessions\<session-name>\<NN>-<label>.md
+%USERPROFILE%\AppData\Local\Temp\<session-name>\<NN>-<slug>.md
+{{AI_ROOT}}\Agents\Sessions\<session-name>\<NN>-<slug>.md
 ```
 
 Create both directories if they do not exist. **Never overwrite** an existing numbered file.
+
+### Step 4a — Chain the previous wrap file (continuation sessions only)
+
+If `NN > 1` (this is a continuation), open the previous wrap file
+(`{{AI_ROOT}}\Agents\Sessions\<session-name>\<NN-1>-<prev-slug>.md`)
+and **append** this footer to it:
+
+```markdown
+
+---
+
+**→ Next:** [[<NN>-<slug>|<NN> — <display text>]]
+```
+
+- `<display text>` is 3–6 readable words derived from this wrap's Summary — same words as the slug, without hyphens.
+- Use the short filename (no folder prefix) — Obsidian resolves unique names across the vault.
+- This creates a forward-linked chain: every multi-part session is fully traversable from the index through `01 → 02 → 03 → …` without orphan nodes in the graph.
+
+---
+
+### Step 4b — Collapse same-day sessions into one folder
+
+After saving the wrap file (and applying Step 4a if applicable):
+
+**1. Scan for same-day folders.**
+
+List all immediate subdirectories of `{{AI_ROOT}}\Agents\Sessions\` whose name starts with today's date in `YYYY-MM-DD-*` format.
+
+**2. If only one folder matches today's date** — nothing to collapse. Skip the rest of this step.
+
+**3. If two or more folders share today's date**, perform the collapse:
+
+#### 3a — Derive the combined slug
+
+- Extract the slug portion (the part after `YYYY-MM-DD-`) from every same-day folder name.
+- Build a combined slug: take the 1–2 most distinctive words from each slug, join with `-`, cap at **6 words total**.
+- The result should be a compact, readable summary of everything done today.
+- Example: `skills-bucket-restructure-pr` + `skills-generalization-merge-fix` + `wip-sweep` → `skills-bucket-generalization-merge-wip`
+- If all same-day slugs share a common prefix (e.g. all start with `skills-`), use the prefix once then append the differentiating words.
+- Good: `giselle-theme-pr-triage-asana-sync`
+- Bad: `session`, `misc`, `work`, or a slug longer than 6 words
+
+#### 3b — Create the combined folder
+
+```
+{{AI_ROOT}}\Agents\Sessions\YYYY-MM-DD-<combined-slug>\
+```
+
+#### 3c — Determine move order
+
+Sort the same-day folders chronologically by the creation timestamp of their earliest wrap file (`01-*.md`). Within each folder, files are already in `NN-` order — preserve that intra-folder sequence. The result is a flat ordered list of all wrap files across all same-day folders.
+
+#### 3d — Move and renumber all files
+
+Assign new sequential `NN-` numbers across the full flat list (01, 02, 03, …). Keep the original slug portion of every filename unchanged — only the `NN-` prefix changes.
+
+Example: folder A has `01-pr-review.md`, `02-eslint-fix.md`; folder B has `01-asana-seed.md`. Result: `01-pr-review.md`, `02-eslint-fix.md`, `03-asana-seed.md` in the combined folder.
+
+#### 3e — Fix `→ Next:` footer links
+
+For every file moved and renumbered, check its content for `→ Next:` footers:
+
+- If the footer's target `[[<old-NN>-<slug>]]` is another file from the same original session folder, update the `old-NN` prefix to the new number the target file received in step 3d.
+- If the last file of one session has no `→ Next:` footer but there is a next session's file immediately following in the new combined order, **add** a `→ Next:` footer linking to that next file. This bridges separate sessions into one traversable chain.
+- Do not touch any footer that points outside the sessions folder (external links, PR links, etc.).
+
+#### 3f — Delete the now-empty old folders
+
+After all files are moved, delete the now-empty original same-day session folders.
+
+#### 3g — Update `sessions-index.md`
+
+All index rows whose Folder column pointed to a same-day folder must be merged:
+
+- Find every row in `sessions-index.md` whose Date matches today and whose Folder slug is one of the now-deleted folders.
+- Delete those rows.
+- Insert one replacement row:
+
+| Column     | Value                                                                                             |
+| ---------- | ------------------------------------------------------------------------------------------------- |
+| Date       | today's date                                                                                      |
+| Title      | comma-joined session titles (or a 5–8 word combined sentence describing the day's work)           |
+| Projects   | union of all projects from merged rows                                                            |
+| Topics     | union of all topics from merged rows                                                              |
+| Wraps      | total wrap file count across all merged sessions                                                  |
+| Model(s)   | union of all models from merged rows                                                              |
+| Session ID | comma-separated IDs from merged rows (or first 8 chars each)                                      |
+| Folder     | `[[<combined-session-name>/01-<first-slug>\|<combined-session-name>]]` — links to the first file  |
 
 ---
 
 ## Step 5 — Update the session index
 
-Open `{{AI_ROOT}}\Agents\Sessions\_index.md`.
+Open `{{AI_ROOT}}\Agents\Sessions\sessions-index.md`.
 
-If `_index.md` does not exist, create it with this header:
+If `sessions-index.md` does not exist, create it with this header:
 
 ```markdown
 # Session Index
 
 > Each session is stored in its own folder. Multiple wraps from the same session appear as
-> numbered files inside the folder (`01-initial.md`, `02-continued.md`, …).
+> numbered files inside the folder — named `<NN>-<slug>.md` with a semantic slug.
 
 | Date | Title | Projects | Topics | Wraps | Model(s) | Session ID | Folder |
 | ---- | ----- | -------- | ------ | ----- | -------- | ---------- | ------ |
@@ -196,28 +298,30 @@ increment **Wraps** by 1, append the model to **Model(s)** if not already listed
 
 **If no row exists**: append a new row:
 
-| Column     | Value                                          |
-| ---------- | ---------------------------------------------- |
-| Date       | today's date                                   |
-| Title      | human title from Step 1                        |
-| Projects   | comma-separated repo/project names             |
-| Topics     | comma-separated tags from Topics Covered table |
-| Wraps      | `1`                                            |
-| Model(s)   | model name from Step 1                         |
-| Session ID | first 8 chars of UUID, or `N/A`                |
-| Folder     | `[<session-name>](./<session-name>/)`          |
+| Column     | Value                                                                             |
+| ---------- | --------------------------------------------------------------------------------- |
+| Date       | today's date                                                                      |
+| Title      | human title from Step 1                                                           |
+| Projects   | comma-separated repo/project names                                                |
+| Topics     | comma-separated tags from Topics Covered table                                    |
+| Wraps      | `1`                                                                               |
+| Model(s)   | model name from Step 1                                                            |
+| Session ID | first 8 chars of UUID, or `N/A`                                                   |
+| Folder     | `[[<session-name>/<NN>-<slug>\|<session-name>]]` — links to the first wrap file   |
+
+> **Obsidian note:** use a wikilink in the Folder column that targets the first wrap file (not the folder). The display text is the session-name folder. This ensures Obsidian graph traversal works and avoids the "not created yet" tooltip caused by trailing-slash folder links.
 
 ---
 
 ## Step 6 — Update prompt catalogue (if applicable)
 
 Check the Files Edited list from Step 3. If any `.prompt.md` files were created or modified
-this session, upsert a row in `{{AI_ROOT}}\Agents\Prompts\_index.md`.
+this session, upsert a row in `{{AI_ROOT}}\Agents\Prompts\prompts-index.md`.
 
 For each affected prompt file:
 
 1. Read its YAML frontmatter for `name:` and `description:`.
-2. If `_index.md` does not exist, create it with this header:
+2. If `prompts-index.md` does not exist, create it with this header:
 
    ```markdown
    # Prompt Catalogue
@@ -228,7 +332,7 @@ For each affected prompt file:
 
 3. If a row already exists for the file: update `Last Updated` to today's date only.
 4. If it is a new prompt: append a row with Name, `/`-prefixed invocation, description,
-   Created date, Last Updated date, and `[<filename>.prompt.md](./<filename>.prompt.md)` link.
+   Created date, Last Updated date, and `[[<filename>|<filename>.prompt.md]]` wikilink.
 
 If no prompt files were touched this session, skip this step silently.
 
