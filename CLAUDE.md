@@ -1,13 +1,36 @@
+## ⚠️ PUBLIC REPOSITORY — read before writing anything
+
+This repo is a **public fork** of [Matt Pocock's skills repo](https://github.com/total-typescript/skills).
+It is published and installable by anyone: `npx skills@latest add AlexRebula/skills`.
+
+**Rules — non-negotiable:**
+
+- **PR descriptions and commit messages must be written for a public audience.** Assume a
+  stranger to the project is reading them. No unexplained internal jargon, no references to
+  internal project names or private tooling unless you define them inline.
+- **Skill files may reference organisation-specific context** (LittleBranches, giselle-mui, etc.)
+  because those skills are explicitly scoped to that organisation. The PR that ships them
+  should describe what the skill does, not assume the reader knows the internal setup.
+- **Never reference private repository names** (e.g. `my-private-app`, `my-portfolio`) in
+  PR descriptions, commit messages, or README entries.
+
+---
+
+## Skill bucket structure
+
 Skills are organized into bucket folders under `skills/`:
 
-- `engineering/` — daily code work
+- `engineering/` — framework-agnostic code craft and architecture
+- `framework/` — framework-specific scaffolding (React, Vue, Angular)
+- `git/` — git and PR lifecycle operations
+- `org/` — LittleBranches organisation-specific skills
 - `productivity/` — daily non-code workflow tools
 - `misc/` — kept around but rarely used
 - `personal/` — tied to my own setup, not promoted
 - `in-progress/` — drafts not yet ready to ship
 - `deprecated/` — no longer used
 
-Every skill in `engineering/`, `productivity/`, or `misc/` must have a reference in the top-level `README.md` and an entry in `.claude-plugin/plugin.json`. Skills in `personal/`, `in-progress/`, and `deprecated/` must not appear in either.
+Every skill in `engineering/`, `framework/`, `git/`, `org/`, `productivity/`, or `misc/` must have a reference in the top-level `README.md` and an entry in `.claude-plugin/plugin.json`. Skills in `personal/`, `in-progress/`, and `deprecated/` must not appear in either.
 
 Each skill entry in the top-level `README.md` must link the skill name to its `SKILL.md`.
 

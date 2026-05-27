@@ -4,7 +4,7 @@
     "audit-giselle-tests": {
       "source": "AlexRebula/skills",
       "sourceType": "github",
-      "skillPath": "skills/engineering/audit-giselle-tests/SKILL.md",
+      "skillPath": "skills/org/audit-giselle-tests/SKILL.md",
       "computedHash": "33d2fdcf2a3cde4abce39cd4b05c3583417e631d00e0010ca8e80048594130db"
     },
     "caveman": {
@@ -16,25 +16,25 @@
     "create-angular-component": {
       "source": "AlexRebula/skills",
       "sourceType": "github",
-      "skillPath": "skills/engineering/create-angular-component/SKILL.md",
+      "skillPath": "skills/framework/create-angular-component/SKILL.md",
       "computedHash": "8bbd837d99de3cdf6df35c3629b12982aefd72c7c21183835b6da8b971ae2857"
     },
     "create-giselle-component": {
       "source": "AlexRebula/skills",
       "sourceType": "github",
-      "skillPath": "skills/engineering/create-giselle-component/SKILL.md",
+      "skillPath": "skills/org/create-giselle-component/SKILL.md",
       "computedHash": "8fe94699ac8dd91b2df98f546bc6e5036973146264bad6a7604d3ead12bce8dd"
     },
     "create-react-component": {
       "source": "AlexRebula/skills",
       "sourceType": "github",
-      "skillPath": "skills/engineering/create-react-component/SKILL.md",
+      "skillPath": "skills/framework/create-react-component/SKILL.md",
       "computedHash": "66d3c1b5b91e4a86c9b849a51925708e675b87915ebb6b5487c2670febfccaff"
     },
     "create-vue-component": {
       "source": "AlexRebula/skills",
       "sourceType": "github",
-      "skillPath": "skills/engineering/create-vue-component/SKILL.md",
+      "skillPath": "skills/framework/create-vue-component/SKILL.md",
       "computedHash": "740c973ae64e7664964f22dcbaecff3335fcb707b97cc863621368e909c8a173"
     },
     "diagnose": {
@@ -76,13 +76,13 @@
     "respond-giselle-pr-review": {
       "source": "AlexRebula/skills",
       "sourceType": "github",
-      "skillPath": "skills/engineering/respond-giselle-pr-review/SKILL.md",
+      "skillPath": "skills/org/respond-giselle-pr-review/SKILL.md",
       "computedHash": "74e648e16b9a2e08bb61f8c81087f3fe731c6eaa34090d7c227bab817eff296a"
     },
     "respond-pr-review": {
       "source": "AlexRebula/skills",
       "sourceType": "github",
-      "skillPath": "skills/engineering/respond-pr-review/SKILL.md",
+      "skillPath": "skills/git/respond-pr-review/SKILL.md",
       "computedHash": "c19d6cb70f3d458f1f75172ba626ede25d9037f045a1c765e0cb59671737dfd9"
     },
     "review": {
@@ -94,13 +94,13 @@
     "review-giselle-pr": {
       "source": "AlexRebula/skills",
       "sourceType": "github",
-      "skillPath": "skills/engineering/review-giselle-pr/SKILL.md",
+      "skillPath": "skills/org/review-giselle-pr/SKILL.md",
       "computedHash": "f6254d9687297f4a414a803927915a0bdfba44d57c805b1a65f1ca6c89e3c64f"
     },
     "review-pr": {
       "source": "AlexRebula/skills",
       "sourceType": "github",
-      "skillPath": "skills/engineering/review-pr/SKILL.md",
+      "skillPath": "skills/git/review-pr/SKILL.md",
       "computedHash": "d555375ecd3a1f3c72477135360ae9b0903cf17b51577fcfe576b1e600ea6bbd"
     },
     "setup-matt-pocock-skills": {

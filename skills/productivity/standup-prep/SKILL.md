@@ -3,8 +3,10 @@ name: standup-prep
 description: Daily session startup coordinator. Sweeps all repos for uncommitted work, surfaces open PRs, produces a prioritised morning brief, writes it to disk, and optionally syncs tasks to Asana. Run this before any coding work. Calls the preflight, session context, repo status, WIP sweep, PR sweep, and Asana sync sub-skills in order.
 ---
 
-> **`AI_ROOT`** = `c:\work\projects\ar\ai-workflow`
-> Substitute `{{AI_ROOT}}` with this value in all file paths in this skill.
+> **`{{AI_ROOT}}`** must be configured before using this skill.
+> In VS Code on Windows: `"github.copilot.chat.templateVariables": { "AI_ROOT": "C:\\path\\to\\your\\ai-workflow" }`
+> In VS Code on macOS/Linux: `"github.copilot.chat.templateVariables": { "AI_ROOT": "/path/to/your/ai-workflow" }`
+> All file paths in this skill use `{{AI_ROOT}}` as a template variable.
 
 You are preparing the developer's workday. Complete all steps in order. **Do not skip steps.**
 
@@ -14,7 +16,7 @@ You are preparing the developer's workday. Complete all steps in order. **Do not
 
 Run `/standup-prep-preflight`.
 
-This runs `/check-prior-work`, `/load-oss-standards`, and `/load-dependency-chain` in sequence.
+This runs `/check-prior-work` and `/load-dependency-chain`, and optionally `/load-oss-standards` (see `/standup-prep-preflight` Step 2 for details).
 Any pre-standup work found will be stored for merging into the brief in Step 4.
 
 ---

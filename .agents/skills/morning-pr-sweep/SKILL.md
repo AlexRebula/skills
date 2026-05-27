@@ -1,55 +1,90 @@
 ---
 name: morning-pr-sweep
-description: Clear all open PR review debt across every LittleBranches repo in one session. Discovers every open PR, triages ALL threads across ALL PRs before touching any code, batches fixes into one commit per PR, posts SHA confirmations, and reports which PRs are merge-ready. Replaces running /respond-giselle-pr-review N times with a single morning ritual that takes 20–30 minutes regardless of how many PRs are open.
+description: Clear all open PR review debt across your repos in one session. Discovers every open PR, triages ALL threads across ALL PRs before touching any code, batches fixes into one commit per PR, posts SHA confirmations, and reports which PRs are merge-ready. Replaces running /respond-giselle-pr-review N times with a single morning ritual that takes 20–30 minutes regardless of how many PRs are open.
 ---
 
 # Morning PR Sweep
 
 Run this at the start of each working day. Its job is simple: **no PR should leave the session with an unacknowledged review thread**. By the end of the sweep, every open thread has been triaged, replied to, fixed (if valid), and confirmed — leaving only the manual merge step for you.
 
-The key difference from calling `/respond-giselle-pr-review` N times: all threads across all PRs are triaged **together, before any code is touched**. This means one context load, one standards load, one pass through all the code, one commit per PR. Not N context loads, N fix cycles, N pushes.
+The key difference from calling `/respond-pr-review` (or `/respond-giselle-pr-review` for LittleBranches repos) N times: all threads across all PRs are triaged **together, before any code is touched**. This means one context load, one standards load, one pass through all the code, one commit per PR. Not N context loads, N fix cycles, N pushes.
+
+---
+
+## ⚠️ Before you run this
+
+**This skill makes real, public writes.** Understand what it does before you invoke it:
+
+| Action                                               | Scope                      | Visibility                                  |
+| ---------------------------------------------------- | -------------------------- | ------------------------------------------- |
+| Posts acknowledgement replies to open review threads | Per thread, before any fix | Public — visible to anyone with repo access |
+| Pushes fix commits to the PR branch                  | Per PR, after fixes        | Public — appears in the PR timeline         |
+| Posts SHA confirmation replies to every thread       | Per thread, after push     | Public — visible to anyone with repo access |
+
+**This applies to both private and public repositories.** On a public repo, your replies are visible to the entire internet.
+
+Do not run this skill:
+
+- On PRs you are not authorised to respond to
+- In repositories where AI-authored replies are unwelcome or against contribution guidelines
+- Without reviewing the discovery table in Phase 0e before confirming
+
+The skill always shows a full impact table and waits for your explicit confirmation before posting anything (Phase 0e). You can stop at that point if the scope is not what you expected.
+
+---
 
 ## Arguments
 
-`/morning-pr-sweep` — sweeps all repos in the default list (see Phase 0).
+`/morning-pr-sweep` — discovers and sweeps all repos owned by the authenticated GitHub user.
 `/morning-pr-sweep <owner>/<repo>` — sweeps a single repo only.
 `/morning-pr-sweep --repos <owner>/<repo>,<owner>/<repo>` — sweeps a specific set of repos.
+`/morning-pr-sweep --orgs <org1>,<org2>` — sweeps all repos in the specified orgs instead of the authenticated user's repos.
+`/morning-pr-sweep --standards-url <url>` — loads a shared standards file (AGENTS.md) for all repos in the sweep instead of per-repo discovery.
 
 ---
 
 ## Phase 0 — Discover
 
-### 0a. Load the standards (once, before reading any PR)
+### 0a. Load the standards _(if available)_
 
-```
-Public:   https://raw.githubusercontent.com/LittleBranches/oss-quality-standards/main/docs/AGENTS.md
-Workflow: https://raw.githubusercontent.com/LittleBranches/oss-quality-standards/main/docs/pr-review-workflow.md
-```
-
-Private AGENTS.md barrel — use the authenticated `gh` CLI:
+Check whether each target repo carries an `AGENTS.md` at its root:
 
 ```sh
-gh api repos/LittleBranches/oss-quality-standards-private/contents/AGENTS.md \
-  --jq '.content | @base64d'
+gh api repos/<owner>/<repo>/contents/AGENTS.md --jq '.name' 2>/dev/null
 ```
 
-Only skip this if `gh` returns a permission error — if so, note that banned-content and encryption rules were not checked.
+- **Found:** fetch the full file and load its rules for that repo's PR reviews.
+- **Not found:** proceed without standards. Note in the report that no standards file was found for this repo.
+
+**Override:** Pass `--standards-url <url>` to load a shared standards file for all repos in the sweep — useful when your org maintains a central AGENTS.md. This overrides per-repo discovery.
+
+> **LittleBranches contributors:** Your standards are at:
+> `https://raw.githubusercontent.com/LittleBranches/oss-quality-standards/main/docs/AGENTS.md`
+> Pass this as `--standards-url` or ensure each repo's `AGENTS.md` references it.
 
 ### 0b. Build the repo list
 
-If no repos were specified as arguments, use the default set:
+If no repos were specified as arguments, discover repos:
+
+- If `--orgs <org1>,<org2>` was passed: list repos for each specified org.
+- Otherwise: list repos for the current authenticated GitHub user.
 
 ```sh
-gh repo list --limit 100 --json nameWithOwner,isPrivate \
-  --jq '.[] | select(.nameWithOwner | test("(?i)(LittleBranches|AlexRebula)")) | .nameWithOwner'
+gh repo list --limit 200 --json nameWithOwner,isPrivate \
+  --jq '.[] | "\(.nameWithOwner) (\(if .isPrivate then "private" else "public" end))"'
 ```
 
-The standard working set is:
-- `LittleBranches/giselle-mui`
-- `LittleBranches/oss-quality-standards`
-- `alexrebula/first-branch`
+> **Scoping to specific orgs:** If you want to limit discovery to certain organisations,
+> add a `select` filter:
+>
+> ```sh
+> gh repo list --limit 200 --json nameWithOwner,isPrivate \
+>   --jq '.[] | select(.nameWithOwner | startswith("MyOrg/")) | "\(.nameWithOwner) (\(if .isPrivate then "private" else "public" end))"'
+> ```
+>
+> Replace `MyOrg` with your organisation name. For multiple orgs use `test("(?i)(Org1|Org2)")`.
 
-Include any other repo explicitly passed as an argument.
+Include any repo explicitly passed as a `--repos` argument.
 
 ### 0c. List open PRs
 
@@ -68,17 +103,29 @@ Skip draft PRs — they are not ready for morning sweep.
 For each open, non-draft PR, determine its state:
 
 ```sh
-# Check if any Copilot review threads exist
-gh api --paginate /repos/<owner>/<repo>/pulls/<N>/comments \
-  --jq '[.[] | select(.user.login | test("copilot|github-advanced-security"; "i"))] | length'
+# For each bot review comment, check if the author has already replied with a SHA
+gh api --paginate repos/<owner>/<repo>/pulls/<N>/comments \
+  --jq '
+    [.[] | select(.user.login | test("copilot|github-advanced-security"; "i"))] as $bot |
+    if ($bot | length) == 0 then "no-bot-threads"
+    else
+      ($bot | map(.id) | map(
+        . as $id |
+        # a thread is handled when a non-bot reply containing a 7-char hex SHA exists
+        [$bot[] | select(.id == $id or .in_reply_to_id == $id)] |
+        any(.user.login | test("copilot|github-advanced-security"; "i") | not) and
+        any(.body | test("[0-9a-f]{7}"; "i"))
+      ) | all) |
+      if . then "merge-ready" else "needs-response" end
+    end'
 ```
 
-| State | Condition | What sweep does |
-|---|---|---|
-| `needs-response` | Copilot/bot review comments exist | Runs respond protocol (Phases 1–4) |
-| `needs-review` | PR open but no review posted yet | Flags in report; skip |
-| `merge-ready` | All threads already have your SHA reply | Reports for manual merge |
-| `blocked` | CI failing, merge conflicts, or draft | Flags; skip |
+| State            | Condition                                                    | What sweep does                    |
+| ---------------- | ------------------------------------------------------------ | ---------------------------------- |
+| `needs-response` | Bot review threads exist with no author SHA reply            | Runs respond protocol (Phases 1–4) |
+| `needs-review`   | PR open but no review posted yet                             | Flags in report; skip              |
+| `merge-ready`    | Every bot thread has an author reply containing a commit SHA | Reports for manual merge           |
+| `blocked`        | CI failing, merge conflicts, or draft                        | Flags; skip                        |
 
 ### 0e. Show the discovery table — wait for confirmation
 
@@ -87,16 +134,26 @@ Present the full picture before doing anything:
 ```
 MORNING PR SWEEP — 22 May 2026
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-Repo                             PR    State            Branch
-LittleBranches/giselle-mui       #63   needs-response   feature/stat-card
-LittleBranches/giselle-mui       #64   needs-response   feature/theme-preset
-alexrebula/first-branch          #12   needs-review     feature/admin-ui
-LittleBranches/oss-quality-standards #8 merge-ready    chore/pr-workflow
+Repo                             Vis      PR    State            Branch
+MyOrg/repo-a                     public   #63   needs-response   feature/stat-card
+MyOrg/repo-a                     public   #64   needs-response   feature/theme-preset
+MyOrg/repo-b                     private  #12   needs-review     feature/admin-ui
+MyOrg/repo-c                     public   #8    merge-ready      chore/pr-workflow
 
-Proceeding with 2 PRs (needs-response). OK to continue?
+⚠️  WRITE IMPACT: Proceeding will post public replies to open threads in #63
+    and #64, push fix commits to both branches, and post SHA confirmations.
+    This is visible to all collaborators (and the public, if the repo is public).
+
+Proceed? (yes / no / list only)
 ```
 
-Wait for confirmation before proceeding.
+**`yes`** — proceed with full sweep.
+**`no`** — abort. No writes made.
+**`list only`** — print the discovery table but make no writes. Useful for reviewing scope before committing.
+
+Wait for explicit confirmation before proceeding.
+
+**If the user answers `list only`: stop here.** Print the discovery table and make no further writes. Do not proceed to Phase 1, 2, 3, or 4.
 
 ---
 
@@ -189,7 +246,13 @@ Handle GitHub suggested change blocks explicitly — accept them into the fix ba
 
 Group all `✅` and `⚠️` fixes by PR. Fix one PR at a time, all changes in one working pass.
 
-Before each commit, run the repo's quality gate:
+Before each commit, run the repo's quality gate. Discover it first:
+
+1. Check the repo's `AGENTS.md` for a `quality gate` or `check` command.
+2. If `package.json` exists and defines `check:verify` or `check`, use that.
+3. Fallback for non-Node repos: look for a `Makefile` target named `check`, `lint`, or `test`.
+
+For Node/npm repos the command is typically:
 
 ```sh
 npm run check:verify
@@ -237,11 +300,11 @@ Before reporting, scan every reply posted under your account in this session for
 
 For each signal, verify the artifact exists:
 
-| Commitment | Required artifact |
-|---|---|
-| Fix in this PR | Commit SHA posted in thread |
+| Commitment            | Required artifact            |
+| --------------------- | ---------------------------- |
+| Fix in this PR        | Commit SHA posted in thread  |
 | Open a tracking issue | Issue opened and link posted |
-| Update PR description | PR description updated |
+| Update PR description | PR description updated       |
 
 If any artifact is missing, create it now.
 

@@ -12,6 +12,7 @@ Read this file in full:
 ```
 
 Extract:
+
 - The hard deadline and what depends on it
 - The critical path (what is blocking what today)
 - Current phase status for each active repo

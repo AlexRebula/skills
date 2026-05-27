@@ -112,17 +112,17 @@ Flag immediately if any of the following appear in the diff. These are always `b
 
 Follow `/review-pr` steps 6–8 exactly — aggregate line-specific vs general findings, post via the GitHub PR Reviews API, report in chat.
 
-One addition to the review body: if the private AGENTS.md was loaded, include a footnote:
+One addition to the review body covering the private barrel:
 
-```
-*Private AGENTS.md (banned content + encryption rules) was included in this review.*
-```
-
-If it was not accessible, include:
-
-```
-*Private AGENTS.md was not accessible — banned content and encryption rules were not checked.*
-```
+- If `--standards-url` was used: omit the private-AGENTS footnote entirely — the barrel was intentionally skipped by the caller, not inaccessible.
+- If the private AGENTS.md was loaded (default flow): include:
+  ```
+  *Private AGENTS.md (banned content + encryption rules) was included in this review.*
+  ```
+- If it was not accessible (default flow, `gh` returned a permission error): include:
+  ```
+  *Private AGENTS.md was not accessible — banned content and encryption rules were not checked.*
+  ```
 
 ### 9. Close-out audit (mandatory — do not skip)
 

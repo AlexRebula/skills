@@ -16,11 +16,26 @@ Verify access to both AGENTS.md files. **Do not load the full content into conte
 
 ## verify — Check standards access
 
-**If `--standards-url` was provided:** Confirm the custom URL is reachable by fetching it with `fetch_webpage`. If it returns content → ✅. If it 404s or is empty → ❌ (log, continue). Skip the LittleBranches checks below — the caller supplied their own standards source.
+**If `--standards-url` was provided:** Confirm the custom URL is reachable without ingesting the body:
+
+```sh
+curl --head "<url>"
+```
+
+If it returns `HTTP 200` → ✅. If it returns an error or non-200 status → ❌ (log, continue). Skip the LittleBranches checks below — the caller supplied their own standards source.
+
+**On-demand load for custom URL (only when a specific rule is in question):**
+
+```sh
+curl -sS "<url>" | grep -A 30 "^## <section>"
+```
+
+Do not proactively load the full file.
 
 **Default flow (no `--standards-url`):**
 
 **Public (always accessible):**
+
 
 ```sh
 # Verify reachable — do NOT decode full content
@@ -28,9 +43,11 @@ gh api repos/LittleBranches/oss-quality-standards/contents/docs/AGENTS.md \
   --jq '.name' 2>/dev/null
 ```
 
+
 If this returns `"AGENTS.md"` → ✅. If it fails → ❌ (log, continue).
 
 **Private (requires `gh auth`):**
+
 
 ```sh
 gh auth status 2>&1 | head -3
@@ -38,14 +55,17 @@ gh api repos/LittleBranches/oss-quality-standards-private/contents/AGENTS.md \
   --jq '.name' 2>/dev/null
 ```
 
+
 If `gh auth status` fails or the second command errors → ⚠️ Private standards not loaded. Public standards apply only.
 
 **On-demand full load (only when a specific rule is in question):**
+
 
 ```sh
 gh api repos/LittleBranches/oss-quality-standards/contents/docs/AGENTS.md \
   --jq '.content' | base64 -d | grep -A 30 "^## <section>"
 ```
+
 
 Do not proactively load the full file.
 
@@ -60,6 +80,12 @@ Do not proactively load the full file.
 
 Before proceeding, print this table with real status values:
 
+| Check                   | Status                                      |
+| ----------------------- | ------------------------------------------- |
+| OSS standards — public  | ✅ accessible / ❌ unreachable              |
+| OSS standards — private | ✅ authenticated / ⚠️ not authenticated     |
+| AlexRebula skills       | ✅ N skills on disk / ⚠️ N expected missing |
+| Session context budget  | ~N% used · ~N% available                    |
 | Check                   | Status                                      |
 | ----------------------- | ------------------------------------------- |
 | OSS standards — public  | ✅ accessible / ❌ unreachable              |

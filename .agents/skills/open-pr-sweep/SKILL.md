@@ -1,16 +1,17 @@
 ---
 name: open-pr-sweep
 description: Discover all non-draft open pull requests across one or more GitHub organisations or users. Pure discovery — no writes. Produces a table of open PRs for use in a morning brief or session triage. Run after /repo-status or independently whenever you need to know what PRs need attention.
+description: Discover all non-draft open pull requests across one or more GitHub organisations or users. Pure discovery — no writes. Produces a table of open PRs for use in a morning brief or session triage. Run after /repo-status or independently whenever you need to know what PRs need attention.
 ---
 
 # Open PR Sweep
 
 ## Arguments
 
-`/open-pr-sweep` — discovers PRs across repos owned by or visible to the authenticated GitHub user.
+`/open-pr-sweep` — discovers PRs across repos owned by the authenticated GitHub user.
 `/open-pr-sweep --orgs <org1>,<org2>` — filters to the specified GitHub organisations or users (comma-separated, e.g. `--orgs LittleBranches,AlexRebula`).
 
-Discover all repos:
+Discover all repos (capped at 200 per owner):
 
 ```sh
 # Without --orgs: repos for the current authenticated user
@@ -23,6 +24,7 @@ gh repo list AlexRebula --limit 50 --json nameWithOwner --jq '.[] | .nameWithOwn
 ```
 
 For each repo returned:
+
 ```sh
 gh pr list --repo <owner>/<repo> --state open \
   --json number,title,headRefName,reviewDecision,isDraft \
@@ -31,8 +33,8 @@ gh pr list --repo <owner>/<repo> --state open \
 
 Collect all non-draft open PRs. Produce a table:
 
-| # | Repo | Title | Action needed |
-|---|---|---|---|
-| ... | ... | ... | ... |
+| #   | Repo | Title | Action needed |
+| --- | ---- | ----- | ------------- |
+| ... | ...  | ...   | ...           |
 
-*(or "No open PRs.")*
+_(or "No open PRs.")_
