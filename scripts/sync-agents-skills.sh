@@ -25,6 +25,19 @@ DEST="$REPO/.agents/skills"
 
 mkdir -p "$DEST"
 
+# Fail fast if any skill name appears in more than one bucket.
+duplicate_check=$(find "$REPO/skills" -mindepth 3 -maxdepth 3 -name SKILL.md \
+  -not -path '*/node_modules/*' \
+  -not -path '*/deprecated/*' \
+  -print0 |
+  while IFS= read -r -d '' f; do basename "$(dirname "$f")"; done |
+  sort | uniq -d)
+if [[ -n "$duplicate_check" ]]; then
+  echo "ERROR: duplicate skill names detected — each name must be unique across all buckets:" >&2
+  printf '  %s\n' $duplicate_check >&2
+  exit 1
+fi
+
 find "$REPO/skills" -mindepth 3 -maxdepth 3 -name SKILL.md \
   -not -path '*/node_modules/*' \
   -not -path '*/deprecated/*' \

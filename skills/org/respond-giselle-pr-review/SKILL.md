@@ -53,7 +53,7 @@ that banned-content and encryption rules were not checked.
 
 ```sh
 gh repo view --json nameWithOwner --jq '.nameWithOwner'
-gh pr view <N> --repo <owner>/<repo> --json headRefName,headRefOid
+gh pr view <N> --repo <owner>/<repo> --json headRefName,headRefOid,baseRefName
 git branch --show-current
 ```
 
