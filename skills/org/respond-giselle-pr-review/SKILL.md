@@ -114,7 +114,6 @@ gh run view <run-id> --log-failed --repo <owner>/<repo>
 
 Diagnose the root cause, then proceed to gather review threads (step 3). Include the CI fix in the step 6 batch commit together with the valid review fixes. CI must be green before handing back to the branch owner.
 
-
 ### 3. Gather every review thread first
 
 Do not answer any comment until you have read all of them.

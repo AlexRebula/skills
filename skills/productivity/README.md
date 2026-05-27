@@ -8,6 +8,8 @@ General workflow tools, not code-specific.
 - **[grill-me](./grill-me/SKILL.md)** — Get relentlessly interviewed about a plan or design until every branch of the decision tree is resolved.
 - **[handoff](./handoff/SKILL.md)** — Compact the current conversation into a handoff document so another agent can continue the work.
 - **[load-session-context](./load-session-context/SKILL.md)** — Load the session index and latest wrap file; check for an existing morning brief for today.
+- **[collapse-session-folder](./collapse-session-folder/SKILL.md)** — Collapse all same-day session wrap folders into one combined folder. Repairs → Next footer links and updates sessions-index.md. Called automatically by /session-wrap.
+- **[resolve-ai-paths](./resolve-ai-paths/SKILL.md)** — Resolve `SESSIONS_ROOT` and `PROMPTS_ROOT` for AI workflow skills. Call this at the start of any skill that reads/writes sessions or prompts folders.
 - **[session-wrap](./session-wrap/SKILL.md)** — Write a session wrap doc, update the session index, and hand off to /wip-sweep. More powerful sibling of /handoff. Use at context >55% or after completing major work.
 - **[standup-prep](./standup-prep/SKILL.md)** — Daily session startup coordinator. Runs preflight → session context → repo status + WIP sweep → open PR sweep → morning brief → file write → Asana sync.
 - **[standup-prep-preflight](./standup-prep-preflight/SKILL.md)** — Composite pre-flight: runs `/check-prior-work`, `/load-oss-standards`, and `/load-dependency-chain` in sequence.

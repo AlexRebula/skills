@@ -51,7 +51,7 @@ Only skip the private barrel if `gh` itself returns a permission error — and i
 ### 3. Fetch PR metadata and diff
 
 ```sh
-gh pr view <N> --repo <owner>/<repo> --json title,body,headRefOid,headRefName
+gh pr view <N> --repo <owner>/<repo> --json title,body,headRefOid,headRefName,baseRefName
 gh pr diff <N> --repo <owner>/<repo>
 ```
 

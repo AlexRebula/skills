@@ -43,6 +43,6 @@ Fork is live. LittleBranches-specific skills are shipped and installable via `np
 
 | Item                                                        | Status |
 | ----------------------------------------------------------- | ------ |
-| Move canonical source from Google Drive to this repo        | ⬜     |
+| Move canonical source from Google Drive to this repo        | ✅     |
 | GitHub Actions CI: lint + validate all SKILL.md files       | ⬜     |
 | Automated sync: skills index → `README.md` table            | ⬜     |
