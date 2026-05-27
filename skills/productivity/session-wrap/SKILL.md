@@ -22,7 +22,7 @@ Look for any of these signals in the conversation context:
 - The summary includes a path like `Sessions\<session-name>\<NN>-*.md`
 
 If **any** signal is present, **use the existing session name** — do not generate a new one.
-The wrap file will be `<N+1>-continued.md` inside the existing folder.
+The wrap file will be `<N+1>-<semantic-slug>.md` inside the existing folder.
 
 If **no** signals are present, generate a new session name:
 
@@ -71,13 +71,13 @@ If **prior files exist**, read each in full and build an inventory of already-ca
 When writing Step 3, apply these rules:
 
 - **Omit anything already captured** — reference instead:
-  `> Already documented in [01-initial.md](01-initial.md). No change.`
+  `> Already documented in [<NN>-<slug>.md](<NN>-<slug>.md). No change.`
 - **Include updated items** with a clear `[UPDATED]` marker:
-  `> [UPDATED since 01-initial.md] PR #19 is now merged. Was: open.`
+  `> [UPDATED since <NN>-<slug>.md] PR #19 is now merged. Was: open.`
 - **Open the Summary** with a continuation note:
-  `> Continuation from [01-initial.md]. This file covers work done after the prior checkpoint.`
+  `> Continuation from [<NN>-<slug>.md]. This file covers work done after the prior checkpoint.`
 - **Pending Tasks** — only list tasks that are NEW or status-changed since the last wrap.
-  For unchanged tasks: `Other pending tasks unchanged — see [01-initial.md].`
+  For unchanged tasks: `Other pending tasks unchanged — see [<NN>-<slug>.md].`
 
 ---
 
@@ -158,33 +158,36 @@ Skills the next agent should invoke (e.g. `/tdd`, `/diagnose`, `/wip-sweep`).
 
 ## Step 4 — Save the wrap file
 
-Determine the suffix:
+Determine the filename using a **semantic slug** that describes the main thing that happened:
 
-- Wrap number `01` → `01-initial.md`
-- Wrap number `02` or higher → `<NN>-continued.md`
+- Format: `<NN>-<semantic-slug>.md`
+- `<NN>` is a zero-padded counter starting at `01`
+- `<semantic-slug>` is 3–6 words in kebab-case describing the session's main outcome
+- Examples: `01-pr25-review-response.md`, `02-skills-bucket-restructure.md`, `03-merge-conflicts-resolved.md`
+- Never use generic labels like `initial`, `continued`, `wrap`, or `session`
 
-Write the document to **two locations** (same content, same filename at both):
+Write the document to:
 
 ```
-%USERPROFILE%\AppData\Local\Temp\<session-name>\<NN>-<label>.md
-{{AI_ROOT}}\Agents\Sessions\<session-name>\<NN>-<label>.md
+{{AI_ROOT}}\Agents\Sessions\<session-name>\<NN>-<semantic-slug>.md
 ```
 
-Create both directories if they do not exist. **Never overwrite** an existing numbered file.
+Create the directory if it does not exist. **Never overwrite** an existing numbered file.
 
 ---
 
 ## Step 5 — Update the session index
 
-Open `{{AI_ROOT}}\Agents\Sessions\_index.md`.
+Open `{{AI_ROOT}}\Agents\Sessions\sessions-index.md`.
 
-If `_index.md` does not exist, create it with this header:
+If `sessions-index.md` does not exist, create it with this header:
 
 ```markdown
 # Session Index
 
 > Each session is stored in its own folder. Multiple wraps from the same session appear as
-> numbered files inside the folder (`01-initial.md`, `02-continued.md`, …).
+> numbered files inside the folder — named `<NN>-<slug>.md` with a semantic slug
+> (e.g. `01-merge-conflicts-resolved.md`).
 
 | Date | Title | Projects | Topics | Wraps | Model(s) | Session ID | Folder |
 | ---- | ----- | -------- | ------ | ----- | -------- | ---------- | ------ |

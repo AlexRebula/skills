@@ -86,10 +86,25 @@ After T3, ask:
 > "Open pull requests for the pushed branches? Default: NO. [y/n/select]"
 
 If yes, for each pushed branch:
+
+1. Check for a PR template:
+   ```sh
+   cat <repo-path>/.github/pull_request_template.md 2>/dev/null
+   ```
+
+2. If a template exists, fill every section. If none exists, use What / Why / Type / Checklist / Notes.
+
+3. Every PR body must include:
+   - **What:** one paragraph describing the files and changes in this snapshot
+   - **Why:** "WIP snapshot — preserves in-progress work from session YYYY-MM-DD"
+   - **Type:** correct checkbox (docs / chore / feature / etc.)
+   - **Checklist:** tick what applies; mark others N/A with a reason
+   - **Notes for reviewer:** "Draft WIP snapshot — do not merge until work is complete and reviewed."
+
 ```sh
 gh pr create --repo <owner>/<repo> --head <branch> \
   --title "<type>(standup-prep): snapshot — <group> — YYYY-MM-DD" \
-  --body "Work-in-progress snapshot created by /standup-prep on YYYY-MM-DD. Review before merging." \
+  --body "<filled-in description per above>" \
   --draft
 ```
 
