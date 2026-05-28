@@ -16,24 +16,29 @@ argument-hint: 'Optional: focus hint for the next session (e.g. "continue stat-c
 >
 > `{{VSCODE_TARGET_SESSION_LOG}}` is optional — used in Step 2a to recover the full
 > transcript. If unavailable the skill degrades gracefully.
+>
+> If either `{{SESSIONS_ROOT}}` or `{{PROMPTS_ROOT}}` appears as a literal placeholder (i.e.
+> was not substituted by your environment), invoke `/resolve-ai-paths` before continuing.
+> It will scan for the sessions folder and return both values.
 
 ---
 
 ## Step 0 — Pre-flight: folder collapse check (automatic)
 
-Before naming or writing anything, scan all session folders for date collisions.
+Before naming or writing anything, check for uncollapsed session folders from **today's date**.
 
 ```sh
 ls "{{SESSIONS_ROOT}}"
 ```
 
-Group every folder matching `YYYY-MM-DD-*` by its date prefix. A date with **two or more
-folders** means those sessions were never collapsed — each was saved as a separate slug when
-they should live together under one date folder.
+Find all folders whose name starts with today's `YYYY-MM-DD-*` prefix. **Only inspect today's
+date — never touch folders from previous dates. Their history is already committed and must
+not be rewritten.** If you notice uncollapsed folders from a previous date, mention them to
+the user but do not act on them.
 
-**If every date has exactly one folder:** proceed to Step 1 with no action.
+**If zero or one folder matches today's date:** proceed to Step 1 with no action.
 
-**If any date has multiple folders**, print a warning and prompt for each affected date:
+**If two or more folders match today's date**, print a warning and prompt:
 
 > ⚠️ Found N uncollapsed folders for YYYY-MM-DD:
 >   - `YYYY-MM-DD-slug-a/` (M wrap files: 01-foo.md, ...)

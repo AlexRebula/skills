@@ -102,9 +102,14 @@ If yes, for each pushed branch:
    - **Notes for reviewer:** "Draft WIP snapshot — do not merge until work is complete and reviewed."
 
 ```sh
+# Write the multi-paragraph body to a temp file — embedding it with --body "..." is fragile:
+cat > /tmp/pr-body.md << 'EOF'
+<filled-in description per above>
+EOF
+
 gh pr create --repo <owner>/<repo> --head <branch> \
   --title "<type>(standup-prep): snapshot — <group> — YYYY-MM-DD" \
-  --body "<filled-in description per above>" \
+  --body-file /tmp/pr-body.md \
   --draft
 ```
 
