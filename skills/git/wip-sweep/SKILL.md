@@ -108,6 +108,7 @@ If yes, for each pushed branch:
 # Use mktemp for a unique, portable temp file — avoids /tmp/fixed-name collisions and
 # works on both POSIX (Linux/macOS) and Git Bash on Windows:
 PR_BODY_FILE=$(mktemp)
+trap 'rm -f "$PR_BODY_FILE"' EXIT
 cat > "$PR_BODY_FILE" << 'EOF'
 <filled-in description per above>
 EOF
@@ -116,7 +117,7 @@ gh pr create --repo <owner>/<repo> --head <branch> \
   --title "<type>(standup-prep): snapshot — <group> — YYYY-MM-DD" \
   --body-file "$PR_BODY_FILE" \
   --draft
-rm -f "$PR_BODY_FILE"
+rm -f "$PR_BODY_FILE"  # also covered by trap above
 ```
 
 PRs are created as **drafts** — never as ready-for-review.

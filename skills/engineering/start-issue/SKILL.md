@@ -85,7 +85,7 @@ gh pr list --repo <owner/repo> --search "#<number>" --json number,title,headRefN
 Also check for a branch named with the issue number as a prefix (e.g. `75-slug`, `issue-75`):
 
 ```bash
-git branch -a | grep -E "(^|[[:space:]]|/)[^[:space:]]*[^[:alnum:]]<number>[-/]"
+git branch -a | grep -E "(^|[[:space:]]|/)(<number>($|[-/])|[^[:space:]]*[^[:alnum:]]<number>($|[-/]))"
 ```
 
 If a PR already exists, note its number and branch name in the briefing block. If a branch exists but no PR, note the branch name.
