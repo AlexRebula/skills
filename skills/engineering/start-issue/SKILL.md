@@ -40,10 +40,19 @@ If the issue does not exist or is already closed, tell the user and stop.
 
 Scan the issue body for a `## Blocked by` section. Extract any referenced issue numbers (e.g. `#75`, `owner/repo#75`).
 
-For each referenced blocker, check whether it is open or closed:
+For each referenced blocker, check whether it is open or closed. The target repo depends on
+how the reference is written:
+
+- **Bare `#N`** (e.g. `#75`) — use the repo already resolved in Step 1.
+- **`owner/repo#N`** (e.g. `other/repo#75`) — extract `other/repo` from the reference and
+  use that repo instead.
 
 ```bash
-gh issue view <blocker-number> --repo <owner/repo> --json state,title --jq '.state + " — " + .title'
+# bare reference: use the current repo
+gh issue view <blocker-number> --repo <current-owner/repo> --json state,title --jq '.state + " — " + .title'
+
+# cross-repo reference: parse owner/repo from the reference
+gh issue view <blocker-number> --repo <parsed-owner/repo> --json state,title --jq '.state + " — " + .title'
 ```
 
 If **any blocker is still open**, list them clearly and halt:
@@ -72,7 +81,7 @@ gh pr list --repo <owner/repo> --search "#<number>" --json number,title,headRefN
 Also check for a branch named with the issue number as a prefix (e.g. `75-slug`, `issue-75`):
 
 ```bash
-git branch -a | grep -E "(^|\s)[\w/-]*\b<number>[-/]"
+git branch -a | grep -E "(^|[[:space:]])[[:alnum:]_/-]*\b<number>[-/]"
 ```
 
 If a PR already exists, note its number and branch name in the briefing block. If a branch exists but no PR, note the branch name.
