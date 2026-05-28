@@ -9,10 +9,10 @@ argument-hint: 'Optional: focus hint for the next session (e.g. "continue stat-c
 > **Prerequisites:** This skill requires two template variables defined in your environment
 > (e.g. `settings.json` `env` block, `.env` file, or shell profile):
 >
-> | Variable | Points to | Example |
-> | -------- | --------- | ------- |
+> | Variable            | Points to                               | Example               |
+> | ------------------- | --------------------------------------- | --------------------- |
 > | `{{SESSIONS_ROOT}}` | Folder where session folders are stored | `C:/work/ai/sessions` |
-> | `{{PROMPTS_ROOT}}` | Folder where the prompt catalogue lives | `C:/work/ai/prompts` |
+> | `{{PROMPTS_ROOT}}`  | Folder where the prompt catalogue lives | `C:/work/ai/prompts`  |
 >
 > `{{VSCODE_TARGET_SESSION_LOG}}` is optional — used in Step 2a to recover the full
 > transcript. If unavailable the skill degrades gracefully.
@@ -36,13 +36,27 @@ date — never touch folders from previous dates. Their history is already commi
 not be rewritten.** If you notice uncollapsed folders from a previous date, mention them to
 the user but do not act on them.
 
-**If zero or one folder matches today's date:** proceed to Step 1 with no action.
+**Determine today's date** (as `YYYY-MM-DD`).
 
-**If two or more folders match today's date**, print a warning and prompt:
+**If every date has exactly one folder:** proceed to Step 1 with no action.
 
-> ⚠️ Found N uncollapsed folders for YYYY-MM-DD:
->   - `YYYY-MM-DD-slug-a/` (M wrap files: 01-foo.md, ...)
->   - `YYYY-MM-DD-slug-b/` (K wrap files: 01-bar.md, ...)
+**If any _previous_ date (before today) has multiple folders**, print a notice — but do
+**not** offer to collapse them. Previous-date folders contain already-committed session
+history and must not be rewritten by this skill. Run `/collapse-session-folder` manually
+if they need tidying:
+
+> ℹ️ Uncollapsed folders from previous session dates detected:
+>
+> - `YYYY-MM-DD` — slug-a/, slug-b/ (run /collapse-session-folder to merge)
+
+Continue to Step 1.
+
+**If today's date has multiple folders**, print a warning and prompt:
+
+> ⚠️ Found N uncollapsed folders for YYYY-MM-DD (today):
+>
+> - `YYYY-MM-DD-slug-a/` (M wrap files: 01-foo.md, ...)
+> - `YYYY-MM-DD-slug-b/` (K wrap files: 01-bar.md, ...)
 >
 > Collapse into one folder? [y/n]
 
@@ -56,11 +70,12 @@ the user but do not act on them.
 2. **Generate a combined slug** by distilling the combined scope of all those files into
    3–6 kebab-case words:
    - Draw from the Summaries and Topics Covered tables across all files.
-   - The slug must describe *what happened across the whole day*, not enumerate filenames.
+   - The slug must describe _what happened across the whole day_, not enumerate filenames.
    - Good: `bucket-restructure-wip-pr64`, `asana-ts-conversion-roadmap-seed`, `pr-sweep-morning-brief`
    - Never use generic words like `session`, `wrap`, `work`, `misc`, or `updates`.
 
 3. **Create the collapsed folder:**
+
    ```
    {{SESSIONS_ROOT}}/YYYY-MM-DD-<combined-slug>/
    ```
@@ -70,6 +85,12 @@ the user but do not act on them.
    - Assign new sequential numbers `01`, `02`, `03`... across all files.
    - Preserve each file's original semantic slug (the part after `NN-`); only update the `NN-` prefix.
    - Example: `slug-a/01-foo.md` → `01-foo.md`, `slug-a/02-bar.md` → `02-bar.md`, `slug-b/01-baz.md` → `03-baz.md`
+   - **Record a rename map** as you go — you will need it in step 7:
+     ```
+     old: YYYY-MM-DD-slug-b/01-baz.md  →  new: YYYY-MM-DD-<combined-slug>/03-baz.md
+     old: YYYY-MM-DD-slug-b/01-baz.md  →  new: 03-baz.md   (filename-only form, for relative sibling links)
+     ```
+     Store both the full-path form and the filename-only form for every renamed file.
 
 5. **Update `sessions-index.md`:** replace all rows for the old folder slugs with a
    **single merged row**:
@@ -84,8 +105,44 @@ the user but do not act on them.
 
 6. **Delete the now-empty old folders.**
 
-Process each affected date group independently. When all date groups are resolved, continue
-to Step 1.
+7. **Repair broken internal links** across all session files:
+
+   a. Using the rename map from step 4, scan **every** `.md` file under `{{SESSIONS_ROOT}}`
+   — not just files inside the collapsed folder. Any session file anywhere may contain a
+   link that pointed to one of the old folder paths.
+
+   b. Find all Markdown link targets:
+   - Inline links: `[text](path)`
+   - Reference-style links: `[label]: path`
+   - Obsidian wiki-links: `[[target]]` and `[[target|label]]` — extract the `target` portion (everything before any `|`)
+
+   Skip external URLs (`http://`, `https://`, `mailto:`).
+
+   c. For each relative link target, resolve it against the file's own folder:
+   - **First**, look it up in the rename map (full path relative to `{{SESSIONS_ROOT}}`
+     first, then filename-only form):
+     - If matched: compute the replacement path **relative to the containing file's folder**
+       (not relative to `{{SESSIONS_ROOT}}`), then rewrite the link in-place with that
+       relative path.
+   - **Only if the path does not appear in the rename map**, check whether the resolved
+     path exists on disk:
+     - If it exists: leave it unchanged.
+     - If it does not exist: flag it as unresolvable:
+       `⚠️ Unresolvable link in <file>: <old-target> — manual fix required`
+
+   d. After all files are scanned, print a repair report:
+
+   ```
+   Fixed in 03-baz.md: [01-foo.md](01-foo.md) → [05-foo.md](05-foo.md)
+   Fixed in sessions-index.md: ./2026-05-26-skills-pr-sweep/ → ./2026-05-26-pr-sweep-skills-review-responses/
+   ⚠️ Unresolvable in 07-initial.md: ./old-folder/missing.md — manual fix required
+   ```
+
+   e. If any `⚠️` remain after the automated pass, list them together at the end of the
+   collapse report before continuing to the next date group or to Step 1.
+
+Process each affected date group independently — including the link repair pass for each
+group before moving to the next. When all date groups are resolved, continue to Step 1.
 
 ---
 
@@ -293,12 +350,12 @@ increment **Wraps** by 1, append the model to **Model(s)** if not already listed
 ## Step 6 — Update prompt catalogue (if applicable)
 
 Check the Files Edited list from Step 3. If any `.prompt.md` files were created or modified
-this session, upsert a row in `{{PROMPTS_ROOT}}/_index.md`.
+this session, upsert a row in `{{PROMPTS_ROOT}}/prompts-index.md`.
 
 For each affected prompt file:
 
 1. Read its YAML frontmatter for `name:` and `description:`.
-2. If `_index.md` does not exist, create it with this header:
+2. If `prompts-index.md` does not exist, create it with this header:
 
    ```markdown
    # Prompt Catalogue
