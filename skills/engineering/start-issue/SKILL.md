@@ -124,18 +124,16 @@ SUGGESTED NEXT SKILL
 
 Read the issue labels and apply the routing table:
 
-| Label              | Suggested skill  | Notes                                      |
-|--------------------|------------------|--------------------------------------------|
-| `ready-for-agent`  | `/tdd`           | Fully specified, ready to implement        |
-| `bug`              | `/tdd`           | Bugs go straight to red-green-refactor     |
-| `to-grill`         | `/grill-me`      | Needs design work before implementation    |
-| `enhancement`      | `/tdd`           | Treat like ready-for-agent                 |
-| anything else      | warn + halt      | See below                                  |
+| State label        | Suggested skill  | Notes                                                          |
+|--------------------|------------------|----------------------------------------------------------------|
+| `ready-for-agent`  | `/tdd`           | Fully specified, ready to implement (covers `bug` and `enhancement` issues) |
+| `to-grill`         | `/grill-me`      | Needs design work before implementation                        |
+| anything else      | warn + halt      | `needs-info`, `needs-triage`, etc. — not ready to start        |
 
-**If no recognised label is present**, tell the user:
+**If no recognised state label is present**, tell the user:
 
 ```
-⚠️  No routing label found (ready-for-agent / bug / to-grill).
+⚠️  No routing label found (ready-for-agent / to-grill).
     Run /triage on this issue first, or tell me which skill to invoke.
 ```
 
