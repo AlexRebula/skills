@@ -109,6 +109,12 @@
       "skillPath": "skills/engineering/setup-matt-pocock-skills/SKILL.md",
       "computedHash": "f686b246e95afeaeeb3ff21b0f9f2c1ab29b02958468170cc9802fb477508488"
     },
+    "start-issue": {
+      "source": "AlexRebula/skills",
+      "sourceType": "github",
+      "skillPath": "skills/engineering/start-issue/SKILL.md",
+      "computedHash": "934b40257ad9c5bdf8ea388d5b782adb61cd766a6b97ae1e9ab24e04afd8c1ab"
+    },
     "tdd": {
       "source": "AlexRebula/skills",
       "sourceType": "github",
