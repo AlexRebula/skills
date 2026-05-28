@@ -70,6 +70,12 @@ the user but do not act on them.
    - Assign new sequential numbers `01`, `02`, `03`... across all files.
    - Preserve each file's original semantic slug (the part after `NN-`); only update the `NN-` prefix.
    - Example: `slug-a/01-foo.md` → `01-foo.md`, `slug-a/02-bar.md` → `02-bar.md`, `slug-b/01-baz.md` → `03-baz.md`
+   - **Record a rename map** as you go — you will need it in step 7:
+     ```
+     old: YYYY-MM-DD-slug-b/01-baz.md  →  new: YYYY-MM-DD-<combined-slug>/03-baz.md
+     old: YYYY-MM-DD-slug-b/01-baz.md  →  new: 03-baz.md   (filename-only form, for relative sibling links)
+     ```
+     Store both the full-path form and the filename-only form for every renamed file.
 
 5. **Update `sessions-index.md`:** replace all rows for the old folder slugs with a
    **single merged row**:
@@ -84,8 +90,36 @@ the user but do not act on them.
 
 6. **Delete the now-empty old folders.**
 
-Process each affected date group independently. When all date groups are resolved, continue
-to Step 1.
+7. **Repair broken internal links** across all session files:
+
+   a. Using the rename map from step 4, scan **every** `.md` file under `{{SESSIONS_ROOT}}`
+      — not just files inside the collapsed folder. Any session file anywhere may contain a
+      link that pointed to one of the old folder paths.
+
+   b. Find all Markdown link targets — both inline `[text](path)` and reference-style
+      `[label]: path`. Skip external URLs (`http://`, `https://`, `mailto:`).
+
+   c. For each relative link target, resolve it against the file's own folder:
+      - If the resolved path **exists on disk**: leave it unchanged.
+      - If the resolved path **does not exist**: look it up in the rename map.
+        - Match by full path first (relative to `{{SESSIONS_ROOT}}`).
+        - If no full-path match, match by filename-only form (semantic slug).
+        - If matched: rewrite the link in-place to the new path.
+        - If **not matched**: flag it as unresolvable:
+          `⚠️ Unresolvable link in <file>: <old-target> — manual fix required`
+
+   d. After all files are scanned, print a repair report:
+      ```
+      Fixed in 03-baz.md: [01-foo.md](01-foo.md) → [05-foo.md](05-foo.md)
+      Fixed in sessions-index.md: ./2026-05-26-skills-pr-sweep/ → ./2026-05-26-pr-sweep-skills-review-responses/
+      ⚠️ Unresolvable in 07-initial.md: ./old-folder/missing.md — manual fix required
+      ```
+
+   e. If any `⚠️` remain after the automated pass, list them together at the end of the
+      collapse report before continuing to the next date group or to Step 1.
+
+Process each affected date group independently — including the link repair pass for each
+group before moving to the next. When all date groups are resolved, continue to Step 1.
 
 ---
 
