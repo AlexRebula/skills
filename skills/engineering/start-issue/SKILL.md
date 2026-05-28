@@ -31,7 +31,7 @@ If that fails (not inside a git repo, or no remote), ask the user: "Which repo i
 ### 2. Fetch the issue
 
 ```bash
-gh issue view <number> --repo <owner/repo> --json number,title,body,labels,comments,url,state
+gh issue view <number> --repo <owner/repo> --json number,title,body,labels,url,state
 ```
 
 If the issue does not exist or is already closed, tell the user and stop.
@@ -85,7 +85,7 @@ gh pr list --repo <owner/repo> --search "#<number>" --json number,title,headRefN
 Also check for a branch named with the issue number as a prefix (e.g. `75-slug`, `issue-75`):
 
 ```bash
-git branch -a | grep -E "(^|[[:space:]])[[:alnum:]_/-]*\b<number>[-/]"
+git branch -a | grep -E "(^|[[:space:]]|/)(<number>($|[-/])|[^[:space:]]*[^[:alnum:]]<number>($|[-/]))"
 ```
 
 If a PR already exists, note its number and branch name in the briefing block. If a branch exists but no PR, note the branch name.

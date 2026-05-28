@@ -87,9 +87,12 @@ After T3, ask:
 
 If yes, for each pushed branch:
 
-1. Check for a PR template:
+1. Check for a PR template (GitHub checks these paths in order; check all casings on case-sensitive filesystems):
    ```sh
-   cat <repo-path>/.github/pull_request_template.md 2>/dev/null
+   cat <repo-path>/.github/pull_request_template.md 2>/dev/null || \
+   cat <repo-path>/.github/PULL_REQUEST_TEMPLATE.md 2>/dev/null || \
+   cat <repo-path>/docs/pull_request_template.md 2>/dev/null || \
+   cat <repo-path>/pull_request_template.md 2>/dev/null
    ```
 
 2. If a template exists, fill every section. If none exists, use What / Why / Type / Checklist / Notes.
@@ -102,15 +105,19 @@ If yes, for each pushed branch:
    - **Notes for reviewer:** "Draft WIP snapshot — do not merge until work is complete and reviewed."
 
 ```sh
-# Write the multi-paragraph body to a temp file — embedding it with --body "..." is fragile:
-cat > /tmp/pr-body.md << 'EOF'
+# Use mktemp for a unique, portable temp file — avoids /tmp/fixed-name collisions and
+# works on both POSIX (Linux/macOS) and Git Bash on Windows:
+PR_BODY_FILE=$(mktemp)
+trap 'rm -f "$PR_BODY_FILE"' EXIT
+cat > "$PR_BODY_FILE" << 'EOF'
 <filled-in description per above>
 EOF
 
 gh pr create --repo <owner>/<repo> --head <branch> \
   --title "<type>(standup-prep): snapshot — <group> — YYYY-MM-DD" \
-  --body-file /tmp/pr-body.md \
+  --body-file "$PR_BODY_FILE" \
   --draft
+rm -f "$PR_BODY_FILE"  # also covered by trap above
 ```
 
 PRs are created as **drafts** — never as ready-for-review.
