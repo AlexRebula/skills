@@ -25,19 +25,22 @@ Two **category** roles:
 - `bug` — something is broken
 - `enhancement` — new feature or improvement
 
-Five **state** roles:
+Six **state** roles:
 
 - `needs-triage` — maintainer needs to evaluate
 - `needs-info` — waiting on reporter for more information
 - `ready-for-agent` — fully specified, ready for an AFK agent
 - `ready-for-human` — needs human implementation
+- `to-grill` — needs design exploration before implementation; route to `/grill-me`
 - `wontfix` — will not be actioned
 
 Every triaged issue should carry exactly one category role and one state role. If state roles conflict, flag it and ask the maintainer before doing anything else.
 
+`to-grill` is distinct from `needs-info`: `needs-info` means the issue is blocked waiting on the reporter to provide more information. `to-grill` means the issue has enough information to begin design exploration but the solution is not yet specified — it requires a `/grill-me` session before implementation can start.
+
 These are canonical role names — the actual label strings used in the issue tracker may differ. The mapping should have been provided to you - run `/setup-matt-pocock-skills` if not.
 
-State transitions: an unlabeled issue normally goes to `needs-triage` first; from there it moves to `needs-info`, `ready-for-agent`, `ready-for-human`, or `wontfix`. `needs-info` returns to `needs-triage` once the reporter replies. The maintainer can override at any time — flag transitions that look unusual and ask before proceeding.
+State transitions: an unlabeled issue normally goes to `needs-triage` first; from there it moves to `needs-info`, `ready-for-agent`, `ready-for-human`, `to-grill`, or `wontfix`. `needs-info` returns to `needs-triage` once the reporter replies. `to-grill` moves to `ready-for-agent` once the `/grill-me` session produces a PRD. The maintainer can override at any time — flag transitions that look unusual and ask before proceeding.
 
 ## Invocation
 

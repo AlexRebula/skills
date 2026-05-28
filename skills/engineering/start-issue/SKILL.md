@@ -61,10 +61,12 @@ Do not proceed past this point until all blockers are closed.
 
 ### 4. Check for an existing branch or PR
 
-Look for a branch or open PR already linked to this issue:
+Look for a branch or open PR already linked to this issue.
+
+First, search PR titles and bodies for a reference to the issue number (`issue:` is not a valid GitHub PR search qualifier — search by `#<number>` instead):
 
 ```bash
-gh pr list --repo <owner/repo> --search "issue:<number>" --json number,title,headRefName,state
+gh pr list --repo <owner/repo> --search "#<number>" --json number,title,headRefName,state
 ```
 
 Also check for a branch named with the issue number as a prefix (e.g. `75-slug`, `issue-75`):
