@@ -47,13 +47,17 @@ how the reference is written:
 - **`owner/repo#N`** (e.g. `other/repo#75`) — extract `other/repo` from the reference and
   use that repo instead.
 
-```bash
-# bare reference: use the current repo
-gh issue view <blocker-number> --repo <current-owner/repo> --json state,title --jq '.state + " — " + .title'
+- If the reference is a bare `#N` (no owner/repo prefix), use the current repo:
 
-# cross-repo reference: parse owner/repo from the reference
-gh issue view <blocker-number> --repo <parsed-owner/repo> --json state,title --jq '.state + " — " + .title'
-```
+  ```bash
+  gh issue view <N> --repo <current-owner/repo> --json state,title --jq '.state + " — " + .title'
+  ```
+
+- If the reference is `owner/repo#N`, parse the owner and repo from the prefix:
+
+  ```bash
+  gh issue view <N> --repo <owner/repo> --json state,title --jq '.state + " — " + .title'
+  ```
 
 If **any blocker is still open**, list them clearly and halt:
 
