@@ -36,11 +36,24 @@ date — never touch folders from previous dates. Their history is already commi
 not be rewritten.** If you notice uncollapsed folders from a previous date, mention them to
 the user but do not act on them.
 
-**If zero or one folder matches today's date:** proceed to Step 1 with no action.
+**Determine today's date** (as `YYYY-MM-DD`).
 
-**If two or more folders match today's date**, print a warning and prompt:
+**If every date has exactly one folder:** proceed to Step 1 with no action.
 
-> ⚠️ Found N uncollapsed folders for YYYY-MM-DD:
+**If any _previous_ date (before today) has multiple folders**, print a notice — but do
+**not** offer to collapse them. Previous-date folders contain already-committed session
+history and must not be rewritten by this skill. Run `/collapse-session-folder` manually
+if they need tidying:
+
+> ℹ️ Uncollapsed folders from previous session dates detected:
+>
+> - `YYYY-MM-DD` — slug-a/, slug-b/ (run /collapse-session-folder to merge)
+
+Continue to Step 1.
+
+**If today's date has multiple folders**, print a warning and prompt:
+
+> ⚠️ Found N uncollapsed folders for YYYY-MM-DD (today):
 >
 > - `YYYY-MM-DD-slug-a/` (M wrap files: 01-foo.md, ...)
 > - `YYYY-MM-DD-slug-b/` (K wrap files: 01-bar.md, ...)
@@ -106,12 +119,15 @@ the user but do not act on them.
    Skip external URLs (`http://`, `https://`, `mailto:`).
 
    c. For each relative link target, resolve it against the file's own folder:
-   - If the resolved path **exists on disk**: leave it unchanged.
-   - If the resolved path **does not exist**: look it up in the rename map.
-     - Match by full path first (relative to `{{SESSIONS_ROOT}}`).
-     - If no full-path match, match by filename-only form (semantic slug).
-     - If matched: compute the replacement path **relative to the containing file's folder** (not relative to `{{SESSIONS_ROOT}}`), then rewrite the link in-place with that relative path.
-     - If **not matched**: flag it as unresolvable:
+   - **First**, look it up in the rename map (full path relative to `{{SESSIONS_ROOT}}`
+     first, then filename-only form):
+     - If matched: compute the replacement path **relative to the containing file's folder**
+       (not relative to `{{SESSIONS_ROOT}}`), then rewrite the link in-place with that
+       relative path.
+   - **Only if the path does not appear in the rename map**, check whether the resolved
+     path exists on disk:
+     - If it exists: leave it unchanged.
+     - If it does not exist: flag it as unresolvable:
        `⚠️ Unresolvable link in <file>: <old-target> — manual fix required`
 
    d. After all files are scanned, print a repair report:
