@@ -120,7 +120,50 @@ Continue to Step 1.
 
    e. If any `⚠️` remain after the automated pass, list them together at the end of the collapse report before continuing to the next date group or to Step 1.
 
-Process each affected date group independently — including the link repair pass for each group before moving to the next. When all date groups are resolved, continue to Step 1.
+Process each affected date group independently — including the link repair pass for each group before moving to the next. When all date groups are resolved, continue to Step 0b.
+
+---
+
+## Step 0b — Link integrity check (automatic)
+
+Before writing anything new, scan the current session folder for broken or missing `→ Next` links. This catches stale links left by earlier folder-collapse renumbering.
+
+**Determine the session folder.** If this is a brand-new session (no folder yet), skip to Step 1 — nothing to repair.
+
+If the folder exists and contains `.md` files:
+
+1. **List all `.md` files** in the folder, sorted by name (`01-foo.md`, `02-bar.md`, …).
+
+2. **For each file except the last one:**
+
+   a. Check whether it contains a `**→ Next:**` wikilink (`[[slug|label]]`).
+
+   b. **If a link is present:** extract the linked slug (everything before `|` in `[[slug|...]]`).
+      - If a file named `<slug>.md` exists in the same folder → link is valid, no action.
+      - If no such file exists → search the folder for a file whose _semantic slug_ matches (the portion after the `NN-` prefix). If found, repair the `NN-` prefix in the link in-place.
+      - If no matching file is found at all → flag as unresolvable: `⚠️ Unresolvable → Next in <file>: [[<slug>]] — target not found, repair manually`
+
+   c. **If no `→ Next` link is present:** note it as missing (you will add it in Step 4 when the new file is saved).
+
+3. **Detect backward links** (where the linked file's `NN` ≤ the source file's `NN`): flag these — they always mean the link is pointing backward to a previous file, which breaks Obsidian navigation.
+
+4. Print a repair report before continuing:
+
+   ```
+   LINK INTEGRITY CHECK
+   ─────────────────────────────────────────────────────────
+   Fixed:   05-foo.md  [[02-bar|02 — Bar]] → [[06-bar|06 — Bar]]  (renumbered during collapse)
+   ✅ OK:    01-baz.md  [[02-qux|02 — Qux]]
+   ⚠️ Missing → Next: 03-quux.md  (will be wired in Step 4 after new file is saved)
+   ⚠️ Unresolvable: 07-gap.md  [[99-missing|...]] — target not found, repair manually
+   ─────────────────────────────────────────────────────────
+   ```
+
+   If no issues are found, print: `✅ Link integrity: all → Next links valid`
+
+5. Apply all identified fixes now (before writing the new wrap file).
+
+**Scope:** only inspect the folder this wrap will be saved to — never touch session folders from previous dates.
 
 ---
 
@@ -195,12 +238,48 @@ The in-context summary is **always incomplete** if the conversation was compacte
 2. Extract every `<conversation-summary>` block found in the file. Each block is a compaction checkpoint that summarises what happened before that point in the session.
 3. Also read the uncompacted tail — any tool calls and assistant messages that appear **after** the final `<conversation-summary>` block.
 4. If this is a continuation wrap, find the timestamp of the previous wrap file and include only activity recorded **after** that timestamp.
-5. Build a flat list of all distinct work items found across every compaction block **plus** the current context. This is the authoritative activity inventory.
-6. Use this inventory — not the in-context summary alone — for the Topics Covered table in Step 3 and the Files Edited list.
 
-**If `{{VSCODE_TARGET_SESSION_LOG}}` is unavailable** (non-VS-Code session or path not resolved), proceed from context alone and add this note to the wrap document:
+**Step 2a is evidence-based, not recall-based.** Do not write anything from memory. Every item in the wrap must be traceable to one of the four categories below.
 
-> ⚠️ Transcript not available — wrap may be incomplete. Verify against screenshots or a separate session log if critical work happened before the last context compaction.
+### 2a.1 — Build the evidence inventory (four categories, all mandatory)
+
+Scan the full transcript — every compaction block and the uncompacted tail — and produce a checklist in exactly this format. **Do not proceed to Step 3 until this checklist is complete and shown to the user.**
+
+```
+PRE-WRITE EVIDENCE CHECKLIST
+─────────────────────────────────────────────────────────
+SKILLS INVOKED  (scan for /word patterns and skill invocation signals)
+  - /skill-name ✓ → outcome (e.g. "created #84")
+  - /skill-name ✗ → proposed but not executed
+  [none] if no skills were invoked
+
+GITHUB WRITES  (scan for issues_create, pull_request_create, gh api POST, mcp_gitkraken_issues_create, mcp_gitkraken_pull_request_create, gh pr create, gh issue create)
+  - issues_create → #NN "title"
+  - pull_request_create → PR #NN
+  [none] if no GitHub writes were made
+
+FILES EDITED  (scan for replace_string_in_file, multi_replace_string_in_file, create_file, write_file)
+  - path/to/file.md
+  [none] if no files were edited
+
+USER DECISIONS  (scan for agreement/confirmation signals: "confirmed", "agreed", "split", "let's do", "AFK", "yes", "no, don't", "that's right")
+  - Decision text — context/consequence
+─────────────────────────────────────────────────────────
+```
+
+Show this checklist to the user before writing the wrap document. The user can correct omissions before anything is committed to disk.
+
+### 2a.2 — Derive the wrap from the checklist
+
+- **Topics Covered table** — every skill in SKILLS INVOKED gets a row. Completed skills are 🎯 Primary or 🔀 Detour; proposed-but-not-executed skills are ❓ Unanswered.
+- **Files Edited section** — populated from FILES EDITED only.
+- **Decisions section** — populated from USER DECISIONS only.
+- **Pending Tasks section** — each task must reference its source: which skill produced it, which user decision shaped it, which issue number it targets.
+- **Current State section** — references GITHUB WRITES to state what was actually created/updated.
+
+**If `{{VSCODE_TARGET_SESSION_LOG}}` is unavailable** (non-VS-Code session or path not resolved), produce the checklist from context alone and add this note to both the checklist and the wrap document:
+
+> ⚠️ Transcript not available — checklist built from context only. Skills invoked and GitHub writes may be incomplete. Verify against screenshots or a separate session log if critical work happened before the last context compaction.
 
 ---
 
@@ -268,6 +347,23 @@ Write the document to:
 ```
 
 Create the directory if it does not exist. **Never overwrite** an existing numbered file.
+
+**After saving the file, wire it into the → Next chain:**
+
+- Find the file immediately before this one — `<NN-1>-*.md`.
+- If that file ends with `→ Next: *(next session not yet started)*` or has no `→ Next` line: replace/append the link:
+  ```markdown
+  ---
+
+  **→ Next:** [[<NN>-<semantic-slug>|<NN> — <Human title>]]
+  ```
+- If that file already has a valid `→ Next` pointing to the correct slug, leave it untouched.
+- This file (`<NN>-<semantic-slug>.md`) is the last in the chain — append a trailing marker at the end:
+  ```markdown
+  ---
+
+  **→ Next:** *(next session not yet started)*
+  ```
 
 ---
 
