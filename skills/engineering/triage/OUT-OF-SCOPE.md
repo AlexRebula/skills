@@ -50,7 +50,6 @@ interface ThemeConfig {
 - #87 — "Night theme for accessibility"
 - #134 — "Dark theme option"
 
-```
 
 ### Naming the file
 
