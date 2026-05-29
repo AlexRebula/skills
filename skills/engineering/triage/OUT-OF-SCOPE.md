@@ -42,13 +42,13 @@ interface ThemeConfig {
   fonts: FontStack;
 }
 ```
-````
 
 ## Prior requests
 
 - #42 — "Add dark mode support"
 - #87 — "Night theme for accessibility"
 - #134 — "Dark theme option"
+````
 
 
 ### Naming the file
