@@ -427,7 +427,16 @@ After implementation, update the `README.md` File structure section with the act
 ```md
 ## File structure
 
-src/components/<layer>/<category>/<name>/ <name>.tsx — component <name>.styles.ts — style functions <name>.test.ts — unit tests <name>.styles.test.ts — style tests <name>.stories.tsx — Storybook stories types.ts — Props interface index.ts — barrel export README.md — this file roadmap.md — open improvements and completed tasks
+src/components/<layer>/<category>/<name>/
+  <name>.tsx            — component
+  <name>.styles.ts      — style functions
+  <name>.test.ts        — unit tests
+  <name>.styles.test.ts — style tests
+  <name>.stories.tsx    — Storybook stories
+  types.ts              — Props interface
+  index.ts              — barrel export
+  README.md             — this file
+  roadmap.md            — open improvements and completed tasks
 ```
 
 ---
