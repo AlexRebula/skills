@@ -18,7 +18,7 @@ It is published and installable by anyone: `npx skills@latest add AlexRebula/ski
 
 ## Skill bucket structure
 
-Skills are organized into bucket foldesrs under `skills/`:
+Skills are organized into bucket folders under `skills/`:
 
 - `engineering/` — framework-agnostic code craft and architecture
 - `framework/` — framework-specific scaffolding (React, Vue, Angular)
