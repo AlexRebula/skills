@@ -100,7 +100,8 @@ If the request returns 403 or the authenticated user is not a member → block w
 
 **Rule 3 — Warn on shared projects (member count > 1).** If the project has more than 1 member, warn:
 
-> `⚠️ Project <name> has <N> members. If you seed morning briefs here, every member will see them. This can become noisy in a team setting. Are you sure you want to use this project? [y/n]` Require explicit `y` before proceeding.
+> `⚠️ Project <name> has <N> members. If you seed morning briefs here, every member will see them. This can become noisy in a team setting. Are you sure you want to use this project? [y/n]`
+Require explicit `y` before proceeding.
 
 **Rule 4 — Dedicated standup project (preferred).** If `standupProjectGid` is present in the config, use it as the default. Skip the selection prompt — go straight to 9c.
 
