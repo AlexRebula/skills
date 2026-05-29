@@ -1,7 +1,6 @@
 # Skills Generalization Tracker
 
-This document tracks skills in this fork that currently carry project-specific hardcoding.
-The goal is for every skill here to be usable by anyone — not just LittleBranches / giselle-mui contributors.
+This document tracks skills in this fork that currently carry project-specific hardcoding. The goal is for every skill here to be usable by anyone — not just LittleBranches / giselle-mui contributors.
 
 Each entry describes:
 
@@ -12,11 +11,11 @@ Each entry describes:
 
 ## Status key
 
-| Symbol            | Meaning                                                                                   |
-| ----------------- | ----------------------------------------------------------------------------------------- |
-| ⚠️ Quick fix      | Hardcoded string/path — one config change away from general                               |
-| 🔧 Needs refactor | Skill logic is coupled to a specific convention that needs abstracting                    |
-| ❌ By design      | Skill deliberately targets giselle-mui — a general variant needs to be created separately |
+| Symbol | Meaning |
+| --- | --- |
+| ⚠️ Quick fix | Hardcoded string/path — one config change away from general |
+| 🔧 Needs refactor | Skill logic is coupled to a specific convention that needs abstracting |
+| ❌ By design | Skill deliberately targets giselle-mui — a general variant needs to be created separately |
 
 ---
 
@@ -182,17 +181,17 @@ Each entry describes:
 
 These skills work in any project without modification:
 
-| Skill                       | Notes                                                                            |
-| --------------------------- | -------------------------------------------------------------------------------- |
-| `/create-react-component`   | No project-specific dependencies                                                 |
-| `/create-vue-component`     | No project-specific dependencies                                                 |
-| `/create-angular-component` | No project-specific dependencies                                                 |
-| `/review-pr`                | Discovers standards from the target repo dynamically                             |
-| `/respond-pr-review`        | Discovers standards from the target repo dynamically                             |
-| `/repo-status`              | Pure git commands                                                                |
-| `/wip-sweep`                | Pure git + gh commands                                                           |
-| `/commit-wip`               | Pure git commands                                                                |
-| `/check-prior-work`         | Reads conversation context only                                                  |
-| `/asana-sync`               | Dynamically discovers `.asana-config.json`; no hardcoded paths                   |
-| `/session-wrap`             | Uses `{{AI_ROOT}}` template variable — user must set it, but it is not hardcoded |
-| `/load-session-context`     | Uses `{{AI_ROOT}}` template variable — same                                      |
+| Skill | Notes |
+| --- | --- |
+| `/create-react-component` | No project-specific dependencies |
+| `/create-vue-component` | No project-specific dependencies |
+| `/create-angular-component` | No project-specific dependencies |
+| `/review-pr` | Discovers standards from the target repo dynamically |
+| `/respond-pr-review` | Discovers standards from the target repo dynamically |
+| `/repo-status` | Pure git commands |
+| `/wip-sweep` | Pure git + gh commands |
+| `/commit-wip` | Pure git commands |
+| `/check-prior-work` | Reads conversation context only |
+| `/asana-sync` | Dynamically discovers `.asana-config.json`; no hardcoded paths |
+| `/session-wrap` | Uses `{{AI_ROOT}}` template variable — user must set it, but it is not hardcoded |
+| `/load-session-context` | Uses `{{AI_ROOT}}` template variable — same |

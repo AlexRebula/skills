@@ -40,12 +40,10 @@ If the issue does not exist or is already closed, tell the user and stop.
 
 Scan the issue body for a `## Blocked by` section. Extract any referenced issue numbers (e.g. `#75`, `owner/repo#75`).
 
-For each referenced blocker, check whether it is open or closed. The target repo depends on
-how the reference is written:
+For each referenced blocker, check whether it is open or closed. The target repo depends on how the reference is written:
 
 - **Bare `#N`** (e.g. `#75`) — use the repo already resolved in Step 1.
-- **`owner/repo#N`** (e.g. `other/repo#75`) — extract `other/repo` from the reference and
-  use that repo instead.
+- **`owner/repo#N`** (e.g. `other/repo#75`) — extract `other/repo` from the reference and use that repo instead.
 
 - If the reference is a bare `#N` (no owner/repo prefix), use the current repo:
 

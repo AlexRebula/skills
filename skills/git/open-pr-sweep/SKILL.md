@@ -7,8 +7,7 @@ description: Discover all non-draft open pull requests across one or more GitHub
 
 ## Arguments
 
-`/open-pr-sweep` — discovers PRs across repos owned by the authenticated GitHub user.
-`/open-pr-sweep --orgs <org1>,<org2>` — filters to the specified GitHub organisations or users (comma-separated, e.g. `--orgs LittleBranches,AlexRebula`).
+`/open-pr-sweep` — discovers PRs across repos owned by the authenticated GitHub user. `/open-pr-sweep --orgs <org1>,<org2>` — filters to the specified GitHub organisations or users (comma-separated, e.g. `--orgs LittleBranches,AlexRebula`).
 
 Discover all repos (capped at 200 per owner):
 

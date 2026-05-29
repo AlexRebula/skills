@@ -5,15 +5,14 @@ description: Scaffold and TDD a new Giselle MUI component from scratch. Enforces
 
 # Create Giselle MUI Component
 
-Two phases. The scaffold phase creates the folder structure and stubs. The implementation
-phase fills them in using a strict TDD red-green-refactor loop.
-Do not start the implementation phase until the scaffold phase is committed.
+Two phases. The scaffold phase creates the folder structure and stubs. The implementation phase fills them in using a strict TDD red-green-refactor loop. Do not start the implementation phase until the scaffold phase is committed.
 
 ---
 
 ## Before writing any code — alignment (8 required answers)
 
 Ask the user:
+
 1. Component name — PascalCase (derives all file names from this)
 2. Layer folder: `material/`, `chart/`, `motion/`, `lab/`, `theming/`, or `section/`
 3. Category subfolder within that layer (mirrors MUI taxonomy: `data-display/`, `inputs/`, `surfaces/`, `navigation/`, `layout/`, `feedback/`)
@@ -25,9 +24,7 @@ Ask the user:
 
 Do not proceed until all 8 are answered — unless batch invocation applies (see below). No code until alignment is locked.
 
-**Batch invocation:** If all 8 answers are already provided in the invocation message
-(e.g. when delegating from a parent agent or running multiple components in parallel),
-skip the questions and proceed directly to Phase 1. Example:
+**Batch invocation:** If all 8 answers are already provided in the invocation message (e.g. when delegating from a parent agent or running multiple components in parallel), skip the questions and proceed directly to Phase 1. Example:
 
 ```
 /create-giselle-component
@@ -44,24 +41,24 @@ Uses sx: yes
 
 ## Naming rules (oss-quality-standards §5.4 + §7)
 
-| File | Convention |
-|---|---|
-| Folder | kebab-case — `metric-card/` |
-| Main component | `<name>.tsx` — or role-based for deep nesting (see below) |
-| Types | `types.ts` — always a separate file, never inline in the component |
-| Barrel | `index.ts` |
-| Tests | `<name>.test.ts` |
-| Style tests | `<name>.styles.test.ts` |
-| Stories | `<name>.stories.tsx` |
-| Styles | `<name>.styles.ts` |
-| Constants | `<name>.const.ts` |
-| Defaults | `<name>.defaults.tsx` |
-| Utilities | `<name>.utils.ts` |
-| Animations | `<name>.animations.ts` |
-| Docs | `README.md` + `roadmap.md` |
+| File           | Convention                                                         |
+| -------------- | ------------------------------------------------------------------ |
+| Folder         | kebab-case — `metric-card/`                                        |
+| Main component | `<name>.tsx` — or role-based for deep nesting (see below)          |
+| Types          | `types.ts` — always a separate file, never inline in the component |
+| Barrel         | `index.ts`                                                         |
+| Tests          | `<name>.test.ts`                                                   |
+| Style tests    | `<name>.styles.test.ts`                                            |
+| Stories        | `<name>.stories.tsx`                                               |
+| Styles         | `<name>.styles.ts`                                                 |
+| Constants      | `<name>.const.ts`                                                  |
+| Defaults       | `<name>.defaults.tsx`                                              |
+| Utilities      | `<name>.utils.ts`                                                  |
+| Animations     | `<name>.animations.ts`                                             |
+| Docs           | `README.md` + `roadmap.md`                                         |
 
-**Role-based file naming** — when a component folder has 3+ nesting levels, the file is
-named after its role within that level, not after the full component name:
+**Role-based file naming** — when a component folder has 3+ nesting levels, the file is named after its role within that level, not after the full component name:
+
 ```
 src/components/inputs/button/toggle/icon/
   icon.tsx          ← role: "icon" (not toggle-icon-button.tsx)
@@ -70,26 +67,21 @@ src/components/inputs/button/toggle/icon/
   types.ts
   index.ts
 ```
+
 Shallower components (1–2 nesting levels) use the full folder name:
+
 ```
 src/components/chart/radial-progress/
   radial-progress-card.tsx    ← full name
 ```
 
-**Suffix vocabulary**: `Card`, `Row`, `List`, `Table`, `Section`, `Layout`, `Label`, `Sheet`,
-`Strip`, `Dialog`, `Drawer`, `Form`, `Field`, `Icon`, `Avatar`, `Chip`, `Tab`.
-Adding a new suffix requires explicit user approval.
+**Suffix vocabulary**: `Card`, `Row`, `List`, `Table`, `Section`, `Layout`, `Label`, `Sheet`, `Strip`, `Dialog`, `Drawer`, `Form`, `Field`, `Icon`, `Avatar`, `Chip`, `Tab`. Adding a new suffix requires explicit user approval.
 
 ---
 
 ## Phase 1 — Scaffold (commit before implementing)
 
-> **Two-phase scaffold — AGENTS.md §5.5.**
-> Phase 1 is a commit with stubs only. The `<name>.tsx` component file must NOT exist.
-> The quality-gate (`src/quality-gate/two-phase-scaffold.test.ts`) enforces this automatically:
-> any new `.test.ts` added without `it.todo` stubs fails CI immediately via the
-> `two-phase-scaffold-legacy-missing-todo.json` baseline check.
-> Do not start Phase 2 until Phase 1 is committed.
+> **Two-phase scaffold — AGENTS.md §5.5.** Phase 1 is a commit with stubs only. The `<name>.tsx` component file must NOT exist. The quality-gate (`src/quality-gate/two-phase-scaffold.test.ts`) enforces this automatically: any new `.test.ts` added without `it.todo` stubs fails CI immediately via the `two-phase-scaffold-legacy-missing-todo.json` baseline check. Do not start Phase 2 until Phase 1 is committed.
 
 ### Files to create in the scaffold phase
 
@@ -103,6 +95,7 @@ src/components/<layer>/<category>/<name>/
 ```
 
 **Do NOT create in the scaffold phase:**
+
 - `<name>.tsx` — its existence = component is implemented; absence = still a placeholder
 - `<name>.styles.ts` — created when implementation begins
 - `<name>.const.ts` — created when implementation begins
@@ -150,8 +143,7 @@ describe('<ComponentName>', () => {
 
 ## Why it exists
 
-_One paragraph: the recurring problem this component solves.
-What would a developer write by hand without it?_
+_One paragraph: the recurring problem this component solves. What would a developer write by hand without it?_
 
 ## Why it belongs in giselle-mui
 
@@ -159,9 +151,9 @@ _One paragraph: why this is reusable across projects (not project-specific)._
 
 ## Planned API
 
-| Prop | Type | Default | Description |
-|---|---|---|---|
-| `sx` | `SxProps<Theme>` | — | MUI sx forwarded to root |
+| Prop | Type             | Default | Description              |
+| ---- | ---------------- | ------- | ------------------------ |
+| `sx` | `SxProps<Theme>` | —       | MUI sx forwarded to root |
 
 ## Design decisions
 
@@ -222,6 +214,7 @@ export interface MyCardProps extends CardProps {
 ```
 
 **Rules:**
+
 - Props interface extends the MUI root component's props (or `React.HTMLAttributes`)
 - Props are always in `types.ts`, never inline in the component file
 - Props type is exported from the barrel (`index.ts`) via `export type { MyCardProps } from './types'`
@@ -251,6 +244,7 @@ MyCard.displayName = 'MyCard';
 ```
 
 **Rules (oss-quality-standards §5–§6):**
+
 - `sx` merged with array syntax — never `sx={{ ...sx, prop: value }}`
 - `...other` spread onto root element — forwards `data-*`, `aria-*`, event handlers
 - No hardcoded colours — use MUI theme tokens only (`palette.text.primary`, `background.paper`)
@@ -263,6 +257,7 @@ MyCard.displayName = 'MyCard';
 - Icon slots: accept icons as `React.ReactNode`; decorative icons must have `aria-hidden="true"`; icon-only buttons carry `aria-label` on the `<button>`, not on the icon (§6.10)
 
 **Input security — applies to any component in the `inputs/` layer (§6.12):**
+
 - URL props (`href`, `src`, `action`) must reject the `javascript:` scheme — validate at the component boundary
 - Password fields must use `type="password"` and must not expose the value in `data-*` or ARIA attributes
 - The `sx` prop must never accept raw user-provided strings as property values
@@ -284,8 +279,7 @@ REPEAT for each remaining test case
 REFACTOR: After all tests pass — extract duplication, deepen modules
 ```
 
-Never write all tests before any implementation (horizontal slicing).
-Never refactor while any test is red.
+Never write all tests before any implementation (horizontal slicing). Never refactor while any test is red.
 
 ### Required test cases — replace each it.todo stub
 
@@ -308,8 +302,7 @@ it('forwards ref to the root element', () => { ... });
 
 ### Test helper — use GiselleThemeProvider, never mock MUI
 
-Check whether `src/test-utils.ts` already exists in the repo. If it does, import from it.
-If it does not, create it:
+Check whether `src/test-utils.ts` already exists in the repo. If it does, import from it. If it does not, create it:
 
 ```ts
 // src/test-utils.ts
@@ -319,19 +312,11 @@ import { GiselleThemeProvider } from './components/theming/theme-provider/gisell
 
 /** Use for pure rendering checks — no interaction needed. */
 export function renderWithTheme(element: React.ReactElement): string {
-  return renderToStaticMarkup(
-    React.createElement(GiselleThemeProvider, null, element)
-  );
+  return renderToStaticMarkup(React.createElement(GiselleThemeProvider, null, element));
 }
 ```
 
-**Why `GiselleThemeProvider` and not `ThemeProvider + createTheme()`:**
-giselle-mui uses MUI CSS variables mode (`extendTheme`). This populates `theme.vars.*`
-as CSS variable strings. Plain `createTheme()` does NOT do this — any component whose
-`sx` prop references `theme.vars.*` will crash at render time without a proper provider.
-`GiselleThemeProvider` is the only correct wrapper for component render tests in this codebase.
-Style tests (which test style functions in isolation via `createTheme()`) are exempt — they
-never call `theme.vars.*` directly.
+**Why `GiselleThemeProvider` and not `ThemeProvider + createTheme()`:** giselle-mui uses MUI CSS variables mode (`extendTheme`). This populates `theme.vars.*` as CSS variable strings. Plain `createTheme()` does NOT do this — any component whose `sx` prop references `theme.vars.*` will crash at render time without a proper provider. `GiselleThemeProvider` is the only correct wrapper for component render tests in this codebase. Style tests (which test style functions in isolation via `createTheme()`) are exempt — they never call `theme.vars.*` directly.
 
 For interaction tests that need user events or state transitions:
 
@@ -344,11 +329,9 @@ export function renderInteractiveWithTheme(element: React.ReactElement) {
 }
 ```
 
-**Never use `vi.mock('@mui/material/...')` or `vi.mock('@mui/material/styles')`.** This
-makes tests verify mocks rather than the component. Use `renderWithTheme` instead.
+**Never use `vi.mock('@mui/material/...')` or `vi.mock('@mui/material/styles')`.** This makes tests verify mocks rather than the component. Use `renderWithTheme` instead.
 
-Use `renderToStaticMarkup` for pure rendering. Use `@testing-library/react` + `userEvent`
-only when you need user events or state transitions.
+Use `renderToStaticMarkup` for pure rendering. Use `@testing-library/react` + `userEvent` only when you need user events or state transitions.
 
 ### Mocking rules (oss-quality-standards §10.6)
 
@@ -358,11 +341,10 @@ only when you need user events or state transitions.
 
 ### Accessibility (oss-quality-standards §9)
 
-Every component must meet **WCAG 2.2 Level AA**. Accessibility gaps found in PR review
-are always blocking — no counter-argument overrides this.
+Every component must meet **WCAG 2.2 Level AA**. Accessibility gaps found in PR review are always blocking — no counter-argument overrides this.
 
 | Rule | Requirement |
-|---|---|
+| --- | --- |
 | Keyboard-first | Every interactive element reachable and activatable by keyboard |
 | Focus rings | Never suppress `outline` without a visible replacement |
 | Icon-only buttons | `aria-label` on the `<button>`, not on the icon |
@@ -434,8 +416,7 @@ export const Outlined: Story = {
 };
 ```
 
-Story names: PascalCase. Never repeat the component name in the story name.
-No real names, emails, or client data in any story — use generic placeholders.
+Story names: PascalCase. Never repeat the component name in the story name. No real names, emails, or client data in any story — use generic placeholders.
 
 ---
 
@@ -446,16 +427,7 @@ After implementation, update the `README.md` File structure section with the act
 ```md
 ## File structure
 
-src/components/<layer>/<category>/<name>/
-  <name>.tsx          — component
-  <name>.styles.ts    — style functions
-  <name>.test.ts      — unit tests
-  <name>.styles.test.ts — style tests
-  <name>.stories.tsx  — Storybook stories
-  types.ts            — Props interface
-  index.ts            — barrel export
-  README.md           — this file
-  roadmap.md          — open improvements and completed tasks
+src/components/<layer>/<category>/<name>/ <name>.tsx — component <name>.styles.ts — style functions <name>.test.ts — unit tests <name>.styles.test.ts — style tests <name>.stories.tsx — Storybook stories types.ts — Props interface index.ts — barrel export README.md — this file roadmap.md — open improvements and completed tasks
 ```
 
 ---
@@ -495,6 +467,7 @@ One component = one branch = one PR. Do not mix multiple components in a single 
 ## After implementation — checklist before PR
 
 ### Code
+
 - [ ] Quality gate green: `npm run check`
 - [ ] All `it.todo` stubs replaced with real passing tests
 - [ ] 80%+ line coverage on the component file
@@ -515,6 +488,7 @@ One component = one branch = one PR. Do not mix multiple components in a single 
 - [ ] No secrets in committed files
 
 ### Accessibility
+
 - [ ] All interactive elements reachable by keyboard
 - [ ] Focus rings visible
 - [ ] Icon-only buttons have `aria-label`
@@ -522,6 +496,7 @@ One component = one branch = one PR. Do not mix multiple components in a single 
 - [ ] Animations respect `prefers-reduced-motion`
 
 ### Docs & stories
+
 - [ ] At least `Default` story present
 - [ ] Storybook `title` mirrors folder path exactly
 - [ ] README.md File structure section filled in

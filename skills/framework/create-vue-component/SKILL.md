@@ -27,15 +27,15 @@ Do not proceed until all 7 are answered.
 
 ## Naming rules
 
-| File | Convention |
-|---|---|
-| Folder | kebab-case — `user-avatar/` |
-| Component file | `<name>.vue` |
-| Types | `types.ts` — props interface always separate, never inline |
-| Barrel | `index.ts` |
-| Tests | `<name>.test.ts` |
-| Stories | `<name>.stories.ts` (if Storybook is in the project) |
-| Docs | `README.md` |
+| File           | Convention                                                 |
+| -------------- | ---------------------------------------------------------- |
+| Folder         | kebab-case — `user-avatar/`                                |
+| Component file | `<name>.vue`                                               |
+| Types          | `types.ts` — props interface always separate, never inline |
+| Barrel         | `index.ts`                                                 |
+| Tests          | `<name>.test.ts`                                           |
+| Stories        | `<name>.stories.ts` (if Storybook is in the project)       |
+| Docs           | `README.md`                                                |
 
 ---
 
@@ -96,9 +96,9 @@ _One paragraph: the recurring problem this component solves._
 
 ## Planned API
 
-| Prop | Type | Default | Description |
-|---|---|---|---|
-| `class` | `string` | — | Forwarded to root element |
+| Prop    | Type     | Default | Description               |
+| ------- | -------- | ------- | ------------------------- |
+| `class` | `string` | —       | Forwarded to root element |
 
 ## Design decisions
 
@@ -154,7 +154,12 @@ function onImageError(event: Event) {
 }
 
 const initials = computed(() =>
-  props.name.split(' ').map(w => w[0]).join('').slice(0, 2).toUpperCase()
+  props.name
+    .split(' ')
+    .map((w) => w[0])
+    .join('')
+    .slice(0, 2)
+    .toUpperCase()
 );
 </script>
 
@@ -167,6 +172,7 @@ const initials = computed(() =>
 ```
 
 **Rules:**
+
 - Always `<script setup lang="ts">` — no Options API, no `defineComponent`
 - `defineProps<PropsInterface>()` — type-generic form, not the object syntax
 - `defineEmits<EmitsInterface>()` — type-generic form
@@ -236,6 +242,7 @@ it('forwards data-testid to the root element', () => {
 ```
 
 **Mocking rules:**
+
 - Mock at module boundaries only: `fetch`, composables that call external APIs
 - Never mock Vue itself or Vue core composables (`ref`, `computed`, `watch`)
 - Never mock child components that live in the same package
@@ -251,7 +258,7 @@ import type { Meta, StoryObj } from '@storybook/vue3';
 import UserAvatar from './user-avatar.vue';
 
 const meta: Meta<typeof UserAvatar> = {
-  title: 'Components/UserAvatar',  // ← mirrors folder path
+  title: 'Components/UserAvatar', // ← mirrors folder path
   component: UserAvatar,
   tags: ['autodocs'],
 };

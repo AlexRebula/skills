@@ -14,14 +14,14 @@ Covers two phases:
 
 Six points in this workflow are opinionated. They are called out inline with **⚙️ Configurable** labels.
 
-| #   | Default behaviour                                                                                               | What to override                                 |
-| --- | --------------------------------------------------------------------------------------------------------------- | ------------------------------------------------ |
-| 1   | Branch prefixes: `feature/`, `fix/`, `chore/`, `refactor/`, `docs/`                                             | Add or remove prefixes to match your conventions |
-| 2   | Quality gate command: `npm run check:verify`                                                                    | Replace with any command that exits 0 on pass    |
-| 3   | Green-light gate: wait for explicit user approval before creating the PR                                        | Pass `auto-approve` argument to skip the gate    |
-| 4   | PR description uses `.github/pull_request_template.md` if present; falls back to a conventional set of sections | Provide your own template or skip the fallback   |
-| 5   | PR title format: `<type>(<scope>): <short description>` (conventional commits)                                  | Replace with your team's format                  |
-| 6   | Base branch: `main` (detected; falls back to `main` if detection fails)                                         | Pass a different base branch name if needed      |
+| # | Default behaviour | What to override |
+| --- | --- | --- |
+| 1 | Branch prefixes: `feature/`, `fix/`, `chore/`, `refactor/`, `docs/` | Add or remove prefixes to match your conventions |
+| 2 | Quality gate command: `npm run check:verify` | Replace with any command that exits 0 on pass |
+| 3 | Green-light gate: wait for explicit user approval before creating the PR | Pass `auto-approve` argument to skip the gate |
+| 4 | PR description uses `.github/pull_request_template.md` if present; falls back to a conventional set of sections | Provide your own template or skip the fallback |
+| 5 | PR title format: `<type>(<scope>): <short description>` (conventional commits) | Replace with your team's format |
+| 6 | Base branch: `main` (detected; falls back to `main` if detection fails) | Pass a different base branch name if needed |
 
 ---
 
@@ -63,10 +63,7 @@ Read the branch prefix to determine the stated purpose:
 | `refactor/` | Code restructure with no behaviour change |
 | `docs/`     | Documentation only                        |
 
-> **⚙️ Configurable — branch prefixes:** Add or remove prefixes to match your conventions.
-> A common addition is `data/` for data-file-only changes (e.g. seed or fixture updates).
-> That prefix is not included by default because it is specific to projects that version
-> their data files in the repository.
+> **⚙️ Configurable — branch prefixes:** Add or remove prefixes to match your conventions. A common addition is `data/` for data-file-only changes (e.g. seed or fixture updates). That prefix is not included by default because it is specific to projects that version their data files in the repository.
 
 For each commit, decide: does it relate to the branch's stated purpose?
 
@@ -87,10 +84,7 @@ git push --force-with-lease origin <branch>
 
 ### Step 3 — Run the quality gate
 
-> **⚙️ Configurable — quality gate command:** The command below is a typical example.
-> Replace it with your own gate command.
-> A quality gate is any command that exits 0 when formatting, linting, type-checking,
-> and tests all pass. Common alternatives:
+> **⚙️ Configurable — quality gate command:** The command below is a typical example. Replace it with your own gate command. A quality gate is any command that exits 0 when formatting, linting, type-checking, and tests all pass. Common alternatives:
 >
 > - `npm run lint && npm run typecheck && npm test`
 > - `pnpm check`
@@ -107,8 +101,7 @@ Do not continue to Phase 1 if the gate fails. Fix the failures first.
 
 ## Phase 1 — PR creation
 
-> **Note:** `DEFAULT_BRANCH` is set unconditionally here so Phase 1 works correctly even
-> when Phase 0 was skipped via `skip-hygiene`.
+> **Note:** `DEFAULT_BRANCH` is set unconditionally here so Phase 1 works correctly even when Phase 0 was skipped via `skip-hygiene`.
 
 ```sh
 DEFAULT_BRANCH=$(gh repo view --json defaultBranchRef --jq '.defaultBranchRef.name' 2>/dev/null || echo 'main')
@@ -116,10 +109,7 @@ DEFAULT_BRANCH=$(gh repo view --json defaultBranchRef --jq '.defaultBranchRef.na
 
 ### Step 4 — Wait for the green light
 
-> **⚙️ Configurable — green light gate:** By default this skill waits for an explicit
-> instruction before creating the PR ("go ahead", "create it", "open it").
-> This prevents accidental PR creation mid-task.
-> If you prefer immediate creation without the gate, pass `auto-approve` as an argument.
+> **⚙️ Configurable — green light gate:** By default this skill waits for an explicit instruction before creating the PR ("go ahead", "create it", "open it"). This prevents accidental PR creation mid-task. If you prefer immediate creation without the gate, pass `auto-approve` as an argument.
 
 Do not proceed to Step 5 until the user explicitly approves PR creation.
 
@@ -135,8 +125,7 @@ cat .github/pull_request_template.md 2>/dev/null
 
 **If no template exists**, use this fallback structure and fill it completely:
 
-> **⚙️ Configurable — fallback PR template sections:** These fields are a widely useful
-> default. Replace or extend them to match your team's conventions.
+> **⚙️ Configurable — fallback PR template sections:** These fields are a widely useful default. Replace or extend them to match your team's conventions.
 
 ```md
 ## What does this PR do?
@@ -167,8 +156,7 @@ cat .github/pull_request_template.md 2>/dev/null
 
 **PR title format:** `<type>(<scope>): <short description>` — mirrors the conventional commits convention.
 
-> **⚙️ Configurable — PR title format:** Conventional commits titles are widely used but
-> not universal. Replace with your team's format if needed.
+> **⚙️ Configurable — PR title format:** Conventional commits titles are widely used but not universal. Replace with your team's format if needed.
 
 ### Step 6 — Create the PR
 
@@ -182,16 +170,13 @@ gh pr create \
   --head <branch>
 ```
 
-> **⚙️ Configurable — base branch:** `DEFAULT_BRANCH` is detected automatically in Phase 0.
-> If detection fails it falls back to `main`. Override as needed (`master`, `develop`, `trunk`, etc.).
+> **⚙️ Configurable — base branch:** `DEFAULT_BRANCH` is detected automatically in Phase 0. If detection fails it falls back to `main`. Override as needed (`master`, `develop`, `trunk`, etc.).
 
 Save the PR number from the command output.
 
 ### Step 7 — Trigger a review (optional)
 
-> **Only run this step if `request-review` was passed.**
-> Requires a GitHub Copilot subscription with the code review feature enabled.
-> If you use a different review bot (e.g. CodeRabbit, Graphite), adapt this step accordingly.
+> **Only run this step if `request-review` was passed.** Requires a GitHub Copilot subscription with the code review feature enabled. If you use a different review bot (e.g. CodeRabbit, Graphite), adapt this step accordingly.
 
 Check whether the review bot was automatically added:
 
@@ -205,8 +190,7 @@ If not, trigger it manually via the GitHub UI: **PR → "Reviewers" → "Request
 
 There is no reliable CLI or API path for requesting a bot review — the GitHub UI is required.
 
-Stop here. Do not respond to review threads in this skill.
-Use `/respond-pr-review <PR-number>` when you are ready to address the review.
+Stop here. Do not respond to review threads in this skill. Use `/respond-pr-review <PR-number>` when you are ready to address the review.
 
 ---
 

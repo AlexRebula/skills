@@ -1,22 +1,18 @@
 ---
 name: commit-wip
 description: >
-  Scan every local workspace repo for uncommitted changes, group them by topic, and
-  commit each group to the most semantically appropriate branch. Checks remote branches
-  first — if an existing branch matches the changed files, commits go there. Only creates
-  a new categorised branch (feature/, fix/, docs/, chore/, data/) when no remote
-  match exists. Prevents WIP loss and keeps work on the right branch from the start.
-argument-hint: "Optional: path to a single repo (e.g. C:/work/projects/ar/giselle-mui). Omit to scan all workspace repos."
+  Scan every local workspace repo for uncommitted changes, group them by topic, and commit each group to the most semantically appropriate branch. Checks remote branches first — if an existing branch matches the changed files, commits go there. Only creates a new categorised branch (feature/, fix/, docs/, chore/, data/) when no remote match exists. Prevents WIP loss and keeps work on the right branch from the start.
+
+argument-hint: 'Optional: path to a single repo (e.g. C:/work/projects/ar/giselle-mui). Omit to scan all workspace repos.'
 agent: agent
 ---
 
 # /commit-wip
 
-Scan workspace repos for uncommitted changes, group them by topic, match each group to
-an existing remote branch, and commit there. Creates a new categorised branch only when
-no remote match exists.
+Scan workspace repos for uncommitted changes, group them by topic, match each group to an existing remote branch, and commit there. Creates a new categorised branch only when no remote match exists.
 
 **Use when:**
+
 - Starting a morning session (before `/morning-pr-sweep` or `/bootstrap`)
 - Switching branches or switching repos mid-session
 - Before running any CI or quality gate command that reads the working tree
@@ -80,11 +76,10 @@ git -C <repo-path> branch -r --format='%(refname:short)' | sed 's|origin/||' | g
 
 ## Phase 3 — Group dirty files by topic
 
-Read the `git status --porcelain` output for each dirty repo and assign every file to a
-**topic group** using these rules (top-down, first match wins):
+Read the `git status --porcelain` output for each dirty repo and assign every file to a **topic group** using these rules (top-down, first match wins):
 
 | File path pattern | Group label | Default branch prefix |
-|---|---|---|
+| --- | --- | --- |
 | `src/components/<name>/` or `src/components/<group>/<name>/` | `component:<name>` | `feature/` |
 | `docs/**`, `*.md` at root | `docs` | `docs/` |
 | `data/**` | `data` | `data/` |
@@ -95,9 +90,7 @@ Read the `git status --porcelain` output for each dirty repo and assign every fi
 | Prompt / skill files (`*.prompt.md`, `SKILL.md`) | `docs` | `docs/` |
 | Mixed / unclassifiable | `wip` | `chore/` |
 
-**Single group → one branch, one commit.**
-**Multiple groups → one branch per group, one commit each.** Files that cannot be cleanly
-separated (e.g. a shared util touched by two components) go into the largest group.
+**Single group → one branch, one commit.** **Multiple groups → one branch per group, one commit each.** Files that cannot be cleanly separated (e.g. a shared util touched by two components) go into the largest group.
 
 ---
 
@@ -105,9 +98,7 @@ separated (e.g. a shared util touched by two components) go into the largest gro
 
 For each group, scan the remote branch list for a match using these rules in priority order:
 
-1. **Topic keyword match** — any remote branch whose name contains a keyword from the group
-   label (e.g. group `component:stat-card` matches `feature/stat-card-tdd`,
-   `fix/stat-card-overflow`, `chore/stat-card-cleanup`)
+1. **Topic keyword match** — any remote branch whose name contains a keyword from the group label (e.g. group `component:stat-card` matches `feature/stat-card-tdd`, `fix/stat-card-overflow`, `chore/stat-card-cleanup`)
 2. **Today's WIP branch** — a `chore/YYYYMMDD*` branch where the date is today's date
 3. **No match** — proceed to Phase 5
 
@@ -119,8 +110,7 @@ Print the decision for every group before touching any files:
 [alexrebula]   chore:config         →  no match → will create chore/eslint-rule-updates
 ```
 
-If a match would require switching away from a branch that has its own unstaged work,
-warn and treat it as no-match instead — never silently discard local state.
+If a match would require switching away from a branch that has its own unstaged work, warn and treat it as no-match instead — never silently discard local state.
 
 ---
 
@@ -128,20 +118,18 @@ warn and treat it as no-match instead — never silently discard local state.
 
 Derive the branch name from the group label and the changed file names:
 
-| Group prefix | Branch name formula | Example |
-|---|---|---|
-| `component:<name>` | `feature/<name>-updates` | `feature/stat-card-updates` |
-| `docs` | `docs/<2-3-word-slug>` | `docs/session-wrap-model-tracking` |
-| `data` | `data/<2-3-word-slug>` | `data/task-status-updates` |
-| `chore:scripts` | `chore/scripts-<slug>` | `chore/scripts-seed-asana` |
-| `chore:config` | `chore/<slug>` | `chore/eslint-rule-updates` |
-| `wip` | `chore/YYYYMMDD-<dominant-topic>` | `chore/20260523-mixed-config` |
+| Group prefix       | Branch name formula               | Example                            |
+| ------------------ | --------------------------------- | ---------------------------------- |
+| `component:<name>` | `feature/<name>-updates`          | `feature/stat-card-updates`        |
+| `docs`             | `docs/<2-3-word-slug>`            | `docs/session-wrap-model-tracking` |
+| `data`             | `data/<2-3-word-slug>`            | `data/task-status-updates`         |
+| `chore:scripts`    | `chore/scripts-<slug>`            | `chore/scripts-seed-asana`         |
+| `chore:config`     | `chore/<slug>`                    | `chore/eslint-rule-updates`        |
+| `wip`              | `chore/YYYYMMDD-<dominant-topic>` | `chore/20260523-mixed-config`      |
 
-The `<slug>` is 2–4 kebab-case words describing what the files are about — read the file
-names and changed content to produce a meaningful slug, not a generic one.
+The `<slug>` is 2–4 kebab-case words describing what the files are about — read the file names and changed content to produce a meaningful slug, not a generic one.
 
-If `fix` context is clear from the changed files (e.g. a known bug file, a hotfix commit
-message, a `*.fix.ts` convention), prefer `fix/<slug>` over `feature/<slug>`.
+If `fix` context is clear from the changed files (e.g. a known bug file, a hotfix commit message, a `*.fix.ts` convention), prefer `fix/<slug>` over `feature/<slug>`.
 
 ```sh
 git -C <repo-path> checkout -b <new-branch-name>
@@ -169,8 +157,7 @@ git -C <repo-path> commit -m "chore: wip snapshot — <group label>"
 git -C <repo-path> push -u origin HEAD
 ```
 
-If push fails (network, branch protection), commit locally and flag the failure — do not
-abort the remaining groups or repos.
+If push fails (network, branch protection), commit locally and flag the failure — do not abort the remaining groups or repos.
 
 ---
 
@@ -193,11 +180,7 @@ List any push failures separately with the error message.
 
 ## Notes
 
-- This skill does **not** run tests, lint, or any quality gate — it only stages and commits.
-  Dirty WIP may not be in a passing state. The goal is safety, not correctness.
+- This skill does **not** run tests, lint, or any quality gate — it only stages and commits. Dirty WIP may not be in a passing state. The goal is safety, not correctness.
 - Commit messages use `chore: wip snapshot — <label>` format. These are easy to grep and squash or amend before opening a PR.
-- Branch matching is heuristic — it is intentionally conservative. When in doubt, a new
-  branch is always safer than committing to the wrong existing branch.
-- The `fix/` prefix is never assumed automatically for ambiguous files — only when the
-  context makes it unambiguous (e.g. the file name, a prior commit message, or the user
-  explicitly says so).
+- Branch matching is heuristic — it is intentionally conservative. When in doubt, a new branch is always safer than committing to the wrong existing branch.
+- The `fix/` prefix is never assumed automatically for ambiguous files — only when the context makes it unambiguous (e.g. the file name, a prior commit message, or the user explicitly says so).

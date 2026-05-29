@@ -6,6 +6,7 @@ description: Sync a morning brief to Asana. Locates or bootstraps .asana-config.
 # Asana Sync
 
 Ask the developer:
+
 > "Sync today's standup to Asana? [y/n]"
 
 If no, skip this skill entirely.
@@ -21,6 +22,7 @@ If yes, run steps 9a–9g below.
 **Step 1 — Find the config (dynamic — no hardcoded paths):**
 
 Check in order:
+
 1. The VS Code workspace folders — search for `.asana-config.json` in any open workspace root.
 2. `dependency-chain.md` (if already loaded in context) — scan for any path reference to `.asana-config.json`.
 3. If still not found, ask:
@@ -57,6 +59,7 @@ If the developer types 'none' or no config is found:
    - Copy it — you will only see it once. Store it somewhere safe.
 
 2. **Get your workspace GID:**
+
    ```sh
    curl -s "https://app.asana.com/api/1.0/workspaces" \
      -H "Authorization: Bearer <token>" | jq '.data[] | {name, gid}'
@@ -82,33 +85,30 @@ If the developer types 'none' or no config is found:
 
 Before selecting a target project, enforce the following safety rules:
 
-**Rule 1 — Never seed a repo-linked project.**
-The `projects` map in the config links each repo to an Asana project. Morning briefs must NEVER be created in any of those projects. If the developer tries to select one, block it:
+**Rule 1 — Never seed a repo-linked project.** The `projects` map in the config links each repo to an Asana project. Morning briefs must NEVER be created in any of those projects. If the developer tries to select one, block it:
+
 > `❌ Blocked: <project> is a repo-linked project (GID: <gid>). Morning briefs must go to a dedicated personal project, not a code project. This would pollute the backlog for every team member who can see that project.`
 
 **Rule 2 — Verify write access.**
+
 ```sh
 curl -s "https://app.asana.com/api/1.0/projects/<candidateGid>?opt_fields=name,members,owner" \
   -H "Authorization: Bearer <token>" | jq '{name: .data.name, members: (.data.members | length), owner: .data.owner.name}'
 ```
+
 If the request returns 403 or the authenticated user is not a member → block with: `❌ No write access to project <name>. Cannot seed.`
 
-**Rule 3 — Warn on shared projects (member count > 1).**
-If the project has more than 1 member, warn:
-> `⚠️ Project <name> has <N> members. If you seed morning briefs here, every member will see them. This can become noisy in a team setting.
-> Are you sure you want to use this project? [y/n]`
-Require explicit `y` before proceeding.
+**Rule 3 — Warn on shared projects (member count > 1).** If the project has more than 1 member, warn:
 
-**Rule 4 — Dedicated standup project (preferred).**
-If `standupProjectGid` is present in the config, use it as the default. Skip the selection prompt — go straight to 9c.
+> `⚠️ Project <name> has <N> members. If you seed morning briefs here, every member will see them. This can become noisy in a team setting. Are you sure you want to use this project? [y/n]` Require explicit `y` before proceeding.
+
+**Rule 4 — Dedicated standup project (preferred).** If `standupProjectGid` is present in the config, use it as the default. Skip the selection prompt — go straight to 9c.
 
 If `standupProjectGid` is NOT in the config (first run), guide the developer:
+
 > `No dedicated standup project is configured. The safest option is a personal Asana project used only for daily standups.
 >
-> Options:
-> A) Use an existing personal project — provide the GID or project name
-> B) I will create a new Asana project manually first, then tell you the GID
-> C) Skip Asana sync for today
+> Options: A) Use an existing personal project — provide the GID or project name B) I will create a new Asana project manually first, then tell you the GID C) Skip Asana sync for today
 >
 > After first use, the selected GID will be added to .asana-config.json as 'standupProjectGid' so you are not asked again.`
 
@@ -121,7 +121,9 @@ Wait for the developer's response.
 For each open PR, WIP commit, and critical-path item from the morning brief, map to an Asana task:
 
 Present the plan:
+
 > "I will add the following to the **Morning Briefs** section of **<project>**:
+>
 > - Task: [2026-05-23] giselle-mui — ESLint blocking push on chore/two-phase-scaffold-gate (Priority: High, Owner: alexrebula)
 > - Task: [2026-05-23] first-branch — Merge PR #19 admin status dropdown (Priority: High)
 > - ...
@@ -140,6 +142,7 @@ curl -s "https://app.asana.com/api/1.0/projects/<projectGid>/sections" \
 ```
 
 If no result, create it:
+
 ```sh
 curl -s -X POST "https://app.asana.com/api/1.0/sections" \
   -H "Authorization: Bearer <token>" \
@@ -202,10 +205,10 @@ Append a `## Asana Sync Log` section to the morning brief file:
 ```md
 ## Asana Sync Log — YYYY-MM-DD
 
-**Project:** <project name> (`<projectGid>`)
-**Section:** Morning Briefs (`<sectionGid>`)
+**Project:** <project name> (`<projectGid>`) **Section:** Morning Briefs (`<sectionGid>`)
 
 Tasks created:
+
 - [2026-05-23] giselle-mui — ESLint blocker → https://app.asana.com/0/<projectGid>/<taskGid>
 - ...
 

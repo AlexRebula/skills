@@ -27,16 +27,16 @@ Do not proceed until all 7 are answered.
 
 ## Naming rules
 
-| File | Convention |
-|---|---|
-| Folder | kebab-case — `user-avatar/` |
-| Component file | `<name>.tsx` |
-| Types | `types.ts` — props interface always separate, never inline |
-| Barrel | `index.ts` |
-| Tests | `<name>.test.tsx` |
-| Stories | `<name>.stories.tsx` (if Storybook is in the project) |
-| Styles | `<name>.module.css` or `<name>.styles.ts` depending on project convention |
-| Docs | `README.md` |
+| File           | Convention                                                                |
+| -------------- | ------------------------------------------------------------------------- |
+| Folder         | kebab-case — `user-avatar/`                                               |
+| Component file | `<name>.tsx`                                                              |
+| Types          | `types.ts` — props interface always separate, never inline                |
+| Barrel         | `index.ts`                                                                |
+| Tests          | `<name>.test.tsx`                                                         |
+| Stories        | `<name>.stories.tsx` (if Storybook is in the project)                     |
+| Styles         | `<name>.module.css` or `<name>.styles.ts` depending on project convention |
+| Docs           | `README.md`                                                               |
 
 ---
 
@@ -90,9 +90,9 @@ _One paragraph: the recurring problem this component solves._
 
 ## Planned API
 
-| Prop | Type | Default | Description |
-|---|---|---|---|
-| `className` | `string` | — | Forwarded to root element |
+| Prop        | Type     | Default | Description               |
+| ----------- | -------- | ------- | ------------------------- |
+| `className` | `string` | —       | Forwarded to root element |
 
 ## Design decisions
 
@@ -128,6 +128,7 @@ export interface UserAvatarProps extends HTMLAttributes<HTMLDivElement> {
 ```
 
 **Rules:**
+
 - Props interface extends the appropriate HTML element's attributes (or `React.HTMLAttributes`)
 - Always in `types.ts`, never in the component file
 - Exported via barrel as `export type { ComponentProps } from './types'`
@@ -138,20 +139,22 @@ export interface UserAvatarProps extends HTMLAttributes<HTMLDivElement> {
 import { forwardRef } from 'react';
 import type { UserAvatarProps } from './types';
 
-export const UserAvatar = forwardRef<HTMLDivElement, UserAvatarProps>(
-  function UserAvatar({ name, src, size = 'md', className, ...other }, ref) {
-    return (
-      <div ref={ref} className={className} data-size={size} {...other}>
-        {src ? <img src={src} alt={name} /> : name.slice(0, 2).toUpperCase()}
-      </div>
-    );
-  }
-);
+export const UserAvatar = forwardRef<HTMLDivElement, UserAvatarProps>(function UserAvatar(
+  { name, src, size = 'md', className, ...other },
+  ref
+) {
+  return (
+    <div ref={ref} className={className} data-size={size} {...other}>
+      {src ? <img src={src} alt={name} /> : name.slice(0, 2).toUpperCase()}
+    </div>
+  );
+});
 
 UserAvatar.displayName = 'UserAvatar';
 ```
 
 **Rules:**
+
 - `...other` spread onto root element — forwards `data-*`, `aria-*`, event handlers
 - `forwardRef` required for anything wrapping a native element
 - `displayName` set on every component
@@ -234,6 +237,7 @@ export function renderWithProviders(ui: React.ReactElement) {
 Use it only when the component actually needs the provider — not as a blanket default.
 
 **Mocking rules:**
+
 - Mock at module boundaries only: `fetch`, `Date`, `Math.random`, external modules
 - Never mock components from the same package
 - Never mock React itself
@@ -249,7 +253,7 @@ import type { Meta, StoryObj } from '@storybook/react';
 import { UserAvatar } from '.';
 
 const meta: Meta<typeof UserAvatar> = {
-  title: 'Components/UserAvatar',  // ← mirrors folder path
+  title: 'Components/UserAvatar', // ← mirrors folder path
   component: UserAvatar,
   tags: ['autodocs'],
 };

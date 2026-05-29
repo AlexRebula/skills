@@ -17,16 +17,16 @@ Use `/create-pr` for repositories outside this ecosystem.
 
 ### Differences from `/create-pr`
 
-|                            | `/create-pr`                       | `/create-giselle-pr`                        |
-| -------------------------- | ---------------------------------- | ------------------------------------------- |
-| AGENTS.md pre-load         | ❌                                 | ✅ public + private, before hygiene         |
-| Banned-content scan        | ⚙️ implied by quality gate         | ✅ explicitly called out (step 0a)          |
-| `data/` branch prefix      | ⚙️ labeled as project-specific     | ✅ included, unlabeled                      |
-| Quality gate command       | ⚙️ labeled, alternatives shown     | ✅ `npm run check:verify`, locked           |
-| Copilot review trigger     | ⚙️ opt-in via `request-review` arg | ✅ ON by default, opt-out via `skip-review` |
-| PR companion doc           | ❌                                 | ✅ opt-in via `with-companion-doc` arg      |
-| `⚙️ Configurable` callouts | 6                                  | 0                                           |
-| Handoff                    | generic                            | points to `/respond-giselle-pr-review`      |
+|  | `/create-pr` | `/create-giselle-pr` |
+| --- | --- | --- |
+| AGENTS.md pre-load | ❌ | ✅ public + private, before hygiene |
+| Banned-content scan | ⚙️ implied by quality gate | ✅ explicitly called out (step 0a) |
+| `data/` branch prefix | ⚙️ labeled as project-specific | ✅ included, unlabeled |
+| Quality gate command | ⚙️ labeled, alternatives shown | ✅ `npm run check:verify`, locked |
+| Copilot review trigger | ⚙️ opt-in via `request-review` arg | ✅ ON by default, opt-out via `skip-review` |
+| PR companion doc | ❌ | ✅ opt-in via `with-companion-doc` arg |
+| `⚙️ Configurable` callouts | 6 | 0 |
+| Handoff | generic | points to `/respond-giselle-pr-review` |
 
 ---
 
@@ -224,17 +224,14 @@ Use this structure:
 
 ```md
 ---
-sidebar_label: "PR<N> - <short description>"
+sidebar_label: 'PR<N> - <short description>'
 ---
 
 **[Open](https://github.com/<owner>/<repo>/pull/<N>)** — [`<branch>`](url) — <DD Mon YYYY>
 
 # PR: `<branch-name>`
 
-> **Branch:** `<branch>` → `main`
-> **PR:** [#<N>](url)
-> **Type:** `feature` | `fix` | `chore` | `refactor` | `docs` | `data`
-> **Opened:** <DD Mon YYYY>
+> **Branch:** `<branch>` → `main` **PR:** [#<N>](url) **Type:** `feature` | `fix` | `chore` | `refactor` | `docs` | `data` **Opened:** <DD Mon YYYY>
 
 ---
 
@@ -268,9 +265,7 @@ Commit the companion doc and README update as a separate `docs:` commit on the s
 
 ## Stop here
 
-Do not respond to review threads in this skill.
-Wait for the Copilot review to be submitted and threads to be visible.
-Use `/respond-giselle-pr-review <PR-number>` when you are ready to address the review.
+Do not respond to review threads in this skill. Wait for the Copilot review to be submitted and threads to be visible. Use `/respond-giselle-pr-review <PR-number>` when you are ready to address the review.
 
 ---
 

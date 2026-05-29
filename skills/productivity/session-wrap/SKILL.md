@@ -6,20 +6,16 @@ argument-hint: 'Optional: focus hint for the next session (e.g. "continue stat-c
 
 # Session Wrap
 
-> **Prerequisites:** This skill requires two template variables defined in your environment
-> (e.g. `settings.json` `env` block, `.env` file, or shell profile):
+> **Prerequisites:** This skill requires two template variables defined in your environment (e.g. `settings.json` `env` block, `.env` file, or shell profile):
 >
 > | Variable            | Points to                               | Example               |
 > | ------------------- | --------------------------------------- | --------------------- |
 > | `{{SESSIONS_ROOT}}` | Folder where session folders are stored | `C:/work/ai/sessions` |
 > | `{{PROMPTS_ROOT}}`  | Folder where the prompt catalogue lives | `C:/work/ai/prompts`  |
 >
-> `{{VSCODE_TARGET_SESSION_LOG}}` is optional — used in Step 2a to recover the full
-> transcript. If unavailable the skill degrades gracefully.
+> `{{VSCODE_TARGET_SESSION_LOG}}` is optional — used in Step 2a to recover the full transcript. If unavailable the skill degrades gracefully.
 >
-> If either `{{SESSIONS_ROOT}}` or `{{PROMPTS_ROOT}}` appears as a literal placeholder (i.e.
-> was not substituted by your environment), invoke `/resolve-ai-paths` before continuing.
-> It will scan for the sessions folder and return both values.
+> If either `{{SESSIONS_ROOT}}` or `{{PROMPTS_ROOT}}` appears as a literal placeholder (i.e. was not substituted by your environment), invoke `/resolve-ai-paths` before continuing. It will scan for the sessions folder and return both values.
 
 ---
 
@@ -31,19 +27,13 @@ Before naming or writing anything, check for uncollapsed session folders from **
 ls "{{SESSIONS_ROOT}}"
 ```
 
-Find all folders whose name starts with today's `YYYY-MM-DD-*` prefix. **Only inspect today's
-date — never touch folders from previous dates. Their history is already committed and must
-not be rewritten.** If you notice uncollapsed folders from a previous date, mention them to
-the user but do not act on them.
+Find all folders whose name starts with today's `YYYY-MM-DD-*` prefix. **Only inspect today's date — never touch folders from previous dates. Their history is already committed and must not be rewritten.** If you notice uncollapsed folders from a previous date, mention them to the user but do not act on them.
 
 **Determine today's date** (as `YYYY-MM-DD`).
 
 **If every date has exactly one folder:** proceed to Step 1 with no action.
 
-**If any _previous_ date (before today) has multiple folders**, print a notice — but do
-**not** offer to collapse them. Previous-date folders contain already-committed session
-history and must not be rewritten by this skill. Run `/collapse-session-folder` manually
-if they need tidying:
+**If any _previous_ date (before today) has multiple folders**, print a notice — but do **not** offer to collapse them. Previous-date folders contain already-committed session history and must not be rewritten by this skill. Run `/collapse-session-folder` manually if they need tidying:
 
 > ℹ️ Uncollapsed folders from previous session dates detected:
 >
@@ -64,11 +54,9 @@ Continue to Step 1.
 
 **If y — collapse procedure:**
 
-1. **Read all wrap files** across every folder in the group — oldest folder first, then
-   ascending `NN` order within each folder. Read each file in full.
+1. **Read all wrap files** across every folder in the group — oldest folder first, then ascending `NN` order within each folder. Read each file in full.
 
-2. **Generate a combined slug** by distilling the combined scope of all those files into
-   3–6 kebab-case words:
+2. **Generate a combined slug** by distilling the combined scope of all those files into 3–6 kebab-case words:
    - Draw from the Summaries and Topics Covered tables across all files.
    - The slug must describe _what happened across the whole day_, not enumerate filenames.
    - Good: `bucket-restructure-wip-pr64`, `asana-ts-conversion-roadmap-seed`, `pr-sweep-morning-brief`
@@ -92,8 +80,7 @@ Continue to Step 1.
      ```
      Store both the full-path form and the filename-only form for every renamed file.
 
-5. **Update `sessions-index.md`:** replace all rows for the old folder slugs with a
-   **single merged row**:
+5. **Update `sessions-index.md`:** replace all rows for the old folder slugs with a **single merged row**:
    - **Date:** the shared date
    - **Title:** human-readable version of the combined slug (Title Case, dashes → spaces)
    - **Projects:** union of all Projects values, deduplicated
@@ -107,9 +94,7 @@ Continue to Step 1.
 
 7. **Repair broken internal links** across all session files:
 
-   a. Using the rename map from step 4, scan **every** `.md` file under `{{SESSIONS_ROOT}}`
-   — not just files inside the collapsed folder. Any session file anywhere may contain a
-   link that pointed to one of the old folder paths.
+   a. Using the rename map from step 4, scan **every** `.md` file under `{{SESSIONS_ROOT}}` — not just files inside the collapsed folder. Any session file anywhere may contain a link that pointed to one of the old folder paths.
 
    b. Find all Markdown link targets:
    - Inline links: `[text](path)`
@@ -119,16 +104,11 @@ Continue to Step 1.
    Skip external URLs (`http://`, `https://`, `mailto:`).
 
    c. For each relative link target, resolve it against the file's own folder:
-   - **First**, look it up in the rename map (full path relative to `{{SESSIONS_ROOT}}`
-     first, then filename-only form):
-     - If matched: compute the replacement path **relative to the containing file's folder**
-       (not relative to `{{SESSIONS_ROOT}}`), then rewrite the link in-place with that
-       relative path.
-   - **Only if the path does not appear in the rename map**, check whether the resolved
-     path exists on disk:
+   - **First**, look it up in the rename map (full path relative to `{{SESSIONS_ROOT}}` first, then filename-only form):
+     - If matched: compute the replacement path **relative to the containing file's folder** (not relative to `{{SESSIONS_ROOT}}`), then rewrite the link in-place with that relative path.
+   - **Only if the path does not appear in the rename map**, check whether the resolved path exists on disk:
      - If it exists: leave it unchanged.
-     - If it does not exist: flag it as unresolvable:
-       `⚠️ Unresolvable link in <file>: <old-target> — manual fix required`
+     - If it does not exist: flag it as unresolvable: `⚠️ Unresolvable link in <file>: <old-target> — manual fix required`
 
    d. After all files are scanned, print a repair report:
 
@@ -138,11 +118,9 @@ Continue to Step 1.
    ⚠️ Unresolvable in 07-initial.md: ./old-folder/missing.md — manual fix required
    ```
 
-   e. If any `⚠️` remain after the automated pass, list them together at the end of the
-   collapse report before continuing to the next date group or to Step 1.
+   e. If any `⚠️` remain after the automated pass, list them together at the end of the collapse report before continuing to the next date group or to Step 1.
 
-Process each affected date group independently — including the link repair pass for each
-group before moving to the next. When all date groups are resolved, continue to Step 1.
+Process each affected date group independently — including the link repair pass for each group before moving to the next. When all date groups are resolved, continue to Step 1.
 
 ---
 
@@ -156,8 +134,7 @@ Look for any of these signals in the conversation context:
 - An attached folder from `{{SESSIONS_ROOT}}/<session-name>/` passed as context
 - The summary includes a path like `<session-name>/<NN>-*.md`
 
-If **any** signal is present, **use the existing session name** — do not generate a new one.
-The wrap file will be `<N+1>-<semantic-slug>.md` inside the existing folder.
+If **any** signal is present, **use the existing session name** — do not generate a new one. The wrap file will be `<N+1>-<semantic-slug>.md` inside the existing folder.
 
 If **no** signals are present, generate a new session name:
 
@@ -180,9 +157,7 @@ Print all four on their own lines:
 **Session ID:** <UUID if available, else N/A>
 ```
 
-**How to find the session ID (VS Code Copilot):** the template variable
-`{{VSCODE_TARGET_SESSION_LOG}}` contains a path whose last segment is a UUID. Extract it.
-On all other platforms (Claude.ai, Gemini web, etc.), write `N/A`.
+**How to find the session ID (VS Code Copilot):** the template variable `{{VSCODE_TARGET_SESSION_LOG}}` contains a path whose last segment is a UUID. Extract it. On all other platforms (Claude.ai, Gemini web, etc.), write `N/A`.
 
 ---
 
@@ -205,54 +180,40 @@ If **prior files exist**, read each in full and build an inventory of already-ca
 
 When writing Step 3, apply these rules:
 
-- **Omit anything already captured** — reference instead:
-  `> Already documented in [<NN>-<slug>.md](<NN>-<slug>.md). No change.`
-- **Include updated items** with a clear `[UPDATED]` marker:
-  `> [UPDATED since <NN>-<slug>.md] PR #19 is now merged. Was: open.`
-- **Open the Summary** with a continuation note:
-  `> Continuation from [<NN>-<slug>.md]. This file covers work done after the prior checkpoint.`
-- **Pending Tasks** — only list tasks that are NEW or status-changed since the last wrap.
-  For unchanged tasks: `Other pending tasks unchanged — see [<NN>-<slug>.md].`
+- **Omit anything already captured** — reference instead: `> Already documented in [<NN>-<slug>.md](<NN>-<slug>.md). No change.`
+- **Include updated items** with a clear `[UPDATED]` marker: `> [UPDATED since <NN>-<slug>.md] PR #19 is now merged. Was: open.`
+- **Open the Summary** with a continuation note: `> Continuation from [<NN>-<slug>.md]. This file covers work done after the prior checkpoint.`
+- **Pending Tasks** — only list tasks that are NEW or status-changed since the last wrap. For unchanged tasks: `Other pending tasks unchanged — see [<NN>-<slug>.md].`
 
 ---
 
 ## Step 2a — Recover full history from transcript (mandatory)
 
-The in-context summary is **always incomplete** if the conversation was compacted one or more
-times. Do not skip this step even if the current context feels complete.
+The in-context summary is **always incomplete** if the conversation was compacted one or more times. Do not skip this step even if the current context feels complete.
 
 1. Read `{{VSCODE_TARGET_SESSION_LOG}}` (JSONL — one JSON object per line).
-2. Extract every `<conversation-summary>` block found in the file. Each block is a
-   compaction checkpoint that summarises what happened before that point in the session.
-3. Also read the uncompacted tail — any tool calls and assistant messages that appear
-   **after** the final `<conversation-summary>` block.
-4. If this is a continuation wrap, find the timestamp of the previous wrap file and
-   include only activity recorded **after** that timestamp.
-5. Build a flat list of all distinct work items found across every compaction block
-   **plus** the current context. This is the authoritative activity inventory.
-6. Use this inventory — not the in-context summary alone — for the Topics Covered table
-   in Step 3 and the Files Edited list.
+2. Extract every `<conversation-summary>` block found in the file. Each block is a compaction checkpoint that summarises what happened before that point in the session.
+3. Also read the uncompacted tail — any tool calls and assistant messages that appear **after** the final `<conversation-summary>` block.
+4. If this is a continuation wrap, find the timestamp of the previous wrap file and include only activity recorded **after** that timestamp.
+5. Build a flat list of all distinct work items found across every compaction block **plus** the current context. This is the authoritative activity inventory.
+6. Use this inventory — not the in-context summary alone — for the Topics Covered table in Step 3 and the Files Edited list.
 
-**If `{{VSCODE_TARGET_SESSION_LOG}}` is unavailable** (non-VS-Code session or path not
-resolved), proceed from context alone and add this note to the wrap document:
+**If `{{VSCODE_TARGET_SESSION_LOG}}` is unavailable** (non-VS-Code session or path not resolved), proceed from context alone and add this note to the wrap document:
 
-> ⚠️ Transcript not available — wrap may be incomplete. Verify against screenshots or
-> a separate session log if critical work happened before the last context compaction.
+> ⚠️ Transcript not available — wrap may be incomplete. Verify against screenshots or a separate session log if critical work happened before the last context compaction.
 
 ---
 
 ## Step 3 — Write the wrap document
 
-Be concise — this is a continuity pointer for agents, not a narrative. Do not duplicate content
-already captured in commits, PRs, issues, or ADRs; reference by path or URL instead.
+Be concise — this is a continuity pointer for agents, not a narrative. Do not duplicate content already captured in commits, PRs, issues, or ADRs; reference by path or URL instead.
 
 ```markdown
 # <Human title>
 
 <YYYY-MM-DD>
 
-**Model:** <model name>
-**Session ID:** `<UUID>` | `N/A`
+**Model:** <model name> **Session ID:** `<UUID>` | `N/A`
 
 ## Summary
 
@@ -281,8 +242,7 @@ What was decided and why.
 
 ## Pending Tasks
 
-Enough context to pick up immediately. If arguments were passed to the skill, make those
-the focus here.
+Enough context to pick up immediately. If arguments were passed to the skill, make those the focus here.
 
 ## Suggested Skills
 
@@ -320,17 +280,13 @@ If `sessions-index.md` does not exist, create it with this header:
 ```markdown
 # Session Index
 
-> Each session is stored in its own folder. Multiple wraps from the same session appear as
-> numbered files inside the folder — named `<NN>-<slug>.md` with a semantic slug
-> (e.g. `01-merge-conflicts-resolved.md`).
+> Each session is stored in its own folder. Multiple wraps from the same session appear as numbered files inside the folder — named `<NN>-<slug>.md` with a semantic slug (e.g. `01-merge-conflicts-resolved.md`).
 
 | Date | Title | Projects | Topics | Wraps | Model(s) | Session ID | Folder |
 | ---- | ----- | -------- | ------ | ----- | -------- | ---------- | ------ |
 ```
 
-**If a row already exists for this session** (match on session name slug in the Folder column):
-increment **Wraps** by 1, append the model to **Model(s)** if not already listed, and update
-**Session ID** to the latest (or append with `, ` if multiple).
+**If a row already exists for this session** (match on session name slug in the Folder column): increment **Wraps** by 1, append the model to **Model(s)** if not already listed, and update **Session ID** to the latest (or append with `, ` if multiple).
 
 **If no row exists**: append a new row:
 
@@ -349,8 +305,7 @@ increment **Wraps** by 1, append the model to **Model(s)** if not already listed
 
 ## Step 6 — Update prompt catalogue (if applicable)
 
-Check the Files Edited list from Step 3. If any `.prompt.md` files were created or modified
-this session, upsert a row in `{{PROMPTS_ROOT}}/prompts-index.md`.
+Check the Files Edited list from Step 3. If any `.prompt.md` files were created or modified this session, upsert a row in `{{PROMPTS_ROOT}}/prompts-index.md`.
 
 For each affected prompt file:
 
@@ -365,8 +320,7 @@ For each affected prompt file:
    ```
 
 3. If a row already exists for the file: update `Last Updated` to today's date only.
-4. If it is a new prompt: append a row with Name, `/`-prefixed invocation, description,
-   Created date, Last Updated date, and `[<filename>.prompt.md](./<filename>.prompt.md)` link.
+4. If it is a new prompt: append a row with Name, `/`-prefixed invocation, description, Created date, Last Updated date, and `[<filename>.prompt.md](./<filename>.prompt.md)` link.
 
 If no prompt files were touched this session, skip this step silently.
 
@@ -374,16 +328,12 @@ If no prompt files were touched this session, skip this step silently.
 
 ## Step 7 — Hand off to /wip-sweep (one-way, no loop)
 
-After saving the wrap files and updating the index, the sessions repo has new or modified
-`.md` artifacts. Source repos touched during the session may also have uncommitted changes.
+After saving the wrap files and updating the index, the sessions repo has new or modified `.md` artifacts. Source repos touched during the session may also have uncommitted changes.
 
 Call `/wip-sweep` now. When wip-sweep asks which repos to sweep, answer:
 
 > "Sweep only the repos dirtied during this session: [list repos and what changed in each]"
 
-**Loop safety:** wip-sweep commits existing dirty files and creates no new ones. There is
-nothing new to wrap after it completes. The dependency is strictly one-way:
-`session-wrap → wip-sweep`.
+**Loop safety:** wip-sweep commits existing dirty files and creates no new ones. There is nothing new to wrap after it completes. The dependency is strictly one-way: `session-wrap → wip-sweep`.
 
-wip-sweep's T2/T3/T4 tier gates are where the user reviews branch names and approves pushes.
-This skill does not propose branches — that is wip-sweep's responsibility.
+wip-sweep's T2/T3/T4 tier gates are where the user reviews branch names and approves pushes. This skill does not propose branches — that is wip-sweep's responsibility.
