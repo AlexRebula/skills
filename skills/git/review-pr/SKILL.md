@@ -14,9 +14,7 @@ Findings are posted to the PR via the GitHub PR Reviews API with inline line com
 
 ## Arguments
 
-`/review-pr <N>` — PR number. Required. Ask if omitted.
-`/review-pr <N> standards-only` — skip Spec sub-agent (use when there is no spec).
-`/review-pr <N> <owner>/<repo>` — if the repo cannot be inferred from context.
+`/review-pr <N>` — PR number. Required. Ask if omitted. `/review-pr <N> standards-only` — skip Spec sub-agent (use when there is no spec). `/review-pr <N> <owner>/<repo>` — if the repo cannot be inferred from context.
 
 ---
 
@@ -65,6 +63,7 @@ Collect the list of files. The Standards sub-agent reads them all.
 Send a single message with one or two Agent tool calls (`subagent_type: general-purpose`). Spawn both in parallel unless `standards-only` was requested or no spec was found — in those cases send only the Standards sub-agent.
 
 **Standards sub-agent prompt — include all of:**
+
 - The full diff text
 - Standards files: include `AGENTS.md`, `CLAUDE.md`, `CONTEXT.md` in full; for `docs/adr/` pass the file list plus the title and decision line of each ADR (not full content — ADR bodies can be large)
 - If a scope was extracted in step 4: "Check **only** these sections: `<section list>`. For each section, state whether you checked it and what you found. Do not check sections outside this list."
@@ -72,6 +71,7 @@ Send a single message with one or two Agent tool calls (`subagent_type: general-
 - This brief: "Read the standards docs. Read the diff. Report every place the diff violates a documented standard — per file and line where relevant. Cite the standard (file + section). Label each finding: `blocking` / `non-blocking` / `suggestion`. Distinguish hard violations from judgement calls. Skip anything tooling (Prettier, ESLint, tsc) already enforces. Under 400 words."
 
 **Spec sub-agent prompt — include all of:**
+
 - The full diff text
 - The spec content (fetched issue body, PRD, or spec file)
 - This brief: "Read the spec. Read the diff. Report: (a) requirements the spec asked for that are missing or partial; (b) behaviour in the diff not asked for (scope creep); (c) requirements that look implemented but where the implementation is wrong. Quote the spec line for each finding. Label each: `blocking` / `non-blocking` / `suggestion`. Under 400 words."
@@ -106,6 +106,7 @@ EOF
 ```
 
 **Rules:**
+
 - Always `event: "COMMENT"` — never `APPROVE` or `REQUEST_CHANGES` unilaterally
 - Line-specific findings → `comments[]` array
 - General verdict and findings without a specific line → `body`
@@ -115,6 +116,7 @@ EOF
 ### 8. Report in chat
 
 After posting, summarise:
+
 - Total: N blocking, N non-blocking, N suggestions
 - Link to the posted review thread
 - Worst single finding (if any)
@@ -131,7 +133,7 @@ Before handing back to the user, scan **every reply posted under the reviewer's 
 For every reply that contains one of these signals, verify a tracking artifact exists:
 
 | Commitment type | Required artifact |
-|---|---|
+| --- | --- |
 | "will fix in this PR" | Commit SHA posted as follow-up reply in the same thread |
 | "will open an issue" / "separate issue" | GitHub issue opened; issue link posted as follow-up reply |
 | "will update the PR description" | PR description updated; confirmation posted as follow-up reply |

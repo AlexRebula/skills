@@ -5,8 +5,7 @@ description: Audit existing AI-generated tests in giselle-mui for quality proble
 
 # Audit Giselle MUI Tests
 
-Use this skill to review existing tests in `giselle-mui` and produce an actionable fix plan.
-Run it once before starting new component work so you know what baseline you are building on.
+Use this skill to review existing tests in `giselle-mui` and produce an actionable fix plan. Run it once before starting new component work so you know what baseline you are building on.
 
 ## What to look for
 
@@ -14,8 +13,7 @@ There are three buckets. Classify every test file into one before proposing any 
 
 ### Bucket A — Placeholder stubs (leave alone)
 
-Compliant with **AGENTS.md §5.5 two-phase scaffold** — `it.todo` stubs only, no
-implementation yet:
+Compliant with **AGENTS.md §5.5 two-phase scaffold** — `it.todo` stubs only, no implementation yet:
 
 ```ts
 // @vitest-environment jsdom
@@ -27,8 +25,7 @@ describe('<ComponentName>', () => {
 });
 ```
 
-The quality-gate (`src/quality-gate/two-phase-scaffold.test.ts`) enforces this pattern
-automatically — any new `.test.ts` file without `it.todo` stubs will fail CI.
+The quality-gate (`src/quality-gate/two-phase-scaffold.test.ts`) enforces this pattern automatically — any new `.test.ts` file without `it.todo` stubs will fail CI.
 
 **Action: leave as-is. Do not delete or rewrite.**
 
@@ -41,14 +38,14 @@ vi.mock('@mui/material/Card', () => ({ default: ... }));
 vi.mock('@mui/material/styles', () => ({ useTheme: vi.fn(() => ...) }));
 ```
 
-**Why this is bad:** Tests mock the very components they are supposed to test. If the
-component's internal structure changes, tests still pass. They test the mocks, not the behavior.
+**Why this is bad:** Tests mock the very components they are supposed to test. If the component's internal structure changes, tests still pass. They test the mocks, not the behavior.
 
 **Action: rewrite using `renderWithTheme` helper (see fix pattern below).**
 
 ### Bucket C — Good tests (leave alone)
 
 Tests that:
+
 - Import through the barrel (`from './component-name'`)
 - Use `renderToStaticMarkup` or `@testing-library/react` without MUI mocks
 - Test observable behavior through the public API
@@ -75,19 +72,20 @@ Report the count in each bucket before doing anything else.
 
 For each Bucket C file, verify these test cases exist:
 
-| Required case | Pattern |
-|---|---|
-| Smoke render | `it('renders without crashing', ...)` |
-| Required props | `it('renders the <prop>', ...)` |
-| Optional variants | `it('applies <variant>...', ...)` — one per variant |
-| `...other` passthrough | `it('forwards arbitrary props', ...)` |
-| `ref` forwarding | `it('forwards ref', ...)` — only if `forwardRef` used |
+| Required case          | Pattern                                               |
+| ---------------------- | ----------------------------------------------------- |
+| Smoke render           | `it('renders without crashing', ...)`                 |
+| Required props         | `it('renders the <prop>', ...)`                       |
+| Optional variants      | `it('applies <variant>...', ...)` — one per variant   |
+| `...other` passthrough | `it('forwards arbitrary props', ...)`                 |
+| `ref` forwarding       | `it('forwards ref', ...)` — only if `forwardRef` used |
 
 Report missing cases as a list before rewriting anything.
 
 ### Step 3 — Confirm fix scope with user
 
 Before touching a single file, present:
+
 - Count of Bucket A (stubs to leave)
 - Count of Bucket B (files to rewrite)
 - Count of Bucket C (files to check/top-up)
@@ -102,9 +100,7 @@ Before touching a single file, present:
 
 ### First: create or verify `src/test-utils.ts` exists
 
-`giselle-mui` uses MUI CSS variables mode (`extendTheme`). Plain `createTheme` does **not**
-populate `theme.vars.*` — any `sx` callback referencing those tokens crashes at render time.
-`GiselleThemeProvider` is the only correct wrapper for component tests in this codebase.
+`giselle-mui` uses MUI CSS variables mode (`extendTheme`). Plain `createTheme` does **not** populate `theme.vars.*` — any `sx` callback referencing those tokens crashes at render time. `GiselleThemeProvider` is the only correct wrapper for component tests in this codebase.
 
 ```ts
 // src/test-utils.ts
@@ -115,9 +111,7 @@ import { GiselleThemeProvider } from './components/theming/theme-provider/gisell
 
 /** Use for pure rendering checks (no interaction needed). */
 export function renderWithTheme(element: React.ReactElement): string {
-  return renderToStaticMarkup(
-    React.createElement(GiselleThemeProvider, null, element)
-  );
+  return renderToStaticMarkup(React.createElement(GiselleThemeProvider, null, element));
 }
 
 /** Use when you need user events or state transitions. */
@@ -129,6 +123,7 @@ export function renderInteractiveWithTheme(element: React.ReactElement) {
 ### Then: rewrite each Bucket B file
 
 **Before (anti-pattern):**
+
 ```ts
 vi.mock('@mui/material/Card', () => ({ default: ({ children }) => <div>{children}</div> }));
 vi.mock('@mui/material/styles', () => ({ useTheme: vi.fn(() => ({ palette: {} })) }));
@@ -140,6 +135,7 @@ it('renders the card container', () => {
 ```
 
 **After (correct pattern):**
+
 ```ts
 import { renderWithTheme } from '../../../../test-utils';
 
@@ -166,10 +162,10 @@ it('renders the label', () => {
 
 ## Branch strategy
 
-All test rewrites go on a dedicated `test/audit-existing-tests` branch.
-Do not mix test rewrites with feature work or component creation.
+All test rewrites go on a dedicated `test/audit-existing-tests` branch. Do not mix test rewrites with feature work or component creation.
 
 One commit per component (not one commit for everything):
+
 ```
 test(radial-progress-card): replace MUI mocks with ThemeProvider wrapper
 test(metric-card): replace MUI mocks with ThemeProvider wrapper

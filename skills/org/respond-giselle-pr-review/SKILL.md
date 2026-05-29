@@ -11,9 +11,7 @@ Use this skill for any LittleBranches repository. Use `/respond-pr-review` for a
 
 ## Arguments
 
-`/respond-giselle-pr-review <N>` — PR number. Required. Ask if omitted.
-`/respond-giselle-pr-review <N> <owner>/<repo>` — if the repo cannot be inferred from context.
-`/respond-giselle-pr-review <N> --standards-url <url>` — load standards from a custom raw URL instead of the default LittleBranches AGENTS.md.
+`/respond-giselle-pr-review <N>` — PR number. Required. Ask if omitted. `/respond-giselle-pr-review <N> <owner>/<repo>` — if the repo cannot be inferred from context. `/respond-giselle-pr-review <N> --standards-url <url>` — load standards from a custom raw URL instead of the default LittleBranches AGENTS.md.
 
 ---
 
@@ -37,17 +35,14 @@ Public:   https://raw.githubusercontent.com/LittleBranches/oss-quality-standards
 Workflow: https://raw.githubusercontent.com/LittleBranches/oss-quality-standards/main/docs/pr-review-workflow.md
 ```
 
-For the private AGENTS.md, use the authenticated `gh` CLI to fetch via the GitHub Contents API.
-`fetch_webpage` will always 404 — the repo is private and raw.githubusercontent.com requires auth.
+For the private AGENTS.md, use the authenticated `gh` CLI to fetch via the GitHub Contents API. `fetch_webpage` will always 404 — the repo is private and raw.githubusercontent.com requires auth.
 
 ```sh
 gh api repos/LittleBranches/oss-quality-standards-private/contents/AGENTS.md \
   --jq '.content | @base64d'
 ```
 
-This works on any machine where `gh` is authenticated. No hardcoded paths.
-Only skip the private barrel if `gh` itself returns a permission error — and if so, note explicitly
-that banned-content and encryption rules were not checked.
+This works on any machine where `gh` is authenticated. No hardcoded paths. Only skip the private barrel if `gh` itself returns a permission error — and if so, note explicitly that banned-content and encryption rules were not checked.
 
 ### 2. Identify the repo and verify the branch
 
@@ -87,11 +82,11 @@ git merge origin/<base-branch> --no-commit --no-ff
 
 Resolve each conflicting file using the following strategy:
 
-| File type                                                             | Resolution strategy                                                                                                 |
-| --------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------- |
-| Generated/vendored artifacts (`.yalc/`, `dist/`, `package-lock.json`) | `git checkout --theirs <file>` — always take base branch (latest build)                                             |
-| Data files (`*.json`, `*.csv`)                                        | Read both sides carefully; preserve all new entries from both HEAD and base — never discard either side's additions |
-| Source files (`*.ts`, `*.tsx`, `*.md`)                                | Manual merge — read conflict sections, apply both sets of meaningful changes                                        |
+| File type | Resolution strategy |
+| --- | --- |
+| Generated/vendored artifacts (`.yalc/`, `dist/`, `package-lock.json`) | `git checkout --theirs <file>` — always take base branch (latest build) |
+| Data files (`*.json`, `*.csv`) | Read both sides carefully; preserve all new entries from both HEAD and base — never discard either side's additions |
+| Source files (`*.ts`, `*.tsx`, `*.md`) | Manual merge — read conflict sections, apply both sets of meaningful changes |
 
 After resolving:
 

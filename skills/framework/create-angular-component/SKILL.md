@@ -7,8 +7,7 @@ description: Scaffold and TDD a new Angular 17+ standalone component. Uses signa
 
 Two phases. Scaffold first — commit before implementing.
 
-Angular 17+ only. Uses standalone components, `input()` signals, and `output()` functions.
-For older Angular (< 17), ask the user — the decorator-based `@Input()` / `@Output()` variants apply.
+Angular 17+ only. Uses standalone components, `input()` signals, and `output()` functions. For older Angular (< 17), ask the user — the decorator-based `@Input()` / `@Output()` variants apply.
 
 ---
 
@@ -31,16 +30,16 @@ Do not proceed until all 8 are answered.
 
 ## Naming rules
 
-| File | Convention |
-|---|---|
-| Folder | kebab-case — `user-avatar/` |
-| Component file | `<name>.component.ts` |
-| Template | `<name>.component.html` (or inline for small components) |
-| Styles | `<name>.component.scss` (or `.css`) |
-| Types | `types.ts` — input/output interfaces always separate |
-| Barrel | `index.ts` |
-| Tests | `<name>.component.spec.ts` |
-| Docs | `README.md` |
+| File           | Convention                                               |
+| -------------- | -------------------------------------------------------- |
+| Folder         | kebab-case — `user-avatar/`                              |
+| Component file | `<name>.component.ts`                                    |
+| Template       | `<name>.component.html` (or inline for small components) |
+| Styles         | `<name>.component.scss` (or `.css`)                      |
+| Types          | `types.ts` — input/output interfaces always separate     |
+| Barrel         | `index.ts`                                               |
+| Tests          | `<name>.component.spec.ts`                               |
+| Docs           | `README.md`                                              |
 
 ---
 
@@ -94,10 +93,10 @@ _One paragraph: the recurring problem this component solves._
 ## Planned API
 
 | Input | Type | Default | Description |
-|---|---|---|---|
+| ----- | ---- | ------- | ----------- |
 
 | Output | Payload | Description |
-|---|---|---|
+| ------ | ------- | ----------- |
 
 ## Design decisions
 
@@ -157,12 +156,18 @@ export class UserAvatarComponent {
   readonly imageError = output<Event>();
 
   protected readonly initials = computed(() =>
-    this.name().split(' ').map(w => w[0]).join('').slice(0, 2).toUpperCase()
+    this.name()
+      .split(' ')
+      .map((w) => w[0])
+      .join('')
+      .slice(0, 2)
+      .toUpperCase()
   );
 }
 ```
 
 **Rules:**
+
 - `standalone: true` — always; no NgModule for new components
 - `ChangeDetectionStrategy.OnPush` — always for new components
 - `input()` / `input.required<T>()` / `output<T>()` — signal-based API (Angular 17+)
@@ -240,6 +245,7 @@ it('updates initials when name input changes', async () => {
 ```
 
 **Mocking rules:**
+
 - Mock services at the DI boundary — provide a spy or stub via `TestBed` providers
 - Never mock Angular core (`Component`, `input`, `computed`, `ChangeDetectorRef`)
 - Never mock child components that live in the same module/library

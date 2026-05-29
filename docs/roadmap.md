@@ -14,35 +14,35 @@ Fork is live. LittleBranches-specific skills are shipped and installable via `np
 
 ## Phase A — LittleBranches Core Skills ✅ (Done)
 
-| Skill                         | Status |
-| ----------------------------- | ------ |
-| `/create-giselle-component`   | ✅     |
-| `/audit-giselle-tests`        | ✅     |
-| `/review-pr`                  | ✅     |
-| `/review-giselle-pr`          | ✅     |
-| `/respond-pr-review`          | ✅     |
-| `/respond-giselle-pr-review`  | ✅     |
-| `/morning-pr-sweep`           | ✅     |
-| `/create-react-component`     | ✅     |
-| `/create-vue-component`       | ✅     |
-| `/create-angular-component`   | ✅     |
+| Skill                        | Status |
+| ---------------------------- | ------ |
+| `/create-giselle-component`  | ✅     |
+| `/audit-giselle-tests`       | ✅     |
+| `/review-pr`                 | ✅     |
+| `/review-giselle-pr`         | ✅     |
+| `/respond-pr-review`         | ✅     |
+| `/respond-giselle-pr-review` | ✅     |
+| `/morning-pr-sweep`          | ✅     |
+| `/create-react-component`    | ✅     |
+| `/create-vue-component`      | ✅     |
+| `/create-angular-component`  | ✅     |
 
 ---
 
 ## Phase B — Workflow Skills ⬜
 
-| Skill                         | Purpose                                    | Status |
-| ----------------------------- | ------------------------------------------ | ------ |
-| `/sync-roadmap`               | Read Asana task completion → update roadmap.md checkboxes | ⬜ |
-| `/session-wrap`               | Compact conversation into a handoff doc    | ⬜     |
-| `/standup`                    | Generate standup from recent session activity | ⬜  |
+| Skill           | Purpose                                                   | Status |
+| --------------- | --------------------------------------------------------- | ------ |
+| `/sync-roadmap` | Read Asana task completion → update roadmap.md checkboxes | ⬜     |
+| `/session-wrap` | Compact conversation into a handoff doc                   | ⬜     |
+| `/standup`      | Generate standup from recent session activity             | ⬜     |
 
 ---
 
 ## Phase C — Infrastructure ⬜
 
-| Item                                                        | Status |
-| ----------------------------------------------------------- | ------ |
-| Move canonical source from Google Drive to this repo        | ✅     |
-| GitHub Actions CI: lint + validate all SKILL.md files       | ⬜     |
-| Automated sync: skills index → `README.md` table            | ⬜     |
+| Item                                                  | Status |
+| ----------------------------------------------------- | ------ |
+| Move canonical source from Google Drive to this repo  | ✅     |
+| GitHub Actions CI: lint + validate all SKILL.md files | ⬜     |
+| Automated sync: skills index → `README.md` table      | ⬜     |

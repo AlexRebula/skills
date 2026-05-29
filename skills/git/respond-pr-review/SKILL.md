@@ -11,8 +11,7 @@ Use `/respond-giselle-pr-review` instead when working in a LittleBranches reposi
 
 ## Arguments
 
-`/respond-pr-review <N>` — PR number. Required. Ask if omitted.
-`/respond-pr-review <N> <owner>/<repo>` — if the repo cannot be inferred from context.
+`/respond-pr-review <N>` — PR number. Required. Ask if omitted. `/respond-pr-review <N> <owner>/<repo>` — if the repo cannot be inferred from context.
 
 ---
 
@@ -72,7 +71,7 @@ git merge origin/<base-branch> --no-commit --no-ff
 Resolve each conflicting file using the following strategy:
 
 | File type | Resolution strategy |
-|---|---|
+| --- | --- |
 | Generated/vendored artifacts (`.yalc/`, `dist/`, `package-lock.json`) | `git checkout --theirs <file>` — always take base branch (latest build) |
 | Data files (`*.json`, `*.csv`) | Read both sides carefully; preserve all new entries from both HEAD and base — never discard either side's additions |
 | Source files (`*.ts`, `*.tsx`, `*.md`) | Manual merge — read conflict sections, apply both sets of meaningful changes |

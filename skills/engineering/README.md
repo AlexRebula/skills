@@ -6,6 +6,7 @@ Framework-agnostic skills for code craft, architecture, and problem-solving.
 - **[create-giselle-pr](./create-giselle-pr/SKILL.md)** — Same as create-pr but for LittleBranches repos: pre-loads AGENTS.md, runs banned-content scan, includes `data/` branch prefix, triggers Copilot review by default, and optionally creates a companion doc in `docs/pr-messages/`.
 
 > **Note:** Both skills have mirrors at `.agents/skills/create-pr/SKILL.md` and `.agents/skills/create-giselle-pr/SKILL.md` for Claude Code agent discovery.
+
 - **[diagnose](./diagnose/SKILL.md)** — Disciplined diagnosis loop for hard bugs and performance regressions: reproduce → minimise → hypothesise → instrument → fix → regression-test.
 - **[grill-with-docs](./grill-with-docs/SKILL.md)** — Grilling session that challenges your plan against the existing domain model, sharpens terminology, and updates `CONTEXT.md` and ADRs inline.
 - **[improve-codebase-architecture](./improve-codebase-architecture/SKILL.md)** — Find deepening opportunities in a codebase, informed by the domain language in `CONTEXT.md` and the decisions in `docs/adr/`.

@@ -9,10 +9,7 @@ description: Sweep dirty repos for uncommitted work and create OSS §2.1-complia
 
 **This tier runs automatically.** Show the dirty state table from `/repo-status` to the developer and ask:
 
-> "Which repos should I sweep? Options:
-> A) All dirty repos (default)
-> B) Select specific repos
-> C) Skip WIP sweep entirely
+> "Which repos should I sweep? Options: A) All dirty repos (default) B) Select specific repos C) Skip WIP sweep entirely
 >
 > For any repo you want swept, should I also suggest a group name for the WIP branch based on the dirty file contents? (y/n)"
 
@@ -27,6 +24,7 @@ Process only the repos selected above.
 For each selected dirty repo:
 
 1. Inspect the dirty files:
+
    ```sh
    git -C <repo-path> diff --name-only
    git -C <repo-path> ls-files --others --exclude-standard
@@ -43,8 +41,7 @@ For each selected dirty repo:
 
    `wip/` is never valid. Full §2.1 table is in OSS AGENTS.md — fetch on demand if unsure.
 
-   Branch name format: `<prefix>/YYYYMMDD-<group-slug>`
-   Commit format: `<type>(standup-prep): snapshot — <group> — YYYY-MM-DD`
+   Branch name format: `<prefix>/YYYYMMDD-<group-slug>` Commit format: `<type>(standup-prep): snapshot — <group> — YYYY-MM-DD`
 
    Examples:
    - Docs group → `docs/20260523-dashboard-plan-updates` / `docs(standup-prep): snapshot — dashboard-plan — 2026-05-23`
@@ -52,7 +49,9 @@ For each selected dirty repo:
    - Component work → `feature/20260523-stat-card-progress` / `feature(standup-prep): snapshot — stat-card — 2026-05-23`
 
 4. Present the full plan:
+
    > "I will create the following snapshot commits (OSS §2.1 branch names):
+   >
    > - [giselle-mui] docs/20260523-dashboard-plan (3 files: docs/dashboard-components-plan.md, ...)
    > - [giselle-mui] chore/20260523-ci-config (2 files: ci.yml, vitest.config.ts)
    > - [giselle-ui] docs/20260523-roadmap-updates (2 files: docs/roadmap.md, src/styles.css)
@@ -71,9 +70,11 @@ For each selected dirty repo:
 ## T3 — Push to remote (ask per repo, after T2)
 
 After T2 completes, ask:
+
 > "Push WIP branches to remote? [y=all / n=none / list repo names to push selectively]"
 
 For each confirmed repo:
+
 ```sh
 git -C <repo-path> push -u origin HEAD
 ```
@@ -83,11 +84,13 @@ git -C <repo-path> push -u origin HEAD
 ## T4 — Open pull requests (ask, default NO)
 
 After T3, ask:
+
 > "Open pull requests for the pushed branches? Default: NO. [y/n/select]"
 
 If yes, for each pushed branch:
 
 1. Check for a PR template (GitHub checks these paths in order; check all casings on case-sensitive filesystems):
+
    ```sh
    cat <repo-path>/.github/pull_request_template.md 2>/dev/null || \
    cat <repo-path>/.github/PULL_REQUEST_TEMPLATE.md 2>/dev/null || \

@@ -15,11 +15,11 @@ The key difference from calling `/respond-pr-review` (or `/respond-giselle-pr-re
 
 **This skill makes real, public writes.** Understand what it does before you invoke it:
 
-| Action                                               | Scope                      | Visibility                                  |
-| ---------------------------------------------------- | -------------------------- | ------------------------------------------- |
+| Action | Scope | Visibility |
+| --- | --- | --- |
 | Posts acknowledgement replies to open review threads | Per thread, before any fix | Public — visible to anyone with repo access |
-| Pushes fix commits to the PR branch                  | Per PR, after fixes        | Public — appears in the PR timeline         |
-| Posts SHA confirmation replies to every thread       | Per thread, after push     | Public — visible to anyone with repo access |
+| Pushes fix commits to the PR branch | Per PR, after fixes | Public — appears in the PR timeline |
+| Posts SHA confirmation replies to every thread | Per thread, after push | Public — visible to anyone with repo access |
 
 **This applies to both private and public repositories.** On a public repo, your replies are visible to the entire internet.
 
@@ -35,11 +35,7 @@ The skill always shows a full impact table and waits for your explicit confirmat
 
 ## Arguments
 
-`/morning-pr-sweep` — discovers and sweeps all repos owned by the authenticated GitHub user.
-`/morning-pr-sweep <owner>/<repo>` — sweeps a single repo only.
-`/morning-pr-sweep --repos <owner>/<repo>,<owner>/<repo>` — sweeps a specific set of repos.
-`/morning-pr-sweep --orgs <org1>,<org2>` — sweeps all repos in the specified orgs instead of the authenticated user's repos.
-`/morning-pr-sweep --standards-url <url>` — loads a shared standards file (AGENTS.md) for all repos in the sweep instead of per-repo discovery.
+`/morning-pr-sweep` — discovers and sweeps all repos owned by the authenticated GitHub user. `/morning-pr-sweep <owner>/<repo>` — sweeps a single repo only. `/morning-pr-sweep --repos <owner>/<repo>,<owner>/<repo>` — sweeps a specific set of repos. `/morning-pr-sweep --orgs <org1>,<org2>` — sweeps all repos in the specified orgs instead of the authenticated user's repos. `/morning-pr-sweep --standards-url <url>` — loads a shared standards file (AGENTS.md) for all repos in the sweep instead of per-repo discovery.
 
 ---
 
@@ -58,9 +54,7 @@ gh api repos/<owner>/<repo>/contents/AGENTS.md --jq '.name' 2>/dev/null
 
 **Override:** Pass `--standards-url <url>` to load a shared standards file for all repos in the sweep — useful when your org maintains a central AGENTS.md. This overrides per-repo discovery.
 
-> **LittleBranches contributors:** Your standards are at:
-> `https://raw.githubusercontent.com/LittleBranches/oss-quality-standards/main/docs/AGENTS.md`
-> Pass this as `--standards-url` or ensure each repo's `AGENTS.md` references it.
+> **LittleBranches contributors:** Your standards are at: `https://raw.githubusercontent.com/LittleBranches/oss-quality-standards/main/docs/AGENTS.md` Pass this as `--standards-url` or ensure each repo's `AGENTS.md` references it.
 
 ### 0b. Build the repo list
 
@@ -74,8 +68,7 @@ gh repo list --limit 200 --json nameWithOwner,isPrivate \
   --jq '.[] | "\(.nameWithOwner) (\(if .isPrivate then "private" else "public" end))"'
 ```
 
-> **Scoping to specific orgs:** If you want to limit discovery to certain organisations,
-> add a `select` filter:
+> **Scoping to specific orgs:** If you want to limit discovery to certain organisations, add a `select` filter:
 >
 > ```sh
 > gh repo list --limit 200 --json nameWithOwner,isPrivate \
@@ -120,12 +113,12 @@ gh api --paginate repos/<owner>/<repo>/pulls/<N>/comments \
     end'
 ```
 
-| State            | Condition                                                    | What sweep does                    |
-| ---------------- | ------------------------------------------------------------ | ---------------------------------- |
-| `needs-response` | Bot review threads exist with no author SHA reply            | Runs respond protocol (Phases 1–4) |
-| `needs-review`   | PR open but no review posted yet                             | Flags in report; skip              |
-| `merge-ready`    | Every bot thread has an author reply containing a commit SHA | Reports for manual merge           |
-| `blocked`        | CI failing, merge conflicts, or draft                        | Flags; skip                        |
+| State | Condition | What sweep does |
+| --- | --- | --- |
+| `needs-response` | Bot review threads exist with no author SHA reply | Runs respond protocol (Phases 1–4) |
+| `needs-review` | PR open but no review posted yet | Flags in report; skip |
+| `merge-ready` | Every bot thread has an author reply containing a commit SHA | Reports for manual merge |
+| `blocked` | CI failing, merge conflicts, or draft | Flags; skip |
 
 ### 0e. Show the discovery table — wait for confirmation
 
@@ -147,9 +140,7 @@ MyOrg/repo-c                     public   #8    merge-ready      chore/pr-workfl
 Proceed? (yes / no / list only)
 ```
 
-**`yes`** — proceed with full sweep.
-**`no`** — abort. No writes made.
-**`list only`** — print the discovery table but make no writes. Useful for reviewing scope before committing.
+**`yes`** — proceed with full sweep. **`no`** — abort. No writes made. **`list only`** — print the discovery table but make no writes. Useful for reviewing scope before committing.
 
 Wait for explicit confirmation before proceeding.
 
