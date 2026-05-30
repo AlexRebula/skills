@@ -283,7 +283,7 @@ Create the directory if it does not exist. **Never overwrite** an existing numbe
 **After saving the file, wire it into the → Next chain:**
 
 - Find the file immediately before this one — `<NN-1>-*.md`.
-- If that file ends with `→ Next: *(next session not yet started)*` or has no `→ Next` line: replace/append the link:
+- If that file ends with `**→ Next:** _(next session not yet started)_` or has no `→ Next` line: replace/append the link:
 
   ```markdown
   ---

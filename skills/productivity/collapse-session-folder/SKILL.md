@@ -13,6 +13,8 @@ Invoke `/resolve-ai-paths` to resolve `SESSIONS_ROOT`. Skip Step 2 of the resolv
 
 **Date** — defaults to today (`YYYY-MM-DD`). If the user specifies a different date, use that.
 
+> ⚠️ **Safety note when using a past date:** collapsing a past-date folder rewrites committed history (file paths, `→ Next` links). Only collapse a past date if those files have **not yet been pushed to a remote** or the rewrite is intentional and the branch has not been shared. Never collapse past-date folders that are already part of a public or team-shared branch without explicit confirmation from the user.
+
 ---
 
 ## Step 1 — Scan for same-day folders

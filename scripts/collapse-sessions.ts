@@ -270,7 +270,7 @@ function updateSessionsIndex(
   const mergedLine =
     `| ${merged.date} | ${humanTitle} | ${merged.projects} | ${merged.topics}` +
     ` | ${merged.wraps} | ${merged.models} | ${merged.sessionIds}` +
-    ` | [${combinedFolderName}](./${combinedFolderName}/${firstNewFileName}) |`;
+    ` | [${combinedFolderName}](./${combinedFolderName}/) |`;
 
   // Replace first matching row; delete the rest
   const deleteSet = new Set(matchingIndices.slice(1));
@@ -317,7 +317,16 @@ function buildLinkMaps(renameMap: RenameEntry[]): {
   const folderNameMap = new Map<string, string>();
 
   for (const entry of renameMap) {
-    baseNameMap.set(entry.oldBaseName, entry.newBaseName);
+    // Key by "oldFolderName/oldBaseName" to avoid collisions when multiple source
+    // folders share a filename (e.g. "01-initial.md" from two different sessions).
+    // Wiki-link repair uses a bare oldBaseName lookup as a fallback for links that
+    // lack folder context — prefer the folder-qualified key when available.
+    const qualifiedKey = `${entry.oldFolderName}/${entry.oldBaseName}`;
+    baseNameMap.set(qualifiedKey, entry.newBaseName);
+    // Also register the bare name, but only if no collision exists yet.
+    if (!baseNameMap.has(entry.oldBaseName)) {
+      baseNameMap.set(entry.oldBaseName, entry.newBaseName);
+    }
     folderNameMap.set(entry.oldFolderName, entry.newFolderName);
   }
 
@@ -358,6 +367,7 @@ function fixLinksInFile(
   // 2. Repair markdown links that reference old folder paths:
   //    [text](./old-folder/file.md) → [text](./new-folder/file.md)
   //    [text](./old-folder/) → [text](./new-folder/)
+  //    Also repair the filename portion when the file was renumbered.
   content = content.replace(
     /\[([^\]]*?)\]\(([^)]+?)\)/g,
     (_match: string, label: string, href: string) => {
@@ -368,6 +378,17 @@ function fixLinksInFile(
       for (const [oldFolder, newFolder] of folderNameMap) {
         if (newHref.includes(oldFolder)) {
           newHref = newHref.replace(oldFolder, newFolder);
+          // Also fix the filename if it was renumbered
+          const fileMatch = newHref.match(/\/([^/]+\.md)$/);
+          if (fileMatch) {
+            const oldFileName = fileMatch[1];
+            const oldBase = oldFileName.replace(/\.md$/, '');
+            const qualifiedKey = `${oldFolder}/${oldBase}`;
+            const newBase = baseNameMap.get(qualifiedKey) ?? baseNameMap.get(oldBase);
+            if (newBase && newBase !== oldBase) {
+              newHref = newHref.replace(oldFileName, `${newBase}.md`);
+            }
+          }
           break;
         }
       }
@@ -435,8 +456,12 @@ function addBridgeLinks(combinedFolderPath: string, renameMap: RenameEntry[]): v
 
     const sourceContent = readFileSync(sourceFilePath, 'utf8');
 
-    // Skip if → Next already exists in this file
-    if (sourceContent.includes('→ Next:')) continue;
+    // Skip if a real → Next wikilink already exists in this file.
+    // Do NOT skip if the file only has the trailing placeholder
+    // "**→ Next:** _(next session not yet started)_" — that placeholder
+    // must be replaced with a real wikilink when files are collapsed.
+    const hasRealNextLink = /→ Next:.*\[\[/.test(sourceContent);
+    if (hasRealNextLink) continue;
 
     const title = extractTitle(targetFilePath, targetEntry.semanticSlug.replace(/-/g, ' '));
     const nextLink = `\n\n---\n\n**→ Next:** [[${targetEntry.newBaseName}|${targetEntry.newNn} — ${title}]]`;
