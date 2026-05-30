@@ -46,6 +46,7 @@
     "./skills/productivity/standup-prep-preflight",
     "./skills/productivity/write-a-skill",
     "./skills/misc/git-guardrails-claude-code",
+    "./skills/misc/karpathy-guidelines",
     "./skills/misc/migrate-to-shoehorn",
     "./skills/misc/scaffold-exercises",
     "./skills/misc/setup-pre-commit"

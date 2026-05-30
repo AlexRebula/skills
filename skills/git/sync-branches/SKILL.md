@@ -18,7 +18,17 @@ git fetch --prune origin && \
   echo "=== ALL BRANCHES ===" && \
   git for-each-ref \
     --format='%(refname:short)|%(upstream:short)|%(upstream:track)' \
-    refs/heads/
+    refs/heads/ && \
+  echo "=== SAME-NAME ORIGIN WITHOUT UPSTREAM ===" && \
+  for branch in $(git for-each-ref --format='%(refname:short)' refs/heads/); do \
+    upstream=$(git for-each-ref --format='%(upstream:short)' "refs/heads/$branch"); \
+    if [[ -z "$upstream" ]] && git show-ref --verify --quiet "refs/remotes/origin/$branch"; then \
+      counts=$(git rev-list --left-right --count "origin/$branch...$branch"); \
+      behind=$(echo "$counts" | awk '{print $1}'); \
+      ahead=$(echo "$counts" | awk '{print $2}'); \
+      echo "$branch|origin/$branch|[same-name remote, no upstream]|behind=$behind|ahead=$ahead"; \
+    fi; \
+  done
 ```
 
 **Reading the output:**
@@ -30,7 +40,10 @@ git fetch --prune origin && \
 | `branch\|origin/branch\|[behind N]` | Stale local — pull needed (Phase 2) |
 | `branch\|origin/branch\|[ahead N]` | Local is ahead of origin — push needed (out of scope) |
 | `branch\|origin/branch\|[ahead N, behind M]` | Diverged — skip auto-pull; flag for manual review |
-| `branch\|\|` (no upstream) | Local-only branch — no remote; note it, do not pull |
+| `branch\|\|` (no upstream) | Ambiguous — check the `=== SAME-NAME ORIGIN WITHOUT UPSTREAM ===` block before calling it local-only |
+| `branch\|origin/branch\|[same-name remote, no upstream]\|behind=N\|ahead=M` | Remote branch exists but local tracking was never set; treat it like the matching tracked state |
+
+**Important:** `branch||` does **not** automatically mean local-only. First check whether `origin/<branch>` exists. If it does, the branch was missed by tracking config, not by Git history.
 
 **Present a triage table to the developer before proceeding:**
 
@@ -41,6 +54,7 @@ feature/my-work     | No      | In sync      | Merge main only
 docs/old-stuff      | YES     | —            | Skip — merged, flag for delete
 chore/update        | No      | Behind 3     | Pull then merge main
 fix/bug             | No      | Diverged     | Flag — manual review needed
+docs/missed-branch  | No      | No upstream, remote exists, ahead 12 | Merge main; push with `-u`
 ```
 
 Confirm the plan with the developer before Phase 2.
@@ -56,6 +70,31 @@ git checkout <branch> && git pull --ff-only origin <branch> && echo "PULLED_OK" 
 ```
 
 `--ff-only` is safe: fails if histories have diverged, preventing unintended merge commits. If it fails, move the branch to the "manual review" list.
+
+### Branches with no upstream but a same-name origin branch
+
+If `=== SAME-NAME ORIGIN WITHOUT UPSTREAM ===` reports `origin/<branch>` exists, do **not** treat the branch as local-only.
+
+- `behind > 0` and `ahead = 0` → stale local; run:
+
+```sh
+git checkout <branch> && git pull --ff-only origin <branch> && echo "PULLED_OK" || echo "PULL_FAILED"
+```
+
+- `behind = 0` and `ahead > 0` → remote exists and local is ahead; merge `main` in Phase 3, then push with upstream set:
+
+```sh
+git push -u origin <branch>
+```
+
+- `behind > 0` and `ahead > 0` → diverged; do **not** bulk-push blindly. First reconcile the remote branch into the local branch, then push with upstream set:
+
+```sh
+git checkout <branch> && git merge origin/<branch> --no-edit && echo "REMOTE_MERGED" || echo "REMOTE_CONFLICTS"
+git push -u origin <branch>
+```
+
+If the remote merge conflicts, resolve it in place using the same no-abort rule as Phase 3.
 
 ---
 
@@ -79,6 +118,14 @@ git commit --no-edit
 **Never use `git merge --abort` on Windows/MINGW64** — it triggers interactive
 directory-deletion prompts that must be answered one by one.
 
+### Phase 3 push follow-up for no-upstream branches
+
+If a branch was handled successfully but came from the `same-name remote, no upstream` bucket, set upstream when pushing it so future runs classify it correctly:
+
+```sh
+git push -u origin <branch>
+```
+
 ---
 
 ## Phase 4 — Final report
@@ -90,6 +137,7 @@ Branch              | Merged into main? | Was stale? | Merge result
 --------------------|-------------------|------------|-------------
 feature/my-work     | No                | No         | ✅ Clean
 chore/update        | No                | Yes        | ✅ Clean
+docs/missed-branch  | No                | No upstream, remote existed | ✅ Clean + upstream set
 docs/old-stuff      | YES — delete?     | —          | Skipped
 fix/bug             | No                | Diverged   | ⚠️ Manual
 ```
@@ -118,7 +166,17 @@ for repo in <path1> <path2> <path3>; do
     echo "=== ALL BRANCHES ===" && \
     git for-each-ref \
       --format='%(refname:short)|%(upstream:short)|%(upstream:track)' \
-      refs/heads/
+      refs/heads/ && \
+    echo "=== SAME-NAME ORIGIN WITHOUT UPSTREAM ===" && \
+    for branch in $(git for-each-ref --format='%(refname:short)' refs/heads/); do \
+      upstream=$(git for-each-ref --format='%(upstream:short)' "refs/heads/$branch"); \
+      if [[ -z "$upstream" ]] && git show-ref --verify --quiet "refs/remotes/origin/$branch"; then \
+        counts=$(git rev-list --left-right --count "origin/$branch...$branch"); \
+        behind=$(echo "$counts" | awk '{print $1}'); \
+        ahead=$(echo "$counts" | awk '{print $2}'); \
+        echo "$branch|origin/$branch|[same-name remote, no upstream]|behind=$behind|ahead=$ahead"; \
+      fi; \
+    done
 done
 ```
 
