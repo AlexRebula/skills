@@ -14,7 +14,7 @@ Run this single diagnostic in the repo root. It produces everything needed to pl
 ```sh
 git fetch --prune origin && \
   echo "=== MERGED ===" && \
-  git branch --merged origin/main | grep -vE '^\*|^  main$|^  master$' && \
+  (git branch --merged origin/main | grep -vE '^\*|^  main$|^  master$' || true) && \
   echo "=== ALL BRANCHES ===" && \
   git for-each-ref \
     --format='%(refname:short)|%(upstream:short)|%(upstream:track)' \
@@ -34,7 +34,7 @@ git fetch --prune origin && \
 **Reading the output:**
 
 | Section | What it means |
-|---|---|
+| --- | --- |
 | `=== MERGED ===` block | Branches **fully merged into main on origin** — flag these; skip them in Phases 2–4; candidates for deletion |
 | `branch\|origin/branch\|` (no track) | In sync with origin |
 | `branch\|origin/branch\|[behind N]` | Stale local — pull needed (Phase 2) |
@@ -103,7 +103,7 @@ If the remote merge conflicts, resolve it in place using the same no-abort rule 
 For each branch that is **not** in the merged list and not flagged for manual review:
 
 ```sh
-git checkout <branch> && git merge main --no-edit && echo "DONE_CLEAN" || echo "CONFLICTS"
+git checkout <branch> && git merge origin/main --no-edit && echo "DONE_CLEAN" || echo "CONFLICTS"
 ```
 
 **Conflict resolution — in-place only (never abort):**
@@ -115,8 +115,7 @@ git add -A
 git commit --no-edit
 ```
 
-**Never use `git merge --abort` on Windows/MINGW64** — it triggers interactive
-directory-deletion prompts that must be answered one by one.
+**Never use `git merge --abort` on Windows/MINGW64** — it triggers interactive directory-deletion prompts that must be answered one by one.
 
 ### Phase 3 push follow-up for no-upstream branches
 
@@ -153,8 +152,7 @@ git branch -d <merged-branch>        # local delete (safe — won't delete unmer
 
 ## Multi-repo usage
 
-Run Phase 1 for all repos first (read-only), aggregate the triage tables, then do Phases 2–4
-one repo at a time. This batches all planning before any checkout switches happen.
+Run Phase 1 for all repos first (read-only), aggregate the triage tables, then do Phases 2–4 one repo at a time. This batches all planning before any checkout switches happen.
 
 ```sh
 for repo in <path1> <path2> <path3>; do
@@ -162,7 +160,7 @@ for repo in <path1> <path2> <path3>; do
   cd "$repo" && \
     git fetch --prune origin && \
     echo "=== MERGED ===" && \
-    git branch --merged origin/main | grep -vE '^\*|^  main$|^  master$' && \
+    (git branch --merged origin/main | grep -vE '^\*|^  main$|^  master$' || true) && \
     echo "=== ALL BRANCHES ===" && \
     git for-each-ref \
       --format='%(refname:short)|%(upstream:short)|%(upstream:track)' \
@@ -184,6 +182,4 @@ done
 
 ## Windows / MINGW64 notes
 
-`git checkout` to a branch that removes directories triggers an interactive
-`Deletion of directory X failed. Should I try again? (y/n)` prompt.
-Answer `n` to each — git still completes the checkout. This is cosmetic and non-fatal.
+`git checkout` to a branch that removes directories triggers an interactive `Deletion of directory X failed. Should I try again? (y/n)` prompt. Answer `n` to each — git still completes the checkout. This is cosmetic and non-fatal.

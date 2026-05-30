@@ -91,10 +91,10 @@ If an open PR exists:
 
 1. **Update the PR description.** Delegate to the correct PR skill with an `update` flag — do not construct the body inline. Use the same routing table as T4:
 
-   | Repo owner         | Skill to invoke                                     |
-   | ------------------ | --------------------------------------------------- |
-   | `LittleBranches/*` | `/create-giselle-pr <branch> skip-hygiene update`   |
-   | All other repos    | `/create-pr <branch> skip-hygiene update`           |
+   | Repo owner         | Skill to invoke                                   |
+   | ------------------ | ------------------------------------------------- |
+   | `LittleBranches/*` | `/create-giselle-pr <branch> skip-hygiene update` |
+   | All other repos    | `/create-pr <branch> skip-hygiene update`         |
 
 2. If the delegated skill does not yet support an `update` flag, fall back to reading `.github/pull_request_template.md`, filling every section with the current branch state, and running:
 
@@ -127,7 +127,7 @@ The `skip-hygiene` flag is always passed — T2/T3 already created and pushed th
 
 **Do not** call `gh pr create --body` or `gh pr create --body-file` directly in this step. Those bypass the repo's pull request template and produce non-conforming PR descriptions. The `create-pr` and `create-giselle-pr` skills read the template from `.github/pull_request_template.md`, fill every section, and open the PR correctly.
 
-PRs are created as **drafts** — pass `--draft` only if the delegated skill does not do so automatically (check the skill's behaviour for the target repo).
+PRs are created as **drafts**. The `/create-pr` and `/create-giselle-pr` skills must pass `--draft` to `gh pr create`. If for any reason the delegated skill does not pass `--draft`, append `--draft` to the `gh pr create` call explicitly. A WIP-sweep PR must never be opened as a ready-for-review PR.
 
 ---
 

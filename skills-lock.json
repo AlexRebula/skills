@@ -168,6 +168,12 @@
       "sourceType": "github",
       "skillPath": "skills/engineering/zoom-out/SKILL.md",
       "computedHash": "a8b8ed45609fdfa9f184d0c9f69326e43822a42eebea14db2792d777373de562"
+    },
+    "sync-branches": {
+      "source": "AlexRebula/skills",
+      "sourceType": "github",
+      "skillPath": "skills/git/sync-branches/SKILL.md",
+      "computedHash": "cd90e7f46a345c2e020a920c18fe353bfd2f1008cf6ce56f6dabea57803d7265"
     }
   }
 }
