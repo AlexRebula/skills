@@ -19,108 +19,40 @@ argument-hint: 'Optional: focus hint for the next session (e.g. "continue stat-c
 
 ---
 
-## Step 0 — Pre-flight: folder collapse check (automatic)
+## Step 0 — Pre-flight: auto-collapse same-day folders
 
-Before naming or writing anything, check for uncollapsed session folders from **today's date**.
+Run immediately, no prompt needed.
 
-```sh
-ls "{{SESSIONS_ROOT}}"
-```
+1. **Determine today's date** as `YYYY-MM-DD`.
 
-Find all folders whose name starts with today's `YYYY-MM-DD-*` prefix. **Only inspect today's date — never touch folders from previous dates. Their history is already committed and must not be rewritten.** If you notice uncollapsed folders from a previous date, mention them to the user but do not act on them.
+2. List `{{SESSIONS_ROOT}}` and find every folder whose name starts with `YYYY-MM-DD-`.
 
-**Determine today's date** (as `YYYY-MM-DD`).
+3. **If zero or one folder matches today's date:** nothing to collapse — proceed to Step 0b.
 
-**If every date has exactly one folder:** proceed to Step 1 with no action.
+4. **If two or more folders match today's date:**
 
-**If any _previous_ date (before today) has multiple folders**, print a notice — but do **not** offer to collapse them. Previous-date folders contain already-committed session history and must not be rewritten by this skill. Run `/collapse-session-folder` manually if they need tidying:
+   a. Look at the folder _names_ only (do not read file content — that wastes tokens).
 
-> ℹ️ Uncollapsed folders from previous session dates detected:
->
-> - `YYYY-MM-DD` — slug-a/, slug-b/ (run /collapse-session-folder to merge)
+   b. Generate a combined slug: 3–6 kebab-case words that describe the combined scope drawn from the folder name slugs themselves.
+   - Good: `pr-sweep-morning-brief`, `bucket-restructure-wip-pr64`, `asana-obsidian-pr-review`
+   - Never use generic words: `session`, `wrap`, `work`, `misc`, `updates`.
 
-Continue to Step 1.
+   c. Run the collapse script:
 
-**If today's date has multiple folders**, print a warning and prompt:
-
-> ⚠️ Found N uncollapsed folders for YYYY-MM-DD (today):
->
-> - `YYYY-MM-DD-slug-a/` (M wrap files: 01-foo.md, ...)
-> - `YYYY-MM-DD-slug-b/` (K wrap files: 01-bar.md, ...)
->
-> Collapse into one folder? [y/n]
-
-**If n:** leave those folders as-is and continue to Step 1.
-
-**If y — collapse procedure:**
-
-1. **Read all wrap files** across every folder in the group — oldest folder first, then ascending `NN` order within each folder. Read each file in full.
-
-2. **Generate a combined slug** by distilling the combined scope of all those files into 3–6 kebab-case words:
-   - Draw from the Summaries and Topics Covered tables across all files.
-   - The slug must describe _what happened across the whole day_, not enumerate filenames.
-   - Good: `bucket-restructure-wip-pr64`, `asana-ts-conversion-roadmap-seed`, `pr-sweep-morning-brief`
-   - Never use generic words like `session`, `wrap`, `work`, `misc`, or `updates`.
-
-3. **Create the collapsed folder:**
-
-   ```
-   {{SESSIONS_ROOT}}/YYYY-MM-DD-<combined-slug>/
+   ```sh
+   npx tsx "c:/work/projects/ar/skills/scripts/collapse-sessions.ts" \
+     --sessions-root "{{SESSIONS_ROOT}}" \
+     --slug "<combined-slug>" \
+     --date "YYYY-MM-DD"
    ```
 
-4. **Move and renumber** all wrap files in order:
-   - Process folders oldest-first; within each folder, process files in ascending `NN` order.
-   - Assign new sequential numbers `01`, `02`, `03`... across all files.
-   - Preserve each file's original semantic slug (the part after `NN-`); only update the `NN-` prefix.
-   - Example: `slug-a/01-foo.md` → `01-foo.md`, `slug-a/02-bar.md` → `02-bar.md`, `slug-b/01-baz.md` → `03-baz.md`
-   - **Record a rename map** as you go — you will need it in step 7:
-     ```
-     old: YYYY-MM-DD-slug-b/01-baz.md  →  new: YYYY-MM-DD-<combined-slug>/03-baz.md
-     old: YYYY-MM-DD-slug-b/01-baz.md  →  new: 03-baz.md   (filename-only form, for relative sibling links)
-     ```
-     Store both the full-path form and the filename-only form for every renamed file.
+   The script handles everything: file moves, NN renumbering, `→ Next` link repairs, `sessions-index.md` row merge, old-folder deletion.
 
-5. **Update `sessions-index.md`:** replace all rows for the old folder slugs with a **single merged row**:
-   - **Date:** the shared date
-   - **Title:** human-readable version of the combined slug (Title Case, dashes → spaces)
-   - **Projects:** union of all Projects values, deduplicated
-   - **Topics:** union of all Topics tags, deduplicated
-   - **Wraps:** total count of all wrap files moved into the collapsed folder
-   - **Model(s):** union of all Model(s) values, deduplicated
-   - **Session ID:** all Session ID values joined with `, ` (omit duplicates; omit `N/A` if any real ID exists)
-   - **Folder:** `[YYYY-MM-DD-<combined-slug>](./YYYY-MM-DD-<combined-slug>/)`
+   d. Print the script output verbatim.
 
-6. **Delete the now-empty old folders.**
+**Do not process previous-date folders.** Only today's date is in scope for Step 0. If you notice uncollapsed folders from a prior date, note them to the user but take no action — those folders contain already-committed history.
 
-7. **Repair broken internal links** across all session files:
-
-   a. Using the rename map from step 4, scan **every** `.md` file under `{{SESSIONS_ROOT}}` — not just files inside the collapsed folder. Any session file anywhere may contain a link that pointed to one of the old folder paths.
-
-   b. Find all Markdown link targets:
-   - Inline links: `[text](path)`
-   - Reference-style links: `[label]: path`
-   - Obsidian wiki-links: `[[target]]` and `[[target|label]]` — extract the `target` portion (everything before any `|`)
-
-   Skip external URLs (`http://`, `https://`, `mailto:`).
-
-   c. For each relative link target, resolve it against the file's own folder:
-   - **First**, look it up in the rename map (full path relative to `{{SESSIONS_ROOT}}` first, then filename-only form):
-     - If matched: compute the replacement path **relative to the containing file's folder** (not relative to `{{SESSIONS_ROOT}}`), then rewrite the link in-place with that relative path.
-   - **Only if the path does not appear in the rename map**, check whether the resolved path exists on disk:
-     - If it exists: leave it unchanged.
-     - If it does not exist: flag it as unresolvable: `⚠️ Unresolvable link in <file>: <old-target> — manual fix required`
-
-   d. After all files are scanned, print a repair report:
-
-   ```
-   Fixed in 03-baz.md: [01-foo.md](01-foo.md) → [05-foo.md](05-foo.md)
-   Fixed in sessions-index.md: ./2026-05-26-skills-pr-sweep/ → ./2026-05-26-pr-sweep-skills-review-responses/
-   ⚠️ Unresolvable in 07-initial.md: ./old-folder/missing.md — manual fix required
-   ```
-
-   e. If any `⚠️` remain after the automated pass, list them together at the end of the collapse report before continuing to the next date group or to Step 1.
-
-Process each affected date group independently — including the link repair pass for each group before moving to the next. When all date groups are resolved, continue to Step 0b.
+Continue to Step 0b.
 
 ---
 
@@ -139,9 +71,9 @@ If the folder exists and contains `.md` files:
    a. Check whether it contains a `**→ Next:**` wikilink (`[[slug|label]]`).
 
    b. **If a link is present:** extract the linked slug (everything before `|` in `[[slug|...]]`).
-      - If a file named `<slug>.md` exists in the same folder → link is valid, no action.
-      - If no such file exists → search the folder for a file whose _semantic slug_ matches (the portion after the `NN-` prefix). If found, repair the `NN-` prefix in the link in-place.
-      - If no matching file is found at all → flag as unresolvable: `⚠️ Unresolvable → Next in <file>: [[<slug>]] — target not found, repair manually`
+   - If a file named `<slug>.md` exists in the same folder → link is valid, no action.
+   - If no such file exists → search the folder for a file whose _semantic slug_ matches (the portion after the `NN-` prefix). If found, repair the `NN-` prefix in the link in-place.
+   - If no matching file is found at all → flag as unresolvable: `⚠️ Unresolvable → Next in <file>: [[<slug>]] — target not found, repair manually`
 
    c. **If no `→ Next` link is present:** note it as missing (you will add it in Step 4 when the new file is saved).
 
@@ -351,18 +283,21 @@ Create the directory if it does not exist. **Never overwrite** an existing numbe
 **After saving the file, wire it into the → Next chain:**
 
 - Find the file immediately before this one — `<NN-1>-*.md`.
-- If that file ends with `→ Next: *(next session not yet started)*` or has no `→ Next` line: replace/append the link:
+- If that file ends with `**→ Next:** _(next session not yet started)_` or has no `→ Next` line: replace/append the link:
+
   ```markdown
   ---
 
   **→ Next:** [[<NN>-<semantic-slug>|<NN> — <Human title>]]
   ```
+
 - If that file already has a valid `→ Next` pointing to the correct slug, leave it untouched.
 - This file (`<NN>-<semantic-slug>.md`) is the last in the chain — append a trailing marker at the end:
+
   ```markdown
   ---
 
-  **→ Next:** *(next session not yet started)*
+  **→ Next:** _(next session not yet started)_
   ```
 
 ---
