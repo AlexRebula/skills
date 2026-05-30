@@ -79,6 +79,33 @@ For each confirmed repo:
 git -C <repo-path> push -u origin HEAD
 ```
 
+### Update existing PR description (non-negotiable)
+
+After every push, check whether the branch already has an open PR:
+
+```sh
+gh pr view --json number,title,body --repo <owner>/<repo> <branch>
+```
+
+If an open PR exists:
+
+1. **Update the PR description.** Delegate to the correct PR skill with an `update` flag — do not construct the body inline. Use the same routing table as T4:
+
+   | Repo owner         | Skill to invoke                                     |
+   | ------------------ | --------------------------------------------------- |
+   | `LittleBranches/*` | `/create-giselle-pr <branch> skip-hygiene update`   |
+   | All other repos    | `/create-pr <branch> skip-hygiene update`           |
+
+2. If the delegated skill does not yet support an `update` flag, fall back to reading `.github/pull_request_template.md`, filling every section with the current branch state, and running:
+
+   ```sh
+   gh pr edit <number> --body-file <temp-file> --repo <owner>/<repo>
+   ```
+
+3. Confirm to the developer: `"PR #N description updated."` with a link to the PR.
+
+A push to a branch with an open PR **always** triggers a description update. There are no exceptions — a stale PR description is worse than no description.
+
 ---
 
 ## T4 — Open pull requests (ask, default NO)
@@ -109,3 +136,4 @@ PRs are created as **drafts** — pass `--draft` only if the delegated skill doe
 | Date | What changed | Why |
 | --- | --- | --- |
 | 2026-05-30 | T4 now delegates PR creation to `/create-giselle-pr` (LittleBranches repos) or `/create-pr` (other repos) instead of constructing `--body` inline | `gh pr create --body` bypasses `.github/pull_request_template.md`; delegating fixes non-conforming PR descriptions |
+| 2026-05-30 | T3 now requires a PR description update whenever a push lands on a branch that already has an open PR | Stale PR descriptions accumulate silently when multiple commits are pushed; every push must reflect the current branch state |
