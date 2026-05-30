@@ -23,6 +23,7 @@
     "./skills/git/repo-status",
     "./skills/git/respond-pr-review",
     "./skills/git/review-pr",
+    "./skills/git/sync-branches",
     "./skills/git/wip-sweep",
     "./skills/org/audit-giselle-tests",
     "./skills/org/create-giselle-component",
