@@ -79,6 +79,33 @@ For each confirmed repo:
 git -C <repo-path> push -u origin HEAD
 ```
 
+### Update existing PR description (non-negotiable)
+
+After every push, check whether the branch already has an open PR:
+
+```sh
+gh pr view --json number,title,body --repo <owner>/<repo> <branch>
+```
+
+If an open PR exists:
+
+1. **Update the PR description.** Delegate to the correct PR skill with an `update` flag — do not construct the body inline. Use the same routing table as T4:
+
+   | Repo owner         | Skill to invoke                                   |
+   | ------------------ | ------------------------------------------------- |
+   | `LittleBranches/*` | `/create-giselle-pr <branch> skip-hygiene update` |
+   | All other repos    | `/create-pr <branch> skip-hygiene update`         |
+
+2. If the delegated skill does not yet support an `update` flag, fall back to reading `.github/pull_request_template.md`, filling every section with the current branch state, and running:
+
+   ```sh
+   gh pr edit <number> --body-file <temp-file> --repo <owner>/<repo>
+   ```
+
+3. Confirm to the developer: `"PR #N description updated."` with a link to the PR.
+
+A push to a branch with an open PR **always** triggers a description update. There are no exceptions — a stale PR description is worse than no description.
+
 ---
 
 ## T4 — Open pull requests (ask, default NO)
@@ -87,40 +114,26 @@ After T3, ask:
 
 > "Open pull requests for the pushed branches? Default: NO. [y/n/select]"
 
-If yes, for each pushed branch:
+If yes, for each pushed branch, **delegate to the correct PR skill** — do not construct a `--body` string inline. Delegating ensures the repo's PR template is read and filled correctly, and that all quality checks and companion-doc conventions are applied.
 
-1. Check for a PR template (GitHub checks these paths in order; check all casings on case-sensitive filesystems):
+**Routing rule:**
 
-   ```sh
-   cat <repo-path>/.github/pull_request_template.md 2>/dev/null || \
-   cat <repo-path>/.github/PULL_REQUEST_TEMPLATE.md 2>/dev/null || \
-   cat <repo-path>/docs/pull_request_template.md 2>/dev/null || \
-   cat <repo-path>/pull_request_template.md 2>/dev/null
-   ```
+| Repo owner         | Skill to invoke                            |
+| ------------------ | ------------------------------------------ |
+| `LittleBranches/*` | `/create-giselle-pr <branch> skip-hygiene` |
+| All other repos    | `/create-pr <branch> skip-hygiene`         |
 
-2. If a template exists, fill every section. If none exists, use What / Why / Type / Checklist / Notes.
+The `skip-hygiene` flag is always passed — T2/T3 already created and pushed the branch cleanly; there is nothing to re-check.
 
-3. Every PR body must include:
-   - **What:** one paragraph describing the files and changes in this snapshot
-   - **Why:** "WIP snapshot — preserves in-progress work from session YYYY-MM-DD"
-   - **Type:** correct checkbox (docs / chore / feature / etc.)
-   - **Checklist:** tick what applies; mark others N/A with a reason
-   - **Notes for reviewer:** "Draft WIP snapshot — do not merge until work is complete and reviewed."
+**Do not** call `gh pr create --body` or `gh pr create --body-file` directly in this step. Those bypass the repo's pull request template and produce non-conforming PR descriptions. The `create-pr` and `create-giselle-pr` skills read the template from `.github/pull_request_template.md`, fill every section, and open the PR correctly.
 
-```sh
-# Use mktemp for a unique, portable temp file — avoids /tmp/fixed-name collisions and
-# works on both POSIX (Linux/macOS) and Git Bash on Windows:
-PR_BODY_FILE=$(mktemp)
-trap 'rm -f "$PR_BODY_FILE"' EXIT
-cat > "$PR_BODY_FILE" << 'EOF'
-<filled-in description per above>
-EOF
+PRs are created as **drafts**. The `/create-pr` and `/create-giselle-pr` skills must pass `--draft` to `gh pr create`. If for any reason the delegated skill does not pass `--draft`, append `--draft` to the `gh pr create` call explicitly. A WIP-sweep PR must never be opened as a ready-for-review PR.
 
-gh pr create --repo <owner>/<repo> --head <branch> \
-  --title "<type>(standup-prep): snapshot — <group> — YYYY-MM-DD" \
-  --body-file "$PR_BODY_FILE" \
-  --draft
-rm -f "$PR_BODY_FILE"  # also covered by trap above
-```
+---
 
-PRs are created as **drafts** — never as ready-for-review.
+## Changelog
+
+| Date | What changed | Why |
+| --- | --- | --- |
+| 2026-05-30 | T4 now delegates PR creation to `/create-giselle-pr` (LittleBranches repos) or `/create-pr` (other repos) instead of constructing `--body` inline | `gh pr create --body` bypasses `.github/pull_request_template.md`; delegating fixes non-conforming PR descriptions |
+| 2026-05-30 | T3 now requires a PR description update whenever a push lands on a branch that already has an open PR | Stale PR descriptions accumulate silently when multiple commits are pushed; every push must reflect the current branch state |
