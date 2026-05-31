@@ -302,6 +302,27 @@ Create the directory if it does not exist. **Never overwrite** an existing numbe
 
 ---
 
+## Step 4b — Post-save same-day folder check
+
+Run immediately after Step 4 completes (the new folder now exists on disk).
+
+1. List `{{SESSIONS_ROOT}}` and count folders whose name starts with today's `YYYY-MM-DD-`.
+
+2. **If the count is still 1** (the folder you just created is the only one for today): no action — proceed to Step 5.
+
+3. **If the count is 2 or more** (today's date now has multiple folders), notify the user:
+
+   > ⚠️ A second folder for YYYY-MM-DD was just created (`<new-folder>`). There is already a folder for today: `<existing-folder(s)>`.
+   > Should I collapse them into one folder? [y/n]
+
+4. **If n:** proceed to Step 5 as-is.
+
+5. **If y:** run the Step 0 collapse procedure now — generate a combined slug from the folder name slugs, run the collapse script, print its output — then proceed to Step 5.
+
+**Why here and not Step 0:** Step 0 runs before the new folder exists, so it can never detect a collision caused by this session itself. Step 4b runs after the folder is created, catching the case where this session is the one that introduced the duplicate.
+
+---
+
 ## Step 5 — Update the session index
 
 Open `{{SESSIONS_ROOT}}/sessions-index.md`.
@@ -368,3 +389,43 @@ Call `/wip-sweep` now. When wip-sweep asks which repos to sweep, answer:
 **Loop safety:** wip-sweep commits existing dirty files and creates no new ones. There is nothing new to wrap after it completes. The dependency is strictly one-way: `session-wrap → wip-sweep`.
 
 wip-sweep's T2/T3/T4 tier gates are where the user reviews branch names and approves pushes. This skill does not propose branches — that is wip-sweep's responsibility.
+
+---
+
+## Step 7b — Final → Next chain scan (automatic, before wip-sweep)
+
+Before handing off to `/wip-sweep`, verify every file in the session folder has a correct `→ Next` link.
+
+1. List all `.md` files in the session folder, sorted by name.
+2. For each file **except the last:**
+   - Check that it ends with `**→ Next:** [[<slug>|...]]` pointing to the next file in sequence.
+   - If missing or broken: add/fix the link in-place now.
+3. For the **last file:**
+   - Check that it ends with `**→ Next:** _(next session not yet started)_`.
+   - If missing: append it now.
+4. Print a confirmation:
+
+   ```
+   → NEXT CHAIN
+   ─────────────────────────────────────────────────────────
+   ✅ 01-foo.md  →  [[02-bar|02 — Bar]]
+   ✅ 02-bar.md  →  [[03-baz|03 — Baz]]
+   ✅ 03-baz.md  →  (next session not yet started)
+   ─────────────────────────────────────────────────────────
+   ```
+
+**This step is non-negotiable.** Do not hand off to `/wip-sweep` until every file in the folder has its `→ Next` link.
+
+---
+
+## ⛔ Non-negotiable invariants
+
+**1. THERE SHOULD BE NO SEPARATE FOLDERS WITH THE SAME DATE PREFIX — THERE SHOULD ONLY BE ONE.**
+
+Every session that happens on the same calendar day belongs in the same folder. Multiple wrap files within that folder (`01-`, `02-`, `03-`, …) are how intra-day sessions are separated — not multiple folders.
+
+If at any point during this skill's execution two or more folders share a `YYYY-MM-DD-` prefix, collapse them before proceeding. No exceptions.
+
+**2. EVERY NON-LAST FILE IN A SESSION FOLDER MUST HAVE A `→ Next` WIKILINK TO THE NEXT FILE. THE LAST FILE MUST HAVE THE `_(next session not yet started)_` MARKER.**
+
+The `→ Next` chain is how Obsidian navigation and session continuity work. A missing link breaks the chain for every agent that follows. Step 7b enforces this at the end of every run — but the rule holds at all times, not just during session-wrap.
