@@ -147,7 +147,7 @@ Write `wiki/deep/<slug>-deep.md`. This is the long-form companion to the short s
 ---
 type: deep-dive
 source: wiki/sources/<slug>.md
-title: '<title> — Deep Dive'
+title: "<title> — Deep Dive"
 updated: <today's date>
 ---
 ```
