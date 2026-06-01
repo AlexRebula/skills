@@ -1,23 +1,16 @@
 ---
 name: anonimise
 description: >
-  Anonymise sensitive personal data in wiki files using {{SCREAMING_SNAKE_CASE}}
-  placeholders, with real values stored locally in vault.md (gitignored).
-  Also resolves placeholders for local-context work by reading vault.md.
-  Use when the user says "anonimise", "anonymise", "anonymize", "redact this",
-  "add to vault", or invokes /anonimise.
+  Anonymise sensitive personal data in wiki files using {{SCREAMING_SNAKE_CASE}} placeholders, with real values stored locally in vault.md (gitignored). Also resolves placeholders for local-context work by reading vault.md. Use when the user says "anonimise", "anonymise", "anonymize", "redact this", "add to vault", or invokes /anonimise.
 ---
 
 # Anonimise Skill
 
-Implements the wiki anonymisation pattern: sensitive personal data lives in
-`vault.md` (local, gitignored), wiki files use `{{SCREAMING_SNAKE_CASE}}`
-placeholders. Agents on this machine resolve placeholders via vault.md;
-remote agents see anonymised text but retain full structural context.
+Implements the wiki anonymisation pattern: sensitive personal data lives in `vault.md` (local, gitignored), wiki files use `{{SCREAMING_SNAKE_CASE}}` placeholders. Agents on this machine resolve placeholders via vault.md; remote agents see anonymised text but retain full structural context.
 
 ## Paths
 
-- Vault: `$WIKI_ROOT/vault.md` (default: `c:/work/projects/ar/wiki/vault.md`)
+- Vault: `$WIKI_ROOT/vault.md`
 - Vault example: `$WIKI_ROOT/vault.md.example`
 - Path registry: `$WIKI_ROOT/paths.md`
 
@@ -48,18 +41,22 @@ Use when the user wants to redact a file before pushing, or asks to "anonimise" 
    - Reuse existing vault variables where the value matches
 
 5. **Show the proposed substitutions** to the user before editing:
+
    ```
-   {{FULL_NAME}}     → Alex Rebula
+   {{FULL_NAME}}     → Jane Smith
    {{EMPLOYER_NAME}} → Acme Corp
    ```
+
    Confirm or adjust before proceeding.
 
 6. **Edit the file** — replace all identified values with their `{{VARIABLE}}` placeholders.
 
 7. **Update vault.md** — append any new variables under `## Variables`:
+
    ```md
    - NEW_VARIABLE: real value
    ```
+
    Preserve existing entries. If vault.md does not exist, create it from vault.md.example.
 
 8. **Report** what was redacted and what was added to vault.md.
@@ -68,8 +65,7 @@ Use when the user wants to redact a file before pushing, or asks to "anonimise" 
 
 ## Direction 2 — Resolve (placeholders → real values, local context only)
 
-Use when the user is working locally and asks you to "resolve", "de-anonymise",
-or "show the real values" for a file containing `{{VARIABLES}}`.
+Use when the user is working locally and asks you to "resolve", "de-anonymise", or "show the real values" for a file containing `{{VARIABLES}}`.
 
 ### Steps
 
@@ -77,8 +73,7 @@ or "show the real values" for a file containing `{{VARIABLES}}`.
 
 2. **Read the target file(s).**
 
-3. **Substitute** all `{{VARIABLE}}` occurrences with their vault.md values inline
-   in your response — do NOT write the resolved version back to disk.
+3. **Substitute** all `{{VARIABLE}}` occurrences with their vault.md values inline in your response — do NOT write the resolved version back to disk.
 
 4. **Flag any unresolved variables** (present in the file but missing from vault.md).
 
@@ -87,7 +82,7 @@ or "show the real values" for a file containing `{{VARIABLES}}`.
 ## Rules
 
 - Never write real personal values into any file tracked by git.
-- vault.md is gitignored (`**/vault.md` in `.gitignore`) — always confirm this before writing to it.
+- vault.md must be gitignored in the wiki repo — confirm `**/vault.md` or equivalent is in the wiki's `.gitignore` before writing to it.
 - If a value is already a placeholder (`{{...}}`), do not double-wrap it.
 - Prefer reusing existing vault variables over creating new ones for the same value.
 - Variable names should be descriptive but not so specific they leak context (e.g. `{{CASE_SUBJECT_NAME}}` not `{{JESS_FULL_NAME}}`).
