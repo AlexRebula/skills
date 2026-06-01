@@ -313,7 +313,7 @@ Run immediately after Step 4 completes (the new folder now exists on disk).
 3. **If the count is 2 or more** (today's date now has multiple folders), notify the user:
 
    > ⚠️ A second folder for YYYY-MM-DD was just created (`<new-folder>`). There is already a folder for today: `<existing-folder(s)>`.
-   > Should I collapse them into one folder? [y/n]
+   > Collapsing same-day folders now to preserve the one-folder-per-day invariant.
 
 4. Run the Step 0 collapse procedure now — generate a combined slug from the folder name slugs, run the collapse script, print its output — then proceed to Step 5.
 
