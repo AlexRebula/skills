@@ -7,14 +7,15 @@ Health-check the wiki at `c:/work/projects/ar/wiki`.
 
 ## Arguments
 
-`/wiki-lint` — full lint pass across all wiki pages.
-`/wiki-lint --fix` — after producing the findings, apply safe fixes automatically (add missing cross-references, update stale `updated:` dates). Ask before structural changes (creating stub pages, removing or rewriting content, resolving contradictions).
+- `/wiki-lint` — full lint pass: wiki page health checks + broken link scan across entire repo.
+- `/wiki-lint --fix` — same, then automatically apply safe fixes: wikilinks, `updated:` dates, and broken links where exactly one match exists in the repo. Ask before structural changes (creating stub pages, removing or rewriting content, resolving contradictions, applying multi-match link fixes).
 
 ---
 
 ## Step 1 — Orient
 
 Read:
+
 1. `wiki/index.md` — get the full list of pages
 2. `wiki/log.md` — understand what was done recently (avoid re-flagging things just ingested)
 
@@ -25,12 +26,14 @@ Read:
 Read every page listed in `wiki/index.md`. For each page, check:
 
 **Structural checks:**
+
 - [ ] Has valid frontmatter (type, updated fields present)
 - [ ] Not empty or stub-only (body has real content)
 - [ ] Has at least one outbound `[[wikilink]]` (not an island)
 - [ ] Is referenced by at least one other page (not an orphan)
 
 **Content checks:**
+
 - [ ] Claims are not contradicted by another wiki page
 - [ ] Claims are not superseded by a more recent source (check `wiki/log.md` for newer ingests on the same topic)
 - [ ] Important concepts/people/projects mentioned in the body have their own wiki page
@@ -42,9 +45,9 @@ Read every page listed in `wiki/index.md`. For each page, check:
 
 Group findings by severity:
 
-**🔴 Critical** — content is wrong, contradicted, or actively misleading
-**🟡 Medium** — missing cross-references, orphan pages, stubs that should be filled
-**⚪ Low** — cosmetic, missing optional fields, minor gaps
+- **🔴 Critical** — content is wrong, contradicted, or actively misleading
+- **🟡 Medium** — missing cross-references, orphan pages, stubs that should be filled
+- **⚪ Low** — cosmetic, missing optional fields, minor gaps
 
 Format:
 
@@ -70,11 +73,13 @@ Format:
 After findings, produce two lists:
 
 **Suggested fixes** (things to do in the wiki now):
+
 - Pages to create (concepts mentioned but lacking a page)
 - Cross-references to add
 - Contradictions to resolve (suggest which version to keep and why)
 
 **Suggested ingests** (gaps that need new raw sources):
+
 - Topics the wiki covers shallowly where a new source would help
 - Open questions from deep-dive pages that haven't been answered
 - Anything flagged as potentially stale that could be verified with a fresh source
@@ -84,10 +89,12 @@ After findings, produce two lists:
 ## Step 5 — Apply fixes (--fix only)
 
 If `--fix` was passed, apply these automatically without asking:
+
 - Add missing `[[wikilinks]]` where a referenced concept has a page
 - Update `updated:` frontmatter dates on touched pages
 
 Ask before:
+
 - Creating new stub pages
 - Removing or rewriting any existing content
 - Resolving contradictions (always ask which version to keep)

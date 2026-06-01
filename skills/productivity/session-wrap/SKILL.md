@@ -308,12 +308,11 @@ Run immediately after Step 4 completes (the new folder now exists on disk).
 
 1. List `{{SESSIONS_ROOT}}` and count folders whose name starts with today's `YYYY-MM-DD-`.
 
-2. **If the count is still 1** (the folder you just created is the only one for today): no action — proceed to Step 5.
+2. **If the count is 1** (the folder you just created is the only one for today): no action — proceed to Step 5.
 
 3. **If the count is 2 or more** (today's date now has multiple folders), notify the user and immediately run the collapse procedure:
 
-   > ⚠️ A second folder for YYYY-MM-DD was just created (`<new-folder>`). There is already a folder for today: `<existing-folder(s)>`.
-   > Collapsing same-day folders now to preserve the one-folder-per-day invariant.
+   > ⚠️ A second folder for YYYY-MM-DD was just created (`<new-folder>`). There is already a folder for today: `<existing-folder(s)>`. Collapsing same-day folders now to preserve the one-folder-per-day invariant.
 
 4. Run the Step 0 collapse procedure now — generate a combined slug from the folder name slugs, run the collapse script, print its output — then proceed to Step 5.
 
@@ -402,7 +401,7 @@ Before handing off to `/wip-sweep`, verify every file in the session folder has 
 
 ---
 
-## Step 8 — Hand off to /wip-sweep (one-way, no loop)
+## Step 7b — Hand off to /wip-sweep (one-way, no loop)
 
 After saving the wrap files and updating the index, the sessions repo has new or modified `.md` artifacts. Source repos touched during the session may also have uncommitted changes.
 

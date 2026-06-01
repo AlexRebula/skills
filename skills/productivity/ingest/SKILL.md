@@ -7,8 +7,8 @@ Ingest a raw source into the wiki at `c:/work/projects/ar/wiki`.
 
 ## Arguments
 
-`/ingest <path>` — path to the raw source file (absolute or relative to wiki root). Required. Ask if omitted.
-`/ingest <path> --deep` — also write a long-form deep dive at `wiki/deep/<slug>-deep.md` after the short source page.
+- `/ingest <path>` — path to the raw source file (absolute or relative to wiki root). Required. Ask if omitted.
+- `/ingest <path> --deep` — also write a long-form deep dive at `wiki/deep/<slug>-deep.md` after the short source page.
 
 If `--deep` is passed and a source page for this file already exists, locate the existing `wiki/sources/<slug>.md` by matching its `raw_path`, read its frontmatter to recover `<slug>` and `<title>`, then skip Steps 1–7 and go straight to **Step D**.
 
@@ -30,17 +30,18 @@ Read the file at `<path>`. Do not summarise yet.
 
 Detect the source type from the path and content:
 
-| Path pattern | `source_type` |
-|---|---|
-| `raw/transcripts/` | `youtube` or `transcript` |
-| `raw/articles/` | `article` |
-| `raw/gists/` | `gist` |
-| `raw/morning-briefs/` | skip — session artifacts |
-| `raw/sessions/` | skip — session artifacts |
-| `tasks/` | skip — Asana task files |
-| `wiki/` | skip — already a wiki page |
+| Path pattern          | `source_type`              |
+| --------------------- | -------------------------- |
+| `raw/transcripts/`    | `youtube` or `transcript`  |
+| `raw/articles/`       | `article`                  |
+| `raw/gists/`          | `gist`                     |
+| `raw/morning-briefs/` | skip — session artifacts   |
+| `raw/sessions/`       | skip — session artifacts   |
+| `tasks/`              | skip — Asana task files    |
+| `wiki/`               | skip — already a wiki page |
 
 **If the path is in `tasks/`:** stop. Task files are structured Asana records, not knowledge sources. Tell the user:
+
 > "Task files in `tasks/` are Asana-backed records, not ingestible sources. If you want to create a wiki page from task data, ask directly — for example: 'Create `wiki/projects/giselle-mui.md` from the tasks in `tasks/mill/giselle-mui/`' or 'Create `wiki/concepts/foo.md` from the notes in this task file.' The agent knows both schemas and can synthesise freely."
 
 **If the path is in `wiki/`:** stop. Wiki pages are already synthesised content — re-ingesting them would create a source page about a wiki page, which is circular. If you want to deepen an existing page, edit it directly or use `/ingest <original-raw-source> --deep`.
@@ -67,6 +68,7 @@ Generate a slug from the title: lowercase, spaces → hyphens, strip non-word ch
 Present a brief summary (2–3 sentences) of what the source is about, then list 5–7 candidate key takeaways as bullet points.
 
 Ask the user:
+
 > "Does this look right? Anything to add, remove, or emphasise before I write the page?"
 
 Wait for confirmation before writing. If the user says "go" or "looks good", proceed immediately.
@@ -83,7 +85,7 @@ type: source
 source_type: <detected type>
 title: "<title>"
 author: "<author>"
-url: "<url or null>"
+url: null # or the URL string if one exists
 date_published: <YYYY-MM-DD or null>
 date_ingested: <today's date>
 raw_path: <path relative to wiki root>
@@ -92,6 +94,7 @@ updated: <today's date>
 ```
 
 Content:
+
 - **Summary** — one paragraph: what this source is and why it matters
 - **Key takeaways** — 3–7 bullet points (refined from Step 3 discussion)
 - **Quotes** — 1–3 verbatim excerpts worth keeping (optional; omit if none stand out)
