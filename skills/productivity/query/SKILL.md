@@ -7,7 +7,8 @@ Answer a question against the wiki at `c:/work/projects/ar/wiki`.
 
 ## Arguments
 
-`/query <question>` — the question to answer. Required. Ask if omitted. `/query <question> --save` — also file the answer as a new wiki page.
+- `/query <question>` — the question to answer. Required. Ask if omitted.
+- `/query <question> --save` — also file the answer as a new wiki page.
 
 ---
 

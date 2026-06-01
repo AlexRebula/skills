@@ -7,7 +7,8 @@ Health-check the wiki at `c:/work/projects/ar/wiki`.
 
 ## Arguments
 
-`/wiki-lint` — full lint pass across all wiki pages. `/wiki-lint --fix` — after producing the findings, apply safe fixes automatically (add missing cross-references, update stale `updated:` dates). Ask before structural changes (creating stub pages, removing or rewriting content, resolving contradictions).
+- `/wiki-lint` — full lint pass: wiki page health checks + broken link scan across entire repo.
+- `/wiki-lint --fix` — same, then automatically apply safe fixes: wikilinks, `updated:` dates, and broken links where exactly one match exists in the repo. Ask before structural changes (creating stub pages, removing or rewriting content, resolving contradictions, applying multi-match link fixes).
 
 ---
 
@@ -44,7 +45,9 @@ Read every page listed in `wiki/index.md`. For each page, check:
 
 Group findings by severity:
 
-**🔴 Critical** — content is wrong, contradicted, or actively misleading **🟡 Medium** — missing cross-references, orphan pages, stubs that should be filled **⚪ Low** — cosmetic, missing optional fields, minor gaps
+- **🔴 Critical** — content is wrong, contradicted, or actively misleading
+- **🟡 Medium** — missing cross-references, orphan pages, stubs that should be filled
+- **⚪ Low** — cosmetic, missing optional fields, minor gaps
 
 Format:
 
