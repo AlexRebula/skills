@@ -10,7 +10,7 @@ Ingest a raw source into the wiki at `c:/work/projects/ar/wiki`.
 `/ingest <path>` — path to the raw source file (absolute or relative to wiki root). Required. Ask if omitted.
 `/ingest <path> --deep` — also write a long-form deep dive at `wiki/deep/<slug>.md` after the short source page.
 
-If `--deep` is passed and a source page for this file already exists, skip Steps 1–7 and go straight to **Step D**.
+If `--deep` is passed and a source page for this file already exists, locate the existing `wiki/sources/<slug>.md` by matching its `raw_path`, read its frontmatter to recover `<slug>` and `<title>`, then skip Steps 1–7 and go straight to **Step D**.
 
 ---
 
