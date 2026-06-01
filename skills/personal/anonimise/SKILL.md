@@ -10,7 +10,7 @@ Implements the wiki anonymisation pattern: sensitive personal data lives in `vau
 
 ## Paths
 
-- Vault: `$WIKI_ROOT/vault.md` (default: `c:/work/projects/ar/wiki/vault.md`)
+- Vault: `$WIKI_ROOT/vault.md`
 - Vault example: `$WIKI_ROOT/vault.md.example`
 - Path registry: `$WIKI_ROOT/paths.md`
 
@@ -43,7 +43,7 @@ Use when the user wants to redact a file before pushing, or asks to "anonimise" 
 5. **Show the proposed substitutions** to the user before editing:
 
    ```
-   {{FULL_NAME}}     → Alex Rebula
+   {{FULL_NAME}}     → Jane Smith
    {{EMPLOYER_NAME}} → Acme Corp
    ```
 
@@ -82,7 +82,7 @@ Use when the user is working locally and asks you to "resolve", "de-anonymise", 
 ## Rules
 
 - Never write real personal values into any file tracked by git.
-- vault.md is gitignored (`**/vault.md` in `.gitignore`) — always confirm this before writing to it.
+- vault.md must be gitignored in the wiki repo — confirm `**/vault.md` or equivalent is in the wiki's `.gitignore` before writing to it.
 - If a value is already a placeholder (`{{...}}`), do not double-wrap it.
 - Prefer reusing existing vault variables over creating new ones for the same value.
 - Variable names should be descriptive but not so specific they leak context (e.g. `{{CASE_SUBJECT_NAME}}` not `{{JESS_FULL_NAME}}`).
