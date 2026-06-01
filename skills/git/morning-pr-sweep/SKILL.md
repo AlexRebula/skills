@@ -269,6 +269,16 @@ git checkout <branch-for-next-pr>
 
 ## Phase 4 — SHA confirmations (all threads)
 
+**Before posting any SHA reply, build a checklist.** For each PR, list every thread where a fix was applied (✅ or ⚠️) or a tracking issue was opened (⏭️). This is your Phase 4 checklist — every item must be ticked before the PR is considered complete.
+
+```
+Phase 4 checklist for PR #<N>:
+[ ] thread <comment-id>: <one-line summary of what was fixed>
+[ ] thread <comment-id>: <one-line summary>
+```
+
+Do not proceed to Phase 5 until every box is ticked.
+
 After each push, reply to every fixed thread with the commit SHA:
 
 ```sh
@@ -279,11 +289,13 @@ gh api --method POST \
 
 For deferred threads, post the issue link instead of a SHA.
 
+**After posting all SHA replies, re-fetch the thread list and confirm every ✅/⚠️ fixed thread has a SHA reply, and every ⏭️ deferred thread has an issue link reply.** If any fixed thread is missing a SHA reply, post it now before continuing.
+
 ---
 
 ## Phase 5 — Close-out audit
 
-Before reporting, scan every reply posted under your account in this session for unresolved commitment signals:
+Before reporting, scan **every reply posted under your account on any thread in every swept PR** — not just replies from this session — for unresolved commitment signals. This catches dangling commitments left by prior sessions.
 
 - `will` / `fix` / `fixing`
 - `follow-up` / `open an issue` / `track`
