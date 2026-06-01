@@ -310,13 +310,11 @@ Run immediately after Step 4 completes (the new folder now exists on disk).
 
 2. **If the count is still 1** (the folder you just created is the only one for today): no action — proceed to Step 5.
 
-3. **If the count is 2 or more** (today's date now has multiple folders), notify the user:
+3. **If the count is 2 or more** (today's date now has multiple folders), notify the user and immediately run the collapse procedure:
 
-   > ⚠️ A second folder for YYYY-MM-DD was just created (`<new-folder>`). There is already a folder for today: `<existing-folder(s)>`. Should I collapse them into one folder? [y/n]
+   > ⚠️ A second folder for YYYY-MM-DD was just created (`<new-folder>`). There is already a folder for today: `<existing-folder(s)>`. Collapsing same-day folders now to preserve the one-folder-per-day invariant.
 
-4. **If n:** proceed to Step 5 as-is.
-
-5. **If y:** run the Step 0 collapse procedure now — generate a combined slug from the folder name slugs, run the collapse script, print its output — then proceed to Step 5.
+4. Run the Step 0 collapse procedure now — generate a combined slug from the folder name slugs, run the collapse script, print its output — then proceed to Step 5.
 
 **Why here and not Step 0:** Step 0 runs before the new folder exists, so it can never detect a collision caused by this session itself. Step 4b runs after the folder is created, catching the case where this session is the one that introduced the duplicate.
 
@@ -380,6 +378,8 @@ If no prompt files were touched this session, skip this step silently.
 ## Step 7 — Hand off to /wip-sweep (one-way, no loop)
 
 After saving the wrap files and updating the index, the sessions repo has new or modified `.md` artifacts. Source repos touched during the session may also have uncommitted changes.
+
+**Before calling /wip-sweep, complete Step 7b (→ Next chain scan) below.** Step 7b may add `→ Next` links to the new wrap file, and those edits must be committed as part of the session's artifacts — not after the sweep.
 
 Call `/wip-sweep` now. When wip-sweep asks which repos to sweep, answer:
 
