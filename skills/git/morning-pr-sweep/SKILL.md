@@ -269,7 +269,7 @@ git checkout <branch-for-next-pr>
 
 ## Phase 4 — SHA confirmations (all threads)
 
-**Before posting any SHA reply, build a checklist.** For each PR, list every thread that received a Phase 2 acknowledgement reply. This is your Phase 4 checklist — every item must be ticked before the PR is considered complete.
+**Before posting any SHA reply, build a checklist.** For each PR, list every thread where a fix was applied (✅ or ⚠️) or a tracking issue was opened (⏭️). This is your Phase 4 checklist — every item must be ticked before the PR is considered complete.
 
 ```
 Phase 4 checklist for PR #<N>:
@@ -289,7 +289,7 @@ gh api --method POST \
 
 For deferred threads, post the issue link instead of a SHA.
 
-**After posting all SHA replies, re-fetch the thread list and confirm every thread that has an acknowledgement reply now also has a SHA reply.** If any thread has an acknowledgement but no SHA, post the SHA now before continuing.
+**After posting all SHA replies, re-fetch the thread list and confirm every ✅/⚠️ fixed thread has a SHA reply, and every ⏭️ deferred thread has an issue link reply.** If any fixed thread is missing a SHA reply, post it now before continuing.
 
 ---
 

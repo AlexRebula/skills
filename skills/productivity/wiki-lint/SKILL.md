@@ -8,7 +8,7 @@ Health-check the wiki at `c:/work/projects/ar/wiki`.
 ## Arguments
 
 `/wiki-lint` — full lint pass across all wiki pages.
-`/wiki-lint --fix` — after producing the findings, apply safe fixes automatically (add missing cross-references and update touched page dates). Ask before touching anything structural, including creating stub pages.
+`/wiki-lint --fix` — after producing the findings, apply safe fixes automatically (add missing cross-references, update stale `updated:` dates). Ask before structural changes (creating stub pages, removing or rewriting content, resolving contradictions).
 
 ---
 

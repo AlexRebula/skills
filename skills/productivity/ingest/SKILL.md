@@ -1,6 +1,6 @@
 ---
 name: ingest
-description: Ingest a raw source file into the personal wiki — reads the source, extracts metadata, writes a wiki/sources/ synthesis page, updates related wiki pages, and updates wiki/index.md and wiki/log.md. Add --deep to also write a long-form deep dive at wiki/deep/<slug>.md. Use when the user wants to ingest an article, YouTube transcript, gist, podcast, or paper into the wiki.
+description: Ingest a raw source file into the personal wiki — reads the source, extracts metadata, writes a wiki/sources/ synthesis page, updates related wiki pages, and updates wiki/index.md and wiki/log.md. Add --deep to also write a long-form deep dive at wiki/deep/<slug>-deep.md. Use when the user wants to ingest an article, YouTube transcript, gist, podcast, or paper into the wiki.
 ---
 
 Ingest a raw source into the wiki at `c:/work/projects/ar/wiki`.
@@ -8,7 +8,7 @@ Ingest a raw source into the wiki at `c:/work/projects/ar/wiki`.
 ## Arguments
 
 `/ingest <path>` — path to the raw source file (absolute or relative to wiki root). Required. Ask if omitted.
-`/ingest <path> --deep` — also write a long-form deep dive at `wiki/deep/<slug>.md` after the short source page.
+`/ingest <path> --deep` — also write a long-form deep dive at `wiki/deep/<slug>-deep.md` after the short source page.
 
 If `--deep` is passed and a source page for this file already exists, locate the existing `wiki/sources/<slug>.md` by matching its `raw_path`, read its frontmatter to recover `<slug>` and `<title>`, then skip Steps 1–7 and go straight to **Step D**.
 
@@ -96,7 +96,7 @@ Content:
 - **Key takeaways** — 3–7 bullet points (refined from Step 3 discussion)
 - **Quotes** — 1–3 verbatim excerpts worth keeping (optional; omit if none stand out)
 - **Related pages** — wikilinks to any existing `wiki/` pages this source informs (check `wiki/index.md`)
-- If `--deep`: add `deep_dive: wiki/deep/<slug>.md` to frontmatter and append `→ [[<slug>-deep|Deep dive]]` at the bottom
+- If `--deep`: add `deep_dive: wiki/deep/<slug>-deep.md` to frontmatter and append `→ [[<slug>-deep|Deep dive]]` at the bottom
 
 ---
 
@@ -136,7 +136,7 @@ If any new concept/person/project pages were created in Step 5, add those lines 
 
 ## Step D — Write the deep dive (--deep only)
 
-Write `wiki/deep/<slug>.md`. This is the long-form companion to the short source page.
+Write `wiki/deep/<slug>-deep.md`. This is the long-form companion to the short source page.
 
 **Frontmatter:**
 
@@ -168,7 +168,7 @@ Close with a `## Open Questions` section: 3–5 questions this source raises tha
 
 - Add a `## Deep Dives` section to `wiki/index.md` if it doesn't exist, and add a line:
   ```
-  - [Title — Deep Dive](wiki/deep/<slug>.md) — one-line description
+  - [Title — Deep Dive](wiki/deep/<slug>-deep.md) — one-line description
   ```
 - Append to `wiki/log.md`:
   ```
@@ -182,7 +182,7 @@ Close with a `## Open Questions` section: 3–5 questions this source raises tha
 Tell the user:
 
 - Source page written: `wiki/sources/<slug>.md`
-- Deep dive written: `wiki/deep/<slug>.md` (if --deep)
+- Deep dive written: `wiki/deep/<slug>-deep.md` (if --deep)
 - Related pages updated: list any pages touched
 - New pages created: list any new pages
 - Suggested next ingests: if the source references other sources worth adding, name them

@@ -310,7 +310,7 @@ Run immediately after Step 4 completes (the new folder now exists on disk).
 
 2. **If the count is still 1** (the folder you just created is the only one for today): no action — proceed to Step 5.
 
-3. **If the count is 2 or more** (today's date now has multiple folders), notify the user:
+3. **If the count is 2 or more** (today's date now has multiple folders), notify the user and immediately run the collapse procedure:
 
    > ⚠️ A second folder for YYYY-MM-DD was just created (`<new-folder>`). There is already a folder for today: `<existing-folder(s)>`.
    > Collapsing same-day folders now to preserve the one-folder-per-day invariant.
@@ -376,21 +376,7 @@ If no prompt files were touched this session, skip this step silently.
 
 ---
 
-## Step 7 — Hand off to /wip-sweep (one-way, no loop)
-
-After saving the wrap files and updating the index, the sessions repo has new or modified `.md` artifacts. Source repos touched during the session may also have uncommitted changes.
-
-Call `/wip-sweep` now. When wip-sweep asks which repos to sweep, answer:
-
-> "Sweep only the repos dirtied during this session: [list repos and what changed in each]"
-
-**Loop safety:** wip-sweep commits existing dirty files and creates no new ones. There is nothing new to wrap after it completes. The dependency is strictly one-way: `session-wrap → wip-sweep`.
-
-wip-sweep's T2/T3/T4 tier gates are where the user reviews branch names and approves pushes. This skill does not propose branches — that is wip-sweep's responsibility.
-
----
-
-## Step 7b — Final → Next chain scan (automatic, before wip-sweep)
+## Step 7 — Final → Next chain scan (automatic, before wip-sweep)
 
 Before handing off to `/wip-sweep`, verify every file in the session folder has a correct `→ Next` link.
 
@@ -413,6 +399,20 @@ Before handing off to `/wip-sweep`, verify every file in the session folder has 
    ```
 
 **This step is non-negotiable.** Do not hand off to `/wip-sweep` until every file in the folder has its `→ Next` link.
+
+---
+
+## Step 8 — Hand off to /wip-sweep (one-way, no loop)
+
+After saving the wrap files and updating the index, the sessions repo has new or modified `.md` artifacts. Source repos touched during the session may also have uncommitted changes.
+
+Call `/wip-sweep` now. When wip-sweep asks which repos to sweep, answer:
+
+> "Sweep only the repos dirtied during this session: [list repos and what changed in each]"
+
+**Loop safety:** wip-sweep commits existing dirty files and creates no new ones. There is nothing new to wrap after it completes. The dependency is strictly one-way: `session-wrap → wip-sweep`.
+
+wip-sweep's T2/T3/T4 tier gates are where the user reviews branch names and approves pushes. This skill does not propose branches — that is wip-sweep's responsibility.
 
 ---
 
