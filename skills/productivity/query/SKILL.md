@@ -7,8 +7,7 @@ Answer a question against the wiki at `c:/work/projects/ar/wiki`.
 
 ## Arguments
 
-`/query <question>` — the question to answer. Required. Ask if omitted.
-`/query <question> --save` — also file the answer as a new wiki page.
+`/query <question>` — the question to answer. Required. Ask if omitted. `/query <question> --save` — also file the answer as a new wiki page.
 
 ---
 
@@ -32,12 +31,12 @@ Also check `wiki/log.md` (last 10 entries) — if a recent ingest or query touch
 
 Write the answer. Format depends on the question:
 
-| Question type | Format |
-|---|---|
-| Factual / recall | Direct answer with citations `([[page-name]])`  |
-| Comparison | Markdown table |
-| How-to / process | Numbered steps |
-| Open-ended / exploratory | Short paragraphs with section headings |
+| Question type            | Format                                         |
+| ------------------------ | ---------------------------------------------- |
+| Factual / recall         | Direct answer with citations `([[page-name]])` |
+| Comparison               | Markdown table                                 |
+| How-to / process         | Numbered steps                                 |
+| Open-ended / exploratory | Short paragraphs with section headings         |
 
 Always cite the wiki pages used: `([[page-name]])` inline or a `## Sources` list at the end.
 
@@ -50,6 +49,7 @@ If the wiki doesn't have enough to answer well, say what's missing and suggest w
 If `--save` was passed, write the answer as a new wiki page.
 
 Choose the right location:
+
 - A comparison or analysis → `wiki/concepts/<slug>.md`
 - About a specific project → `wiki/projects/<name>.md`
 - About a person → `wiki/people/<name>.md`
@@ -58,6 +58,7 @@ Choose the right location:
 Use the appropriate frontmatter from `SCHEMA.md`. Add a `## Query` section at the top noting the original question and date.
 
 Then:
+
 - Add the page to `wiki/index.md` under the correct section
 - Append to `wiki/log.md`:
   ```
@@ -65,6 +66,7 @@ Then:
   ```
 
 If `--save` was not passed, still append to `wiki/log.md`:
+
 ```
 ## [YYYY-MM-DD] query | <question>
 ```
