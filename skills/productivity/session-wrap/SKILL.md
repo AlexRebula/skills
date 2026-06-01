@@ -312,8 +312,7 @@ Run immediately after Step 4 completes (the new folder now exists on disk).
 
 3. **If the count is 2 or more** (today's date now has multiple folders), notify the user:
 
-   > ⚠️ A second folder for YYYY-MM-DD was just created (`<new-folder>`). There is already a folder for today: `<existing-folder(s)>`.
-   > Should I collapse them into one folder? [y/n]
+   > ⚠️ A second folder for YYYY-MM-DD was just created (`<new-folder>`). There is already a folder for today: `<existing-folder(s)>`. Should I collapse them into one folder? [y/n]
 
 4. **If n:** proceed to Step 5 as-is.
 
