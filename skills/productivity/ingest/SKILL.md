@@ -83,8 +83,8 @@ Write `wiki/sources/<slug>.md` using the source page template from `SCHEMA.md`:
 ---
 type: source
 source_type: <detected type>
-title: '<title>'
-author: '<author>'
+title: "<title>"
+author: "<author>"
 url: null # or the URL string if one exists
 date_published: <YYYY-MM-DD or null>
 date_ingested: <today's date>
