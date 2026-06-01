@@ -315,9 +315,7 @@ Run immediately after Step 4 completes (the new folder now exists on disk).
    > ⚠️ A second folder for YYYY-MM-DD was just created (`<new-folder>`). There is already a folder for today: `<existing-folder(s)>`.
    > Should I collapse them into one folder? [y/n]
 
-4. **If n:** proceed to Step 5 as-is.
-
-5. **If y:** run the Step 0 collapse procedure now — generate a combined slug from the folder name slugs, run the collapse script, print its output — then proceed to Step 5.
+4. Run the Step 0 collapse procedure now — generate a combined slug from the folder name slugs, run the collapse script, print its output — then proceed to Step 5.
 
 **Why here and not Step 0:** Step 0 runs before the new folder exists, so it can never detect a collision caused by this session itself. Step 4b runs after the folder is created, catching the case where this session is the one that introduced the duplicate.
 
