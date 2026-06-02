@@ -61,6 +61,45 @@ From the file content, extract:
 
 Generate a slug from the title: lowercase, spaces → hyphens, strip non-word chars, max 60 chars.
 
+**Slug privacy rule:** The slug becomes a file name committed to git and visible in PR diffs, commit messages, and GitHub metadata. It must never contain the personal name of a private individual (a real person who is not a public figure). Use topic-based or role-based slugs instead:
+- ✗ `john-smith-debt-dispute` → ✓ `lawyer-debt-2026`
+- ✗ `azra-travel-consent` → ✓ `travel-consent-case-2026`
+- ✗ `email-from-maria` → ✓ `family-contact-analysis-2026`
+
+Public figures (authors, researchers, public business owners) may appear in slugs.
+
+---
+
+## Step 2.5 — Privacy screen
+
+**Before writing any file**, scan the source content for personally identifiable information (PII) belonging to private individuals:
+
+| PII type | Examples |
+|---|---|
+| Full names of private individuals | third-party family members, lawyers, co-parents, neighbours |
+| Contact details | email addresses, phone numbers, physical addresses |
+| ID / document numbers | passport numbers, tax file numbers, case reference numbers |
+| Financial specifics | exact debt amounts tied to a named person |
+| Sensitive legal content | accusations, court references, dispute details |
+
+**Replacement rules — apply before writing any wiki page, index entry, log entry, or file name:**
+
+1. **User's own data** — replace with `{{VAULT_KEY}}` placeholders matching the keys in `vault.md` (e.g. `{{FULL_LEGAL_NAME}}`). The vault is gitignored; placeholders are safe to commit.
+
+2. **Third-party private individuals** — replace names with their role relative to the user. Be consistent across all files:
+   - Invent the role label once, use it everywhere for that person
+   - Examples: `co-parent`, `paternal-grandmother`, `family-lawyer`, `naati-translator`, `family-witness`
+   - Their person page filename and wikilink must also use the role label (e.g. `wiki/people/co-parent.md`, `[[co-parent]]`)
+
+3. **Sensitive numbers and references** — replace with a descriptive placeholder: `[PASSPORT NUMBER]`, `[CASE REF]`, `[DEBT AMOUNT]`. Do not use `{{VAULT_KEY}}` style for third-party data — these are redactions, not resolvable variables.
+
+4. **Raw source files** (`raw/emails/`, `raw/sessions/`) — these may retain full verbatim content because they are the archival record. But their **file names and folder names** must follow the slug privacy rule above.
+
+**If the source contains significant PII, tell the user before writing:**
+> "This source contains personal information about [role, e.g. 'a family member']. I'll use role-based identifiers in all wiki pages and file names. The raw source file will retain the original content verbatim. Does that work, or would you like me to redact the raw file too?"
+
+Wait for confirmation only if the PII is significant (names + sensitive context together). For minor incidental mentions (e.g. a byline on an article), apply the replacement silently and note it in the Step 8 report.
+
 ---
 
 ## Step 3 — Discuss key takeaways
@@ -113,7 +152,7 @@ For each existing wiki page that this source informs (from the Related pages lis
 
 Only touch pages where the source genuinely adds something. Do not touch pages where the connection is superficial.
 
-If a concept, person, or project is prominently featured in the source but has **no wiki page yet**, create one now using the appropriate template from `SCHEMA.md`.
+If a concept, person, or project is prominently featured in the source but has **no wiki page yet**, create one now using the appropriate template from `SCHEMA.md`. For private individuals, apply the Step 2.5 naming rule: use a role-based file name (`wiki/people/co-parent.md`), not the person's real name (`wiki/people/john-smith.md`).
 
 ---
 
