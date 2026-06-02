@@ -8,8 +8,10 @@ description: Load the dependency-chain.md context file and extract the hard dead
 Read this file in full:
 
 ```
-{{AI_ROOT}}\Agents\Context\dependency-chain.md
+{{WIKI_ROOT}}\wiki\projects\dependency-chain.md
 ```
+
+> **Path variable:** `{{WIKI_ROOT}}` must be set in VS Code settings under `github.copilot.chat.templateVariables`. Default: `c:\work\projects\ar\wiki`.
 
 Extract:
 
@@ -44,4 +46,4 @@ repo-a Phase C → app-b Phase 3 → launch
 | app-b  | Phase 3 | ⬜ Blocked on repo-a Phase C |
 ```
 
-> **Adapting this skill?** Place your file at `{{AI_ROOT}}\Agents\Context\dependency-chain.md` using the format above, or edit the path in this skill to match your own layout.
+> **Adapting this skill?** Place your file at `{{WIKI_ROOT}}\wiki\projects\dependency-chain.md` using the format above (or edit the path here to match your own layout). Set `WIKI_ROOT` in `github.copilot.chat.templateVariables` in VS Code settings.

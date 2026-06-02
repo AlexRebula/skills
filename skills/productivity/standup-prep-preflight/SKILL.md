@@ -25,7 +25,7 @@ Verify access to the standards AGENTS.md files. Print the session health table (
 
 Run `/load-dependency-chain`.
 
-Read `{{AI_ROOT}}\Agents\Context\dependency-chain.md` in full. Extract the hard deadline, the critical path, and current phase status for each active repo.
+Read `{{WIKI_ROOT}}\wiki\projects\dependency-chain.md` in full. Extract the hard deadline, the critical path, and current phase status for each active repo.
 
 ---
 
