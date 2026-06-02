@@ -11,7 +11,7 @@ description: Dynamically discover all workspace git repos and produce a dirty st
 
 **Source 1 — VS Code workspace context (primary):** Your system context includes a `<workspace_info>` block that lists the open workspace folders. Extract every folder path from that block.
 
-**Source 2 — dependency-chain.md:** Scan `{{AI_ROOT}}\Agents\Context\dependency-chain.md` for file system path references (any line containing an absolute path or a known repo name). Add any paths not already in your list.
+**Source 2 — dependency-chain.md:** Scan `{{WIKI_ROOT}}\wiki\projects\dependency-chain.md` for file system path references (any line containing an absolute path or a known repo name). Add any paths not already in your list.
 
 **Source 3 — developer input (fallback):** If fewer than 2 repos are found after Sources 1 and 2, ask:
 
