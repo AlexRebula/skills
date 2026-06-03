@@ -22,7 +22,7 @@ Use `/create-pr` for repositories outside this ecosystem.
 | AGENTS.md pre-load | ❌ | ✅ public + private, before hygiene |
 | Banned-content scan | ⚙️ implied by quality gate | ✅ explicitly called out (step 0a) |
 | `data/` branch prefix | ⚙️ labeled as project-specific | ✅ included, unlabeled |
-| Quality gate command | ⚙️ labeled, alternatives shown | ✅ `npm run check:verify`, locked |
+| Quality gate command | ⚙️ labeled, alternatives shown | ✅ `npm run check:verify:smart`, locked |
 | Copilot review trigger | ⚙️ opt-in via `request-review` arg | ✅ ON by default, opt-out via `skip-review` |
 | PR companion doc | ❌ | ✅ opt-in via `with-companion-doc` arg |
 | `⚙️ Configurable` callouts | 6 | 0 |
@@ -119,7 +119,7 @@ The LittleBranches quality gate runs these checks in order:
 ```
 
 ```sh
-npm run check:verify
+npm run check:verify:smart
 ```
 
 Do not continue to Phase 1 if the gate fails. Fix the failures first. If the banned-content scan (step 0a) fires, the violation must be removed before the PR is created — banned identifiers in a public repo are a permanent part of the git history once pushed.
