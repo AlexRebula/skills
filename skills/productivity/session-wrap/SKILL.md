@@ -10,8 +10,8 @@ argument-hint: 'Optional: focus hint for the next session (e.g. "continue stat-c
 >
 > | Variable            | Points to                               | Example               |
 > | ------------------- | --------------------------------------- | --------------------- |
-> | `{{SESSIONS_ROOT}}` | Folder where session folders are stored | `C:/work/ai/sessions` |
-> | `{{PROMPTS_ROOT}}`  | Folder where the prompt catalogue lives | `C:/work/ai/prompts`  |
+> | `{{SESSIONS_ROOT}}` | Folder where session folders are stored | `C:/your/sessions/folder` |
+> | `{{PROMPTS_ROOT}}`  | Folder where the prompt catalogue lives | `C:/your/prompts/folder`  |
 >
 > `{{VSCODE_TARGET_SESSION_LOG}}` is optional — used in Step 2a to recover the full transcript. If unavailable the skill degrades gracefully.
 >

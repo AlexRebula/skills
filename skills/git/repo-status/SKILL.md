@@ -15,7 +15,7 @@ description: Dynamically discover all workspace git repos and produce a dirty st
 
 **Source 3 — developer input (fallback):** If fewer than 2 repos are found after Sources 1 and 2, ask:
 
-> "I could not auto-detect your repo locations from the workspace context. What is your project root directory? (e.g. `/Users/alex/projects` or `C:/work`)"
+> "I could not auto-detect your repo locations from the workspace context. What is your project root directory? (e.g. `D:/projects` or `/path/to/repos`)"
 
 For each candidate path found in Sources 1 or 2, verify it is actually a git repo:
 
