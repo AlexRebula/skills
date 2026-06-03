@@ -17,7 +17,7 @@ If yes, run steps 9a–9g below.
 
 ## 9a — Locate or bootstrap Asana config
 
-> **This skill is self-contained.** It does not require alexrebula or any specific project's copilot-instructions.md. All Asana setup knowledge is documented here.
+> **This skill is self-contained.** It does not require any specific project's copilot-instructions.md. All Asana setup knowledge is documented here.
 
 **Step 1 — Find the config (dynamic — no hardcoded paths):**
 
@@ -125,8 +125,8 @@ Present the plan:
 
 > "I will add the following to the **Morning Briefs** section of **<project>**:
 >
-> - Task: [2026-05-23] giselle-mui — ESLint blocking push on chore/two-phase-scaffold-gate (Priority: High, Owner: alexrebula)
-> - Task: [2026-05-23] first-branch — Merge PR #19 admin status dropdown (Priority: High)
+> - Task: [YYYY-MM-DD] <your-repo> — <description> (Priority: High, Owner: <your-username>)
+> - Task: [YYYY-MM-DD] <another-repo> — <description> (Priority: High)
 > - ...
 >
 > Proceed? [y/n/edit]"
@@ -210,7 +210,7 @@ Append a `## Asana Sync Log` section to the morning brief file:
 
 Tasks created:
 
-- [2026-05-23] giselle-mui — ESLint blocker → https://app.asana.com/0/<projectGid>/<taskGid>
+- [YYYY-MM-DD] <your-repo> — <description> → https://app.asana.com/0/<projectGid>/<taskGid>
 - ...
 
 Status Update posted: https://app.asana.com/0/<projectGid>/<statusGid>
