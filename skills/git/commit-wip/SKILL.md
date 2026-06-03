@@ -3,7 +3,7 @@ name: commit-wip
 description: >
   Scan every local workspace repo for uncommitted changes, group them by topic, and commit each group to the most semantically appropriate branch. Checks remote branches first — if an existing branch matches the changed files, commits go there. Only creates a new categorised branch (feature/, fix/, docs/, chore/, data/) when no remote match exists. Prevents WIP loss and keeps work on the right branch from the start.
 
-argument-hint: 'Optional: path to a single repo (e.g. C:/work/projects/ar/giselle-mui). Omit to scan all workspace repos.'
+argument-hint: 'Optional: path to a single repo (e.g. /path/to/repo). Omit to scan all workspace repos.'
 agent: agent
 ---
 
@@ -23,18 +23,7 @@ Scan workspace repos for uncommitted changes, group them by topic, match each gr
 
 If an argument was provided, scope the scan to that repo path only.
 
-Otherwise use the default workspace repo list:
-
-```
-C:/work/projects/ar/rm/presentation/alexrebula
-C:/work/projects/ar/giselle-mui
-C:/work/projects/ar/giselle-sections-sdk
-C:/work/projects/ar/giselle-ui
-C:/work/projects/ar/giselle-docs
-C:/work/projects/ar/first-branch
-C:/work/projects/ar/oss-quality-standards
-C:/work/projects/ar/skills
-```
+Otherwise use the workspace repo list from `{{WORKSPACE_CONFIG}}` or the VS Code workspace folders in context.
 
 Skip any path that does not exist on disk — do not error.
 

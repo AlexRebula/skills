@@ -51,7 +51,7 @@ Collapsing into: 2026-05-27-<combined-slug>/
 ## Step 3 — Run the collapse script
 
 ```sh
-npx tsx "c:/work/projects/ar/skills/scripts/collapse-sessions.ts" \
+npx tsx "{{SKILLS_ROOT}}/scripts/collapse-sessions.ts" \
   --sessions-root "{{SESSIONS_ROOT}}" \
   --slug "<combined-slug>" \
   --date "YYYY-MM-DD"

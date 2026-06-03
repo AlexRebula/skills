@@ -11,7 +11,7 @@ Read this file in full:
 {{WIKI_ROOT}}\wiki\projects\dependency-chain.md
 ```
 
-> **Path variable:** `{{WIKI_ROOT}}` must be set in VS Code settings under `github.copilot.chat.templateVariables`. Default: `c:\work\projects\ar\wiki`.
+> **Path variable:** `{{WIKI_ROOT}}` must be set in VS Code settings under `github.copilot.chat.templateVariables`.
 
 Extract:
 

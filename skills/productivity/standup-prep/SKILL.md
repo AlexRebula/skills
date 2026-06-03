@@ -131,7 +131,7 @@ Determine the actual output path before writing, then confirm: `✅ Morning brie
 After writing the file, also sync it to Asana automatically — no prompt needed:
 
 ```sh
-cd c:/work/projects/ar/rm/presentation/alexrebula && npx tsx scripts/sync-morning-briefs.ts
+cd {{PROJECT_ROOT}} && npx tsx scripts/sync-morning-briefs.ts
 ```
 
 This creates one task in the **Morning Briefs** Asana project (`morningBriefsProjectGid` in `.asana-config.json`) with the full brief content as the task notes. The script is idempotent — if a task for this brief already exists it is skipped.
