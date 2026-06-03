@@ -82,7 +82,7 @@ Use when the user is working locally and asks you to "resolve", "de-anonymise", 
 ## Rules
 
 - Never write real personal values into any file tracked by git.
-- vault.md must be gitignored in the wiki repo — confirm `**/vault.md` or equivalent is in the wiki's `.gitignore` before writing to it.
+- vault.md must be gitignored in the wiki repo — before writing to it, verify an ignore rule (e.g. `**/vault.md`) exists in the wiki's `.gitignore`; if it’s missing, stop and warn the user (offer to add the rule) and do not write any secrets until it’s fixed.
 - If a value is already a placeholder (`{{...}}`), do not double-wrap it.
 - Prefer reusing existing vault variables over creating new ones for the same value.
 - Variable names should be descriptive but not so specific they leak context (e.g. `{{CASE_SUBJECT_NAME}}` not `{{JESS_FULL_NAME}}`).
