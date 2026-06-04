@@ -1,13 +1,13 @@
 ---
 name: respond-pr-review
-description: Respond to an existing Copilot PR review in any repository as the branch owner's assistant. Gathers every thread, triages each one, replies inline before fixing, batches valid fixes into one commit, posts SHA follow-ups, and leaves resolution to the branch owner. Use when asked to "respond pr review <N>", "address Copilot review", or work through open PR review threads outside the LittleBranches repos.
+description: Respond to an existing Copilot PR review in any repository as the branch owner's assistant. Gathers every thread, triages each one, replies inline before fixing, batches valid fixes into one commit, posts SHA follow-ups, and leaves resolution to the branch owner. Use when asked to "respond pr review <N>", "address Copilot review", or work through open PR review threads.
 ---
 
 # Respond PR Review
 
 Use this when a PR already has Copilot review threads and the job is to respond and fix them, not to perform the initial review.
 
-Use `/respond-giselle-pr-review` instead when working in a LittleBranches repository that should preload the public and private AGENTS.md barrels.
+If your project has an org-specific variant of this skill that preloads custom standards, use that instead.
 
 ## Arguments
 
@@ -31,7 +31,7 @@ Look in this order:
 2. Review workflow docs under `docs/`, `specs/`, or `.scratch/`
 3. If nothing explicit exists: fall back to the response pattern in this skill
 
-If the repo is a LittleBranches repo, stop and switch to `/respond-giselle-pr-review` instead.
+If the repo has a custom PR review skill with its own standards loading, stop and switch to that instead.
 
 ### 2. Verify the branch
 

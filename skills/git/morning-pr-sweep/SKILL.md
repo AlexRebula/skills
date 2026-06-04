@@ -1,13 +1,13 @@
 ---
 name: morning-pr-sweep
-description: Clear all open PR review debt across your repos in one session. Discovers every open PR, triages ALL threads across ALL PRs before touching any code, batches fixes into one commit per PR, posts SHA confirmations, and reports which PRs are merge-ready. Replaces running /respond-giselle-pr-review N times with a single morning ritual that takes 20–30 minutes regardless of how many PRs are open.
+description: Clear all open PR review debt across your repos in one session. Discovers every open PR, triages ALL threads across ALL PRs before touching any code, batches fixes into one commit per PR, posts SHA confirmations, and reports which PRs are merge-ready. Replaces running /respond-pr-review N times with a single morning ritual that takes 20–30 minutes regardless of how many PRs are open.
 ---
 
 # Morning PR Sweep
 
 Run this at the start of each working day. Its job is simple: **no PR should leave the session with an unacknowledged review thread**. By the end of the sweep, every open thread has been triaged, replied to, fixed (if valid), and confirmed — leaving only the manual merge step for you.
 
-The key difference from calling `/respond-pr-review` (or `/respond-giselle-pr-review` for LittleBranches repos) N times: all threads across all PRs are triaged **together, before any code is touched**. This means one context load, one standards load, one pass through all the code, one commit per PR. Not N context loads, N fix cycles, N pushes.
+The key difference from calling `/respond-pr-review` N times: all threads across all PRs are triaged **together, before any code is touched**. This means one context load, one standards load, one pass through all the code, one commit per PR. Not N context loads, N fix cycles, N pushes.
 
 ---
 
@@ -54,7 +54,7 @@ gh api repos/<owner>/<repo>/contents/AGENTS.md --jq '.name' 2>/dev/null
 
 **Override:** Pass `--standards-url <url>` to load a shared standards file for all repos in the sweep — useful when your org maintains a central AGENTS.md. This overrides per-repo discovery.
 
-> **LittleBranches contributors:** Your standards are at: `https://raw.githubusercontent.com/LittleBranches/oss-quality-standards/main/docs/AGENTS.md` Pass this as `--standards-url` or ensure each repo's `AGENTS.md` references it.
+> **Tip:** If your organisation maintains a shared standards file, pass its URL via `--standards-url` or ensure each repo's `AGENTS.md` references it.
 
 ### 0b. Build the repo list
 
@@ -243,13 +243,13 @@ Before each commit, run the repo's quality gate. Discover it first:
 2. If `package.json` exists and defines `check:verify` or `check`, use that.
 3. Fallback for non-Node repos: look for a `Makefile` target named `check`, `lint`, or `test`.
 
-For LittleBranches/giselle repos, prefer the smart gate (skips heavy steps when unchanged):
+If your project has a smart quality gate command that skips unchanged files, prefer it:
 
 ```sh
-npm run check:verify:smart
+npm run check:verify:smart  # or your project's equivalent
 ```
 
-For other Node/npm repos:
+Otherwise, for Node/npm repos:
 
 ```sh
 npm run check:verify
@@ -327,10 +327,10 @@ Print the final status table:
 MORNING PR SWEEP — COMPLETE
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 Repo                          PR    Status          Threads  Commit    Action
-LittleBranches/giselle-mui    #63   ✅ merge-ready  3/3      a1b2c3d   Resolve threads + merge in GitHub
-LittleBranches/giselle-mui    #64   ✅ merge-ready  2/2      e4f5g6h   Resolve threads + merge in GitHub
-alexrebula/first-branch        #12   ⏸️ no review    —        —         Waiting for Copilot review to appear
-LittleBranches/oss-quality-standards #8 ✅ merge-ready 0/0   —         Ready to merge
+MyOrg/my-app                  #63   ✅ merge-ready  3/3      a1b2c3d   Resolve threads + merge in GitHub
+MyOrg/my-app                  #64   ✅ merge-ready  2/2      e4f5g6h   Resolve threads + merge in GitHub
+my-username/my-lib            #12   ⏸️ no review    —        —         Waiting for Copilot review to appear
+MyOrg/standards               #8    ✅ merge-ready  0/0      —         Ready to merge
 
 NEXT STEP: Go to GitHub UI → resolve threads → merge PRs #63 and #64.
 Then return here to start fresh work.

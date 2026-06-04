@@ -1,6 +1,6 @@
 ---
 name: create-react-component
-description: Scaffold and TDD a new React component from scratch. Framework-agnostic scaffold rules — types first, it.todo stubs, README, roadmap, then a strict red-green-refactor TDD loop. No MUI dependency. Use for any React project that is not giselle-mui (use /create-giselle-component for that).
+description: Scaffold and TDD a new React component from scratch. Framework-agnostic scaffold rules — types first, it.todo stubs, README, roadmap, then a strict red-green-refactor TDD loop. No MUI dependency.
 ---
 
 # Create React Component
