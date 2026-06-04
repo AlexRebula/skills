@@ -11,7 +11,7 @@ Read this file in full:
 {{WIKI_ROOT}}\wiki\projects\dependency-chain.md
 ```
 
-> **Path variable:** `{{WIKI_ROOT}}` must be set in VS Code settings under `github.copilot.chat.templateVariables`. Default: `c:\work\projects\ar\wiki`.
+> **Path variable:** `{{WIKI_ROOT}}` — replace with the absolute path to your wiki root.
 
 Extract:
 
@@ -46,4 +46,4 @@ repo-a Phase C → app-b Phase 3 → launch
 | app-b  | Phase 3 | ⬜ Blocked on repo-a Phase C |
 ```
 
-> **Adapting this skill?** Place your file at `{{WIKI_ROOT}}\wiki\projects\dependency-chain.md` using the format above (or edit the path here to match your own layout). Set `WIKI_ROOT` in `github.copilot.chat.templateVariables` in VS Code settings.
+> **Adapting this skill?** Place your file at `{{WIKI_ROOT}}\wiki\projects\dependency-chain.md` using the format above (or edit the path here to match your own layout), replacing `{{WIKI_ROOT}}` with the absolute path to your wiki root.

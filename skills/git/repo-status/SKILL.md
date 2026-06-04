@@ -1,6 +1,6 @@
 ---
 name: repo-status
-description: Dynamically discover all workspace git repos and produce a dirty state table (repo, branch, dirty file count, clean/uncommitted status). Sources paths from the VS Code workspace context and dependency-chain.md. Use before any WIP sweep or morning brief to know which repos need attention.
+description: Dynamically discover all workspace git repos and produce a dirty state table (repo, branch, dirty file count, clean/uncommitted status). Sources paths from the workspace context and dependency-chain.md. Use before any WIP sweep or morning brief to know which repos need attention.
 ---
 
 # Repo Status
@@ -9,7 +9,7 @@ description: Dynamically discover all workspace git repos and produce a dirty st
 
 > If `dependency-chain.md` was already loaded earlier in this session, it is in context. Do not re-read it — use the path references already extracted.
 
-**Source 1 — VS Code workspace context (primary):** Your system context includes a `<workspace_info>` block that lists the open workspace folders. Extract every folder path from that block.
+**Source 1 — Workspace context (primary):** Your system context includes a `<workspace_info>` block that lists the open workspace folders. Extract every folder path from that block.
 
 **Source 2 — dependency-chain.md:** Scan `{{WIKI_ROOT}}\wiki\projects\dependency-chain.md` for file system path references (any line containing an absolute path or a known repo name). Add any paths not already in your list.
 

@@ -23,7 +23,7 @@ Scan workspace repos for uncommitted changes, group them by topic, match each gr
 
 If an argument was provided, scope the scan to that repo path only.
 
-Otherwise use the workspace repo list from `{{WORKSPACE_CONFIG}}` or the VS Code workspace folders in context.
+Otherwise use the workspace repo list from `{{WORKSPACE_CONFIG}}` or the workspace folders in context.
 
 Skip any path that does not exist on disk — do not error.
 

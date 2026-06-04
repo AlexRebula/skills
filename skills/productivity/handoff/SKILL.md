@@ -8,7 +8,7 @@ argument-hint: 'What will the next session be used for?'
 
 The in-context summary is **always incomplete** if the conversation was compacted one or more times before the handoff was called. Work done in earlier parts of the session may have been summarised away and will be silently missing from the handoff unless you recover it first.
 
-If the platform provides a session transcript file (e.g. `{{VSCODE_TARGET_SESSION_LOG}}` in VS Code Copilot — a template variable substituted at runtime with the session log file path; on other platforms the path may differ or be absent — see the fallback below):
+If the platform provides a session transcript file (e.g. `{{VSCODE_TARGET_SESSION_LOG}}` — a template variable substituted at runtime with the session log file path; if unavailable on your platform, see the fallback below):
 
 1. Read the transcript file (JSONL — one JSON object per line).
 2. Extract every `<conversation-summary>` compaction block. Each block is a faithful summary of what happened before that compaction point.

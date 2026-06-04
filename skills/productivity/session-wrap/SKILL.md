@@ -132,7 +132,7 @@ Print all four on their own lines:
 **Session ID:** <UUID if available, else N/A>
 ```
 
-**How to find the session ID (VS Code Copilot):** the template variable `{{VSCODE_TARGET_SESSION_LOG}}` contains a path whose last segment is a UUID. Extract it. On all other platforms (Claude.ai, Gemini web, etc.), write `N/A`.
+**How to find the session ID:** if `{{VSCODE_TARGET_SESSION_LOG}}` resolves to a path, its last segment is the UUID — extract it. If the variable is unavailable, write `N/A`.
 
 ---
 
@@ -209,7 +209,7 @@ Show this checklist to the user before writing the wrap document. The user can c
 - **Pending Tasks section** — each task must reference its source: which skill produced it, which user decision shaped it, which issue number it targets.
 - **Current State section** — references GITHUB WRITES to state what was actually created/updated.
 
-**If `{{VSCODE_TARGET_SESSION_LOG}}` is unavailable** (non-VS-Code session or path not resolved), produce the checklist from context alone and add this note to both the checklist and the wrap document:
+**If `{{VSCODE_TARGET_SESSION_LOG}}` is unavailable** (path not resolved or not provided by the platform), produce the checklist from context alone and add this note to both the checklist and the wrap document:
 
 > ⚠️ Transcript not available — checklist built from context only. Skills invoked and GitHub writes may be incomplete. Verify against screenshots or a separate session log if critical work happened before the last context compaction.
 

@@ -243,13 +243,13 @@ Before each commit, run the repo's quality gate. Discover it first:
 2. If `package.json` exists and defines `check:verify` or `check`, use that.
 3. Fallback for non-Node repos: look for a `Makefile` target named `check`, `lint`, or `test`.
 
-For LittleBranches/giselle repos, prefer the smart gate (skips heavy steps when unchanged):
+If your project has a smart quality gate command that skips unchanged files, prefer it:
 
 ```sh
-npm run check:verify:smart
+npm run check:verify:smart # or your project's equivalent
 ```
 
-For other Node/npm repos:
+Otherwise, for Node/npm repos:
 
 ```sh
 npm run check:verify

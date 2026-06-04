@@ -7,16 +7,7 @@ description: Resolve SESSIONS_ROOT and PROMPTS_ROOT for AI workflow skills. Scan
 
 Resolve the filesystem paths used by AI workflow skills. The calling skill invokes this, receives the resolved values, then substitutes them throughout its own steps.
 
-> **VS Code Copilot users:** define your paths once in VS Code settings under `github.copilot.chat.templateVariables` and they will be substituted automatically — this skill has nothing to do. Example (`settings.json` or user settings):
->
-> ```json
-> "github.copilot.chat.templateVariables": {
->   "SESSIONS_ROOT": "/absolute/path/to/your/sessions/folder",
->   "PROMPTS_ROOT":  "/absolute/path/to/your/prompts/folder"
-> }
-> ```
->
-> **All other platforms (Claude, Grok, ChatGPT, etc.):** no template substitution exists. The scan steps below are the primary mechanism on those platforms.
+> If your tool supports template variable substitution, define `SESSIONS_ROOT` and `PROMPTS_ROOT` in your tool's configuration and they will be substituted automatically — this skill has nothing further to do. Otherwise, the scan steps below are the primary path-resolution mechanism.
 
 ---
 
