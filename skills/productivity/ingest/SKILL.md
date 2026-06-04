@@ -114,6 +114,23 @@ Wait for confirmation before writing. If the user says "go" or "looks good", pro
 
 ---
 
+## Step 3.5 — Check for existing source page
+
+Before writing anything, grep `wiki/sources/` for any file whose frontmatter contains `raw_path: <path>` matching the current file's path.
+
+**If a match is found:**
+
+1. Read the existing source page.
+2. Tell the user:
+   > "A source page already exists for this file: `wiki/sources/<existing-slug>.md` (ingested <date_ingested>). The raw file has changed — do you want to **update** (merge new takeaways into the existing page) or **replace** (full rewrite, discarding the old page)?"
+3. Wait for the user's choice:
+   - **Update** — read both the existing page and the updated raw source; produce a diff of key takeaways and summary; apply only the changed/new content; bump `updated:` in frontmatter; do not add a duplicate line to `wiki/index.md` or `wiki/log.md` — append `## [YYYY-MM-DD] update | <title> (<source_type>)` to the log instead.
+   - **Replace** — proceed with Step 4 as a full rewrite; the existing page is overwritten; existing index line is updated in place (not duplicated); append `## [YYYY-MM-DD] re-ingest | <title> (<source_type>)` to the log.
+
+**If no match is found:** proceed to Step 4 as normal.
+
+---
+
 ## Step 4 — Write the source page
 
 Write `wiki/sources/<slug>.md` using the source page template from `SCHEMA.md`:
@@ -132,39 +149,47 @@ updated: <today's date>
 ---
 ```
 
-Content:
+Content (in order):
 
-- **Summary** — one paragraph: what this source is and why it matters
-- **Key takeaways** — 3–7 bullet points (refined from Step 3 discussion)
-- **Quotes** — 1–3 verbatim excerpts worth keeping (optional; omit if none stand out)
-- **Related pages** — wikilinks to any existing `wiki/` pages this source informs (check `wiki/index.md`)
+1. **Source link** — first line after the H1, always required:
+   - If `raw_path` is set: `→ [Raw source](../../<raw_path>)`
+   - If `raw_path` is null but `url` is set: `→ [Original source](<url>)`
+2. **Summary** — one paragraph: what this source is and why it matters
+3. **Key takeaways** — 3–7 bullet points (refined from Step 3 discussion)
+4. **Quotes** — 1–3 verbatim excerpts worth keeping (optional; omit if none stand out)
+5. **Related pages** — wikilinks to any existing `wiki/` pages this source informs (check `wiki/index.md`)
 - If `--deep`: add `deep_dive: wiki/deep/<slug>-deep.md` to frontmatter and append `→ [[<slug>-deep|Deep dive]]` at the bottom
 
 ---
 
 ## Step 5 — Update related wiki pages
 
-For each existing wiki page that this source informs (from the Related pages list above):
+For each wiki page that this source informs:
 
+**If the page already exists:**
 1. Read the page
-2. Add or update a sentence/bullet that reflects the new insight
-3. Add a source link if not already present
+2. Check whether the insight or source link is already present — if so, skip; do not add duplicates
+3. If genuinely new content, add or update a sentence/bullet and add the source link if missing
+
+**If the page does not exist yet** and the concept, person, or project is prominently featured:
+1. Create it now using the appropriate template from `SCHEMA.md`
+2. For private individuals, apply the Step 2.5 naming rule: use a role-based file name (`wiki/people/family-member.md`), not the person's real name
 
 Only touch pages where the source genuinely adds something. Do not touch pages where the connection is superficial.
-
-If a concept, person, or project is prominently featured in the source but has **no wiki page yet**, create one now using the appropriate template from `SCHEMA.md`. For private individuals, apply the Step 2.5 naming rule: use a role-based file name (`wiki/people/family-member.md`), not the person's real name.
 
 ---
 
 ## Step 6 — Update wiki/index.md
 
-Add a line under `## Sources`:
+**First-time ingest:** add a line under `## Sources`:
 
 ```
 - [Title](wiki/sources/<slug>.md) — one-line summary
 ```
 
-If any new concept/person/project pages were created in Step 5, add those lines to their respective sections too.
+**Re-ingest (update or replace):** find the existing line and update it in place — do not add a duplicate.
+
+If any new concept/person/project pages were created in Step 5, add those lines to their respective sections. If those index lines already exist, leave them unchanged.
 
 ---
 
