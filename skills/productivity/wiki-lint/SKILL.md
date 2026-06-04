@@ -3,7 +3,7 @@ name: wiki-lint
 description: Health-check the personal wiki — scans for contradictions, orphan pages, stale claims, missing cross-references, and data gaps. Produces a prioritised finding list and suggests next ingests. Use when the user says "lint the wiki", "health check the wiki", or "what's wrong with the wiki".
 ---
 
-Health-check the wiki at `c:/work/projects/ar/wiki`.
+Health-check the wiki at `{{WIKI_ROOT}}`.
 
 ## Arguments
 

@@ -3,7 +3,7 @@ name: query
 description: Answer a question using the personal wiki — reads the index, drills into relevant pages, synthesises an answer with citations, and optionally files the answer as a new wiki page. Use when the user asks a question and wants the wiki to answer it, or says "query the wiki".
 ---
 
-Answer a question against the wiki at `c:/work/projects/ar/wiki`.
+Answer a question against the wiki at `{{WIKI_ROOT}}`.
 
 ## Arguments
 

@@ -1,0 +1,14 @@
+# .banned-patterns.local — personal names and terms to block from committing.
+# Copy this file to .banned-patterns.local (gitignored) and add your own terms.
+# One pattern per line. Lines starting with # are comments. Case-sensitive.
+#
+# The pre-commit hook scans staged files against this list.
+# GitHub Actions CI does NOT have access to this file (it's gitignored) —
+# it only enforces structural rules (hardcoded paths, emails).
+# This file is your LOCAL safety net for personal names.
+#
+# Example entries (remove these and add your own):
+# firstname
+# surname
+# nickname
+# case-keyword

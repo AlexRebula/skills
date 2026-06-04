@@ -26,7 +26,7 @@ Pull Asana task statuses → write them into `docs/roadmap.md` and `data.tsx`.
 Read `.asana-config.json` from the alexrebula repo root:
 
 ```sh
-cat c:/work/projects/ar/rm/presentation/alexrebula/.asana-config.json
+cat {{PROJECT_ROOT}}/.asana-config.json
 ```
 
 Extract:
@@ -82,13 +82,13 @@ If the task has `completed: true` (Asana native checkbox), treat it as done rega
 Locate the roadmap.md for the repo. Standard paths:
 
 ```
-c:/work/projects/ar/<repo>/docs/roadmap.md
+{{WORKSPACE_ROOT}}/<repo>/docs/roadmap.md
 ```
 
-Exception for alexrebula:
+Exception for the main project:
 
 ```
-c:/work/projects/ar/rm/presentation/alexrebula/docs/roadmap.md
+{{PROJECT_ROOT}}/docs/roadmap.md
 ```
 
 **Update status symbols only.** Do not rewrite headings, descriptions, or table structure. Match phases by name (strip leading symbols and whitespace before comparing).
@@ -116,10 +116,10 @@ Some repos have a `data.tsx` file that powers a visual timeline. Standard path:
 src/sections-api/<repo>/data.tsx
 ```
 
-For alexrebula's own roadmap timeline:
+For the main project's roadmap timeline:
 
 ```
-c:/work/projects/ar/rm/presentation/alexrebula/src/sections-api/roadmap/data.tsx
+{{PROJECT_ROOT}}/src/sections-api/roadmap/data.tsx
 ```
 
 **Update `done` flags only.** Do not touch icon, side, variant, color, description, or any other property.

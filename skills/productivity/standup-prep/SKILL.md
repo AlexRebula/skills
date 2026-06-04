@@ -51,7 +51,7 @@ Print the following, filled in with real data from Steps 0–3. Include any **pr
 
 #### Critical path today
 
-<Max 3 items. One sentence each. Be specific — not "work on Phase H" but "Build DonutChartCard in giselle-mui — required by first-branch Phase 3 viewer dashboard.">
+<Max 3 items. One sentence each. Be specific — not "work on Phase H" but "Build DonutChartCard in my-app — required by Phase 3 viewer dashboard.">
 
 ---
 
@@ -131,7 +131,7 @@ Determine the actual output path before writing, then confirm: `✅ Morning brie
 After writing the file, also sync it to Asana automatically — no prompt needed:
 
 ```sh
-cd c:/work/projects/ar/rm/presentation/alexrebula && npx tsx scripts/sync-morning-briefs.ts
+cd {{PROJECT_ROOT}} && npx tsx scripts/sync-morning-briefs.ts
 ```
 
 This creates one task in the **Morning Briefs** Asana project (`morningBriefsProjectGid` in `.asana-config.json`) with the full brief content as the task notes. The script is idempotent — if a task for this brief already exists it is skipped.
@@ -151,9 +151,9 @@ Run `/asana-sync`.
 Print a final one-line-per-repo status using **real data from Steps 0–6**. The example below is illustrative only — all values (repo names, branch names, file counts, paths, task counts) must come from this session's actual results:
 
 ```
-✅ alexrebula       — clean
-⚠️  giselle-mui     — snapshot committed to docs/20260523-dashboard-plan + chore/20260523-ci-config, pushed, PR not opened
-✅ first-branch     — clean
+✅ my-username      — clean
+⚠️  my-app          — snapshot committed to docs/20260523-dashboard-plan + chore/20260523-ci-config, pushed, PR not opened
+✅ my-lib           — clean
 ✅ [all others]     — clean
 
 📄 Morning brief written: {{AI_ROOT}}\Agents\Morning Briefs\YYYY-MM-DD\NN.md

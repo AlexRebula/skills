@@ -108,7 +108,7 @@ Each entry describes:
 
 **What's specific:** Two layers of specificity:
 
-1. Config is read from a hardcoded alexrebula repo path (`c:/work/projects/ar/rm/presentation/alexrebula/.asana-config.json`)
+1. Config is read from a hardcoded local path rather than discovered dynamically
 2. The `data.tsx` companion update pattern is specific to the alexrebula codebase (Next.js data files that mirror roadmap.md)
 
 **Path to general:**

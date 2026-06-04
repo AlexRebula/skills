@@ -1,0 +1,6 @@
+#!/usr/bin/env bash
+# Pre-commit hook: privacy scan on staged files.
+# Install once with: git config core.hooksPath .githooks
+
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+bash "$SCRIPT_DIR/../scripts/check-privacy.sh" --staged

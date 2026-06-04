@@ -3,7 +3,7 @@ name: commit-wip
 description: >
   Scan every local workspace repo for uncommitted changes, group them by topic, and commit each group to the most semantically appropriate branch. Checks remote branches first — if an existing branch matches the changed files, commits go there. Only creates a new categorised branch (feature/, fix/, docs/, chore/, data/) when no remote match exists. Prevents WIP loss and keeps work on the right branch from the start.
 
-argument-hint: 'Optional: path to a single repo (e.g. C:/work/projects/ar/giselle-mui). Omit to scan all workspace repos.'
+argument-hint: 'Optional: path to a single repo (e.g. /path/to/repo). Omit to scan all workspace repos.'
 agent: agent
 ---
 
@@ -23,18 +23,7 @@ Scan workspace repos for uncommitted changes, group them by topic, match each gr
 
 If an argument was provided, scope the scan to that repo path only.
 
-Otherwise use the default workspace repo list:
-
-```
-C:/work/projects/ar/rm/presentation/alexrebula
-C:/work/projects/ar/giselle-mui
-C:/work/projects/ar/giselle-sections-sdk
-C:/work/projects/ar/giselle-ui
-C:/work/projects/ar/giselle-docs
-C:/work/projects/ar/first-branch
-C:/work/projects/ar/oss-quality-standards
-C:/work/projects/ar/skills
-```
+Otherwise use the workspace repo list from `{{WORKSPACE_CONFIG}}` or the VS Code workspace folders in context.
 
 Skip any path that does not exist on disk — do not error.
 
@@ -105,9 +94,9 @@ For each group, scan the remote branch list for a match using these rules in pri
 Print the decision for every group before touching any files:
 
 ```
-[giselle-mui]  component:stat-card  →  feature/stat-card-tdd  (existing remote — keyword match)
-[skills]       docs                 →  no match → will create docs/session-wrap-model-tracking
-[alexrebula]   chore:config         →  no match → will create chore/eslint-rule-updates
+[my-app]   component:stat-card  →  feature/stat-card-tdd  (existing remote — keyword match)
+[my-lib]   docs                 →  no match → will create docs/session-wrap-model-tracking
+[my-site]  chore:config         →  no match → will create chore/eslint-rule-updates
 ```
 
 If a match would require switching away from a branch that has its own unstaged work, warn and treat it as no-match instead — never silently discard local state.
@@ -168,10 +157,10 @@ Print a table when done:
 ```
 Repo          Group                Branch                         Files  Status
 ──────────── ──────────────────── ────────────────────────────── ────── ────────────────────
-giselle-mui   component:stat-card  feature/stat-card-tdd          4      ✅ committed + pushed
-skills        docs                 docs/session-wrap-model-track  2      ✅ new branch + pushed
-alexrebula    chore:config         chore/eslint-rule-updates       1      ✅ new branch + pushed
-first-branch  —                    —                              —      ✓ already clean
+my-app         component:stat-card  feature/stat-card-tdd          4      ✅ committed + pushed
+my-lib         docs                 docs/session-wrap-model-track  2      ✅ new branch + pushed
+my-site        chore:config         chore/eslint-rule-updates       1      ✅ new branch + pushed
+my-other-repo  —                    —                              —      ✓ already clean
 ```
 
 List any push failures separately with the error message.
