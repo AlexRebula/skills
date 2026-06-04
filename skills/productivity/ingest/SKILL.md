@@ -182,8 +182,6 @@ For each wiki page that this source informs:
 
 Only touch pages where the source genuinely adds something. Do not touch pages where the connection is superficial.
 
-If a concept, person, or project is prominently featured in the source but has **no wiki page yet**, create one now using the appropriate template from `SCHEMA.md`. For private individuals, apply the Step 2.5 naming rule: use a role-based file name (`wiki/people/co-parent.md`), not the person's real name (`wiki/people/john-smith.md`).
-
 ---
 
 ## Step 6 — Update wiki/index.md
