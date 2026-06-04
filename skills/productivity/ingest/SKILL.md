@@ -42,7 +42,7 @@ Detect the source type from the path and content:
 
 **If the path is in `tasks/`:** stop. Task files are structured Asana records, not knowledge sources. Tell the user:
 
-> "Task files in `tasks/` are Asana-backed records, not ingestible sources. If you want to create a wiki page from task data, ask directly — for example: 'Create `wiki/projects/giselle-mui.md` from the tasks in `tasks/mill/giselle-mui/`' or 'Create `wiki/concepts/foo.md` from the notes in this task file.' The agent knows both schemas and can synthesise freely."
+> "Task files in `tasks/` are Asana-backed records, not ingestible sources. If you want to create a wiki page from task data, ask directly — for example: 'Create `wiki/projects/my-project.md` from the tasks in `tasks/mill/my-project/`' or 'Create `wiki/concepts/foo.md` from the notes in this task file.' The agent knows both schemas and can synthesise freely."
 
 **If the path is in `wiki/`:** stop. Wiki pages are already synthesised content — re-ingesting them would create a source page about a wiki page, which is circular. If you want to deepen an existing page, edit it directly or use `/ingest <original-raw-source> --deep`.
 

@@ -52,8 +52,8 @@ Produce a **dirty state table**:
 
 | Repo         | Branch                        | Dirty files | Status         |
 | ------------ | ----------------------------- | ----------- | -------------- |
-| giselle-mui  | chore/two-phase-scaffold-gate | 7           | ⚠️ uncommitted |
-| first-branch | main                          | 0           | ✅ clean       |
+| my-app       | chore/update-config           | 7           | ⚠️ uncommitted |
+| my-lib       | main                          | 0           | ✅ clean       |
 | ...          | ...                           | ...         | ...            |
 
 Repos with zero dirty files → ✅ Clean.

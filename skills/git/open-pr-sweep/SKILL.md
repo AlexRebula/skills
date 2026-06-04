@@ -7,7 +7,7 @@ description: Discover all non-draft open pull requests across one or more GitHub
 
 ## Arguments
 
-`/open-pr-sweep` — discovers PRs across repos owned by the authenticated GitHub user. `/open-pr-sweep --orgs <org1>,<org2>` — filters to the specified GitHub organisations or users (comma-separated, e.g. `--orgs LittleBranches,AlexRebula`).
+`/open-pr-sweep` — discovers PRs across repos owned by the authenticated GitHub user. `/open-pr-sweep --orgs <org1>,<org2>` — filters to the specified GitHub organisations or users (comma-separated, e.g. `--orgs MyOrg,my-username`).
 
 Discover all repos (capped at 200 per owner):
 
@@ -16,9 +16,9 @@ Discover all repos (capped at 200 per owner):
 gh repo list --limit 200 --json nameWithOwner,isPrivate --jq '.[] | .nameWithOwner'
 
 # With --orgs org1,org2: run for each specified org
-# e.g. --orgs LittleBranches,AlexRebula
-gh repo list LittleBranches --limit 200 --json nameWithOwner --jq '.[] | .nameWithOwner'
-gh repo list AlexRebula --limit 200 --json nameWithOwner --jq '.[] | .nameWithOwner'
+# e.g. --orgs MyOrg,my-username
+gh repo list MyOrg --limit 200 --json nameWithOwner --jq '.[] | .nameWithOwner'
+gh repo list my-username --limit 200 --json nameWithOwner --jq '.[] | .nameWithOwner'
 ```
 
 For each repo returned:

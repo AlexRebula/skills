@@ -52,9 +52,9 @@ For each selected dirty repo:
 
    > "I will create the following snapshot commits (OSS §2.1 branch names):
    >
-   > - [giselle-mui] docs/20260523-dashboard-plan (3 files: docs/dashboard-components-plan.md, ...)
-   > - [giselle-mui] chore/20260523-ci-config (2 files: ci.yml, vitest.config.ts)
-   > - [giselle-ui] docs/20260523-roadmap-updates (2 files: docs/roadmap.md, src/styles.css)
+   > - [my-app] docs/20260523-dashboard-plan (3 files: docs/dashboard-components-plan.md, ...)
+   > - [my-app] chore/20260523-ci-config (2 files: ci.yml, vitest.config.ts)
+   > - [my-lib] docs/20260523-roadmap-updates (2 files: docs/roadmap.md, src/styles.css)
    >
    > Proceed with local commits? [y/n/edit]"
 
@@ -91,10 +91,10 @@ If an open PR exists:
 
 1. **Update the PR description.** Delegate to the correct PR skill with an `update` flag — do not construct the body inline. Use the same routing table as T4:
 
-   | Repo owner         | Skill to invoke                                   |
-   | ------------------ | ------------------------------------------------- |
-   | `LittleBranches/*` | `/create-giselle-pr <branch> skip-hygiene update` |
-   | All other repos    | `/create-pr <branch> skip-hygiene update`         |
+   | Repo               | Skill to invoke                                           |
+   | ------------------ | --------------------------------------------------------- |
+   | Custom org variant | Your org-specific PR creation skill (if one exists)       |
+   | Default            | `/create-pr <branch> skip-hygiene update`                 |
 
 2. If the delegated skill does not yet support an `update` flag, fall back to reading `.github/pull_request_template.md`, filling every section with the current branch state, and running:
 
@@ -118,16 +118,16 @@ If yes, for each pushed branch, **delegate to the correct PR skill** — do not 
 
 **Routing rule:**
 
-| Repo owner         | Skill to invoke                            |
-| ------------------ | ------------------------------------------ |
-| `LittleBranches/*` | `/create-giselle-pr <branch> skip-hygiene` |
-| All other repos    | `/create-pr <branch> skip-hygiene`         |
+| Repo               | Skill to invoke                                     |
+| ------------------ | --------------------------------------------------- |
+| Custom org variant | Your org-specific PR creation skill (if one exists) |
+| Default            | `/create-pr <branch> skip-hygiene`                  |
 
 The `skip-hygiene` flag is always passed — T2/T3 already created and pushed the branch cleanly; there is nothing to re-check.
 
-**Do not** call `gh pr create --body` or `gh pr create --body-file` directly in this step. Those bypass the repo's pull request template and produce non-conforming PR descriptions. The `create-pr` and `create-giselle-pr` skills read the template from `.github/pull_request_template.md`, fill every section, and open the PR correctly.
+**Do not** call `gh pr create --body` or `gh pr create --body-file` directly in this step. Those bypass the repo's pull request template and produce non-conforming PR descriptions. The `create-pr` skill (or your org's custom variant) reads the template from `.github/pull_request_template.md`, fills every section, and opens the PR correctly.
 
-PRs are created as **drafts**. The `/create-pr` and `/create-giselle-pr` skills must pass `--draft` to `gh pr create`. If for any reason the delegated skill does not pass `--draft`, append `--draft` to the `gh pr create` call explicitly. A WIP-sweep PR must never be opened as a ready-for-review PR.
+PRs are created as **drafts**. The delegated PR creation skill must pass `--draft` to `gh pr create`. If for any reason it does not, append `--draft` explicitly. A WIP-sweep PR must never be opened as a ready-for-review PR.
 
 ---
 
@@ -135,5 +135,5 @@ PRs are created as **drafts**. The `/create-pr` and `/create-giselle-pr` skills 
 
 | Date | What changed | Why |
 | --- | --- | --- |
-| 2026-05-30 | T4 now delegates PR creation to `/create-giselle-pr` (LittleBranches repos) or `/create-pr` (other repos) instead of constructing `--body` inline | `gh pr create --body` bypasses `.github/pull_request_template.md`; delegating fixes non-conforming PR descriptions |
+| 2026-05-30 | T4 now delegates PR creation to your project's PR creation skill (or `/create-pr` as default) instead of constructing `--body` inline | `gh pr create --body` bypasses `.github/pull_request_template.md`; delegating fixes non-conforming PR descriptions |
 | 2026-05-30 | T3 now requires a PR description update whenever a push lands on a branch that already has an open PR | Stale PR descriptions accumulate silently when multiple commits are pushed; every push must reflect the current branch state |
