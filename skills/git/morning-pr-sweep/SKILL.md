@@ -246,7 +246,7 @@ Before each commit, run the repo's quality gate. Discover it first:
 If your project has a smart quality gate command that skips unchanged files, prefer it:
 
 ```sh
-npm run check:verify:smart  # or your project's equivalent
+npm run check:verify:smart # or your project's equivalent
 ```
 
 Otherwise, for Node/npm repos:

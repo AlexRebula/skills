@@ -62,6 +62,7 @@ From the file content, extract:
 Generate a slug from the title: lowercase, spaces → hyphens, strip non-word chars, max 60 chars.
 
 **Slug privacy rule:** The slug becomes a file name committed to git and visible in PR diffs, commit messages, and GitHub metadata. It must never contain the personal name of a private individual (a real person who is not a public figure). Use topic-based or role-based slugs instead:
+
 - ✗ `firstname-surname-topic` → ✓ `topic-analysis-2026`
 - ✗ `name-document-type` → ✓ `document-type-2026`
 - ✗ `email-from-name` → ✓ `correspondence-analysis-2026`
@@ -74,13 +75,13 @@ Public figures (authors, researchers, public business owners) may appear in slug
 
 **Before writing any file**, scan the source content for personally identifiable information (PII) belonging to private individuals:
 
-| PII type | Examples |
-|---|---|
-| Full names of private individuals | family members, contacts, colleagues, neighbours |
-| Contact details | email addresses, phone numbers, physical addresses |
-| ID / document numbers | passport numbers, ID numbers, case reference numbers |
-| Financial specifics | exact amounts tied to a named person |
-| Sensitive personal content | accusations, legal or medical references, dispute details |
+| PII type                          | Examples                                                  |
+| --------------------------------- | --------------------------------------------------------- |
+| Full names of private individuals | family members, contacts, colleagues, neighbours          |
+| Contact details                   | email addresses, phone numbers, physical addresses        |
+| ID / document numbers             | passport numbers, ID numbers, case reference numbers      |
+| Financial specifics               | exact amounts tied to a named person                      |
+| Sensitive personal content        | accusations, legal or medical references, dispute details |
 
 **Replacement rules — apply before writing any wiki page, index entry, log entry, or file name:**
 
@@ -96,6 +97,7 @@ Public figures (authors, researchers, public business owners) may appear in slug
 4. **Raw source files** (`raw/emails/`, `raw/sessions/`) — these may retain full verbatim content because they are the archival record. But their **file names and folder names** must follow the slug privacy rule above.
 
 **If the source contains significant PII, tell the user before writing:**
+
 > "This source contains personal information about [role, e.g. 'a family member']. I'll use role-based identifiers in all wiki pages and file names. The raw source file will retain the original content verbatim. Does that work, or would you like me to redact the raw file too?"
 
 Wait for confirmation only if the PII is significant (names + sensitive context together). For minor incidental mentions (e.g. a byline on an article), apply the replacement silently and note it in the Step 8 report.
@@ -139,8 +141,8 @@ Write `wiki/sources/<slug>.md` using the source page template from `SCHEMA.md`:
 ---
 type: source
 source_type: <detected type>
-title: "<title>"
-author: "<author>"
+title: '<title>'
+author: '<author>'
 url: null # or the URL string if one exists
 date_published: <YYYY-MM-DD or null>
 date_ingested: <today's date>
@@ -158,6 +160,7 @@ Content (in order):
 3. **Key takeaways** — 3–7 bullet points (refined from Step 3 discussion)
 4. **Quotes** — 1–3 verbatim excerpts worth keeping (optional; omit if none stand out)
 5. **Related pages** — wikilinks to any existing `wiki/` pages this source informs (check `wiki/index.md`)
+
 - If `--deep`: add `deep_dive: wiki/deep/<slug>-deep.md` to frontmatter and append `→ [[<slug>-deep|Deep dive]]` at the bottom
 
 ---
@@ -167,11 +170,13 @@ Content (in order):
 For each wiki page that this source informs:
 
 **If the page already exists:**
+
 1. Read the page
 2. Check whether the insight or source link is already present — if so, skip; do not add duplicates
 3. If genuinely new content, add or update a sentence/bullet and add the source link if missing
 
 **If the page does not exist yet** and the concept, person, or project is prominently featured:
+
 1. Create it now using the appropriate template from `SCHEMA.md`
 2. For private individuals, apply the Step 2.5 naming rule: use a role-based file name (`wiki/people/family-member.md`), not the person's real name
 
@@ -211,7 +216,7 @@ Write `wiki/deep/<slug>-deep.md`. This is the long-form companion to the short s
 ---
 type: deep-dive
 source: wiki/sources/<slug>.md
-title: "<title> — Deep Dive"
+title: '<title> — Deep Dive'
 updated: <today's date>
 ---
 ```

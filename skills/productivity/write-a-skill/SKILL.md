@@ -115,3 +115,4 @@ After drafting, verify:
 - [ ] Consistent terminology
 - [ ] Concrete examples included
 - [ ] References one level deep
+- [ ] No tool-specific references (VS Code, Claude Code, Copilot, Cursor, etc.) — template variables described as "replace with…" only; any step that is genuinely platform-specific includes a generic fallback

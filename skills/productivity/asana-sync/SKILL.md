@@ -23,7 +23,7 @@ If yes, run steps 9a–9g below.
 
 Check in order:
 
-1. The VS Code workspace folders — search for `.asana-config.json` in any open workspace root.
+1. The workspace folders — search for `.asana-config.json` in any open workspace root.
 2. `dependency-chain.md` (if already loaded in context) — scan for any path reference to `.asana-config.json`.
 3. If still not found, ask:
    > "Do you have an `.asana-config.json` file? Provide the full path, or type 'none' to set up Asana for the first time."
