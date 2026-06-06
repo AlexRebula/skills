@@ -9,8 +9,41 @@ Ingest a raw source into the wiki at `{{WIKI_ROOT}}`.
 
 - `/ingest <path>` — path to the raw source file (absolute or relative to wiki root). Required. Ask if omitted.
 - `/ingest <path> --deep` — also write a long-form deep dive at `wiki/deep/<slug>-deep.md` after the short source page.
+- `/ingest <youtube-url>` — if the argument is a YouTube URL (or no path is given but a YouTube tab is open), fetch the transcript from the browser, save it as a raw file, then ingest it. See **YouTube transcript flow** below.
 
 If `--deep` is passed and a source page for this file already exists, locate the existing `wiki/sources/<slug>.md` by matching its `raw_path`, read its frontmatter to recover `<slug>` and `<title>`, then skip Steps 1–7 and go straight to **Step D**.
+
+---
+
+## YouTube transcript flow
+
+When the source is a YouTube video (URL provided, or user says "grab transcript of this video"):
+
+1. **Get the URL** — from the argument, or call `tabs_context_mcp` to find the active YouTube tab.
+2. **Fetch the transcript** — use browser automation (open the "More actions" menu below the video → the transcript panel opens → extract text via `get_page_text`).
+3. **Determine the save path** using this structure:
+   ```
+   raw/transcripts/youtube/<topic>/<author-slug>/<video-slug>.md
+   ```
+   - `<topic>` — infer from the video content (e.g. `ai`, `productivity`, `business`). Reuse an existing folder under `raw/transcripts/youtube/` if one matches; create a new one if not.
+   - `<author-slug>` — slugify the YouTube channel name (lowercase, spaces → hyphens).
+   - `<video-slug>` — slugify the video title (max 60 chars).
+4. **Write the raw file** with this header:
+   ```markdown
+   # <Video Title>
+
+   URL: <youtube-url>
+   Author: <channel name>
+   Date: <publish date or today>
+   Duration: <duration>
+
+   ---
+
+   ## Transcript
+
+   <transcript text with timestamps>
+   ```
+5. **Continue from Step 0** of the normal ingest flow using the saved path as `<path>`.
 
 ---
 
