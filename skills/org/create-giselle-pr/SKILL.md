@@ -74,6 +74,33 @@ git log ${DEFAULT_BRANCH}..<branch> --oneline
 
 Note every commit on the branch.
 
+### Step 1b — Verify the branch is not stacked on another open PR
+
+The single most common snowball trigger is a branch cut from another branch that is
+still in review: the child can't merge until the parent does, and review debt compounds.
+
+```sh
+git fetch origin ${DEFAULT_BRANCH} --quiet
+# Commits unique to this branch (not yet on the base):
+git log --oneline origin/${DEFAULT_BRANCH}..<branch>
+# Heads of all other open PRs:
+gh pr list --state open --json number,headRefName,headRefOid
+```
+
+Compare: if any open PR's `headRefOid` appears in the `git log origin/${DEFAULT_BRANCH}..<branch>`
+output, this branch is **stacked** on that PR's branch.
+
+**If stacked — stop and surface it:**
+
+> "This branch is stacked on `<other-branch>` (PR #<N>), which hasn't merged yet.
+> Stacking is the fastest path to a PR snowball. Options:
+> (a) merge PR #<N> first, then rebase this branch onto `${DEFAULT_BRANCH}`;
+> (b) if the dependency isn't real, rebase this branch directly onto `${DEFAULT_BRANCH}` now."
+
+Do not create the PR until the branch is based on `${DEFAULT_BRANCH}`, unless the user
+explicitly accepts the stacked dependency. See `raw/reference/pr-snowball-mitigation.md`
+(guardrails 1 & 3).
+
 ### Step 2 — Verify every commit belongs on this branch
 
 Read the branch prefix to determine the stated purpose:
@@ -153,6 +180,11 @@ If no template exists, use this fallback and fill it completely:
 
 <link to roadmap entry, GitHub issue, or conversation context>
 
+## Mergeable bar
+
+<the done condition, agreed before review opens — what must be true to merge, and which
+review threads are blocking vs tracked-deferred vs won't-fix. Reviewers apply THIS bar.>
+
 ## Type of change
 
 - [ ] New feature
@@ -175,6 +207,13 @@ If no template exists, use this fallback and fill it completely:
 ```
 
 **PR title format:** `<type>(<scope>): <short description>` — mirrors conventional commits.
+
+**The `## Mergeable bar` section is mandatory and must be filled before the PR is opened.**
+If a `.github/pull_request_template.md` exists but has no equivalent section, append the
+Mergeable bar block above to the body. A PR with no stated done-condition is the root cause
+of review escalation — threads multiply with no exit condition. Do not open the PR without
+it, unless the user explicitly waives the requirement. See
+`raw/reference/pr-snowball-mitigation.md` (guardrail #4).
 
 ### Step 6 — Create the PR
 
