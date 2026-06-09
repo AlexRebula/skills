@@ -181,9 +181,26 @@ Use these formats:
 ⏭️ Valid but deferred. <why it cannot be done in this PR>. Tracked in #<issue-number>.
 ```
 
-If a thread includes a GitHub suggested change block, explicitly accept it into the batch fix or reject it in-thread. Never ignore suggested changes silently.
+If a thread includes a GitHub suggested change block, explicitly accept it into the batch fix or reject it in-thread. Never ignore suggested changes silently. When a suggestion is present, the verdict reply must include the accept/reject declaration:
+
+```text
+✅ Valid. <one sentence confirming the issue and why it matters>. Accepting Copilot suggestion verbatim.
+
+⚠️ Partially valid. <what is right> but <what is overstated or incorrect>. Rejecting suggestion — fixing with <alternative> because <reason>.
+```
 
 If a deferred thread is valid, open the issue first, then post the `⏭️` reply with the issue link.
+
+### 5b. Record a suggestion disposition for every suggested-change thread
+
+This step is **mandatory** and runs before the Step 6 batch fix and the Step 7 SHA follow-up.
+
+For each thread that contains a GitHub suggested change block:
+
+- **Option A (Accept):** apply the exact suggested diff to the file verbatim. In the ack reply, state: "Accepting Copilot suggestion verbatim."
+- **Option B (Reject):** do NOT apply the suggestion. In the ack reply, state why: "Rejecting suggestion — fixing with [alternative] because [reason]."
+- Never write a custom fix for a thread that has a suggestion without first recording Option A or B.
+- Do not proceed to the SHA follow-up reply for a thread until its suggestion disposition is recorded.
 
 ### 6. Fix all valid items in one batch
 
