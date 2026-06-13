@@ -246,7 +246,7 @@ Extract the target repo from the issue body (the `Owner/repo` value named in the
 
 **2. Apply labels**
 
-The repo-name label is the target repo's name in `owner-repo` format (e.g. `AlexRebula/skills` → label `AlexRebula/skills`). Apply both labels in one command:
+The repo-name label is the target repo's full name (e.g. `owner/repo` → label `owner/repo`). Apply both labels in one command:
 
 ```sh
 gh issue edit <issue-number> \
