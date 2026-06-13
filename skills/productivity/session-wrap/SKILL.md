@@ -259,6 +259,7 @@ If the label does not exist in the current repo, note it and skip — do not cre
 **3. Create Asana task**
 
 Read `_config/asana-github-issues.json` (relative to the wiki repo root) to find:
+- `asana.workspace` — the Asana workspace name
 - `asana.projectGid` — the Asana project GID
 - The `sectionGid` for the target repo under `repos[]`
 
@@ -268,7 +269,7 @@ Create the task using the Asana MCP tool:
 
 ```
 create_tasks:
-  workspace: mill
+  workspace: <asana.workspace from config>
   name: "<issue title>"
   notes: "<issue URL>\n\n<first paragraph of issue body>"
   projects: ["<projectGid>"]
