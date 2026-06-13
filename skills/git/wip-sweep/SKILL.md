@@ -131,9 +131,20 @@ PRs are created as **drafts**. The delegated PR creation skill must pass `--draf
 
 ---
 
+## ⛔ Non-negotiable invariant — T4
+
+**NEVER call `gh pr create` directly in T4. Not even once. Not even for "simple" PRs.**
+
+The only permitted action is invoking `/create-pr <branch> skip-hygiene` as a skill. That skill reads `.github/pull_request_template.md`, fills every section, and creates the PR correctly. Calling `gh pr create` inline bypasses the template and produces non-conforming PR descriptions.
+
+If `/create-pr` is unavailable or broken, stop and tell the user rather than falling back to an inline `gh pr create` call.
+
+---
+
 ## Changelog
 
 | Date | What changed | Why |
 | --- | --- | --- |
 | 2026-05-30 | T4 now delegates PR creation to your project's PR creation skill (or `/create-pr` as default) instead of constructing `--body` inline | `gh pr create --body` bypasses `.github/pull_request_template.md`; delegating fixes non-conforming PR descriptions |
 | 2026-05-30 | T3 now requires a PR description update whenever a push lands on a branch that already has an open PR | Stale PR descriptions accumulate silently when multiple commits are pushed; every push must reflect the current branch state |
+| 2026-06-13 | Added ⛔ non-negotiable block prohibiting inline `gh pr create` in T4 | Prose-level prohibition was ignored; caused non-conforming PR descriptions |
