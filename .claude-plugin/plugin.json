@@ -20,6 +20,7 @@
     "./skills/git/create-pr",
     "./skills/git/morning-pr-sweep",
     "./skills/git/open-pr-sweep",
+    "./skills/git/query-issues",
     "./skills/git/repo-status",
     "./skills/git/respond-pr-review",
     "./skills/git/review-pr",
