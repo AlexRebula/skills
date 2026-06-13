@@ -78,9 +78,12 @@ Before proceeding, print this table with real status values:
 | OSS standards — public  | ✅ accessible / ❌ unreachable              |
 | OSS standards — private | ✅ authenticated / ⚠️ not authenticated     |
 | AlexRebula skills       | ✅ N skills on disk / ⚠️ N expected missing |
+| Active model            | `<model-id>` (from system context)          |
 | Session context budget  | ~N% used · ~N% available                    |
 
 **Skills check:** List `.prompt.md` files in `{{AI_ROOT}}\Agents\Prompts\` and compare against `_index.md` in the same folder. Report count only — do not load the skill files.
+
+**Active model:** Read the model name from the system context (the environment block injected at session start states "You are powered by the model named X"). Report the exact model ID. If the system block is absent or illegible, write `⚠️ model unknown`. This is the session-start model-detection banner — it surfaces any config-level downgrade before work begins. Mid-session compaction is handled by the wrap trigger rule below.
 
 **Context budget:** Estimate the approximate % of the model's context window already consumed by system instructions, workspace info, copilot instructions, and any prior conversation. State plainly — e.g. `~20% used, ~80% available`.
 
