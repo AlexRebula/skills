@@ -219,6 +219,79 @@ Show this checklist to the user before writing the wrap document. The user can c
 
 ---
 
+## Step 2c — Cross-repo issue routing (automatic)
+
+Run immediately after the evidence checklist is shown. Skip silently if GITHUB WRITES contains no issues.
+
+### Trigger rule
+
+An issue is **cross-repo** if its body contains any of the following signals:
+- The phrase `This is a **handover issue**`
+- A line like `> ⚠️ This is a **handover issue**`
+- A phrase like `change must be made in \`Owner/repo\``
+- A phrase like `the work must happen in \`Owner/repo\``
+- A `**Target repo:**` field naming a different repo
+
+If the issue body contains none of these signals, it is a **same-repo issue** — skip it.
+
+### For each cross-repo issue
+
+**1. Determine the current repo and target repo**
+
+```sh
+CURRENT_REPO=$(gh repo view --json nameWithOwner --jq '.nameWithOwner')
+```
+
+Extract the target repo from the issue body (the `Owner/repo` value named in the signal phrase above).
+
+**2. Apply labels**
+
+The repo-name label is the target repo's full name (e.g. `owner/repo` → label `owner/repo`). Apply both labels in one command:
+
+```sh
+gh issue edit <issue-number> \
+  --repo "$CURRENT_REPO" \
+  --add-label "handover,<target-repo-name>"
+```
+
+If the label does not exist in the current repo, note it and skip — do not create labels mid-wrap.
+
+**3. Create Asana task**
+
+Read `_config/asana-github-issues.json` (relative to the wiki repo root) to find:
+- `asana.workspace` — the Asana workspace name
+- `asana.projectGid` — the Asana project GID
+- The `sectionGid` for the target repo under `repos[]`
+
+If the config file is not found or the target repo has no entry, log a warning and skip the Asana step for that issue.
+
+Create the task using the Asana MCP tool:
+
+```
+create_tasks:
+  workspace: <asana.workspace from config>
+  name: "<issue title>"
+  notes: "<issue URL>\n\n<first paragraph of issue body>"
+  projects: ["<projectGid>"]
+  memberships: [{ project: "<projectGid>", section: "<sectionGid>" }]
+```
+
+### Output
+
+After processing, print a routing report:
+
+```
+CROSS-REPO ROUTING
+─────────────────────────────────────────────────────────
+Issue #NN  →  handover + <owner>/<target-repo>  ✅ labels applied  ✅ Asana task created
+Issue #NN  →  same-repo (<owner>/<current-repo>)  — skipped
+─────────────────────────────────────────────────────────
+```
+
+If no issues were created this session, print: `Cross-repo routing: no issues created this session — skipped`
+
+---
+
 ## Step 3 — Write the wrap document
 
 Be concise — this is a continuity pointer for agents, not a narrative. Do not duplicate content already captured in commits, PRs, issues, or ADRs; reference by path or URL instead.
