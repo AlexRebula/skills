@@ -71,12 +71,12 @@ Detect the source type from the path and content:
 | `raw/**/github-issues/`         | `github-issue`             |
 | `raw/morning-briefs/`           | skip — session artifacts   |
 | `raw/sessions/`                 | skip — session artifacts   |
-| `tasks/`                        | skip — Asana task files    |
+| `tasks/`                        | skip — task manager files  |
 | `wiki/`                         | skip — already a wiki page |
 
-**If the path is in `tasks/`:** stop. Task files are structured Asana records, not knowledge sources. Tell the user:
+**If the path is in `tasks/`:** stop. Task files are structured task-manager records, not knowledge sources. Tell the user:
 
-> "Task files in `tasks/` are Asana-backed records, not ingestible sources. If you want to create a wiki page from task data, ask directly — for example: 'Create `wiki/projects/my-project.md` from the tasks in `tasks/mill/my-project/`' or 'Create `wiki/concepts/foo.md` from the notes in this task file.' The agent knows both schemas and can synthesise freely."
+> "Task files in `tasks/` are task-manager records, not ingestible sources. If you want to create a wiki page from task data, ask directly — for example: 'Create `wiki/projects/my-project.md` from the tasks in `tasks/my-project/`' or 'Create `wiki/concepts/foo.md` from the notes in this task file.' The agent knows both schemas and can synthesise freely."
 
 **If the path is in `wiki/`:** stop. Wiki pages are already synthesised content — re-ingesting them would create a source page about a wiki page, which is circular. If you want to deepen an existing page, edit it directly or use `/ingest <original-raw-source> --deep`.
 
@@ -133,7 +133,7 @@ Public figures (authors, researchers, public business owners) may appear in slug
 
 **Replacement rules — apply before writing any wiki page, index entry, log entry, or file name:**
 
-1. **User's own data** — replace with `{{VAULT_KEY}}` placeholders matching the keys in `vault.md` (e.g. `{{FULL_LEGAL_NAME}}`). The vault is gitignored; placeholders are safe to commit.
+1. **User's own data** — replace with `{{VAULT_KEY}}` placeholders matching the keys in your gitignored secrets file (e.g. `vault.md` → `{{FULL_LEGAL_NAME}}`). Placeholders are safe to commit; the secrets file is not.
 
 2. **Third-party private individuals** — replace names with their role relative to the user. Be consistent across all files:
    - Invent the role label once, use it everywhere for that person
@@ -142,7 +142,7 @@ Public figures (authors, researchers, public business owners) may appear in slug
 
 3. **Sensitive numbers and references** — replace with a descriptive placeholder: `[PASSPORT NUMBER]`, `[CASE REF]`, `[DEBT AMOUNT]`. Do not use `{{VAULT_KEY}}` style for third-party data — these are redactions, not resolvable variables.
 
-4. **Raw source files** (`raw/emails/`, `raw/sessions/`) — these may retain full verbatim content because they are the archival record. But their **file names and folder names** must follow the slug privacy rule above.
+4. **Raw source files** (e.g. `raw/emails/`, `raw/sessions/`) — these may retain full verbatim content because they are the archival record. But their **file names and folder names** must follow the slug privacy rule above.
 
 **If the source contains significant PII, tell the user before writing:**
 
