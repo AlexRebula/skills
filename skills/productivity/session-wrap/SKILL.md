@@ -4,6 +4,7 @@ description: Write a session wrap document summarising completed work, open bloc
 argument-hint: 'Optional: focus hint for the next session (e.g. "continue stat-card TDD")'
 ---
 
+
 # Session Wrap
 
 > **Prerequisites:** This skill requires two template variables defined in your environment (e.g. `settings.json` `env` block, `.env` file, or shell profile):
@@ -191,8 +192,10 @@ GITHUB WRITES  (scan for issues_create, pull_request_create, gh api POST, mcp_gi
   [none] if no GitHub writes were made
 
 FILES EDITED  (scan for replace_string_in_file, multi_replace_string_in_file, create_file, write_file)
-  - path/to/file.md
+  - path/to/file.md  ← repo-relative only (strip any absolute prefix up to and including the repo root folder)
   [none] if no files were edited
+
+  Path normalisation rule: if a scanned path is absolute (starts with `/`, `C:\`, `C:/`, or any drive letter), strip everything up to and including the repository root folder name. Record only the portion from the repo root downward (e.g. `wiki/sources/foo.md` not the full absolute path). If the repo root cannot be determined, replace the home-directory prefix with `~`.
 
 USER DECISIONS  (scan for agreement/confirmation signals: "confirmed", "agreed", "split", "let's do", "AFK", "yes", "no, don't", "that's right")
   - Decision text — context/consequence
@@ -245,7 +248,7 @@ In-progress and blocked items.
 
 ## Files Edited
 
-Paths only — no file content.
+Paths only — no file content. All paths must be repo-relative (e.g. `wiki/sources/foo.md`). Never write absolute paths or paths containing a local username.
 
 ## Decisions
 
@@ -416,6 +419,18 @@ wip-sweep's T2/T3/T4 tier gates are where the user reviews branch names and appr
 ---
 
 ## ⛔ Non-negotiable invariants
+
+**0. NEVER COMMIT OR PUSH DIRECTLY TO MAIN. NOT EVEN SESSION WRAP FILES.**
+
+Session wrap files, index updates, and any other artifacts produced by this skill are not exempt from the branch + PR rule. Every change to any repo must go through a branch and a pull request — no exceptions, no matter how small or "safe" the change appears.
+
+The correct flow for committing session wrap artifacts:
+1. Create a `chore/session-wrap-YYYY-MM-DD` branch
+2. Commit the wrap file, index update, and any `→ Next` link repairs to that branch
+3. Push the branch and open a PR
+4. Do NOT merge the PR yourself — leave it for the user to merge
+
+If `/wip-sweep` is handling the commit, it will create branches via its own tier gates. Do not bypass that process.
 
 **1. THERE SHOULD BE NO SEPARATE FOLDERS WITH THE SAME DATE PREFIX — THERE SHOULD ONLY BE ONE.**
 

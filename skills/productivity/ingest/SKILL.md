@@ -63,15 +63,16 @@ Read the file at `<path>`. Do not summarise yet.
 
 Detect the source type from the path and content:
 
-| Path pattern          | `source_type`              |
-| --------------------- | -------------------------- |
-| `raw/transcripts/`    | `youtube` or `transcript`  |
-| `raw/articles/`       | `article`                  |
-| `raw/gists/`          | `gist`                     |
-| `raw/morning-briefs/` | skip — session artifacts   |
-| `raw/sessions/`       | skip — session artifacts   |
-| `tasks/`              | skip — Asana task files    |
-| `wiki/`               | skip — already a wiki page |
+| Path pattern                    | `source_type`              |
+| ------------------------------- | -------------------------- |
+| `raw/transcripts/`              | `youtube` or `transcript`  |
+| `raw/articles/`                 | `article`                  |
+| `raw/gists/`                    | `gist`                     |
+| `raw/**/github-issues/`         | `github-issue`             |
+| `raw/morning-briefs/`           | skip — session artifacts   |
+| `raw/sessions/`                 | skip — session artifacts   |
+| `tasks/`                        | skip — Asana task files    |
+| `wiki/`                         | skip — already a wiki page |
 
 **If the path is in `tasks/`:** stop. Task files are structured Asana records, not knowledge sources. Tell the user:
 
@@ -80,6 +81,20 @@ Detect the source type from the path and content:
 **If the path is in `wiki/`:** stop. Wiki pages are already synthesised content — re-ingesting them would create a source page about a wiki page, which is circular. If you want to deepen an existing page, edit it directly or use `/ingest <original-raw-source> --deep`.
 
 **If the path is in `morning-briefs/` or `sessions/`:** stop. These are session artifacts, not knowledge sources. Suggest checking `raw/transcripts/` or `raw/articles/`.
+
+---
+
+## Step 1G — Synced issue-tracker records
+
+Some repos mirror issue-tracker items (e.g. GitHub issues) into `raw/` as one markdown file per issue, with frontmatter for the issue number, source repo, labels, and state. Ingest of these is manually triggered — nothing runs on a schedule. When the source is one of these records, enrich it before writing the source page:
+
+1. **Read frontmatter** — the issue id, source repo, labels, and state.
+2. **Fetch the live issue** — pull the current title, body, and state from the issue tracker (e.g. `gh issue view <id> --repo <repo> --json title,body,state,closedAt,labels`, or the GitHub MCP `issue_read` tool — whichever the session has).
+3. **Refresh the raw file** — if the issue changed or closed since the last sync, rebuild the raw file deterministically from the live data and write it back only if the result differs. (If your repo ships a sync/refresh helper for these files, use it; otherwise update the frontmatter and body in place.)
+4. **Link related docs (optional)** — if your workflow connects issues to handover or design docs (e.g. via a shared label and a back-reference in the doc's frontmatter), find the matching doc and write a one-line summary of it.
+5. **Write the source page** — include the raw frontmatter fields as queryable metadata, the live issue body, any linked-doc summary, and a wiki-link back to the raw file (`[[raw/.../issue-NNN-...]]`). Pass your Step 3 takeaway as the summary.
+
+Then continue from Step 2 as normal — Steps 2.5 (privacy screen), 3 (takeaway discussion), 3.5 (existing-page check), and 5–8 still apply.
 
 ---
 
