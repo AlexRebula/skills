@@ -4,7 +4,6 @@ description: Write a session wrap document summarising completed work, open bloc
 argument-hint: 'Optional: focus hint for the next session (e.g. "continue stat-card TDD")'
 ---
 
-
 # Session Wrap
 
 > **Prerequisites:** This skill requires two template variables defined in your environment (e.g. `settings.json` `env` block, `.env` file, or shell profile):
@@ -17,6 +16,8 @@ argument-hint: 'Optional: focus hint for the next session (e.g. "continue stat-c
 > `{{VSCODE_TARGET_SESSION_LOG}}` is optional — used in Step 2a to recover the full transcript. If unavailable the skill degrades gracefully.
 >
 > If either `{{SESSIONS_ROOT}}` or `{{PROMPTS_ROOT}}` appears as a literal placeholder (i.e. was not substituted by your environment), invoke `/resolve-ai-paths` before continuing. It will scan for the sessions folder and return both values.
+
+> **⛔ Template variable guard:** Before running any step, check whether `{{SESSIONS_ROOT}}` is still a literal string (i.e. was not substituted). If it is, stop immediately and tell the user: `SESSIONS_ROOT is not resolved. Run /resolve-ai-paths first.` Do not proceed past this point until SESSIONS_ROOT is a real filesystem path.
 
 ---
 
