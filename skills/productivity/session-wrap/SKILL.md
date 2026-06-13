@@ -283,8 +283,8 @@ After processing, print a routing report:
 ```
 CROSS-REPO ROUTING
 ─────────────────────────────────────────────────────────
-Issue #NN  →  handover + AlexRebula/skills  ✅ labels applied  ✅ Asana task created
-Issue #NN  →  same-repo (LittleBranches/wiki)  — skipped
+Issue #NN  →  handover + <owner>/<target-repo>  ✅ labels applied  ✅ Asana task created
+Issue #NN  →  same-repo (<owner>/<current-repo>)  — skipped
 ─────────────────────────────────────────────────────────
 ```
 
