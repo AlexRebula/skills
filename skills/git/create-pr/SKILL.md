@@ -139,6 +139,26 @@ DEFAULT_BRANCH=$(gh repo view --json defaultBranchRef --jq '.defaultBranchRef.na
 
 Do not proceed to Step 5 until the user explicitly approves PR creation.
 
+### Step 4b — Skills sync check (automatic)
+
+Run immediately before building the PR description. Skip silently if no locally installed skill files are in the diff.
+
+Check the branch diff for any locally installed skill files (e.g. `.agents/skills/*/SKILL.md` or the equivalent path for your project's skill install location):
+
+```sh
+git diff main..<branch> --name-only | grep -E '\.agents/skills/.+/SKILL\.md'
+```
+
+If any skill file appears in the diff:
+
+1. Extract the skill name(s) from the path.
+2. Add a mandatory checklist item to the PR description (Step 5):
+   ```
+   - [ ] Sync `<skill-name>` changes to the canonical skills repo — generalize any project-specific references, then run `npx skills@latest update <skill-name>` to reinstall
+   ```
+3. Warn the user before creating the PR:
+   > "This PR edits a locally installed skill. The canonical skills repo must receive the same change, generalized for any project. The checklist item above is mandatory — do not merge without completing it."
+
 ### Step 5 — Build the PR description
 
 Check for an existing template:

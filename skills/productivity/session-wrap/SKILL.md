@@ -210,7 +210,8 @@ Show this checklist to the user before writing the wrap document. The user can c
 - **Topics Covered table** — every skill in SKILLS INVOKED gets a row. Completed skills are 🎯 Primary or 🔀 Detour; proposed-but-not-executed skills are ❓ Unanswered.
 - **Files Edited section** — populated from FILES EDITED only.
 - **Decisions section** — populated from USER DECISIONS only.
-- **Pending Tasks section** — each task must reference its source: which skill produced it, which user decision shaped it, which issue number it targets.
+- **Pending Tasks section** — each task must reference its source: which skill produced it, which user decision shaped it, which issue number it targets. **Do not list a task for a GitHub issue that was closed this session.** If genuine follow-up remains after closing (e.g. an operational step), state it as a concrete action without referencing the closed issue number as if it is still open.
+- **Skills sync check (automatic):** Scan FILES EDITED for any path matching the pattern for locally installed skill files (e.g. `.agents/skills/*/SKILL.md`). For each match, automatically add a Pending Task: "Sync `<skill-name>` changes to the canonical skills repo — generalize any project-specific references, then run `npx skills@latest update <skill-name>` to reinstall." This task is mandatory and must appear in Pending Tasks even if the session otherwise feels complete.
 - **Current State section** — references GITHUB WRITES to state what was actually created/updated.
 
 **If `{{VSCODE_TARGET_SESSION_LOG}}` is unavailable** (path not resolved or not provided by the platform), produce the checklist from context alone and add this note to both the checklist and the wrap document:
