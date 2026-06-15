@@ -3,6 +3,8 @@
 General workflow tools, not code-specific.
 
 - **[asana-sync](./asana-sync/SKILL.md)** — Opt-in Asana sync for morning briefs: locate or bootstrap `.asana-config.json`, create the Morning Briefs section if missing, seed tasks with full metadata, post a Status Update, and log results back to the brief file.
+- **[capture](./capture/SKILL.md)** — Capture freeform text mid-session: routes to the correct Asana content project, creates a real task, writes a local markdown file, and commits it. Asks for confirmation when routing is ambiguous.
+- **[sync](./sync/SKILL.md)** — Bidirectional Asana ↔ local sync: pulls new/updated tasks from Asana, pushes local changes, resolves conflicts (local wins), and commits. Idempotent.
 - **[caveman](./caveman/SKILL.md)** — Ultra-compressed communication mode. Cuts token usage ~75% by dropping filler while keeping full technical accuracy.
 - **[check-prior-work](./check-prior-work/SKILL.md)** — Scans context for a `<conversation-summary>` block and extracts earlier session work for continuity.
 - **[grill-me](./grill-me/SKILL.md)** — Get relentlessly interviewed about a plan or design until every branch of the decision tree is resolved.
