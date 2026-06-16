@@ -6,3 +6,5 @@ node_modules/
 .agents/
 
 .obsidian/
+.sync-state.json
+.sync-state.json
