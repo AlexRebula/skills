@@ -43,11 +43,17 @@ When the source is a YouTube video (URL provided, or user says "grab transcript 
 
    <transcript text with timestamps>
    ```
-5. **Continue from Step 0** of the normal ingest flow using the saved path as `<path>`.
+5. **Verify the raw file exists on disk** — run `ls <save-path>` and confirm the file is present before proceeding. Do not continue if the write failed.
+
+   > **BLOCKING GATE:** The raw file must be written and verified before any further steps run. Do not read wiki/index.md, discuss takeaways, or write any wiki page until this check passes.
+
+6. **Continue from Step 0** of the normal ingest flow using the saved path as `<path>`.
 
 ---
 
 ## Step 0 — Orient
+
+> **If arriving from the YouTube transcript flow:** the raw file must already exist on disk before this step runs. If it does not, return to Step 5 of that flow and write it first.
 
 Read these files before doing anything else:
 
