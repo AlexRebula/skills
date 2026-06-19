@@ -11,7 +11,7 @@ Ingest a raw source into the wiki at `{{WIKI_ROOT}}`.
 - `/ingest <path> --deep` — also write a long-form deep dive at `wiki/deep/<slug>-deep.md` after the short source page.
 - `/ingest <youtube-url>` — if the argument is a YouTube URL (or no path is given but a YouTube tab is open), fetch the transcript from the browser, save it as a raw file, then ingest it. See **YouTube transcript flow** below.
 
-If `--deep` is passed and a source page for this file already exists, locate the existing `wiki/sources/<slug>.md` by matching its `raw_path`, read its frontmatter to recover `<slug>` and `<title>`, then skip Steps 1–7 and go straight to **Step D**.
+If `--deep` is passed and a source page for this file already exists, locate the existing `wiki/sources/<group>/<slug>.md` by matching its `raw_path`, read its frontmatter to recover `<slug>` and `<title>`, then skip Steps 1–7 and go straight to **Step D**.
 
 ---
 
@@ -172,24 +172,36 @@ Wait for confirmation before writing. If the user says "go" or "looks good", pro
 
 ## Step 3.5 — Check for existing source page
 
-Before writing anything, grep `wiki/sources/` for any file whose frontmatter contains `raw_path: <path>` matching the current file's path.
+Before writing anything, recursively grep `wiki/sources/` for any file whose frontmatter contains `raw_path: <path>` matching the current file's path (e.g. `grep -r "raw_path: <path>" wiki/sources/`).
 
 **If a match is found:**
 
 1. Read the existing source page.
 2. Tell the user:
-   > "A source page already exists for this file: `wiki/sources/<existing-slug>.md` (ingested <date_ingested>). The raw file has changed — do you want to **update** (merge new takeaways into the existing page) or **replace** (full rewrite, discarding the old page)?"
+   > "A source page already exists for this file: `wiki/sources/<group>/<existing-slug>.md` (ingested <date_ingested>). The raw file has changed — do you want to **update** (merge new takeaways into the existing page) or **replace** (full rewrite, discarding the old page)?"
 3. Wait for the user's choice:
    - **Update** — read both the existing page and the updated raw source; produce a diff of key takeaways and summary; apply only the changed/new content; bump `updated:` in frontmatter; do not add a duplicate line to `wiki/index.md` or `wiki/log.md` — append `## [YYYY-MM-DD] update | <title> (<source_type>)` to the log instead.
    - **Replace** — proceed with Step 4 as a full rewrite; the existing page is overwritten; existing index line is updated in place (not duplicated); append `## [YYYY-MM-DD] re-ingest | <title> (<source_type>)` to the log.
 
-**If no match is found:** proceed to Step 4 as normal.
+**If no match is found:** proceed to Step 3.7 as normal.
+
+---
+
+## Step 3.7 — Determine the source group folder
+
+Before writing the source page, determine which group subfolder under `wiki/sources/` it belongs in:
+
+1. Run `ls wiki/sources/` to list existing group folders.
+2. Based on the source content (topic, author, domain), pick the best-matching folder.
+3. If no existing folder fits, propose a new folder name (lowercase, hyphens, 1–2 words) and ask the user to confirm before creating it.
+
+The resolved `<group>` is used in all subsequent steps wherever `wiki/sources/<group>/<slug>.md` appears.
 
 ---
 
 ## Step 4 — Write the source page
 
-Write `wiki/sources/<slug>.md` using the source page template from `SCHEMA.md`:
+Write `wiki/sources/<group>/<slug>.md` using the source page template from `SCHEMA.md`:
 
 ```yaml
 ---
@@ -208,7 +220,7 @@ updated: <today's date>
 Content (in order):
 
 1. **Source link** — first line after the H1, always required:
-   - If `raw_path` is set: `→ [Raw source](../../<raw_path>)`
+   - If `raw_path` is set: `→ [Raw source](../../../<raw_path>)`
    - If `raw_path` is null but `url` is set: `→ [Original source](<url>)`
 2. **Summary** — one paragraph: what this source is and why it matters
 3. **Key takeaways** — 3–7 bullet points (refined from Step 3 discussion)
@@ -243,7 +255,7 @@ Only touch pages where the source genuinely adds something. Do not touch pages w
 **First-time ingest:** add a line under `## Sources`:
 
 ```
-- [Title](wiki/sources/<slug>.md) — one-line summary
+- [Title](wiki/sources/<group>/<slug>.md) — one-line summary
 ```
 
 **Re-ingest (update or replace):** find the existing line and update it in place — do not add a duplicate.
@@ -269,7 +281,7 @@ Write `wiki/deep/<slug>-deep.md`. This is the long-form companion to the short s
 ```yaml
 ---
 type: deep-dive
-source: wiki/sources/<slug>.md
+source: wiki/sources/<group>/<slug>.md
 title: "<title> — Deep Dive"
 updated: <today's date>
 ---
@@ -307,7 +319,7 @@ Close with a `## Open Questions` section: 3–5 questions this source raises tha
 
 Tell the user:
 
-- Source page written: `wiki/sources/<slug>.md`
+- Source page written: `wiki/sources/<group>/<slug>.md`
 - Deep dive written: `wiki/deep/<slug>-deep.md` (if --deep)
 - Related pages updated: list any pages touched
 - New pages created: list any new pages
