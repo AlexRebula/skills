@@ -89,7 +89,6 @@ This skill depends on a project-provided capture script that:
 1. Reads routing rules from project config or `.asana-config.json`
 2. Calls Asana to create the task (using the real GID in the filename — no rename needed)
 3. Writes a frontmatter-compliant markdown file to the configured output folder
-4. Verifies the target repo is on `main` before committing — aborts with exit 1 if not
-5. Commits the file to the repository
-6. Outputs JSON: `{ status, project, section, asanaGid, filePath, committed }`
-7. Exits 2 (not 0) when routing is ambiguous, with `{ status: "ambiguous", suggestedProject, allProjects, text }`
+4. Commits the file to the repository
+5. Outputs JSON: `{ status, project, section, asanaGid, filePath, committed }`
+6. Exits 2 (not 0) when routing is ambiguous, with `{ status: "ambiguous", suggestedProject, allProjects, text }`
