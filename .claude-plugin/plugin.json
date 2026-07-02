@@ -1,5 +1,11 @@
 {
   "name": "alexrebula-skills",
+  "version": "1.0.0",
+  "description": "A fork of mattpocock/skills extended with framework scaffolding, git/PR lifecycle tools, LittleBranches org skills, and daily productivity workflows.",
+  "author": {
+    "name": "Alex Rebula",
+    "email": "alex@alexrebula.com"
+  },
   "skills": [
     "./skills/in-progress/review",
     "./skills/engineering/diagnose",
@@ -28,7 +34,6 @@
     "./skills/git/wip-sweep",
     "./skills/org/audit-giselle-tests",
     "./skills/org/create-giselle-component",
-    "./skills/org/create-giselle-pr",
     "./skills/org/load-dependency-chain",
     "./skills/org/load-oss-standards",
     "./skills/org/respond-giselle-pr-review",

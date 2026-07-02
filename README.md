@@ -74,7 +74,6 @@ Skills specific to the [LittleBranches](https://github.com/LittleBranches) organ
 
 - **[audit-giselle-tests](./skills/org/audit-giselle-tests/SKILL.md)** — Audit existing AI-generated tests in `giselle-mui` for quality problems: placeholder stubs, MUI-mock anti-patterns, and missing required test cases.
 - **[create-giselle-component](./skills/org/create-giselle-component/SKILL.md)** — Scaffold and TDD a new `giselle-mui` component following OSS Quality Standards rules — two-phase: scaffold (types, test stubs, README), then implement (TDD vertical slices with real ThemeProvider).
-- **[create-giselle-pr](./skills/org/create-giselle-pr/SKILL.md)** — Prepare a branch for a PR in a LittleBranches repo: pre-loads AGENTS.md, runs the quality gate including banned-content scan, creates the PR with a complete description, and triggers a Copilot review.
 - **[load-dependency-chain](./skills/org/load-dependency-chain/SKILL.md)** — Read the `dependency-chain.md` file and extract the hard deadline, critical path, and phase status for each active repo.
 - **[load-oss-standards](./skills/org/load-oss-standards/SKILL.md)** — Verify access to the public and private LittleBranches AGENTS.md barrels and print a session health-check table.
 - **[respond-giselle-pr-review](./skills/org/respond-giselle-pr-review/SKILL.md)** — Respond to an existing Copilot PR review in a LittleBranches repo: pre-load AGENTS.md + workflow rules, triage every thread, reply inline before fixing, batch valid fixes, and post SHA follow-ups.

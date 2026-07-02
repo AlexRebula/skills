@@ -1,0 +1,13 @@
+{
+  "name": "alexrebula-skills",
+  "owner": {
+    "name": "Alex Rebula"
+  },
+  "plugins": [
+    {
+      "name": "alexrebula-skills",
+      "source": "./",
+      "description": "A fork of mattpocock/skills extended with framework scaffolding, git/PR lifecycle tools, LittleBranches org skills, and daily productivity workflows."
+    }
+  ]
+}
