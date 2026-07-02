@@ -1,6 +1,6 @@
 # Misc
 
-Tools I keep around but rarely use.
+Tools I keep around but rarely use — not promoted in the plugin.
 
 - **[git-guardrails-claude-code](./git-guardrails-claude-code/SKILL.md)** — Set up Claude Code hooks to block dangerous git commands (push, reset --hard, clean, etc.) before they execute.
 - **[karpathy-guidelines](./karpathy-guidelines/SKILL.md)** — Behavioral guardrails for LLM coding: think before coding, keep changes surgical, and drive work by verifiable success criteria.
