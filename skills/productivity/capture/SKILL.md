@@ -1,6 +1,6 @@
 ---
 name: capture
-description: Capture a freeform thought, task, or note mid-session — routes it to the correct content project, creates a real Asana task, writes a schema-compliant local markdown file, and commits it. Use when the user says /capture or "capture this".
+description: Capture a freeform thought, task, or note mid-session — routes it to the correct content project, creates a real Asana task, writes a schema-compliant local markdown file, then opens a PR on a dedicated branch. Use when the user says /capture or "capture this".
 ---
 
 # Capture
@@ -30,8 +30,7 @@ If no argument was provided, ask:
 ## Step 2 — Run the capture script
 
 ```sh
-ASANA_TOKEN=$(grep ASANA_TOKEN .env | cut -d= -f2) \
-  npm run capture "<text>"
+ASANA_TOKEN=$(printenv ASANA_TOKEN) npm run capture "<text>"
 ```
 
 Save the exit code and stdout.
@@ -47,7 +46,9 @@ Parse the JSON from stdout. Report:
 > "Captured → **<project>** / <section>
 > File: `<filePath>`
 > Asana: https://app.asana.com/0/<asanaGid>
-> Committed: <yes/no>"
+> Branch: `<branch>` → PR: <prUrl>"
+
+If `branch` or `prUrl` is `null`, the file was written and the Asana task was created, but the git step failed — report that so the user can push manually.
 
 Done.
 
@@ -66,8 +67,7 @@ Parse the JSON from stdout. The `suggestedProject` is the safe default. Show the
 Wait for the user's choice. Then re-run with the confirmed project:
 
 ```sh
-ASANA_TOKEN=$(grep ASANA_TOKEN .env | cut -d= -f2) \
-  npm run capture "<text>" --project <confirmed>
+ASANA_TOKEN=$(printenv ASANA_TOKEN) npm run capture "<text>" -- --project <confirmed>
 ```
 
 Report success as in Exit 0.
@@ -87,8 +87,8 @@ Print the stderr message. Common causes and fixes:
 This skill depends on a project-provided capture script that:
 
 1. Reads routing rules from project config or `.asana-config.json`
-2. Calls Asana to create the task (using the real GID in the filename — no rename needed)
+2. Calls Asana to create the task immediately (using the real GID in the filename — no rename needed)
 3. Writes a frontmatter-compliant markdown file to the configured output folder
-4. Commits the file to the repository
-5. Outputs JSON: `{ status, project, section, asanaGid, filePath, committed }`
+4. Creates a branch `capture/<YYYYMMDD>-<slug>` from `origin/main`, commits the file, pushes, and opens a PR against `main` via `gh pr create` — PRs stay open for manual merge
+5. Outputs JSON: `{ status, project, section, asanaGid, filePath, branch, prUrl }` — `branch` and `prUrl` are `null` if the git step failed
 6. Exits 2 (not 0) when routing is ambiguous, with `{ status: "ambiguous", suggestedProject, allProjects, text }`
