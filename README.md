@@ -23,8 +23,6 @@ Then run `/setup-matt-pocock-skills` once per repo to configure the issue tracke
 
 ---
 
-## Engineering
-
 ## Install as a Claude Code plugin
 
 Prefer a plug-and-play install you don't maintain by hand? These skills also ship as a native [Claude Code plugin](https://code.claude.com/docs/en/plugins). Instead of copying editable files into your repo, the plugin installs the whole skill set as a managed bundle that updates when I ship a new version — you subscribe rather than fork.
@@ -32,15 +30,15 @@ Prefer a plug-and-play install you don't maintain by hand? These skills also shi
 Inside Claude Code:
 
 ```
-/plugin marketplace add mattpocock/skills
-/plugin install mattpocock-skills@mattpocock
+/plugin marketplace add AlexRebula/skills
+/plugin install alexrebula-skills@AlexRebula
 ```
 
 Or from your shell:
 
 ```bash
-claude plugin marketplace add mattpocock/skills
-claude plugin install mattpocock-skills@mattpocock
+claude plugin marketplace add AlexRebula/skills
+claude plugin install alexrebula-skills@AlexRebula
 ```
 
 Then run `/setup-matt-pocock-skills` once per repo, exactly as in the quickstart above.
@@ -168,6 +166,7 @@ Skills I use daily for code work.
 - **[improve-codebase-architecture](./skills/engineering/improve-codebase-architecture/SKILL.md)** — Scan a codebase for deepening opportunities, present them as a visual HTML report, then grill through whichever one you pick.
 - **[setup-matt-pocock-skills](./skills/engineering/setup-matt-pocock-skills/SKILL.md)** — Configure this repo for the engineering skills (issue tracker, triage labels, domain doc layout). Run once per repo before using the other engineering skills.
 - **[start-issue](./skills/engineering/start-issue/SKILL.md)** — Bootstrap a session from a GitHub issue number: reads the issue, checks blockers, loads codebase context, and routes to `/tdd` or `/grill-me` based on the triage label.
+- **[sync](./skills/engineering/sync/SKILL.md)** — Bidirectional sync between configured Asana projects and their local markdown files. Pulls new/updated tasks, pushes local changes, resolves conflicts (local wins).
 - **[to-spec](./skills/engineering/to-spec/SKILL.md)** — Turn the current conversation into a spec and publish it to the issue tracker. No interview — just synthesizes what you've already discussed.
 - **[to-tickets](./skills/engineering/to-tickets/SKILL.md)** — Break any plan, spec, or conversation into a set of tracer-bullet tickets, each declaring its blocking edges — written as text in a local file, or as native blocking links on a real tracker.
 - **[implement](./skills/engineering/implement/SKILL.md)** — Build the work described by a spec or set of tickets, driving `/tdd` at pre-agreed seams and closing out with `/code-review` before committing.
@@ -244,8 +243,9 @@ General workflow tools, not code-specific.
 
 **AlexRebula extensions** (not in upstream)
 
+- **[capture](./skills/productivity/capture/SKILL.md)** — Capture a freeform thought, task, or note mid-session — routes it to the correct content project, creates a real Asana task, writes a local markdown file, and commits it.
+- **[sync](./skills/productivity/sync/SKILL.md)** — Bidirectional Asana ↔ local markdown sync: pulls new/updated tasks from Asana, pushes local changes, resolves conflicts (local wins), and commits.
 - **[asana-sync](./skills/productivity/asana-sync/SKILL.md)** — Opt-in Asana sync for morning briefs: locate or bootstrap `.asana-config.json`, create the Morning Briefs section if missing, seed tasks with full metadata, post a Status Update, and log results back to the brief file.
-- **[caveman](./skills/productivity/caveman/SKILL.md)** — Ultra-compressed communication mode. Cuts token usage ~75% by dropping filler while keeping full technical accuracy.
 - **[check-prior-work](./skills/productivity/check-prior-work/SKILL.md)** — Scans context for a `<conversation-summary>` block and extracts earlier session work for continuity.
 - **[ingest](./skills/productivity/ingest/SKILL.md)** — Ingest a raw source file into the personal wiki — reads the source, extracts metadata, writes a wiki/sources/ synthesis page, updates related wiki pages, and updates wiki/index.md and wiki/log.md. Add --deep to also write a long-form deep dive at wiki/deep/<slug>-deep.md.
 - **[load-session-context](./skills/productivity/load-session-context/SKILL.md)** — Load the session index and latest wrap file; check for an existing morning brief for today.
@@ -256,7 +256,6 @@ General workflow tools, not code-specific.
 - **[standup-prep](./skills/productivity/standup-prep/SKILL.md)** — Daily session startup coordinator. Runs preflight → session context → repo status + WIP sweep → open PR sweep → morning brief → file write → Asana sync.
 - **[standup-prep-preflight](./skills/productivity/standup-prep-preflight/SKILL.md)** — Composite pre-flight: runs `/check-prior-work`, `/load-oss-standards`, and `/load-dependency-chain` in sequence.
 - **[wiki-lint](./skills/productivity/wiki-lint/SKILL.md)** — Health-check the personal wiki — scans for contradictions, orphan pages, stale claims, missing cross-references, and data gaps. Produces a prioritised finding list and suggests next ingests.
-- **[write-a-skill](./skills/productivity/write-a-skill/SKILL.md)** — Create new skills with proper structure, progressive disclosure, and bundled resources.
 
 ---
 
