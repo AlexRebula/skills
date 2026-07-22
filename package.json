@@ -1,11 +1,21 @@
 {
+  "name": "alexrebula-skills",
+  "version": "1.0.0",
   "private": true,
   "type": "module",
+  "description": "A fork of mattpocock/skills extended with framework scaffolding, git/PR lifecycle tools, LittleBranches org skills, and daily productivity workflows.",
+  "author": {
+    "name": "Alex Rebula"
+  },
   "scripts": {
     "postinstall": "bash scripts/sync-agents-skills.sh",
-    "test": "vitest run"
+    "test": "vitest run",
+    "changeset": "changeset",
+    "version": "changeset version"
   },
   "devDependencies": {
+    "@changesets/changelog-github": "^0.7.0",
+    "@changesets/cli": "^2.30.0",
     "@types/node": "^20.0.0",
     "prettier": "^3.0.0",
     "tsx": "^4.0.0",
