@@ -25,16 +25,22 @@ Skills are organized into bucket folders under `skills/`:
 - `git/` — git and PR lifecycle operations
 - `org/` — LittleBranches organisation-specific skills
 - `productivity/` — daily non-code workflow tools
-- `misc/` — kept around but rarely used
+- `misc/` — kept around but rarely used, not promoted
 - `personal/` — tied to my own setup, not promoted
 - `in-progress/` — drafts not yet ready to ship
 - `deprecated/` — no longer used
 
-Every skill in `engineering/`, `framework/`, `git/`, `org/`, `productivity/`, or `misc/` must have a reference in the top-level `README.md` and an entry in `.claude-plugin/plugin.json`. Skills in `personal/`, `in-progress/`, and `deprecated/` must not appear in either.
+Every skill in `engineering/`, `framework/`, `git/`, `org/`, or `productivity/` must have a reference in the top-level `README.md` and an entry in `.claude-plugin/plugin.json`. Skills in `misc/`, `personal/`, `in-progress/`, and `deprecated/` must not appear in either.
+
+The repo is also its own single-plugin Claude Code marketplace: `.claude-plugin/marketplace.json` lists the one `alexrebula-skills` plugin. When bumping the release version, keep `.claude-plugin/plugin.json`'s `version` in sync with `package.json`'s — Claude uses the plugin `version` to decide when installed users see an update. Run `claude plugin validate . --strict` after touching either manifest.
 
 Each skill entry in the top-level `README.md` must link the skill name to its `SKILL.md`.
 
-Each bucket folder has a `README.md` that lists every skill in the bucket with a one-line description, with the skill name linked to its `SKILL.md`.
+Each bucket folder has a `README.md` that lists every skill in the bucket with a one-line description, with the skill name linked to its `SKILL.md`. The `engineering/` and `productivity/` bucket `README.md`s group entries into **User-invoked** and **Model-invoked**; other bucket `README.md`s use a flat list.
+
+Every `SKILL.md` is either user-invoked (`disable-model-invocation: true`, reachable only when you type the slash command) or model-invoked (model- or user-reachable via rich trigger phrasing).
+
+To (re)link every skill into the local harness skill directories (`~/.claude/skills`, `~/.agents/skills`), run `scripts/link-skills.sh`. Each entry is a symlink into this repo, so a `git pull` keeps installed skills current; re-run the script after adding, removing, or renaming a skill.
 
 ## AI Reviewer Instructions
 
