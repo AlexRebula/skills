@@ -220,4 +220,4 @@ If yes, apply the same structured audit to that file, checking for:
 
 ## Pairing with `/next-issue`
 
-If you want the skill to also fetch and identify the next candidate issue automatically (using `gh` and a wiki-based principles index), see the private wrapper pattern described in the [LittleBranches wiki skill](../../personal/README.md) — `next-issue` wraps this audit with GitHub integration on top.
+If you want the skill to also fetch and identify the next candidate issue automatically (using `gh` and a principles index), consider wrapping this skill with a `/next-issue` skill that adds GitHub integration on top — fetching open issues, filtering by assignee, and pre-populating the audit inputs.
