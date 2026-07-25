@@ -181,6 +181,19 @@ Save this as `<student-name>-issue-principles.md` and paste it when invoking `/a
 
 ---
 
+## P_PAYMENT — Compensation visibility
+
+**Rule:** If the project has a compensation policy for the assignee, every issue must state the agreed rate and the completion threshold at which full payment is earned.
+
+**Why:** An assignee working for pay must know what they will earn before starting. A rate buried only in a task tracker is easy to miss; an invented rate in the issue body creates a mismatch with the authoritative record.
+
+**Checklist:**
+- [ ] Issue body states the agreed rate and full-completion threshold (e.g. `**Payment:** $X at 100%`)
+- [ ] Rate matches the value in the project's task tracker — not invented inline
+- [ ] Format is consistent with the project's compensation policy
+
+---
+
 ## Issue sequencing criteria
 
 When selecting the next issue, apply in order:
