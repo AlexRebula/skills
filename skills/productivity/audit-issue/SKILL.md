@@ -181,6 +181,31 @@ Save this as `<student-name>-issue-principles.md` and paste it when invoking `/a
 
 ---
 
+## P_QUIZ — Understanding gate
+
+**Rule:** If the project requires a comprehension check for each task, every issue must include a quiz or review session as the final DoD item, and a corresponding quiz file must exist in the issue's learn folder.
+
+**Why:** Without an understanding gate, an assignee can complete all mechanical steps without demonstrating they know why they did them. The quiz turns task completion into learning.
+
+**Checklist:**
+- [ ] DoD includes a quiz or review session as its final item (e.g. `Quiz completed with [reviewer]`)
+- [ ] A corresponding quiz file is referenced or exists in the issue's learn folder
+
+---
+
+## P_PAYMENT — Compensation visibility
+
+**Rule:** If the project has a compensation policy for the assignee, every issue must state the agreed rate and the completion threshold at which full payment is earned.
+
+**Why:** An assignee working for pay must know what they will earn before starting. A rate buried only in a task tracker is easy to miss; an invented rate in the issue body creates a mismatch with the authoritative record.
+
+**Checklist:**
+- [ ] Issue body states the agreed rate and full-completion threshold (e.g. `**Payment:** $X at 100%`)
+- [ ] Rate matches the value in the project's task tracker — not invented inline
+- [ ] Format is consistent with the project's compensation policy
+
+---
+
 ## Issue sequencing criteria
 
 When selecting the next issue, apply in order:
