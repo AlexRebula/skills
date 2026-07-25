@@ -144,6 +144,43 @@ Save this as `<student-name>-issue-principles.md` and paste it when invoking `/a
 
 ---
 
+## P_FORMAT — Body structure
+
+**Rule:** The issue body must not contain embedded step-by-step instructions — those belong in a separate guide file (e.g. STEPS.md) referenced from the body.
+
+**Why:** Long embedded steps conflate *what needs doing* (issue body) with *how to do it* (guide file), making issues harder to scan and maintain.
+
+**Checklist:**
+- [ ] Body contains no numbered lists longer than 3 items
+- [ ] If detailed steps exist, they are in an external file referenced from the body
+- [ ] Setup or "before you start" boilerplate is absent or reduced to a single sentence
+
+---
+
+## P_SCOPE — Assignee workspace
+
+**Rule:** Every file path, directory, and repository referenced in the issue must exist in the assignee's local workspace.
+
+**Why:** References to inaccessible repos or paths create dead-end instructions the assignee cannot follow.
+
+**Checklist:**
+- [ ] No file paths from repositories the assignee does not have locally
+- [ ] No references to internal tools, files, or systems the assignee cannot access
+
+---
+
+## P_DELIVERABLES — Explicit output count
+
+**Rule:** The DoD must explicitly state how many PRs (or other outputs) are expected, and in which repositories.
+
+**Why:** Ambiguous deliverable count causes the assignee to believe they are done when only part of the work is complete — especially when a change has cross-repo ripple effects.
+
+**Checklist:**
+- [ ] DoD lists every repository where a PR is expected
+- [ ] If a change propagates to a consuming repo (e.g. a package sync), each resulting PR is explicitly called out
+
+---
+
 ## Issue sequencing criteria
 
 When selecting the next issue, apply in order:
@@ -159,6 +196,25 @@ When selecting the next issue, apply in order:
 |---|---|---|---|
 | YYYY-MM-DD | #N | <brief description> | P1, P2 |
 ```
+
+---
+
+## Optional Phase 2 — Accompanying files audit
+
+If the issue references an external guide file (e.g. STEPS.md, a quiz, a mission brief),
+after completing Phase 1 ask:
+
+> "Should I also audit `<filename>`?"
+
+If yes, apply the same structured audit to that file, checking for:
+
+- **Workspace scope** — file paths or repos the assignee cannot access
+- **Hardcoded specifics** — filenames, counts, or paths that assume a predetermined outcome
+  and should be expressed generically (e.g. `git add <path/to/file>` not `git add src/exact-file.ts`)
+- **Tool alternatives** — terminal-only instructions that have a common GUI equivalent worth
+  mentioning (e.g. VS Code Source Control alongside `git diff`)
+- **Action gates** — irreversible or wide-impact actions (edits, pushes, deletions) should
+  require the assignee to pause and confirm before proceeding
 
 ---
 
