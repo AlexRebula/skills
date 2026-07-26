@@ -141,11 +141,32 @@ docs/old-stuff      | YES — delete?     | —          | Skipped
 fix/bug             | No                | Diverged   | ⚠️ Manual
 ```
 
-Offer to delete the flagged merged branches if the developer confirms:
+Offer to delete the flagged merged branches if the developer confirms.
+
+**Before any remote delete, check if the branch is protected:**
 
 ```sh
-git branch -d <merged-branch>        # local delete (safe — won't delete unmerged)
-# git push origin --delete <branch>  # remote delete — ask explicitly before running
+gh api repos/<owner>/<repo>/branches/<branch-url-encoded> --jq '.protected' 2>&1
+```
+
+- Returns `true` → **skip remote delete**; delete local only and note it in the report
+- Returns `false` → safe to delete remote after developer confirms
+- Returns an error → treat as unknown; skip remote delete and flag for manual review
+
+Branch names with `/` must be URL-encoded (replace `/` with `%2F`) in the API path.
+
+```sh
+git branch -d <merged-branch>               # local delete (safe — won't delete unmerged)
+git push origin --delete <merged-branch>    # remote delete — only after protection check passes AND developer confirms
+```
+
+Extend the Phase 4 table with a Protected? column for all merged branches that have a remote:
+
+```
+Branch          | Merged? | Protected? | Local delete | Remote delete
+----------------|---------|------------|--------------|---------------
+docs/old-stuff  | YES     | false      | ✅ Done      | ✅ Done
+fix/shipped     | YES     | true       | ✅ Done      | ⛔ Skipped — protected
 ```
 
 ---
