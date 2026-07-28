@@ -1,6 +1,7 @@
 ---
 name: rebuild-root-index
 description: Rescan every git repo under $AR_ROOT and refresh $AR_ROOT/index.md, the master barrel index across the whole workspace. Diffs against a content-hash manifest so only new/changed/deleted files are re-summarized. Chained automatically from the final step of /ingest; can also be run standalone when a doc changes outside the wiki (e.g. in a component library or project repo).
+disable-model-invocation: true
 ---
 
 Rebuild `{{AR_ROOT}}/index.md` — the single file that gives any Claude session awareness of every markdown doc across every repo in the workspace, not just the wiki.

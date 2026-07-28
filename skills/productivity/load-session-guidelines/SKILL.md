@@ -5,6 +5,7 @@ description: >
   standards (public + private), and PR conventions. Run at the start of every
   session before any user task. Designed to be minimal — no full file
   ingestion, only inline rules and access checks.
+disable-model-invocation: true
 ---
 
 # Load Session Guidelines

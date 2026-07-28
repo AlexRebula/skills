@@ -1,6 +1,7 @@
 ---
 name: learner-history
 description: Build a factual, source-verified history of a learner's GitHub issue work across an org. Outputs a structured summary table. Call this before audit-issue or next-issue to establish what concepts the learner has already encountered and at what quality — do not re-implement this lookup in those skills.
+disable-model-invocation: true
 ---
 
 # Learner History

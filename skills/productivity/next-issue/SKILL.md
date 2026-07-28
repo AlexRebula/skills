@@ -1,6 +1,7 @@
 ---
 name: next-issue
 description: Identify the next GitHub issue to assign to a student or apprentice. Audits the candidate issue body against a principles index, produces a list of problems, and drafts fixes for approval before touching GitHub. Student, repo, and principles file are all configurable — works for any learner on any repo.
+disable-model-invocation: true
 ---
 
 # Next Issue
