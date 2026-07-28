@@ -243,6 +243,16 @@ If yes, apply the same structured audit to that file, checking for:
 
 ---
 
+## Enriching with learner history
+
+If you want the audit to include a **progression check** (is this issue appropriate for where the learner is at?), run `/learner-history <github-username>` before invoking this skill. The history table tells you:
+
+- The highest sequence level the learner has completed at `full` quality
+- Concepts already encountered vs. concepts this issue introduces for the first time
+- Any `admin-closed` or `partial` completions — concepts introduced but not fully absorbed
+
+Read the history from context and include a progression verdict in your audit report. Do not re-implement the history lookup here — that logic lives in `/learner-history`.
+
 ## Pairing with `/next-issue`
 
 If you want the skill to also fetch and identify the next candidate issue automatically (using `gh` and a principles index), consider wrapping this skill with a `/next-issue` skill that adds GitHub integration on top — fetching open issues, filtering by assignee, and pre-populating the audit inputs.
