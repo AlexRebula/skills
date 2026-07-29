@@ -173,4 +173,97 @@ SUMMARY
   Repos with activity:     owner/repo-a, owner/repo-b
 ```
 
-The calling skill reads the table and summary from context. Nothing is written to disk.
+The calling skill reads the table and summary from context.
+
+### Step 8 — Report learning artifacts
+
+A learner's history is not only what they shipped — it is also what they wrote down while
+shipping it. Many apprenticeship setups ask the learner to keep a notes file per task, so
+that the notes later seed their own knowledge base.
+
+Look for per-task notes alongside the task materials:
+
+```bash
+find . -maxdepth 4 \( -iname "NOTES.md" -o -iname "LEARNING*.md" \) -not -path "*/node_modules/*"
+```
+
+For each one found, report:
+
+- Which task it belongs to
+- How many sections are filled versus left as prompts — a section whose body still matches
+  its prompt text is **unfilled**
+- Whether the file has ever been ingested into a wiki (see below)
+
+Add a line to the summary:
+
+```
+  Notes files:  N found · M complete · K with unfilled sections
+```
+
+This matters for two reasons. Unfilled sections are concepts the learner passed through
+without articulating — useful signal for the calling skill's progression check. And filled
+ones are raw material: if the learner is heading toward building their own knowledge base,
+these files are its first source pages.
+
+If no notes files exist, skip silently. Not every setup uses them.
+
+---
+
+## Capturing this to an LLM wiki (optional)
+
+This skill is conversation-only by default, and stays that way unless the user asks
+otherwise. But a history run has a longer shelf life than the conversation it happens in —
+at a milestone (end of a tier, end of a placement, a pay review) a dated snapshot is worth
+keeping.
+
+### W1 — Detect a wiki
+
+Only raise this if the user already keeps one:
+
+```bash
+find . .. -maxdepth 4 -name "index.md" -path "*wiki*" -not -path "*/node_modules/*" 2>/dev/null | head -5
+```
+
+- **One match** → continue.
+- **Several** → ask which.
+- **None** → **skip silently.** Never create a wiki, never mention this section again.
+
+### W2 — Ask before writing
+
+```
+Save this history as a dated snapshot for your wiki? [yes / no]
+```
+
+Default is no. A history run during routine issue selection is noise; only milestones are
+worth recording.
+
+### W3 — Write a raw source, then hand off
+
+Do **not** write into the wiki tree directly. Write a raw source file and let the wiki's own
+ingest process place it — that process owns frontmatter, index and log updates, and PII
+redaction, none of which this skill does.
+
+Write to the raw area (commonly `raw/`, but follow whatever the detected wiki uses):
+
+```
+raw/learner-history/<YYYY-MM-DD>-<username>-history.md
+```
+
+Contents: the table and summary from Steps 6 and 7 verbatim, plus a one-line note of what
+prompted the snapshot. Then tell the user:
+
+```
+Written to <path>. Run /ingest <path> to file it in your wiki.
+```
+
+### W4 — Privacy
+
+A learner history is about a real person, often a junior one, and may carry pay and
+performance information. Before writing anything:
+
+- Never include pay figures, performance judgements, or personal circumstances. Completion
+  type and evidence source only.
+- If the wiki has a placeholder vault for real names, use the placeholder rather than the
+  learner's name in the body text.
+- If the learner is a minor, or the wiki is shared beyond the mentor, ask explicitly before
+  writing rather than relying on the Step W2 prompt.

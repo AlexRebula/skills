@@ -170,6 +170,46 @@ wiki/sources/<repo-name>/<student-name>-issue-principles.md
 
 Follow the starter template in `/audit-issue` as a format reference. The skill will discover and use the principles file automatically.
 
+## Preparing the task materials
+
+If the project keeps a per-task folder (steps, quiz, notes), check the candidate has one
+before handing it over. Two things are worth verifying, because both are easy to omit and
+neither shows up as a failure until much later.
+
+**A notes file.** If the setup asks the learner to keep notes per task — the raw material
+for a knowledge base they build later — then every task needs one, not just the interesting
+ones. A habit that skips three tasks in a row has ended. Check the section count is in the
+Definition of Done too, or every box can be ticked with every note blank.
+
+**A Definition of Done derived from a real example**, not from the task description. Diff a
+recently-merged change of the same kind and treat every file it touched as a candidate
+item:
+
+```bash
+gh pr diff <a-comparable-merged-PR> --name-only
+```
+
+That list routinely includes documentation the code never references — index tables, a
+component's own README, a status or roadmap file. Those are the items a DoD written from
+the task description misses, and the learner is then marked complete while the work is
+half done.
+
+---
+
+## Closing the loop
+
+Findings from Step 6 are worth more than the fix. See **"Closing the loop — turning a
+finding into a principle"** in [`audit-issue`](https://github.com/AlexRebula/skills/blob/main/skills/productivity/audit-issue/SKILL.md) — it covers naming the rule so it
+generalises, drafting the incident record, and encoding the rule into a template so the
+next author inherits it rather than having to remember it. Do not re-implement that here.
+
+The same file's **"Capturing this to an LLM wiki"** section covers filing the result, and
+`/learner-history` has its own for milestone snapshots. All three follow the same contract:
+detect a wiki, skip silently if there is none, never write into the wiki tree directly —
+write a raw source file and hand off to `/ingest`.
+
+---
+
 ## Pattern reference
 
 This skill is the GitHub-integrated wrapper around the public [`audit-issue`](https://github.com/AlexRebula/skills/blob/main/skills/productivity/audit-issue/SKILL.md) pattern. The audit logic, output format, and starter template are documented there. This wrapper adds: automatic issue fetching via `gh`, principles file discovery from the wiki, and candidate selection.

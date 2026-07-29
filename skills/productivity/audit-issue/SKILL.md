@@ -256,3 +256,117 @@ Read the history from context and include a progression verdict in your audit re
 ## Pairing with `/next-issue`
 
 If you want the skill to also fetch and identify the next candidate issue automatically (using `gh` and a principles index), consider wrapping this skill with a `/next-issue` skill that adds GitHub integration on top — fetching open issues, filtering by assignee, and pre-populating the audit inputs.
+
+---
+
+## Closing the loop — turning a finding into a principle
+
+An audit that only fixes the issue in front of you gets run again next month on the same
+defect. The value is in the second output: the rule that stops it recurring.
+
+Run this whenever the audit produced at least one **blocking** finding. Skip it for
+suggestions and cosmetic fixes — a principles index that absorbs every minor note becomes
+too long to read, and an unread index enforces nothing.
+
+### C1 — Name the rule, not the instance
+
+Write the rule so it applies to the next issue, not this one.
+
+| Instance (too narrow) | Rule (reusable) |
+|---|---|
+| "Step 12 didn't push the component branch" | "Every repo the task touches needs its own push and PR step" |
+| "It said `master` but the repo uses `main`" | "Never state a branch name that has not been verified for that repo" |
+| "The quiz used a word the learner didn't know" | "Quiz questions use only vocabulary the learner has already met" |
+
+If you cannot state it without naming this specific issue, it is not a principle yet.
+
+### C2 — Check it is not already covered
+
+Read the principles index first. A near-duplicate should **sharpen the existing principle**,
+not sit beside it. Two principles that overlap will both be skimmed.
+
+### C3 — Draft the principle
+
+Follow whatever shape the index already uses. A workable default:
+
+```markdown
+### P<N> — <one-line rule>
+
+**Rule:** <what must be true, stated so it can be checked>
+
+**Why it matters:** <the concrete failure. Name what actually broke, with numbers where
+you have them — "ten commits had no route off the laptop" beats "work could be lost".>
+
+**Checklist when auditing an issue:**
+- [ ] <a check someone can actually perform>
+
+**Source:** [[<incident-slug>]]
+```
+
+### C4 — Draft the incident record
+
+The principle states the rule; the incident preserves the evidence. Without it, the rule
+looks arbitrary in six months and gets dropped.
+
+Cover: what the artifact actually said, what would have happened if nobody caught it, how
+it was caught, and what was changed. If a first fix turned out to be insufficient, record
+that too — a partial fix that looked complete is the most useful thing in the file.
+
+### C5 — Say whether it was caught before or after harm
+
+State it plainly in the incident record. "Caught by audit before assignment" and "caught
+after the learner lost four days" are different outcomes, and the ratio between them over
+time is the only real measure of whether auditing is working.
+
+### C6 — Encode it where the work happens
+
+A principle in a wiki nobody opens changes nothing. Ask where the rule can become
+structural instead:
+
+- A task-template section, so the next author inherits it rather than remembering it
+- A checklist item in the Definition of Done
+- A pre-commit hook or CI check, if the rule is mechanical
+
+Prefer structure over memory. The rules that survive are the ones you cannot skip.
+
+---
+
+## Capturing this to an LLM wiki (optional)
+
+If the principle and incident from the section above should outlive this conversation, and
+the user keeps a wiki, file them there.
+
+### W1 — Detect a wiki
+
+```bash
+find . .. -maxdepth 4 -name "index.md" -path "*wiki*" -not -path "*/node_modules/*" 2>/dev/null | head -5
+```
+
+**None found → skip silently.** Never create a wiki. Offer the drafts in conversation
+instead; the user can paste them wherever their principles live.
+
+### W2 — Ask, then write raw and hand off
+
+```
+File this as a principle + incident in your wiki? [yes / no / principle only]
+```
+
+Do not write into the wiki tree directly. Write raw source files and let the wiki's own
+ingest process place them — it owns frontmatter, index and log updates, and PII redaction.
+
+```
+raw/incidents/<YYYY-MM-DD>-<short-slug>.md
+```
+
+Then:
+
+```
+Written to <path>. Run /ingest <path> to file it in your wiki.
+```
+
+### W3 — Privacy
+
+Audits are about work, but incidents are about people. Write about the artifact, not the
+person: *"the walkthrough had no push step"*, never *"they forgot to push"*. Where a learner
+must be named, prefer a role word or the wiki's placeholder. Never record pay figures or
+performance judgements.
