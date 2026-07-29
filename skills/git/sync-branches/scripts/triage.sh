@@ -11,32 +11,54 @@
 #   triage.sh /path/to/a /path/to/b    # one or more repos
 #
 # Read-only with respect to your work: it fetches, prunes remote-tracking refs,
-# and may repair the local origin/HEAD ref. It never checks out, merges, pushes,
-# commits, or deletes a branch.
+# and re-points the local origin/HEAD ref at the remote's current default. It
+# never checks out, merges, pushes, commits, or deletes a branch.
 #
 # Exit codes:
 #   0  every repo triaged
 #   1  bad usage
-#   2  at least one repo could not be triaged (see "!!" lines in the output)
+#   2  at least one repo could not be triaged (see "!!" lines on stderr)
 
 set -uo pipefail
 
 had_failure=0
 
 # Resolve the remote-tracking default ref, e.g. "origin/master".
-# Echoes an empty string when it cannot be determined.
+#
+# `origin/HEAD` is written at clone time and is NEVER updated by `git fetch`, not
+# even with --prune. A local ref left behind after the remote's default branch
+# moved still resolves cleanly and is silently wrong: the merged list would be
+# computed against the wrong base, and that list feeds branch deletions.
+#
+# So `set-head --auto` runs UNCONDITIONALLY, not only when the ref is missing. It
+# re-queries the remote and rewrites the LOCAL ref; nothing on the remote changes.
+# That costs one extra round-trip per repo, which is the price of not guessing.
+#
+# When the remote cannot be reached, a pre-existing local value is unverified and
+# is deliberately NOT returned — a stale answer here is worse than no answer.
+#
+# Echoes the resolved ref, or an empty string when it cannot be determined.
 resolve_default_ref() {
-  local ref
-  ref=$(git symbolic-ref --short refs/remotes/origin/HEAD 2>/dev/null) || ref=""
+  local before after
+  before=$(git symbolic-ref --short refs/remotes/origin/HEAD 2>/dev/null) || before=""
 
-  if [ -z "$ref" ]; then
-    # origin/HEAD is absent in --single-branch clones and some older clones.
-    # This repairs a LOCAL ref only; it mutates nothing on the remote.
-    git remote set-head origin --auto >/dev/null 2>&1 || true
-    ref=$(git symbolic-ref --short refs/remotes/origin/HEAD 2>/dev/null) || ref=""
+  if ! git remote set-head origin --auto >/dev/null 2>&1; then
+    if [ -n "$before" ]; then
+      echo "!! could not reach origin to confirm the default branch." >&2
+      echo "!! local origin/HEAD says '${before}', but it may be stale — not trusting it." >&2
+    fi
+    printf ''
+    return
   fi
 
-  printf '%s' "$ref"
+  after=$(git symbolic-ref --short refs/remotes/origin/HEAD 2>/dev/null) || after=""
+
+  if [ -n "$before" ] && [ -n "$after" ] && [ "$before" != "$after" ]; then
+    echo "!! origin/HEAD was stale: '${before}' -> '${after}'." >&2
+    echo "!! Any earlier sweep of this repo measured against the wrong base." >&2
+  fi
+
+  printf '%s' "$after"
 }
 
 # Branches fully merged into the default branch — deletion candidates.
@@ -116,23 +138,30 @@ triage_repo() {
   echo "====== REPO: ${repo} ======"
 
   if ! cd "$repo" 2>/dev/null; then
-    echo "!! not a readable directory — skipped"
+    echo "!! not a readable directory — skipped" >&2
     return 1
   fi
 
   if ! git rev-parse --git-dir >/dev/null 2>&1; then
-    echo "!! not a git repository — skipped"
+    echo "!! not a git repository — skipped" >&2
     return 1
   fi
 
-  git fetch --prune origin
+  # Checked deliberately. `set -e` would NOT catch this: triage_repo is called from
+  # an `if !` condition, where -e is suppressed for everything it runs. Unchecked,
+  # a failed fetch produced a complete, normal-looking report built on stale refs
+  # and exited 0 — the silent-wrong-answer case this script exists to prevent.
+  if ! git fetch --prune origin; then
+    echo "!! git fetch --prune origin failed — remote-tracking refs would be stale; skipped" >&2
+    return 1
+  fi
 
   local default_ref default_branch
   default_ref=$(resolve_default_ref)
 
   if [ -z "$default_ref" ]; then
-    echo "!! could not resolve origin/HEAD — skipped."
-    echo "!! Do NOT assume 'main'. Ask the developer which branch is the default."
+    echo "!! could not resolve origin/HEAD — skipped." >&2
+    echo "!! Do NOT assume 'main'. Ask the developer which branch is the default." >&2
     return 1
   fi
 
@@ -163,7 +192,7 @@ Never checks out, merges, pushes, commits, or deletes a branch.
 Exit codes:
   0  every repo triaged
   1  bad usage
-  2  at least one repo could not be triaged (see "!!" lines in the output)
+  2  at least one repo could not be triaged (see "!!" lines on stderr)
 EOF
 }
 
@@ -185,7 +214,7 @@ main() {
   done
 
   if [ "$had_failure" -ne 0 ]; then
-    echo "One or more repos could not be triaged — see the '!!' lines above."
+    echo "One or more repos could not be triaged — see the '!!' lines above." >&2
     return 2
   fi
 
