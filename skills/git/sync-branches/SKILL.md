@@ -1,41 +1,60 @@
 ---
 name: sync-branches
-description: Syncs all local branches in a git repo against origin and main — fetches latest, flags already-merged branches, pulls each stale branch from origin, then merges main into every active branch. Use when asked to "sync branches", "update local branches", "merge main into all branches", "branch hygiene", or "cleanup local branches".
+description: Syncs all local branches in a git repo against origin and against the repo's default branch — resolves the default branch per repo (main, master, or other), fetches latest, flags already-merged branches, pulls each stale branch from origin, then merges the default branch into every active branch. Use when asked to "sync branches", "update local branches", "merge main into all branches", "branch hygiene", or "cleanup local branches".
 ---
 
 # Sync Branches
 
-Brings every local branch up to date with origin and with main. Works on one repo or many.
+Brings every local branch up to date with origin and with the repo's default branch. Works on one
+repo or many, including a mix of `main` and `master` repos in the same sweep.
 
-## Phase 1 — Fetch and triage (read-only, no checkout switches)
+## Phase 1 — Triage (read-only, no checkout switches)
 
-Run this single diagnostic in the repo root. It produces everything needed to plan Phases 2–4.
+Run `scripts/triage.sh`. It fetches, resolves each repo's default branch, and prints everything
+needed to plan Phases 2–4. It never checks out, merges, pushes, commits, or deletes a branch.
 
-```sh
-git fetch --prune origin && \
-  echo "=== MERGED ===" && \
-  (git branch --merged origin/main | grep -vE '^\*|^  main$|^  master$' || true) && \
-  echo "=== ALL BRANCHES ===" && \
-  git for-each-ref \
-    --format='%(refname:short)|%(upstream:short)|%(upstream:track)' \
-    refs/heads/ && \
-  echo "=== SAME-NAME ORIGIN WITHOUT UPSTREAM ===" && \
-  for branch in $(git for-each-ref --format='%(refname:short)' refs/heads/); do \
-    upstream=$(git for-each-ref --format='%(upstream:short)' "refs/heads/$branch"); \
-    if [[ -z "$upstream" ]] && git show-ref --verify --quiet "refs/remotes/origin/$branch"; then \
-      counts=$(git rev-list --left-right --count "origin/$branch...$branch"); \
-      behind=$(echo "$counts" | awk '{print $1}'); \
-      ahead=$(echo "$counts" | awk '{print $2}'); \
-      echo "$branch|origin/$branch|[same-name remote, no upstream]|behind=$behind|ahead=$ahead"; \
-    fi; \
-  done
+```bash
+scripts/triage.sh
 ```
+
+For several repos at once — pass every path in one call so all planning happens before any
+checkout switches:
+
+```bash
+scripts/triage.sh /path/to/repo-a /path/to/repo-b /path/to/repo-c
+```
+
+Exit codes: `0` all repos triaged · `2` at least one repo could not be triaged (look for `!!`
+lines; the sweep continues past a failure rather than aborting). Run `scripts/triage.sh --help`
+for usage.
+
+### Why the script resolves the default branch instead of assuming `main`
+
+**Never hardcode `origin/main`.** Not every repo uses `main` — `master` is still common, and some
+repos use `develop` or `trunk`. A `main`-hardcoded triage fails two different ways:
+
+| Repo state | What happens |
+| --- | --- |
+| No `origin/main` ref at all | `fatal: malformed object name origin/main` — aborting the diagnostic with no branch listing |
+| `origin/main` exists but is not the default (stale or abandoned) | No error. The merged list is computed against the wrong base and is **silently wrong** — the dangerous case, since it feeds branch deletions |
+
+The script resolves `origin/HEAD` per repo, repairs it with `git remote set-head origin --auto`
+when absent (a **local** ref write — it mutates nothing on the remote), and **stops with `!!` if
+it still cannot resolve.** It never falls back to `main`. If you see that, ask the developer which
+branch is the default rather than guessing.
+
+Below, `$DEFAULT_REF` means the remote-tracking default the script reported (e.g. `origin/master`)
+and `$DEFAULT_BRANCH` the bare name (e.g. `master`). Substitute the reported values — never the
+literal string `main`.
 
 **Reading the output:**
 
 | Section | What it means |
 | --- | --- |
-| `=== MERGED ===` block | Branches **fully merged into main on origin** — flag these; skip them in Phases 2–4; candidates for deletion |
+| `=== DEFAULT: … ===` | The resolved default branch for that repo. Check it before acting — this is what everything else is measured against. |
+| `=== MERGED … ===` block | Branches **fully merged into `$DEFAULT_REF`** — flag these; skip them in Phases 2–4; candidates for deletion |
+| `=== CURRENT BRANCH ===` | The branch you are on, reported separately because `MERGED` filters it out. `ahead=0` means it is merged and is itself a deletion candidate. |
+| `=== WORKING TREE ===` | `clean`, or the dirty files. Do not start Phases 2–4 with uncommitted work you care about. |
 | `branch\|origin/branch\|` (no track) | In sync with origin |
 | `branch\|origin/branch\|[behind N]` | Stale local — pull needed (Phase 2) |
 | `branch\|origin/branch\|[ahead N]` | Local is ahead of origin — push needed (out of scope) |
@@ -47,14 +66,18 @@ git fetch --prune origin && \
 
 **Present a triage table to the developer before proceeding:**
 
+State the resolved default branch in the table header so the developer can see it was not assumed:
+
 ```
+Default branch: master (origin/master)
+
 Branch              | Merged? | Status       | Action
 --------------------|---------|--------------|-----------------------------
-feature/my-work     | No      | In sync      | Merge main only
+feature/my-work     | No      | In sync      | Merge default only
 docs/old-stuff      | YES     | —            | Skip — merged, flag for delete
-chore/update        | No      | Behind 3     | Pull then merge main
+chore/update        | No      | Behind 3     | Pull then merge default
 fix/bug             | No      | Diverged     | Flag — manual review needed
-docs/missed-branch  | No      | No upstream, remote exists, ahead 12 | Merge main; push with `-u`
+docs/missed-branch  | No      | No upstream, remote exists, ahead 12 | Merge default; push with `-u`
 ```
 
 Confirm the plan with the developer before Phase 2.
@@ -81,7 +104,7 @@ If `=== SAME-NAME ORIGIN WITHOUT UPSTREAM ===` reports `origin/<branch>` exists,
 git checkout <branch> && git pull --ff-only origin <branch> && echo "PULLED_OK" || echo "PULL_FAILED"
 ```
 
-- `behind = 0` and `ahead > 0` → remote exists and local is ahead; merge `main` in Phase 3, then push with upstream set:
+- `behind = 0` and `ahead > 0` → remote exists and local is ahead; merge `$DEFAULT_REF` in Phase 3, then push with upstream set:
 
 ```sh
 git push -u origin <branch>
@@ -98,18 +121,18 @@ If the remote merge conflicts, resolve it in place using the same no-abort rule 
 
 ---
 
-## Phase 3 — Merge main into active branches
+## Phase 3 — Merge the default branch into active branches
 
 For each branch that is **not** in the merged list and not flagged for manual review:
 
 ```sh
-git checkout <branch> && git merge origin/main --no-edit && echo "DONE_CLEAN" || echo "CONFLICTS"
+git checkout <branch> && git merge "$DEFAULT_REF" --no-edit && echo "DONE_CLEAN" || echo "CONFLICTS"
 ```
 
 **Conflict resolution — in-place only (never abort):**
 
 ```sh
-# Take main's version for known conflict files:
+# Take the default branch's version for known conflict files:
 git checkout --theirs <file1> <file2>
 git add -A
 git commit --no-edit
@@ -132,13 +155,15 @@ git push -u origin <branch>
 After all merges, print a summary:
 
 ```
-Branch              | Merged into main? | Was stale? | Merge result
---------------------|-------------------|------------|-------------
-feature/my-work     | No                | No         | ✅ Clean
-chore/update        | No                | Yes        | ✅ Clean
-docs/missed-branch  | No                | No upstream, remote existed | ✅ Clean + upstream set
-docs/old-stuff      | YES — delete?     | —          | Skipped
-fix/bug             | No                | Diverged   | ⚠️ Manual
+Default branch: master (origin/master)
+
+Branch              | Merged into default? | Was stale? | Merge result
+--------------------|----------------------|------------|-------------
+feature/my-work     | No                   | No         | ✅ Clean
+chore/update        | No                   | Yes        | ✅ Clean
+docs/missed-branch  | No                   | No upstream, remote existed | ✅ Clean + upstream set
+docs/old-stuff      | YES — delete?        | —          | Skipped
+fix/bug             | No                   | Diverged   | ⚠️ Manual
 ```
 
 Offer to delete the flagged merged branches if the developer confirms.
@@ -173,31 +198,28 @@ fix/shipped     | YES     | true       | ✅ Done      | ⛔ Skipped — protect
 
 ## Multi-repo usage
 
-Run Phase 1 for all repos first (read-only), aggregate the triage tables, then do Phases 2–4 one repo at a time. This batches all planning before any checkout switches happen.
+Triage every repo first (read-only), aggregate the tables, then do Phases 2–4 one repo at a time.
+This batches all planning before any checkout switches happen.
 
-```sh
-for repo in <path1> <path2> <path3>; do
-  echo "====== REPO: $repo ======"
-  cd "$repo" && \
-    git fetch --prune origin && \
-    echo "=== MERGED ===" && \
-    (git branch --merged origin/main | grep -vE '^\*|^  main$|^  master$' || true) && \
-    echo "=== ALL BRANCHES ===" && \
-    git for-each-ref \
-      --format='%(refname:short)|%(upstream:short)|%(upstream:track)' \
-      refs/heads/ && \
-    echo "=== SAME-NAME ORIGIN WITHOUT UPSTREAM ===" && \
-    for branch in $(git for-each-ref --format='%(refname:short)' refs/heads/); do \
-      upstream=$(git for-each-ref --format='%(upstream:short)' "refs/heads/$branch"); \
-      if [[ -z "$upstream" ]] && git show-ref --verify --quiet "refs/remotes/origin/$branch"; then \
-        counts=$(git rev-list --left-right --count "origin/$branch...$branch"); \
-        behind=$(echo "$counts" | awk '{print $1}'); \
-        ahead=$(echo "$counts" | awk '{print $2}'); \
-        echo "$branch|origin/$branch|[same-name remote, no upstream]|behind=$behind|ahead=$ahead"; \
-      fi; \
-    done
-done
+```bash
+scripts/triage.sh /path/to/repo-a /path/to/repo-b /path/to/repo-c
 ```
+
+The script resolves the default branch **per repo** — a workspace routinely mixes `main` and
+`master`, and one unresolvable repo does not abort the sweep of the rest.
+
+---
+
+## Files
+
+| Path | What it does |
+| --- | --- |
+| `scripts/triage.sh` | Phase 1 — fetch, resolve default branch, print the read-only triage report. One repo or many. |
+
+Phases 2–4 are single git commands run one branch at a time, with a developer decision between
+each. They are written out inline below rather than scripted, deliberately: they check out,
+merge, push and delete, so each one should be read and approved on its own rather than executed
+in a batch you cannot inspect.
 
 ---
 
