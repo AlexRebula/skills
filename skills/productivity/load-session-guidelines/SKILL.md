@@ -96,6 +96,31 @@ Before committing any skill change, verify:
 - [ ] No personal email addresses, GIDs, or account identifiers
 - [ ] Any project-specific paths or commands are marked as **⚙️ Configurable**
 
+## Step 6 — Skill authoring: no inline scripts (always active)
+
+**Multi-line shell belongs in a script file, never inlined in SKILL.md.**
+
+- Anything longer than a single command goes in `scripts/<name>.sh` beside SKILL.md. SKILL.md
+  calls it and documents its arguments, output sections and exit codes.
+- A single command may stay inline. A one-liner the developer reads and approves before running
+  is documentation, not a script — and steps that check out, merge, push or delete **should**
+  stay inline so each is approved individually rather than executed in an uninspectable batch.
+- **Never write `&&`-chained, backslash-continued blocks.** They are unreviewable and
+  undebuggable: no line numbers, no way to run one step in isolation, and a failure anywhere
+  silently kills the rest of the chain.
+- Scripts must be legible to a human: `#!/usr/bin/env bash`, a header comment giving
+  purpose/usage/exit codes, named functions, quoted variables, one command per line, `--help`.
+- **Never duplicate the same logic in two code blocks in one SKILL.md.** If two phases need it,
+  it is a script that takes arguments. Duplicated blocks drift out of sync.
+- Before claiming a script works, run it — against a real repo or a throwaway fixture that
+  exercises the failure paths, not just the happy path.
+
+**Why:** SKILL.md is simultaneously agent instructions and a document a human reviews and debugs.
+Inline chained blocks fail the human half completely.
+
+Reference implementation: `skills/git/sync-branches` — `scripts/triage.sh` holds the logic,
+SKILL.md documents and calls it, and the destructive phases stay inline as single commands.
+
 ## Done
 
 Confirm: "Session guidelines loaded ✓" then proceed with the user's task.
