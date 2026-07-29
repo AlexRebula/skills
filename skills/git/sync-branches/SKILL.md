@@ -10,23 +10,30 @@ repo or many, including a mix of `main` and `master` repos in the same sweep.
 
 ## Phase 1 — Triage (read-only, no checkout switches)
 
-Run `scripts/triage.sh`. It fetches, resolves each repo's default branch, and prints everything
-needed to plan Phases 2–4. It never checks out, merges, pushes, commits, or deletes a branch.
+Run `triage.sh`. It fetches, resolves each repo's default branch, and prints everything needed to
+plan Phases 2–4. It never checks out, merges, pushes, commits, or deletes a branch.
+
+> **Locating the script.** `scripts/triage.sh` sits **next to this file, in the skill directory** —
+> not in the repo you are triaging. Because you run it from the target repo, a bare
+> `scripts/triage.sh` resolves against the wrong root and fails. Always invoke it by full path.
+> Substitute your own skill directory for `$SKILL` below; for a default install that is
+> `~/.claude/skills/sync-branches`.
 
 ```bash
-scripts/triage.sh
+"$SKILL/scripts/triage.sh"
 ```
 
 For several repos at once — pass every path in one call so all planning happens before any
-checkout switches:
+checkout switches. The paths are arguments, so you do not need to `cd` anywhere:
 
 ```bash
-scripts/triage.sh /path/to/repo-a /path/to/repo-b /path/to/repo-c
+"$SKILL/scripts/triage.sh" /path/to/repo-a /path/to/repo-b /path/to/repo-c
 ```
 
-Exit codes: `0` all repos triaged · `2` at least one repo could not be triaged (look for `!!`
-lines; the sweep continues past a failure rather than aborting). Run `scripts/triage.sh --help`
-for usage.
+Diagnostics (`!!` lines) go to **stderr**; the report goes to **stdout**, so keep stderr visible —
+do not discard it. Exit codes: `0` all repos triaged · `2` at least one repo could not be triaged
+(the sweep continues past a failure rather than aborting). Run `"$SKILL/scripts/triage.sh" --help`
+for usage — note `--help` is only recognised as the first argument.
 
 ### Why the script resolves the default branch instead of assuming `main`
 
@@ -35,13 +42,23 @@ repos use `develop` or `trunk`. A `main`-hardcoded triage fails two different wa
 
 | Repo state | What happens |
 | --- | --- |
-| No `origin/main` ref at all | `fatal: malformed object name origin/main` — aborting the diagnostic with no branch listing |
-| `origin/main` exists but is not the default (stale or abandoned) | No error. The merged list is computed against the wrong base and is **silently wrong** — the dangerous case, since it feeds branch deletions |
+| No `origin/main` ref at all | `fatal: malformed object name origin/main` on stderr — but the diagnostic **does not stop**. The `\|\| true` guard forces success, so the branch listing still prints and the whole chain exits `0` |
+| `origin/main` exists but is not the default (stale or abandoned) | No error at all. The merged list is computed against the wrong base |
 
-The script resolves `origin/HEAD` per repo, repairs it with `git remote set-head origin --auto`
-when absent (a **local** ref write — it mutates nothing on the remote), and **stops with `!!` if
-it still cannot resolve.** It never falls back to `main`. If you see that, ask the developer which
-branch is the default rather than guessing.
+Both cases are the same defect: a **wrong answer with no failure signal**. That is the dangerous
+part, because the merged list feeds branch deletions.
+
+The script resolves `origin/HEAD` per repo. Because **`origin/HEAD` is written at clone time and is
+never updated by `git fetch`** — not even with `--prune` — a ref left behind after the remote's
+default branch moved still resolves cleanly and is silently wrong. So the script runs
+`git remote set-head origin --auto` **unconditionally**, not only when the ref is missing: that
+re-queries the remote and rewrites the **local** ref, mutating nothing on the remote. If the ref
+was stale, it says so on stderr rather than correcting it quietly.
+
+It **stops with `!!` if it cannot resolve**, and never falls back to `main`. If the remote cannot be
+reached, an existing local value is treated as unverified and is deliberately **not** used — the
+repo is skipped, because a stale answer here is worse than no answer. If you see that, ask the
+developer which branch is the default rather than guessing.
 
 Below, `$DEFAULT_REF` means the remote-tracking default the script reported (e.g. `origin/master`)
 and `$DEFAULT_BRANCH` the bare name (e.g. `master`). Substitute the reported values — never the
@@ -202,7 +219,7 @@ Triage every repo first (read-only), aggregate the tables, then do Phases 2–4 
 This batches all planning before any checkout switches happen.
 
 ```bash
-scripts/triage.sh /path/to/repo-a /path/to/repo-b /path/to/repo-c
+"$SKILL/scripts/triage.sh" /path/to/repo-a /path/to/repo-b /path/to/repo-c
 ```
 
 The script resolves the default branch **per repo** — a workspace routinely mixes `main` and
@@ -214,7 +231,10 @@ The script resolves the default branch **per repo** — a workspace routinely mi
 
 | Path | What it does |
 | --- | --- |
-| `scripts/triage.sh` | Phase 1 — fetch, resolve default branch, print the read-only triage report. One repo or many. |
+| [`scripts/triage.sh`](scripts/triage.sh) | Phase 1 — fetch, resolve default branch, print the read-only triage report. One repo or many. |
+
+Paths in this table are relative to the **skill directory**, not to the repo being triaged. Invoke
+by full path — see [Phase 1](#phase-1--triage-read-only-no-checkout-switches).
 
 Phases 2–4 are single git commands run one branch at a time, with a developer decision between
 each. They are written out inline below rather than scripted, deliberately: they check out,
