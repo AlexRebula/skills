@@ -25,7 +25,6 @@ Skills specific to this fork, not in the upstream mattpocock/skills repo.
 
 - **[asana-sync](./asana-sync/SKILL.md)** — Opt-in Asana sync for morning briefs: locate or bootstrap `.asana-config.json`, create the Morning Briefs section if missing, seed tasks with full metadata, post a Status Update, and log results back to the brief file.
 - **[audit-issue](./audit-issue/SKILL.md)** — Audit a GitHub issue body against a principles index and draft fixes for approval. Use when preparing an issue for a student or junior contributor.
-- **[caveman](./caveman/SKILL.md)** — Ultra-compressed communication mode. Cuts token usage ~75% by dropping filler while keeping full technical accuracy.
 - **[check-prior-work](./check-prior-work/SKILL.md)** — Scans context for a `<conversation-summary>` block and extracts earlier session work for continuity.
 - **[ingest](./ingest/SKILL.md)** — Ingest a raw source file into the personal wiki — reads the source, extracts metadata, writes a wiki/sources/ synthesis page, updates related wiki pages, and updates wiki/index.md and wiki/log.md. Add --deep to also write a long-form deep dive at wiki/deep/<slug>-deep.md.
 - **[load-session-context](./load-session-context/SKILL.md)** — Load the session index and latest wrap file; check for an existing morning brief for today.
