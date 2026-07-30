@@ -10,7 +10,7 @@
     "caveman": {
       "source": "AlexRebula/skills",
       "sourceType": "github",
-      "skillPath": "skills/productivity/caveman/SKILL.md",
+      "skillPath": "skills/personal/caveman/SKILL.md",
       "computedHash": "536908fcfcb232600a5875aa85f1fd50fd13305e9d67379bcd95f07c8c916f3f"
     },
     "create-angular-component": {
