@@ -62,6 +62,7 @@
     "./skills/productivity/wiki-lint",
     "./skills/productivity/writing-great-skills",
     "./skills/productivity/learner-history",
+    "./skills/productivity/log-incident",
     "./skills/productivity/next-issue",
     "./skills/productivity/rebuild-root-index",
     "./skills/productivity/load-session-guidelines",

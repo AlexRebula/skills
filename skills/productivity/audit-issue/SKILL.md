@@ -345,24 +345,24 @@ find . .. -maxdepth 4 -name "index.md" -path "*wiki*" -not -path "*/node_modules
 **None found → skip silently.** Never create a wiki. Offer the drafts in conversation
 instead; the user can paste them wherever their principles live.
 
-### W2 — Ask, then write raw and hand off
+### W2 — Ask, then delegate to `log-incident`
 
 ```
 File this as a principle + incident in your wiki? [yes / no / principle only]
 ```
 
-Do not write into the wiki tree directly. Write raw source files and let the wiki's own
-ingest process place them — it owns frontmatter, index and log updates, and PII redaction.
+Do not write the incident file yourself, and do not run `/ingest` on it — incidents are
+already finished, structured records (that's the whole point of the template); there is no
+unsynthesized material left for `ingest` to condense. Delegate to the `log-incident` skill
+instead, which drafts the file from this conversation, gets your approval, writes it to
+`raw/incidents/<YYYY-MM-DD>--<short-slug>.md`, updates the incidents index, and opens the PR:
 
 ```
-raw/incidents/<YYYY-MM-DD>-<short-slug>.md
+Run /log-incident to file it.
 ```
 
-Then:
-
-```
-Written to <path>. Run /ingest <path> to file it in your wiki.
-```
+The principle-only half (if the user picked that option) is still handled here as before —
+only the incident record is delegated.
 
 ### W3 — Privacy
 
