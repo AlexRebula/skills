@@ -6,12 +6,14 @@
 
 [![skills.sh](https://skills.sh/b/mattpocock/skills)](https://skills.sh/mattpocock/skills)
 
-A fork of [mattpocock/skills](https://github.com/mattpocock/skills) by [Matt Pocock](https://github.com/mattpocock). All original skills are unchanged and included here. This fork extends them with:
+A fork of [mattpocock/skills](https://github.com/mattpocock/skills) by [Matt Pocock](https://github.com/mattpocock). Every upstream skill is included here — most byte-for-byte identical, with a handful carrying my own edits (some functional, some only repo-wide Prettier formatting). This fork extends them with:
 
 - **Framework scaffolding** — React, Vue, and Angular component creation with a consistent two-phase scaffold + TDD loop
 - **Git & PR lifecycle** — WIP commits, PR creation, PR review, and morning review-debt sweeps
 - **LittleBranches org** — component scaffolding, quality-gate enforcement, and PR review workflows for the [OSS Quality Standards](https://github.com/LittleBranches/oss-quality-standards)
 - **Daily workflow** — session wrapping, Asana sync, and standup orchestration
+
+> **Before you install:** I maintain this fork solo, use it daily, and write it with AI assistance. It is not a polished product — and some skills ship with shell scripts in an area where my own experience is limited. Please read [Quality, Maintenance and Risk](#quality-maintenance-and-risk) before relying on it.
 
 ## Install
 
@@ -273,6 +275,26 @@ Tools kept around but rarely used.
 - **[migrate-to-shoehorn](./skills/misc/migrate-to-shoehorn/SKILL.md)** — Migrate test files from `as` type assertions to @total-typescript/shoehorn.
 - **[scaffold-exercises](./skills/misc/scaffold-exercises/SKILL.md)** — Create exercise directory structures with sections, problems, solutions, and explainers.
 - **[setup-pre-commit](./skills/misc/setup-pre-commit/SKILL.md)** — Set up Husky pre-commit hooks with lint-staged, Prettier, type checking, and tests.
+
+---
+
+## Quality, Maintenance and Risk
+
+**Read this before you rely on this repo.**
+
+I maintain this fork myself, daily, alongside my own work — it is not a polished product with a dedicated QA process. I use these skills every day on real projects, which is the main quality signal I can offer: if something were badly broken, I'd have hit it myself by now. I want to be upfront about the gaps rather than let you find them the hard way.
+
+**Some skills ship with accompanying shell scripts.** Shell is not my strongest area — I have far less experience writing and reviewing it than the TypeScript/React work I do daily. That means some scripts here are probably not written the way an experienced shell engineer would write them. I review everything I merge, including with AI-assisted testing and static analysis, but I can't personally vouch for shell the way I can for code in a language I know deeply.
+
+**I use AI to write and audit these skills.** I review every change to the best of my ability and available time, but mistakes or AI-generated "slop" can still creep in. **Use this repo at your own risk.** What I can tell you honestly is that I run these skills myself, every day — I can't promise perfection.
+
+**Why this fork exists in the first place:** I wanted to keep building on [Matt Pocock's original skills](https://github.com/mattpocock/skills) without being blocked on whether or when upstream adds something I need. This repo is where every skill I actually use daily lives, and it doubles as a place for me to try different LLMs and learn more about how agentic coding tools work. Because of that, skills and scripts here are expected to keep evolving — this is a living workspace I use, not a finished library.
+
+**I try to track upstream**, syncing from [mattpocock/skills](https://github.com/mattpocock/skills) regularly and keeping the original skills unchanged where I can. As this fork diverges further, staying in sync gets harder, and I'd rather say that plainly than let it go unstated.
+
+**When I hit something outside my experience** — like a shell script that needs more scrutiny than I can personally give it — I try to flag it honestly rather than quietly ship it, in line with the [OSS Quality Standards](https://github.com/LittleBranches/oss-quality-standards) I hold myself to elsewhere.
+
+If I've missed something, [please open an issue](https://github.com/AlexRebula/skills/issues) — I'd rather know.
 
 ---
 
