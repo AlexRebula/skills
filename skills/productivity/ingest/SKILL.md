@@ -248,6 +248,14 @@ For each wiki page that this source informs:
 
 Only touch pages where the source genuinely adds something. Do not touch pages where the connection is superficial.
 
+**Source-vintage rule — apply whenever a concept page is created or substantively updated from this source:** compare today's date to the source's `date_published`. If the gap is more than a few months, add (or update) a callout near the top of the concept page's definition section:
+
+```markdown
+> **Source vintage:** the underlying source ([[<slug>]]) is a <month year> <source_type>. <One sentence judging how likely the framing is to have dated — e.g. "this is a philosophy/topology debate, not a tooling one, so it's held up" vs. "this names specific tools/products in a fast-moving space — treat as a snapshot, not a current-state claim.">
+```
+
+This applies regardless of whether the topic itself feels timeless — the callout is about giving the *reader* an honest read on staleness risk, not about your own confidence that it happens to still be true. Write the judgment sentence honestly (some domains age fast, some don't) rather than defaulting to a generic hedge. Do not skip this for sources that "feel current" — dated confidence is exactly what this rule exists to catch.
+
 ---
 
 ## Step 6 — Update wiki/index.md
