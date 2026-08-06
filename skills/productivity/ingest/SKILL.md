@@ -9,7 +9,7 @@ Ingest a raw source into the wiki at `{{WIKI_ROOT}}`.
 
 - `/ingest <path>` — path to the raw source file (absolute or relative to wiki root). Required. Ask if omitted.
 - `/ingest <path> --deep` — also write a long-form deep dive at `wiki/deep/<slug>-deep.md` after the short source page.
-- `/ingest <youtube-url>` — if the argument is a YouTube URL (or no path is given but a YouTube tab is open), fetch the transcript from the browser, save it as a raw file, then ingest it. See **YouTube transcript flow** below.
+- `/ingest <youtube-url>` — if the argument is a YouTube URL (or no path is given but a YouTube tab is open), fetch the transcript, save it as a raw file, then ingest it. See **YouTube transcript flow** below.
 
 If `--deep` is passed and a source page for this file already exists, locate the existing `wiki/sources/<group>/<slug>.md` by matching its `raw_path`, read its frontmatter to recover `<slug>` and `<title>`, then skip Steps 1–7 and go straight to **Step D**.
 
@@ -20,7 +20,11 @@ If `--deep` is passed and a source page for this file already exists, locate the
 When the source is a YouTube video (URL provided, or user says "grab transcript of this video"):
 
 1. **Get the URL** — from the argument, or call `tabs_context_mcp` to find the active YouTube tab.
-2. **Fetch the transcript** — use browser automation (open the "More actions" menu below the video → the transcript panel opens → extract text via `get_page_text`).
+2. **Fetch the transcript — CLI first, browser only as fallback:**
+   1. Run `python3 "$SKILL/scripts/fetch_transcript.py" <video-url-or-id>` (substitute your own skill directory for `$SKILL`; for a default install that is `~/.claude/skills/ingest`). Requires `youtube-transcript-api` (`pip3 install youtube-transcript-api`).
+   2. **Exit 0** — parse the JSON on stdout: `transcript`, `title`, `author`, `duration`, `date_published` (any metadata field may be `null`; the transcript is what matters). Use these directly in Step 4 below — do not open a browser.
+   3. **Exit 1 or 2** (transcript disabled, video not found, or the request was blocked — e.g. a 403 from a remote/sandboxed execution environment) — fall back to browser automation: navigate to the video, open "More actions" → the transcript panel opens → extract text via `get_page_text`. Get title/author/duration/date from the page itself.
+   4. If **both** the script and the browser fail to produce a transcript, tell the user captions genuinely aren't available for this video and ask them to paste a transcript manually (e.g. from a download tool they have) — do not guess or fabricate one.
 3. **Determine the save path** using this structure:
    ```
    raw/transcripts/youtube/<topic>/<author-slug>/<video-slug>.md
