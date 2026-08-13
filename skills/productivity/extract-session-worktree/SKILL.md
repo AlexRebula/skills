@@ -105,7 +105,8 @@ what's documented to what's actually used, so prefer real precedent over a stale
 ```
 
 Copies each file, verifying byte-identical afterward. Non-destructive — the source repo is
-untouched at this point.
+untouched at this point. Regular files only — a directory or symlink isn't expanded; if a
+whole new directory belongs to bucket A, pass its member files individually.
 
 **Before reverting anything in the source, verify the copy is correct** — run the new worktree's
 own test suite / lint / build if it has one, not just a file diff, so a broken extraction is caught

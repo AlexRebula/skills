@@ -13,13 +13,15 @@
 # Arguments:
 #   source-root     Root of the shared source repo (paths below are relative to this).
 #   worktree-path   Root of the destination worktree.
-#   fileN           Repo-relative paths to copy. Only whole-file, single-owner
-#                   paths belong here — a file with interleaved content from
-#                   multiple concurrent sessions (e.g. an append-only shared
-#                   log) must NOT be passed to this script. Split those by
-#                   hand instead (see SKILL.md's "Shared append-only files"
-#                   section) — copying the whole file would drag another
-#                   session's uncommitted lines into this branch.
+#   fileN           Repo-relative paths to copy. Regular files only — a
+#                   directory or symlink is not expanded; pass its members
+#                   individually. Only whole-file, single-owner paths belong
+#                   here — a file with interleaved content from multiple
+#                   concurrent sessions (e.g. an append-only shared log) must
+#                   NOT be passed to this script. Split those by hand instead
+#                   (see SKILL.md's "Shared append-only files" section) —
+#                   copying the whole file would drag another session's
+#                   uncommitted lines into this branch.
 #
 # Exit codes:
 #   0  all files copied and verified byte-identical
@@ -34,7 +36,7 @@
 set -euo pipefail
 
 print_help() {
-  sed -n '2,26p' "$0" | sed 's/^# \{0,1\}//'
+  sed -n '2,34p' "$0" | sed 's/^# \{0,1\}//'
 }
 
 if [[ "${1:-}" == "--help" || "${1:-}" == "-h" ]]; then
@@ -51,6 +53,7 @@ fi
 source_root="$1"
 worktree_path="$2"
 shift 2
+file_count=$#
 
 for rel_path in "$@"; do
   src="$source_root/$rel_path"
@@ -72,4 +75,4 @@ for rel_path in "$@"; do
   echo "✓ copied: $rel_path"
 done
 
-echo "✓ all $# file(s) copied and verified byte-identical"
+echo "✓ all $file_count file(s) copied and verified byte-identical"

@@ -6,9 +6,10 @@
 # committed content (index + working tree); files that don't exist in HEAD
 # (new this session, whether staged or not) are unstaged and deleted.
 #
-# Only ever pass whole-file, single-owner paths here — the same rule as
-# copy-to-worktree.sh. Never pass a shared append-only file that also
-# contains another session's uncommitted lines.
+# Regular files only — a directory or symlink is not handled; pass its
+# members individually. Only ever pass whole-file, single-owner paths here —
+# the same rule as copy-to-worktree.sh. Never pass a shared append-only file
+# that also contains another session's uncommitted lines.
 #
 # Usage:
 #   revert-in-source.sh <source-root> <file1> [file2 ...]
@@ -18,13 +19,21 @@
 #   1  bad usage
 #   2  a revert left the file still dirty (unexpected — investigate before continuing)
 #
+# Partial failure: this runs under `set -e`, so a failing command partway
+# through the loop (e.g. a permission error) aborts immediately — the files
+# processed before the failure are already reverted, the rest are not, and
+# the "verifying clean" step below never runs because the script has already
+# exited. A non-zero exit from this script means: inspect what's still dirty
+# yourself and re-run with only the remaining paths, not "something is wrong
+# with every path you passed."
+#
 # Example:
 #   ./revert-in-source.sh /path/to/wiki SCHEMA.md wiki/index.md
 
 set -euo pipefail
 
 print_help() {
-  sed -n '2,20p' "$0" | sed 's/^# \{0,1\}//'
+  sed -n '2,31p' "$0" | sed 's/^# \{0,1\}//'
 }
 
 if [[ "${1:-}" == "--help" || "${1:-}" == "-h" ]]; then
@@ -40,6 +49,7 @@ fi
 
 source_root="$1"
 shift
+file_count=$#
 
 cd "$source_root"
 
@@ -69,4 +79,4 @@ if [[ -n "$dirty" ]]; then
   exit 2
 fi
 
-echo "✓ all $# file(s) confirmed clean in source repo"
+echo "✓ all $file_count file(s) confirmed clean in source repo"
