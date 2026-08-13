@@ -201,6 +201,8 @@ Before writing the source page, determine which group subfolder under `wiki/sour
 
 The resolved `<group>` is used in all subsequent steps wherever `wiki/sources/<group>/<slug>.md` appears.
 
+**New subcategory:** if this is the first page in `<group>`, Step 6 must also add a `### <group>` heading with a 1–2 sentence prose description (see `SCHEMA.md`'s Index Format section) — not just the page's index line.
+
 ---
 
 ## Step 4 — Write the source page
@@ -264,15 +266,17 @@ This applies regardless of whether the topic itself feels timeless — the callo
 
 ## Step 6 — Update wiki/index.md
 
-**First-time ingest:** add a line under `## Sources`:
+**First-time ingest:** add a line under `### <group>` (the `### <group>` subheading, under `## Sources`):
 
 ```
 - [Title](wiki/sources/<group>/<slug>.md) — one-line summary
 ```
 
+If `### <group>` doesn't exist yet (new subcategory — see Step 3.7), create it now with a 1–2 sentence prose description before the item list, per `SCHEMA.md`'s Index Format section.
+
 **Re-ingest (update or replace):** find the existing line and update it in place — do not add a duplicate.
 
-If any new concept/person/project pages were created in Step 5, add those lines to their respective sections. If those index lines already exist, leave them unchanged.
+If any new concept/person/project pages were created in Step 5, add those lines to their respective sections. If a new top-level `## Category` was created (rare), give it the same 1–2 sentence prose description. If those index lines/descriptions already exist, leave them unchanged.
 
 ---
 
