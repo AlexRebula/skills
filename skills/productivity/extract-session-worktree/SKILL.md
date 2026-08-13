@@ -20,9 +20,9 @@ a mix of files from multiple concurrent sessions and you need to extract only yo
 A stash stack is shared across every session touching the repo. Two real failure modes come from
 treating it as a per-session hand-off point:
 
-1. **Ambiguity.** `stash@{0}` could belong to any session. A prior incident
-   (`raw/incidents/2026-07-02--blind-stash-pop-recurrence.md`) shows what happens when a stash
-   belonging to unrelated work gets popped by mistake — merge conflicts, a leaked directory.
+1. **Ambiguity.** `stash@{0}` could belong to any session. A previously-recorded incident: a
+   stash belonging to unrelated work got popped by mistake, causing merge conflicts and a
+   leaked directory. Not hypothetical — this has already happened at least once.
 2. **HEAD collision.** Two sessions sharing one working directory cannot have two different
    branches checked out at once. Whichever session runs `git checkout -b` second yanks the branch
    out from under the first mid-flight.
