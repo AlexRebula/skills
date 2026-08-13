@@ -21,7 +21,16 @@ Read:
 
 ---
 
-## Step 2 — Scan all wiki pages
+## Step 2 — Scan wiki/index.md structure
+
+Before scanning individual pages, check `wiki/index.md` itself:
+
+- [ ] Every `## Category` heading and, under `## Sources`, every `### Subcategory` heading has a 1–2 sentence prose description directly beneath it (before the item list) — per `SCHEMA.md`'s Index Format section
+- [ ] Each description still accurately reflects what's actually in that category/subcategory (spot-check against the linked pages; flag if the category's content has visibly drifted from what the description claims)
+
+Missing descriptions are 🟡 Medium findings (an index gap, not misleading content); stale/inaccurate descriptions are 🔴 Critical (actively misleading, since the whole point is skipping the linked pages).
+
+## Step 3 — Scan all wiki pages
 
 Read every page listed in `wiki/index.md`. For each page, check:
 
@@ -41,7 +50,7 @@ Read every page listed in `wiki/index.md`. For each page, check:
 
 ---
 
-## Step 3 — Produce findings
+## Step 4 — Produce findings
 
 Group findings by severity:
 
@@ -68,7 +77,7 @@ Format:
 
 ---
 
-## Step 4 — Suggest next actions
+## Step 5 — Suggest next actions
 
 After findings, produce two lists:
 
@@ -86,7 +95,7 @@ After findings, produce two lists:
 
 ---
 
-## Step 5 — Apply fixes (--fix only)
+## Step 6 — Apply fixes (--fix only)
 
 If `--fix` was passed, apply these automatically without asking:
 
@@ -101,7 +110,7 @@ Ask before:
 
 ---
 
-## Step 6 — Update log
+## Step 7 — Update log
 
 Append to `wiki/log.md`:
 
@@ -117,7 +126,7 @@ If `--fix` was passed and fixes were applied:
 
 ---
 
-## Step 7 — Report
+## Step 8 — Report
 
 - Total pages scanned
 - Finding counts by severity
