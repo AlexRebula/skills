@@ -104,7 +104,10 @@ what's documented to what's actually used, so prefer real precedent over a stale
 "$SKILL/scripts/copy-to-worktree.sh" <repo-root> <worktree-path> <file1> [file2 ...]
 ```
 
-Copies each file, verifying byte-identical afterward. Non-destructive — the source repo is
+Copies each file, verifying byte-identical afterward. Handles a bucket-A file the session
+*deleted* (e.g. moved to a new path) the same way — pass it in like any other bucket-A path;
+the script detects it's missing from disk but present in the source's HEAD, and replicates
+the deletion in the worktree instead of erroring. Non-destructive — the source repo is
 untouched at this point. Regular files only — a directory or symlink isn't expanded; if a
 whole new directory belongs to bucket A, pass its member files individually.
 
