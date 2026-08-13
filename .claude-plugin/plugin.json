@@ -66,6 +66,7 @@
     "./skills/productivity/next-issue",
     "./skills/productivity/rebuild-root-index",
     "./skills/productivity/load-session-guidelines",
+    "./skills/productivity/extract-session-worktree",
     "./skills/misc/git-guardrails-claude-code",
     "./skills/misc/karpathy-guidelines",
     "./skills/misc/migrate-to-shoehorn",

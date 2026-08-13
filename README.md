@@ -263,6 +263,7 @@ General workflow tools, not code-specific.
 - **[next-issue](./skills/productivity/next-issue/SKILL.md)** — Identify, audit, and prepare the next GitHub issue for a student or apprentice. GitHub-integrated wrapper around `/audit-issue` that adds automatic issue fetching, principles file discovery, and learner progression checks via `/learner-history`.
 - **[rebuild-root-index](./skills/productivity/rebuild-root-index/SKILL.md)** — Rescan every git repo under `$AR_ROOT` and refresh the master barrel index. Diffs against a content-hash manifest so only new/changed/deleted files are re-summarized. Chained from `/ingest` or run standalone.
 - **[load-session-guidelines](./skills/productivity/load-session-guidelines/SKILL.md)** — Load all session guidelines in one go: Karpathy coding rules, OSS quality standards, and PR/branch conventions. Run at the start of every session before any user task.
+- **[extract-session-worktree](./skills/productivity/extract-session-worktree/SKILL.md)** — Split one session's uncommitted changes out of a working directory shared by multiple concurrent sessions, into its own isolated git worktree and branch, without touching any other session's pending work.
 
 ---
 
