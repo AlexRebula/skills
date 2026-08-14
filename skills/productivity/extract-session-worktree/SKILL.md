@@ -15,6 +15,11 @@ shows only files you yourself touched this session, this skill is overkill — g
 `/wip-sweep` or `/create-pr`. This skill exists specifically for the case where `git status` shows
 a mix of files from multiple concurrent sessions and you need to extract only your own slice.
 
+**Not needed if you already run one session per worktree.** This skill solves the problem of a
+single shared checkout getting dirtied by multiple concurrent sessions. If your setup already gives
+each session its own dedicated `git worktree` (one checkout, one branch, per session — no sharing),
+there's nothing to extract: `git status` in your worktree will only ever show your own files.
+
 ## Why this exists, not `git stash`
 
 A stash stack is shared across every session touching the repo. Two real failure modes come from
