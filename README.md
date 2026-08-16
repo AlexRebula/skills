@@ -6,7 +6,7 @@
 
 [![skills.sh](https://skills.sh/b/mattpocock/skills)](https://skills.sh/mattpocock/skills)
 
-A fork of [mattpocock/skills](https://github.com/mattpocock/skills) by [Matt Pocock](https://github.com/mattpocock). I try keeping my best keeping this repo up to sync with Matt's upstream, so that every his skill are included here — most byte-for-byte identical, with a handful carrying my own edits (some functional, some only repo-wide Prettier formatting). This fork extends Matt's skills with:
+A fork of [mattpocock/skills](https://github.com/mattpocock/skills) by [Matt Pocock](https://github.com/mattpocock). I try my best keeping this repo up to sync with Matt's upstream, so that every his skill are included here — most byte-for-byte identical, with a handful carrying my own edits (some functional, some only repo-wide Prettier formatting). This fork extends Matt's skills with:
 
 - **Framework scaffolding** — React, Vue, and Angular component creation with a consistent two-phase scaffold + TDD loop
 - **Git & PR lifecycle** — WIP commits, PR creation, PR review, and morning review-debt sweeps
