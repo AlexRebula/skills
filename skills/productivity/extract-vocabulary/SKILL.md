@@ -27,10 +27,12 @@ Read, in order:
 
 ## Step 1 — Extract candidate terms
 
-Scan the source (source page + raw transcript/article) for terms that would stop a non-technical person or a junior developer cold — insider tech jargon, acronyms, named patterns/techniques, tool-specific vocabulary. Concretely:
+Scan the **entire** source (source page + full raw transcript/article, start to finish — not just the parts that were quoted in the source page's takeaways) for every term, acronym, or tool/library name that would stop a *complete beginner with zero background* cold. This is a near-exhaustive bar, not a "pick the interesting ones" bar:
 
-- **Include**: domain jargon ("hypermedia", "hydration", "optimistic UI", "HATEOAS", "idempotent"), acronyms not already common English (SSR, RSC, XHR), named techniques/patterns used as shorthand
-- **Exclude**: plain English, terms already thoroughly explained inline in the source itself in a way a beginner could follow without help, terms already covered in an existing vocabulary file for the same concept (check before adding — no duplicate entries)
+- **Include**: acronyms no matter how foundational they feel to an experienced engineer (JSON, XML, DOM, UI, ESM, CommonJS, SSR, RSC, XHR), tool/library names used as jargon shorthand (Pug, Django templates, Handlebars, Alpine.js, Bun), general technical vocabulary a beginner wouldn't already have (templating engine, vanilla JS, client-side JS/code, partial, hydration, virtual DOM, meta framework, file-based routing, client-side routing, Web Components, Shadow DOM, WebSockets, Server-Sent Events), named patterns/techniques used as shorthand (hypermedia, optimistic UI, HATEOAS, idempotent)
+- **Exclude**: only the handful of names so ubiquitous that anyone even glancingly adjacent to tech already knows them (React, JavaScript, HTML, CSS, GitHub, npm), and terms already covered in an existing vocabulary file for the same concept (check before adding — no duplicate entries)
+
+**Do not stop early because you found "enough."** A single jargon-dense video can easily surface 20+ terms — that is the expected, correct result, not a sign to narrow down. If in doubt about a borderline term, include it; a false-positive entry costs a few lines, a false-negative is what this skill exists to prevent.
 
 Produce a candidate list: `term → one-line ELI5 draft → best-matching concept (existing or proposed-new)`.
 
@@ -38,13 +40,11 @@ Produce a candidate list: `term → one-line ELI5 draft → best-matching concep
 
 ## Step 2 — Match each term to a concept
 
-For each candidate term, check `wiki/index.md`'s `## Concepts` list (and skim the actual concept pages if the title alone doesn't make the match obvious) for a concept it belongs to.
+**Default every term to the concept the source itself is primarily about**, even when the term is more general-purpose than that concept's core subject (e.g. "JSON," "DOM," or "Pug" filed under `htmx-vs-spa-architecture`'s vocabulary because that's what the source is about, not because the term is inherently htmx-specific). Do not require an exact-topic match per term — that would force a new concept page for every acronym and defeats the point of a source-grounded cheat-sheet. A term only earns its *own* new concept when it's substantial and central enough to the source to deserve independent treatment (the way "Virtual DOM" did) — check `wiki/index.md`'s `## Concepts` list for one before assuming none exists.
 
-**Matched to an existing concept** → proceed automatically, no approval needed (Step 3).
+**No existing concept fits, and the term isn't a natural fit for the source's primary concept either** (e.g. a term mentioned only in an aside or joke, unconnected to what the source actually teaches) → this wiki has a strict no-orphans rule: every vocabulary term must still belong to a concept. Collect all such terms and their proposed new concept page(s) (name + one-line description of what the concept page would cover), then stop and show the user:
 
-**No existing concept fits** → this wiki has a strict no-orphans rule: every vocabulary term must belong to a concept. Collect all such terms and their proposed new concept page(s) (name + one-line description of what the concept page would cover), then stop and show the user:
-
-> "These terms don't match any existing concept and would need new concept page(s) created: `<list>`. Create them?"
+> "These terms don't match any existing concept and aren't a natural fit for this source's primary concept either — they'd need new concept page(s) created: `<list>`. Create them?"
 
 Wait for a clear go-ahead before creating any new concept page. If declined for a given term, drop it from this run (don't silently force it into an ill-fitting existing concept).
 
