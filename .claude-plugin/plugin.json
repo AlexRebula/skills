@@ -42,7 +42,6 @@
     "./skills/org/load-dependency-chain",
     "./skills/org/load-oss-standards",
     "./skills/org/respond-giselle-pr-review",
-    "./skills/org/review-giselle-pr",
     "./skills/org/sync-roadmap",
     "./skills/productivity/asana-sync",
     "./skills/productivity/check-prior-work",

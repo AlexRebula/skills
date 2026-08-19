@@ -103,12 +103,6 @@
       "skillPath": "skills/in-progress/review/SKILL.md",
       "computedHash": "fc4ca8a9495e93692282bebeb3bc99a6d46e27e2fccf4730001df98451b72f80"
     },
-    "review-giselle-pr": {
-      "source": "AlexRebula/skills",
-      "sourceType": "github",
-      "skillPath": "skills/org/review-giselle-pr/SKILL.md",
-      "computedHash": "f6254d9687297f4a414a803927915a0bdfba44d57c805b1a65f1ca6c89e3c64f"
-    },
     "review-pr": {
       "source": "AlexRebula/skills",
       "sourceType": "github",
