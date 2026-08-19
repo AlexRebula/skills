@@ -1,19 +1,46 @@
 ---
 name: log-incident
-description: Log an AI behavioural incident or workflow violation to the wiki's incidents hub — drafts the structured record from the current conversation (or from a short description), shows it for approval, then writes the file, updates the index, and opens a PR. Use when the user says /log-incident, "log this incident", or asks to record a mistake so it can be reviewed/grilled later.
+description: Log an AI behavioural incident or workflow violation to the wiki's incidents hub — drafts the structured record from the current conversation (or from a short description), shows it for approval, then writes the file, updates the index, and opens a PR. Two consumers depend on this hub existing and being current — `/session-wrap` and every new session's own startup scan — so a future session can recognize a mistake it's about to repeat. Use when the user says /log-incident, "log this incident", or asks to record a mistake so it can be reviewed/grilled later.
 ---
 
 # Log Incident
 
 Record an AI behavioural incident (a mistake, a rule violation, a recurring failure mode) as a
-structured, git-tracked file — never as an Asana task, a local memory file, or an ad-hoc raw doc.
-Incidents are postmortems, not work items: no Asana project is involved anywhere in this skill.
+structured, git-tracked file. Incidents are postmortems, not work items: no Asana project is
+involved anywhere in this skill, and nothing here is ever stored in the LLM's own built-in
+cross-session memory feature (that mechanism is out of scope entirely — this repo has separately,
+repeatedly forbidden relying on it; see the incidents this hub already holds about it). The record
+lives in the user's own chosen structured store instead — a wiki repo by default in this setup, or
+whatever equivalent the user designates (see Step 0's fallback if no such store exists yet). Never
+as an ad-hoc raw doc with no index, either — the whole point is that it's findable later, by both a
+human and a future session, not just written down once and forgotten.
+
+## Purpose — why this hub has two consumers, not one
+
+This isn't just a postmortem log for a human to read later. It has two live consumers:
+
+1. **`/session-wrap`** references it when closing out a session, so incidents surfaced during that
+   session are captured, not lost.
+2. **Every new session, at its own startup**, is expected to scan the index for open incidents
+   relevant to the work ahead — *before* acting, not after making the same mistake again. An
+   incident that sits in this hub but is never actually re-read at the start of the next relevant
+   session has done nothing to prevent a recurrence; the write is only half the point.
+
+**Worked example of exactly the failure mode this exists to catch:** a session asked "want me to
+push this?", got no direct answer, and the user instead invoked a different skill
+(`/session-wrap`). The session treated that as license to proceed — it committed, merged, and
+pushed to a shared branch with no further confirmation, reading an unrelated answer to a *different*
+question as if it covered the push too. That specific pattern — assuming a green light because a
+question went unanswered and the user moved on to something else, rather than treating the original
+question as still open — is exactly the class of mistake a future session should catch by reading
+this hub first, not repeat because nobody looked.
 
 ## Prerequisites
 
-- The wiki repo exists somewhere on disk and contains `raw/incidents/incidents-index.md`. See
-  **Step 0** below for how to find it without assuming a fixed path.
-- `gh` is authenticated for that repo.
+- Ideally a wiki repo already exists somewhere on disk containing `raw/incidents/incidents-index.md`.
+  See **Step 0** below for how to find it without assuming a fixed path — and for what to do when no
+  such store exists yet at all.
+- `gh` is authenticated for whichever repo ends up hosting the incident.
 
 ## Arguments
 
@@ -23,7 +50,7 @@ reporting something that happened in a past session). Falls back to asking for t
 
 ---
 
-## Step 0 — Locate the wiki repo
+## Step 0 — Locate (or establish) the incident store
 
 Do not hardcode a path. Resolve `WIKI_ROOT` the same way `resolve-ai-paths` resolves other roots:
 
@@ -33,9 +60,15 @@ Do not hardcode a path. Resolve `WIKI_ROOT` the same way `resolve-ai-paths` reso
    `raw/incidents/incidents-index.md`.
    - **One result** → announce `"Detected wiki repo: <path>"` and proceed.
    - **Multiple results** → list all candidates and ask which one to use.
-   - **No result** → ask the user for the path. Do not assume a folder named `wiki` exists, and do
-     not assume any particular parent directory structure — this skill must work regardless of how
-     the user's workspace is laid out.
+   - **No result at all — this user has no wiki-style incident store anywhere:** do not assume one
+     must exist, and do not silently default to any fallback (and never, under any circumstances,
+     the LLM's own built-in cross-session memory feature — that is not a valid answer here, full
+     stop). Ask the user directly how they want incidents like this stored for their setup: a new
+     `raw/incidents/` structure in an existing repo they name, a different existing log/journal
+     they already keep, or something else entirely. Whatever they choose, confirm the exact path
+     and file format before writing anything, and treat their answer as the durable `WIKI_ROOT` for
+     this and future runs — this skill must work regardless of how the user's workspace is laid
+     out, including for a user who has never set up a wiki at all.
 
 ## Step 1 — Draft the incident
 
