@@ -12,6 +12,7 @@ A fork of [mattpocock/skills](https://github.com/mattpocock/skills) by [Matt Poc
 - **Git & PR lifecycle** — WIP commits, PR creation, PR review, and morning review-debt sweeps
 - **LittleBranches org** — component scaffolding, quality-gate enforcement, and PR review workflows for the [OSS Quality Standards](https://github.com/LittleBranches/oss-quality-standards)
 - **Daily workflow** — session wrapping, Asana sync, and standup orchestration
+- **Apprentice mentoring** — issue auditing, learner-history tracking, and next-issue sequencing for a student or apprentice contributor
 
 > **Before you install:** I maintain this fork solo, use it daily, and write it with AI assistance. It is not a polished product — and some skills ship with shell scripts in an area where my own experience is limited. Please read [Quality, Maintenance and Risk](#quality-maintenance-and-risk) before relying on it.
 
@@ -162,9 +163,9 @@ Skills I use daily for code work.
 
 **User-invoked**
 
-- **[ask-matt](./skills/engineering/ask-matt/SKILL.md)** — Ask which skill or flow fits your situation. A router over the user-invoked skills in this repo.
+- **[ask-matt](./skills/engineering/ask-matt/SKILL.md)** — Ask which skill or flow fits your situation. A router over the whole skill set in this repo.
 - **[grill-with-docs](./skills/engineering/grill-with-docs/SKILL.md)** — Grilling session that also builds your project's domain model, sharpening terminology and updating `CONTEXT.md` and ADRs inline.
-- **[triage](./skills/engineering/triage/SKILL.md)** — Move issues through a state machine of triage roles.
+- **[triage](./skills/engineering/triage/SKILL.md)** — Move issues — and, where configured, external PRs — through a state machine of triage roles: categorise, verify, grill if needed, write agent-ready briefs.
 - **[improve-codebase-architecture](./skills/engineering/improve-codebase-architecture/SKILL.md)** — Scan a codebase for deepening opportunities, present them as a visual HTML report, then grill through whichever one you pick.
 - **[setup-matt-pocock-skills](./skills/engineering/setup-matt-pocock-skills/SKILL.md)** — Configure this repo for the engineering skills (issue tracker, triage labels, domain doc layout). Run once per repo before using the other engineering skills.
 - **[start-issue](./skills/engineering/start-issue/SKILL.md)** — Bootstrap a session from a GitHub issue number: reads the issue, checks blockers, loads codebase context, and routes to `/tdd` or `/grill-me` based on the triage label.
@@ -209,7 +210,7 @@ Skills for the full git and PR lifecycle — from discovering what needs committ
 - **[repo-status](./skills/git/repo-status/SKILL.md)** — Discover all workspace repos dynamically and produce a dirty-state table (repo, branch, dirty file count, clean/uncommitted status).
 - **[respond-pr-review](./skills/git/respond-pr-review/SKILL.md)** — Respond to an existing Copilot PR review in any repo: gather every thread, reply inline before fixing, batch valid fixes into one commit, and post SHA follow-ups.
 - **[review-pr](./skills/git/review-pr/SKILL.md)** — Review an open GitHub PR on two axes — Standards (does the code follow the repo's own conventions?) and Spec (does it match the originating issue/PRD?). Posts findings via the GitHub PR Reviews API with inline line comments.
-- **[sync-branches](./skills/git/sync-branches/SKILL.md)** — Fetch latest main, flag already-merged branches, pull each stale branch from origin, then merge main into every active branch. Works on one repo or many.
+- **[sync-branches](./skills/git/sync-branches/SKILL.md)** — Resolve each repo's default branch (main, master, or other), fetch latest, flag already-merged branches, pull each stale branch from origin, then merge the default branch into every active branch. Works on one repo or many.
 - **[wip-sweep](./skills/git/wip-sweep/SKILL.md)** — Scope selection + tiered WIP commit/push/PR model (T1 scope → T2 local commit → T3 push → T4 draft PRs) with confirmation gates at each tier.
 
 ---
@@ -249,16 +250,17 @@ General workflow tools, not code-specific.
 - **[asana-sync](./skills/productivity/asana-sync/SKILL.md)** — Opt-in Asana sync for morning briefs: locate or bootstrap `.asana-config.json`, create the Morning Briefs section if missing, seed tasks with full metadata, post a Status Update, and log results back to the brief file.
 - **[check-prior-work](./skills/productivity/check-prior-work/SKILL.md)** — Scans context for a `<conversation-summary>` block and extracts earlier session work for continuity.
 - **[ingest](./skills/productivity/ingest/SKILL.md)** — Ingest a raw source file into the personal wiki — reads the source, extracts metadata, writes a wiki/sources/ synthesis page, updates related wiki pages, and updates wiki/index.md and wiki/log.md. Add --deep to also write a long-form deep dive at wiki/deep/<slug>-deep.md.
-- **[extract-vocabulary](./skills/productivity/extract-vocabulary/SKILL.md)** — Companion to `/ingest`: pull jargon out of an already-ingested source and file it into a per-concept vocabulary cheat-sheet (ELI5/junior-dev level), cross-linked from the concept page, a flat A–Z barrel index, and the source page. Opt-in — run manually on jargon-heavy sources, not every ingest.
+- **[extract-vocabulary](./skills/productivity/extract-vocabulary/SKILL.md)** — Companion to `/ingest`: pull jargon out of an already-ingested source and file each term into its own vocabulary file under the owning concept's folder (ELI5/junior-dev level), cross-linked from the concept page, a flat A–Z barrel index, and the source page. Opt-in — run manually on jargon-heavy sources, not every ingest.
 - **[load-session-context](./skills/productivity/load-session-context/SKILL.md)** — Load the session index and latest wrap file; check for an existing morning brief for today.
 - **[collapse-session-folder](./skills/productivity/collapse-session-folder/SKILL.md)** — Collapse all same-day session wrap folders into one combined folder. Repairs → Next footer links and updates sessions-index.md. Called automatically by /session-wrap.
-- **[resolve-ai-paths](./skills/productivity/resolve-ai-paths/SKILL.md)** — Resolve `SESSIONS_ROOT` and `PROMPTS_ROOT` for AI workflow skills. Call this at the start of any skill that reads/writes sessions or prompts folders.
+- **[resolve-ai-paths](./skills/productivity/resolve-ai-paths/SKILL.md)** — Resolve `SESSIONS_ROOT`, `PROMPTS_ROOT`, `MORNING_BRIEFS_ROOT`, and `SKILLS_ROOT` for AI workflow skills. Call this at the start of any skill that reads/writes the sessions, morning-briefs, prompts, or skills-repo folders.
 - **[query](./skills/productivity/query/SKILL.md)** — Answer a question using the personal wiki — reads the index, drills into relevant pages, synthesises an answer with citations, and optionally files the answer as a new wiki page.
 - **[session-wrap](./skills/productivity/session-wrap/SKILL.md)** — Write a session wrap doc, update the session index, and hand off to `/wip-sweep`. More powerful sibling of `/handoff`. Use at context >55% or after completing major work.
 - **[standup-prep](./skills/productivity/standup-prep/SKILL.md)** — Daily session startup coordinator. Runs preflight → session context → repo status + WIP sweep → open PR sweep → morning brief → file write → Asana sync.
 - **[standup-prep-preflight](./skills/productivity/standup-prep-preflight/SKILL.md)** — Composite pre-flight: runs `/check-prior-work`, `/load-oss-standards`, and `/load-dependency-chain` in sequence.
 - **[wiki-lint](./skills/productivity/wiki-lint/SKILL.md)** — Health-check the personal wiki — scans for contradictions, orphan pages, stale claims, missing cross-references, and data gaps. Produces a prioritised finding list and suggests next ingests.
 - **[learner-history](./skills/productivity/learner-history/SKILL.md)** — Build a factual, source-verified history of a learner's GitHub issue work across an org. Call this before `/audit-issue` or `/next-issue` to establish what concepts the learner has already encountered and at what quality.
+- **[audit-issue](./skills/productivity/audit-issue/SKILL.md)** — Audit a GitHub issue body against a principles index and draft fixes for approval before touching GitHub. Paste the issue body and your principles directly in chat — no `gh` CLI or file paths required. The lower-level primitive that `/next-issue` wraps with automatic issue fetching.
 - **[log-incident](./skills/productivity/log-incident/SKILL.md)** — Log an AI behavioural incident or workflow violation to the wiki's incidents hub. Drafts the structured record from the current conversation, gets approval, then writes the file, updates the index, and opens a PR. No Asana involved.
 - **[next-issue](./skills/productivity/next-issue/SKILL.md)** — Identify, audit, and prepare the next GitHub issue for a student or apprentice. GitHub-integrated wrapper around `/audit-issue` that adds automatic issue fetching, principles file discovery, and learner progression checks via `/learner-history`.
 - **[rebuild-root-index](./skills/productivity/rebuild-root-index/SKILL.md)** — Rescan every git repo under `$AR_ROOT` and refresh the master barrel index. Diffs against a content-hash manifest so only new/changed/deleted files are re-summarized. Chained from `/ingest` or run standalone.
@@ -276,6 +278,17 @@ Tools kept around but rarely used.
 - **[migrate-to-shoehorn](./skills/misc/migrate-to-shoehorn/SKILL.md)** — Migrate test files from `as` type assertions to @total-typescript/shoehorn.
 - **[scaffold-exercises](./skills/misc/scaffold-exercises/SKILL.md)** — Create exercise directory structures with sections, problems, solutions, and explainers.
 - **[setup-pre-commit](./skills/misc/setup-pre-commit/SKILL.md)** — Set up Husky pre-commit hooks with lint-staged, Prettier, type checking, and tests.
+
+---
+
+## Personal
+
+Skills tied to my own setup — not promoted in the plugin, since they assume my own tools and data layout.
+
+- **[anonimise](./skills/personal/anonimise/SKILL.md)** — Anonymise sensitive personal data in wiki files using `{{SCREAMING_SNAKE_CASE}}` placeholders, with real values stored locally in a gitignored vault file. Also resolves placeholders back for local-context work.
+- **[caveman](./skills/personal/caveman/SKILL.md)** — Ultra-compressed communication mode. Cuts token usage ~75% by dropping filler while keeping full technical accuracy.
+- **[edit-article](./skills/personal/edit-article/SKILL.md)** — Edit and improve articles by restructuring sections, improving clarity, and tightening prose.
+- **[obsidian-vault](./skills/personal/obsidian-vault/SKILL.md)** — Search, create, and manage notes in an Obsidian vault with wikilinks and index notes.
 
 ---
 
