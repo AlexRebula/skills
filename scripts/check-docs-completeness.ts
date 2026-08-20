@@ -2,9 +2,8 @@
 /**
  * check-docs-completeness.ts
  *
- * Standalone reporting tool (not a build gate — see LittleBranches/wiki#522
- * for the later ticket that wires a check like this into CI once all content
- * has landed).
+ * Standalone reporting tool, not yet wired into CI as a build gate. That
+ * wiring is a separate later step, blocked on all docs content landing first.
  *
  * For each of the 7 target skill categories, enumerates every skill folder
  * that contains a SKILL.md, and checks whether a corresponding docs page
