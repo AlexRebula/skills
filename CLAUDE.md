@@ -1,9 +1,9 @@
-## ⚠️ PUBLIC REPOSITORY — read before writing anything
+## ⚠️ PUBLIC REPOSITORY: read before writing anything
 
 This repo is a **public fork** of [Matt Pocock's skills repo](https://github.com/total-typescript/skills).
 It is published and installable by anyone: `npx skills@latest add AlexRebula/skills`.
 
-**Rules — non-negotiable:**
+**Rules, non-negotiable:**
 
 - **PR descriptions and commit messages must be written for a public audience.** Assume a
   stranger to the project is reading them. No unexplained internal jargon, no references to
@@ -20,15 +20,15 @@ It is published and installable by anyone: `npx skills@latest add AlexRebula/ski
 
 Skills are organized into bucket folders under `skills/`:
 
-- `engineering/` — framework-agnostic code craft and architecture
-- `framework/` — framework-specific scaffolding (React, Vue, Angular)
-- `git/` — git and PR lifecycle operations
-- `org/` — LittleBranches organisation-specific skills
-- `productivity/` — daily non-code workflow tools
-- `misc/` — kept around but rarely used, not promoted
-- `personal/` — tied to my own setup, not promoted
-- `in-progress/` — drafts not yet ready to ship
-- `deprecated/` — no longer used
+- `engineering/`: framework-agnostic code craft and architecture
+- `framework/`: framework-specific scaffolding (React, Vue, Angular)
+- `git/`: git and PR lifecycle operations
+- `org/`: LittleBranches organisation-specific skills
+- `productivity/`: daily non-code workflow tools
+- `misc/`: kept around but rarely used, not promoted
+- `personal/`: tied to my own setup, not promoted
+- `in-progress/`: drafts not yet ready to ship
+- `deprecated/`: no longer used
 
 Every skill in `engineering/`, `framework/`, `git/`, `org/`, or `productivity/` (the **promoted**
 buckets) must have a reference in the top-level `README.md` and an entry in
@@ -57,6 +57,11 @@ To (re)link every skill into the local harness skill directories (`~/.claude/ski
 `~/.agents/skills`), run `scripts/link-skills.sh`. Each entry is a symlink into this repo, so a
 `git pull` keeps installed skills current; re-run the script after adding, removing, or renaming a
 skill.
+
+No em-dashes anywhere in this repo's prose (`SKILL.md` files, docs, `README.md`,
+`CHANGELOG.md`, ADRs, changesets, code comments). Where a sentence reaches for one, rewrite it
+instead with a comma, colon, period, parentheses, or a conjunction, whichever the sentence
+actually wants; never do a blind character substitution.
 
 ## AI Reviewer Instructions
 
