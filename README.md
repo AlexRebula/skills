@@ -22,7 +22,7 @@ A fork of [mattpocock/skills](https://github.com/mattpocock/skills) by [Matt Poc
 npx skills@latest add AlexRebula/skills
 ```
 
-Then run `/setup-matt-pocock-skills` once per repo to configure the issue tracker, domain docs, and triage labels.
+Then run `/setup-engineering-skills` once per repo to configure the issue tracker, domain docs, and triage labels.
 
 ---
 
@@ -44,7 +44,7 @@ claude plugin marketplace add AlexRebula/skills
 claude plugin install alexrebula-skills@AlexRebula
 ```
 
-Then run `/setup-matt-pocock-skills` once per repo, exactly as in the quickstart above.
+Then run `/setup-engineering-skills` once per repo, exactly as in the quickstart above.
 
 Two ways to install, two philosophies:
 
@@ -167,7 +167,7 @@ Skills I use daily for code work.
 - **[grill-with-docs](./skills/engineering/grill-with-docs/SKILL.md)** — Grilling session that also builds your project's domain model, sharpening terminology and updating `CONTEXT.md` and ADRs inline.
 - **[triage](./skills/engineering/triage/SKILL.md)** — Move issues — and, where configured, external PRs — through a state machine of triage roles: categorise, verify, grill if needed, write agent-ready briefs.
 - **[improve-codebase-architecture](./skills/engineering/improve-codebase-architecture/SKILL.md)** — Scan a codebase for deepening opportunities, present them as a visual HTML report, then grill through whichever one you pick.
-- **[setup-matt-pocock-skills](./skills/engineering/setup-matt-pocock-skills/SKILL.md)** — Configure this repo for the engineering skills (issue tracker, triage labels, domain doc layout). Run once per repo before using the other engineering skills.
+- **[setup-engineering-skills](./skills/engineering/setup-engineering-skills/SKILL.md)** — Configure this repo for the engineering skills (issue tracker, triage labels, domain doc layout). Run once per repo before using the other engineering skills.
 - **[start-issue](./skills/engineering/start-issue/SKILL.md)** — Bootstrap a session from a GitHub issue number: reads the issue, checks blockers, loads codebase context, and routes to `/tdd` or `/grill-me` based on the triage label.
 - **[sync](./skills/engineering/sync/SKILL.md)** — Bidirectional sync between configured Asana projects and their local markdown files. Pulls new/updated tasks, pushes local changes, resolves conflicts (local wins).
 - **[to-spec](./skills/engineering/to-spec/SKILL.md)** — Turn the current conversation into a spec and publish it to the issue tracker. No interview — just synthesizes what you've already discussed.
@@ -185,6 +185,7 @@ Skills I use daily for code work.
 - **[codebase-design](./skills/engineering/codebase-design/SKILL.md)** — Shared discipline and vocabulary for designing deep modules: a lot of behaviour behind a small interface, placed at a clean seam, testable through that interface.
 - **[code-review](./skills/engineering/code-review/SKILL.md)** — Two-axis review of the diff since a fixed point: **Standards** (does it follow the repo's coding standards, plus a Fowler smell baseline?) and **Spec** (does it faithfully implement the originating issue/PRD?), run as parallel sub-agents so neither pollutes the other.
 - **[resolving-merge-conflicts](./skills/engineering/resolving-merge-conflicts/SKILL.md)** — Work through an in-progress git merge or rebase conflict hunk by hunk, resolving by intent traced to each side's primary source, then finish the operation — never `--abort`.
+- **[deslopify](./skills/engineering/deslopify/SKILL.md)** — Strip AI tells from prose and code and restore a human voice. Always applies to prose meant for a human reader (blog drafts, PR descriptions, commit messages, docs); the code half is manual-only (`/deslopify <file>`) and scoped to generation tells (restating comments, impossible error handling, dead defensive branches), not general design review.
 
 ---
 

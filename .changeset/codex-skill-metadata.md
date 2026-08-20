@@ -1,5 +1,5 @@
 ---
-"mattpocock-skills": minor
+"alexrebula-skills": minor
 ---
 
 Add Codex metadata alongside each skill's Claude Code frontmatter so the set works in both harnesses without generated copies.

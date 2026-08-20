@@ -1,5 +1,5 @@
 ---
-"mattpocock-skills": patch
+"alexrebula-skills": patch
 ---
 
 Make `/ask-matt` clued-up about `/wayfinder` — the heaviest, most cognitively demanding flow.

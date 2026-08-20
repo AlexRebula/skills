@@ -1,5 +1,5 @@
 ---
-"mattpocock-skills": minor
+"alexrebula-skills": minor
 ---
 
 Wayfinder now burns research tickets down with subagents instead of leaving them parked for a separately-launched session.
