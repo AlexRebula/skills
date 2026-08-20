@@ -6,7 +6,7 @@
 
 [![skills.sh](https://skills.sh/b/mattpocock/skills)](https://skills.sh/mattpocock/skills)
 
-This is a fork of [mattpocock/skills](https://github.com/mattpocock/skills) by [Matt Pocock](https://github.com/mattpocock). I try my best to keep it in sync with Matt's upstream, so that every one of his skills is included here: most byte-for-byte identical, with a handful carrying my own edits (some functional, some only repo-wide Prettier formatting). 
+This is a fork of [mattpocock/skills](https://github.com/mattpocock/skills) by [Matt Pocock](https://github.com/mattpocock). I try my best to keep it in sync with Matt's upstream, so every one of his skills is included here. Most are byte-for-byte identical, with a handful carrying my own edits (some functional, some only repo-wide Prettier formatting).
 
 This fork extends Matt's skills with:
 
@@ -16,7 +16,7 @@ This fork extends Matt's skills with:
 - **Daily workflow**: session wrapping, Asana sync, and standup orchestration
 - **Apprentice mentoring**: issue auditing, learner-history tracking, and next-issue sequencing for a student or apprentice contributor
 
-> **Before you install:** I maintain this fork solo, use it daily, and write it with AI assistance. It is not a polished product, and some skills ship with shell scripts in an area where my own experience is limited. Please read [Quality, Maintenance and Risk](#quality-maintenance-and-risk) before relying on it.
+> **Before you install.** I maintain this fork solo, use it daily, and write it with AI assistance. It is not a polished product, and some skills ship with shell scripts in an area where my own experience is limited. Please read [Quality, maintenance and risk](#quality-maintenance-and-risk) before relying on it.
 
 ## Install
 
@@ -30,7 +30,7 @@ Then run `/setup-engineering-skills` once per repo to configure the issue tracke
 
 ## Install as a Claude Code plugin
 
-Prefer a plug-and-play install you don't maintain by hand? These skills also ship as a native [Claude Code plugin](https://code.claude.com/docs/en/plugins). Instead of copying editable files into your repo, the plugin installs the whole skill set as a managed bundle that updates when I ship a new version: you subscribe rather than fork.
+Prefer a plug-and-play install you don't maintain by hand? These skills also ship as a native [Claude Code plugin](https://code.claude.com/docs/en/plugins). Instead of copying editable files into your repo, the plugin installs the whole skill set as a managed bundle that updates when I ship a new version. You subscribe rather than fork.
 
 Inside Claude Code:
 
@@ -55,28 +55,28 @@ Two ways to install, two philosophies:
 
 > Using Codex or another agent? The [skills.sh installer](https://skills.sh/mattpocock/skills) already installs these skills into Codex and other Agent-Skills-standard harnesses today. A native Codex plugin is on the roadmap: see [`.agents/adr/0002-ship-as-a-claude-code-plugin.md`](./.agents/adr/0002-ship-as-a-claude-code-plugin.md).
 
-## Why These Skills Exist
+## Why these skills exist
 
 I built these skills as a way to fix common failure modes I see with Claude Code, Codex, and other coding agents.
 
-### #1: The Agent Didn't Do What I Want
+### #1: The agent didn't do what I want
 
 > "No-one knows exactly what they want"
 >
 > David Thomas & Andrew Hunt, [The Pragmatic Programmer](https://www.amazon.co.uk/Pragmatic-Programmer-Anniversary-Journey-Mastery/dp/B0833F1T3V)
 
-**The Problem**. The most common failure mode in software development is misalignment. You think the dev knows what you want. Then you see what they've built - and you realize it didn't understand you at all.
+**The Problem**. The most common failure mode in software development is misalignment. You think the dev knows what you want. Then you see what they've built, and you realize it didn't understand you at all.
 
-This is just the same in the AI age. There is a communication gap between you and the agent. The fix for this is a **grilling session** - getting the agent to ask you detailed questions about what you're building.
+This is just the same in the AI age. There is a communication gap between you and the agent. The fix for this is a **grilling session**, getting the agent to ask you detailed questions about what you're building.
 
 **The Fix** is to use:
 
-- [`/grill-me`](./skills/productivity/grill-me/SKILL.md) - for non-code uses
-- [`/grill-with-docs`](./skills/engineering/grill-with-docs/SKILL.md) - same as [`/grill-me`](./skills/productivity/grill-me/SKILL.md), but adds more goodies (see below)
+- [`/grill-me`](./skills/productivity/grill-me/SKILL.md), for non-code uses
+- [`/grill-with-docs`](./skills/engineering/grill-with-docs/SKILL.md), same as [`/grill-me`](./skills/productivity/grill-me/SKILL.md), but adds more goodies (see below)
 
 These are my most popular skills. They help you align with the agent before you get started, and think deeply about the change you're making. Use them _every_ time you want to make a change.
 
-### #2: The Agent Is Way Too Verbose
+### #2: The agent is way too verbose
 
 > With a ubiquitous language, conversations among developers and expressions of the code are all derived from the same domain model.
 >
@@ -113,9 +113,9 @@ It's hard to explain how powerful this is. It might be the single coolest techni
 > - As a result, the **codebase is easier to navigate** for the agent
 > - The agent also **spends fewer tokens on thinking**, because it has access to a more concise language
 
-### #3: The Code Doesn't Work
+### #3: The code doesn't work
 
-> "Always take small, deliberate steps. The rate of feedback is your speed limit. Never take on a task that’s too big."
+> "Always take small, deliberate steps. The rate of feedback is your speed limit. Never take on a task that's too big."
 >
 > David Thomas & Andrew Hunt, [The Pragmatic Programmer](https://www.amazon.co.uk/Pragmatic-Programmer-Anniversary-Journey-Mastery/dp/B0833F1T3V)
 
@@ -131,7 +131,7 @@ I've built a **[`/tdd`](./skills/engineering/tdd/SKILL.md) skill** you can slot 
 
 For debugging, I've also built a **[`/diagnosing-bugs`](./skills/engineering/diagnosing-bugs/SKILL.md)** skill that wraps best debugging practices into a disciplined loop, gated phase by phase.
 
-### #4: We Built A Ball Of Mud
+### #4: We built a ball of mud
 
 > "Invest in the design of the system _every day_."
 >
@@ -149,7 +149,7 @@ This is built in to every layer of these skills:
 
 - [`/to-spec`](./skills/engineering/to-spec/SKILL.md) quizzes you about which modules you're touching before creating a spec
 
-And crucially, [`/improve-codebase-architecture`](./skills/engineering/improve-codebase-architecture/SKILL.md) surveys a codebase for deepening opportunities and hands you the candidates. I recommend running it on your codebase once every few days. It is a survey, not a rescue: on a genuinely old codebase it will find real candidates, but it won't untangle the mud for you.
+And importantly, [`/improve-codebase-architecture`](./skills/engineering/improve-codebase-architecture/SKILL.md) surveys a codebase for deepening opportunities and hands you the candidates. I recommend running it on your codebase once every few days. It is a survey, not a rescue: on a genuinely old codebase it will find real candidates, but it won't untangle the mud for you.
 
 ### Summary
 
@@ -299,7 +299,7 @@ Skills tied to my own setup: not promoted in the plugin, since they assume my ow
 
 ---
 
-## Quality, Maintenance and Risk
+## Quality, maintenance and risk
 
 **Read this before you rely on this repo.**
 
@@ -309,11 +309,11 @@ I maintain this fork myself, daily, alongside my own work. It is not a polished 
 
 **I use AI to write and audit these skills.** I review every change to the best of my ability and available time, but mistakes or AI-generated "slop" can still creep in. **Use this repo at your own risk.** What I can tell you honestly is that I run these skills myself, every day. I can't promise perfection.
 
-**Why this fork exists in the first place:** I wanted to keep building on [Matt Pocock's original skills](https://github.com/mattpocock/skills) without being blocked on whether or when upstream adds something I need. This repo is where every skill I actually use daily lives, and it doubles as a place for me to try different LLMs and learn more about how agentic coding tools work. Because of that, skills and scripts here are expected to keep evolving: this is a living workspace I use, not a finished library.
+**Why this fork exists in the first place.** I wanted to keep building on [Matt Pocock's original skills](https://github.com/mattpocock/skills) without being blocked on whether or when upstream adds something I need. This repo is where every skill I actually use daily lives, and it doubles as a place for me to try different LLMs and learn more about how agentic coding tools work. Because of that, skills and scripts here are expected to keep evolving: this is a living workspace I use, not a finished library.
 
 **I try to track upstream**, syncing from [mattpocock/skills](https://github.com/mattpocock/skills) regularly and keeping the original skills unchanged where I can. As this fork diverges further, staying in sync gets harder, and I'd rather say that plainly than let it go unstated.
 
-**When I hit something outside my experience**: like a shell script that needs more scrutiny than I can personally give it, I try to flag it honestly rather than quietly ship it, in line with the [OSS Quality Standards](https://github.com/LittleBranches/oss-quality-standards) I hold myself to elsewhere.
+**When I hit something outside my experience**, like a shell script that needs more scrutiny than I can personally give it, I try to flag it honestly rather than quietly ship it, in line with the [OSS Quality Standards](https://github.com/LittleBranches/oss-quality-standards) I hold myself to elsewhere.
 
 If I've missed something, [please open an issue](https://github.com/AlexRebula/skills/issues). I'd rather know.
 
