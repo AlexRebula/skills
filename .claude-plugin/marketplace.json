@@ -3,11 +3,20 @@
   "owner": {
     "name": "Alex Rebula"
   },
+  "description": "A fork of mattpocock/skills extended with framework scaffolding, git/PR lifecycle tools, LittleBranches org skills, and daily productivity workflows, as an installable Claude Code plugin.",
   "plugins": [
     {
       "name": "alexrebula-skills",
       "source": "./",
-      "description": "A fork of mattpocock/skills extended with framework scaffolding, git/PR lifecycle tools, LittleBranches org skills, and daily productivity workflows."
+      "description": "A fork of mattpocock/skills extended with framework scaffolding, git/PR lifecycle tools, LittleBranches org skills, and daily productivity workflows.",
+      "category": "engineering",
+      "keywords": [
+        "engineering",
+        "skills",
+        "tdd",
+        "code-review",
+        "grilling"
+      ]
     }
   ]
 }

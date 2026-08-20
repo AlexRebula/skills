@@ -4,14 +4,17 @@
   "private": true,
   "type": "module",
   "description": "A fork of mattpocock/skills extended with framework scaffolding, git/PR lifecycle tools, LittleBranches org skills, and daily productivity workflows.",
+  "license": "MIT",
   "author": {
     "name": "Alex Rebula"
   },
+  "packageManager": "npm@10.9.4",
   "scripts": {
     "postinstall": "bash scripts/sync-agents-skills.sh",
     "test": "vitest run",
     "changeset": "changeset",
-    "version": "changeset version"
+    "version": "changeset version && node scripts/sync-plugin-version.mjs",
+    "check-plugin-version": "node scripts/sync-plugin-version.mjs --check"
   },
   "devDependencies": {
     "@changesets/changelog-github": "^0.7.0",
