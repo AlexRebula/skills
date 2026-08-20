@@ -5,6 +5,17 @@
   "author": {
     "name": "Alex Rebula"
   },
+  "repository": "https://github.com/AlexRebula/skills",
+  "license": "MIT",
+  "keywords": [
+    "engineering",
+    "skills",
+    "tdd",
+    "code-review",
+    "grilling",
+    "domain-modeling",
+    "productivity"
+  ],
   "skills": [
     "./skills/engineering/ask-matt",
     "./skills/engineering/diagnosing-bugs",
@@ -25,6 +36,7 @@
     "./skills/engineering/code-review",
     "./skills/engineering/resolving-merge-conflicts",
     "./skills/engineering/deslopify",
+    "./skills/engineering/wizard",
     "./skills/framework/create-angular-component",
     "./skills/framework/create-react-component",
     "./skills/framework/create-vue-component",
@@ -59,6 +71,9 @@
     "./skills/productivity/standup-prep",
     "./skills/productivity/standup-prep-preflight",
     "./skills/productivity/teach",
+    "./skills/productivity/to-questionnaire",
+    "./skills/productivity/wait-what",
+    "./skills/productivity/writing-for-agents",
     "./skills/productivity/wiki-lint",
     "./skills/productivity/writing-great-skills",
     "./skills/productivity/learner-history",
