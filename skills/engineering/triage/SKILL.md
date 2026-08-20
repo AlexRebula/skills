@@ -43,7 +43,7 @@ Every triaged issue should carry exactly one category role and one state role. I
 
 `to-grill` is distinct from `needs-info`: `needs-info` means the issue is blocked waiting on the reporter to provide more information. `to-grill` means the issue has enough information to begin design exploration but the solution is not yet specified — it requires a `/grill-me` session before implementation can start.
 
-These are canonical role names — the actual label strings used in the issue tracker may differ. The mapping should have been provided to you - run `/setup-matt-pocock-skills` if not.
+These are canonical role names — the actual label strings used in the issue tracker may differ. The mapping should have been provided to you - run `/setup-engineering-skills` if not.
 
 State transitions: an unlabeled issue normally goes to `needs-triage` first; from there it moves to `needs-info`, `ready-for-agent`, `ready-for-human`, `to-grill`, or `wontfix`. `needs-info` returns to `needs-triage` once the reporter replies. `to-grill` moves to `ready-for-agent` once the `/grill-me` session produces a PRD. The maintainer can override at any time — flag transitions that look unusual and ask before proceeding.
 

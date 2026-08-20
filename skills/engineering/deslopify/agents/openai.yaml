@@ -1,0 +1,3 @@
+interface:
+  display_name: "Deslopify"
+  short_description: "Strip AI tells from prose and code"
