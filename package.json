@@ -12,6 +12,7 @@
   "scripts": {
     "postinstall": "bash scripts/sync-agents-skills.sh",
     "test": "vitest run",
+    "check:docs-completeness": "tsx scripts/check-docs-completeness.ts",
     "changeset": "changeset",
     "version": "changeset version && node scripts/sync-plugin-version.mjs",
     "check-plugin-version": "node scripts/sync-plugin-version.mjs --check"
