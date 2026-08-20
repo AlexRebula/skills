@@ -1,0 +1,194 @@
+.hero {
+  padding: 3rem 0 2.5rem;
+}
+
+.heroGrid {
+  display: grid;
+  grid-template-columns: 1.3fr 1fr;
+  gap: 2.5rem;
+  align-items: start;
+}
+
+@media (max-width: 900px) {
+  .heroGrid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.heroTitle {
+  font-size: 2.75rem;
+  line-height: 1.1;
+  margin-bottom: 1rem;
+}
+
+.heroSubtitle {
+  font-size: 1.15rem;
+  color: var(--ifm-color-emphasis-700);
+  max-width: 42rem;
+  margin-bottom: 1.5rem;
+}
+
+.metaRow {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+  flex-wrap: wrap;
+}
+
+.starBadge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-weight: 600;
+}
+
+.installCard {
+  background: var(--ifm-background-surface-color);
+  border: 1px solid var(--ifm-color-emphasis-300);
+  border-radius: 0.5rem;
+  padding: 1.1rem 1.25rem;
+  margin-bottom: 1rem;
+}
+
+.installCard h3 {
+  margin: 0 0 0.5rem;
+  font-size: 1rem;
+}
+
+.installCard p {
+  margin: 0 0 0.75rem;
+  color: var(--ifm-color-emphasis-700);
+  font-size: 0.92rem;
+}
+
+.commandRow {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: var(--ifm-color-emphasis-100);
+  border-radius: 0.35rem;
+  padding: 0.5rem 0.75rem;
+  font-family: var(--ifm-font-family-monospace);
+  font-size: 0.85rem;
+  overflow-x: auto;
+}
+
+.commandRow code {
+  background: none;
+  padding: 0;
+  flex: 1;
+  white-space: pre;
+}
+
+.copyButton {
+  flex-shrink: 0;
+  border: none;
+  background: var(--ifm-color-emphasis-200);
+  border-radius: 0.3rem;
+  padding: 0.3rem 0.6rem;
+  cursor: pointer;
+  font-size: 0.78rem;
+  color: var(--ifm-color-emphasis-800);
+}
+
+.copyButton:hover {
+  background: var(--ifm-color-emphasis-300);
+}
+
+.agentsNote {
+  font-size: 0.85rem;
+  color: var(--ifm-color-emphasis-600);
+}
+
+.summaryBar {
+  display: flex;
+  gap: 2rem;
+  padding: 1.5rem 0;
+  border-top: 1px solid var(--ifm-color-emphasis-300);
+  border-bottom: 1px solid var(--ifm-color-emphasis-300);
+  flex-wrap: wrap;
+}
+
+.summaryItem strong {
+  font-size: 1.5rem;
+  display: block;
+}
+
+.summaryItem span {
+  color: var(--ifm-color-emphasis-600);
+  font-size: 0.85rem;
+}
+
+.categorySection {
+  padding: 2.5rem 0;
+  border-bottom: 1px solid var(--ifm-color-emphasis-200);
+}
+
+.categorySection:last-child {
+  border-bottom: none;
+}
+
+.categoryHeader {
+  display: flex;
+  align-items: baseline;
+  gap: 0.75rem;
+  margin-bottom: 0.5rem;
+}
+
+.categoryIndex {
+  color: var(--ifm-color-emphasis-500);
+  font-family: var(--ifm-font-family-monospace);
+  font-size: 0.9rem;
+}
+
+.categoryTitle {
+  margin: 0;
+}
+
+.categoryDescription {
+  color: var(--ifm-color-emphasis-700);
+  max-width: 46rem;
+  margin-bottom: 1.5rem;
+}
+
+.skillGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 1rem;
+}
+
+.skillCard {
+  display: block;
+  border: 1px solid var(--ifm-color-emphasis-300);
+  border-radius: 0.5rem;
+  padding: 1rem 1.1rem;
+  text-decoration: none;
+  color: var(--ifm-font-color-base);
+  transition: border-color 0.15s ease, transform 0.15s ease;
+}
+
+.skillCard:hover {
+  border-color: var(--ifm-color-primary);
+  transform: translateY(-1px);
+  text-decoration: none;
+  color: var(--ifm-font-color-base);
+}
+
+.skillCommand {
+  display: block;
+  font-family: var(--ifm-font-family-monospace);
+  font-size: 0.85rem;
+  color: var(--ifm-color-primary);
+  margin-bottom: 0.35rem;
+}
+
+.skillDescription {
+  font-size: 0.9rem;
+  color: var(--ifm-color-emphasis-700);
+  line-height: 1.4;
+}
+
+.skillDescription code {
+  font-size: 0.85em;
+}
