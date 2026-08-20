@@ -13,10 +13,7 @@ const config: Config = {
     v4: true,
   },
 
-  // NOTE: placeholder until the site is imported into a Vercel project and
-  // the real *.vercel.app URL is known. Update this once that manual step
-  // (Vercel dashboard, root directory `site/`) is done.
-  url: 'https://placeholder.vercel.app',
+  url: 'https://skills-two-cyan.vercel.app',
   baseUrl: '/',
 
   onBrokenLinks: 'throw',
