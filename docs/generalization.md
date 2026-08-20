@@ -1,11 +1,11 @@
-# Skills Generalization Tracker
+# Skills generalization tracker
 
-This document tracks skills in this fork that currently carry project-specific hardcoding. The goal is for every skill here to be usable by anyone — not just LittleBranches / giselle-mui contributors.
+This document tracks skills in this fork that currently carry project-specific hardcoding. The goal is for every skill here to be usable by anyone, not just LittleBranches / giselle-mui contributors.
 
 Each entry describes:
 
-- **What's project-specific today** — exact line or assumption that limits reuse
-- **Path to general** — concrete change needed to make it work for any project
+- **What's project-specific today**: exact line or assumption that limits reuse
+- **Path to general**: concrete change needed to make it work for any project
 
 ---
 
@@ -13,9 +13,9 @@ Each entry describes:
 
 | Symbol | Meaning |
 | --- | --- |
-| ⚠️ Quick fix | Hardcoded string/path — one config change away from general |
+| ⚠️ Quick fix | Hardcoded string/path, one config change away from general |
 | 🔧 Needs refactor | Skill logic is coupled to a specific convention that needs abstracting |
-| ❌ By design | Skill deliberately targets giselle-mui — a general variant needs to be created separately |
+| ❌ By design | Skill deliberately targets giselle-mui; a general variant needs to be created separately |
 
 ---
 
@@ -53,7 +53,7 @@ Each entry describes:
 
 ### `/load-dependency-chain` ⚠️ Quick fix
 
-**What's specific:** References `{{AI_ROOT}}\Agents\Context\dependency-chain.md` — the file path and the dependency-chain.md convention are both specific to this workflow.
+**What's specific:** References `{{AI_ROOT}}\Agents\Context\dependency-chain.md`. The file path and the dependency-chain.md convention are both specific to this workflow.
 
 **Path to general:** The skill is already parameterized via `{{AI_ROOT}}`. The remaining specificity is the `dependency-chain.md` convention itself. Document the expected file format so anyone can adopt it.
 
@@ -75,8 +75,8 @@ Each entry describes:
 
 **What was specific:**
 
-- ~~Default repo discovery hardcodes `LittleBranches|AlexRebula` orgs.~~ **Fixed in PR #14** — now uses `gh repo list` with a configurable `--orgs` argument.
-- ~~Standards-loading hardcodes LittleBranches AGENTS.md URLs.~~ **Fixed in PR #14** — per-repo AGENTS.md discovery checks each repo root and loads it if present; falls back to no-standards mode. `--standards-url` override supported.
+- ~~Default repo discovery hardcodes `LittleBranches|AlexRebula` orgs.~~ **Fixed in PR #14.** Now uses `gh repo list` with a configurable `--orgs` argument.
+- ~~Standards-loading hardcodes LittleBranches AGENTS.md URLs.~~ **Fixed in PR #14.** Per-repo AGENTS.md discovery checks each repo root and loads it if present, falling back to no-standards mode otherwise. `--standards-url` override supported.
 
 **Status:** Fully generalized. No project-specific assumptions remain.
 
@@ -96,7 +96,7 @@ Each entry describes:
 
 ### `/respond-giselle-pr-review` ⚠️ Quick fix
 
-**What's specific:** Same as `/review-giselle-pr` — standards are pre-loaded from LittleBranches URLs.
+**What's specific:** Same as `/review-giselle-pr`. Standards are pre-loaded from LittleBranches URLs.
 
 **Path to general:** Add `--standards-url` argument. Same rename path as above.
 
@@ -113,7 +113,7 @@ Each entry describes:
 
 **Path to general:**
 
-- Layer 1 (config path): Already solved — the `asana-sync` skill dynamically locates `.asana-config.json` by searching workspace roots. `sync-roadmap` should adopt the same discovery pattern.
+- Layer 1 (config path): Already solved. The `asana-sync` skill dynamically locates `.asana-config.json` by searching workspace roots; `sync-roadmap` should adopt the same discovery pattern.
 - Layer 2 (data.tsx): This is a project-specific side-effect. Make it optional/conditional. If no `data.tsx` companion exists, skip that step silently.
 
 **GitHub issue:** [ ] to be created
@@ -129,7 +129,7 @@ Each entry describes:
 - Assumes the `docs/pr-messages/` companion doc convention used in LittleBranches repos
 - References `data/` branch prefix convention specific to this org
 
-**Path to general:** `/create-pr` already exists as the general variant. `/create-giselle-pr` is intentionally a thin org-scoped wrapper. No further generalisation needed — but any user of this fork who wants to adapt it should:
+**Path to general:** `/create-pr` already exists as the general variant. `/create-giselle-pr` is intentionally a thin org-scoped wrapper. No further generalisation needed, but any user of this fork who wants to adapt it should:
 
 1. Replace the AGENTS.md URLs with their own standards URL
 2. Replace the banned-content scan with their own equivalent (or remove it)
@@ -193,5 +193,5 @@ These skills work in any project without modification:
 | `/commit-wip` | Pure git commands |
 | `/check-prior-work` | Reads conversation context only |
 | `/asana-sync` | Dynamically discovers `.asana-config.json`; no hardcoded paths |
-| `/session-wrap` | Uses `{{AI_ROOT}}` template variable — user must set it, but it is not hardcoded |
-| `/load-session-context` | Uses `{{AI_ROOT}}` template variable — same |
+| `/session-wrap` | Uses the `{{AI_ROOT}}` template variable, which the user must set but which is not hardcoded |
+| `/load-session-context` | Uses the `{{AI_ROOT}}` template variable, same as `/session-wrap` |

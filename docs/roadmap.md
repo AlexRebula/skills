@@ -1,4 +1,4 @@
-# Skills — Roadmap
+# Skills roadmap
 
 LittleBranches fork of [mattpocock/skills](https://github.com/mattpocock/skills). Adds purpose-built agent skills for the giselle-mui component library and LittleBranches OSS Quality Standards workflow.
 
@@ -6,13 +6,13 @@ Status legend: ✅ Done · 🔄 In progress · ⬜ Planned · ⏸ Blocked
 
 ---
 
-## Current state — May 2026
+## Current state (May 2026)
 
 Fork is live. LittleBranches-specific skills are shipped and installable via `npx skills@latest add AlexRebula/skills`. Original mattpocock skills are unchanged and included.
 
 ---
 
-## Phase A — LittleBranches Core Skills ✅ (Done)
+## Phase A: LittleBranches core skills ✅ (Done)
 
 | Skill                        | Status |
 | ---------------------------- | ------ |
@@ -29,7 +29,7 @@ Fork is live. LittleBranches-specific skills are shipped and installable via `np
 
 ---
 
-## Phase B — Workflow Skills ⬜
+## Phase B: Workflow skills ⬜
 
 | Skill           | Purpose                                                   | Status |
 | --------------- | --------------------------------------------------------- | ------ |
@@ -39,7 +39,7 @@ Fork is live. LittleBranches-specific skills are shipped and installable via `np
 
 ---
 
-## Phase C — Infrastructure ⬜
+## Phase C: Infrastructure ⬜
 
 | Item                                                  | Status |
 | ----------------------------------------------------- | ------ |
