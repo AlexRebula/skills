@@ -1,8 +1,8 @@
 ## What it does
 
-`deslopify` strips the tells that mark text or code as AI-generated and puts a human voice back. It runs as two independent passes that share one process: scan for a pattern, rewrite it, then add back what generic output tends to strip out, then self-audit for anything left over.
+`deslopify` strips the tells that mark text or code as AI-generated and puts a human voice back. It runs as two independent passes that share one process: calibrate how dense the result should be, scan for a pattern, rewrite it, add back what generic output tends to strip out, then self-audit for anything left over.
 
-The two passes are not treated the same way. The prose pass is always on: any text meant for a human reader (a PR description, a commit message, a wiki page, a session summary, a chat reply) gets scanned and rewritten before it ships, the way a careful writer would pass over their own first draft. The code pass is opt-in only, triggered by `/deslopify <file>` or as an explicit step inside a review. It never fires on its own, because rewriting code nobody asked you to touch is a good way to turn a small diff into a large, unreviewable one.
+The two passes are not treated the same way. The prose pass is always on: any text meant for a human reader (a PR description, a commit message, a wiki page, a session summary, a chat reply) gets scanned and rewritten before it ships, the way a careful writer would pass over their own first draft, with one exception. A live chat or agent-session reply that isn't being saved to a file is allowed to keep its em dashes; everything else on that list isn't. The code pass is opt-in only, triggered by `/deslopify <file>` or as an explicit step inside a review. It never fires on its own, because rewriting code nobody asked you to touch is a good way to turn a small diff into a large, unreviewable one.
 
 ## When to reach for it
 
