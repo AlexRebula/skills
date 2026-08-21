@@ -1,5 +1,54 @@
 # alexrebula-skills
 
+## 1.1.0
+
+### Minor Changes
+
+- [#105](https://github.com/AlexRebula/skills/pull/105) [`2c55608`](https://github.com/AlexRebula/skills/commit/2c5560899c4d5774c24015c48687f99cf6cbb848) Thanks [@AlexRebula](https://github.com/AlexRebula)! - Add `/deslopify` — strip AI tells from prose and code.
+
+  - Prose half always applies to anything meant for a human reader (blog drafts, PR descriptions, commit messages, docs, session summaries): scan, rewrite, add back voice, self-audit. Pattern list adapted from cursor/plugins' `unslop` skill.
+  - Code half is manual-only (`/deslopify <file>`), scoped to generation tells — restating comments, impossible error handling, dead defensive branches, placeholder docstrings, over-verbose naming, leftover TODO scaffolding — not general design or simplification review, which stays with `karpathy-guidelines`, `/simplify`, and `/code-review`.
+
+- [#98](https://github.com/AlexRebula/skills/pull/98) [`b86596e`](https://github.com/AlexRebula/skills/commit/b86596e5921bb3020b019e2f6c761c492b5f8b85) Thanks [@AlexRebula](https://github.com/AlexRebula)! - Add the **`extract-vocabulary`** skill: a companion to `/ingest` that pulls unfamiliar jargon out of an already-ingested wiki source and files it into a per-concept vocabulary cheat-sheet — ELI5/junior-dev-level definitions, one file per concept, plus a flat A–Z barrel index (`wiki/vocabulary/vocabulary-index.md`). Cross-linked from the source page, the owning concept page (which gets a new `## Glossary` section), and the barrel. Enforces a no-orphan-terms rule: a term with no matching concept triggers a propose-and-wait-for-approval gate before a new concept page is created. Opt-in — run manually on jargon-heavy sources (reaction videos, podcasts, interviews), not on every ingest.
+
+- [#105](https://github.com/AlexRebula/skills/pull/105) [`2c55608`](https://github.com/AlexRebula/skills/commit/2c5560899c4d5774c24015c48687f99cf6cbb848) Thanks [@AlexRebula](https://github.com/AlexRebula)! - Rename `setup-matt-pocock-skills` to `setup-engineering-skills`, and stop pointing this fork's changelog/versioning at upstream.
+
+  - **Skill rename**: `setup-matt-pocock-skills` → `setup-engineering-skills` (folder, frontmatter `name`, H1, Codex metadata, and every cross-reference in `wayfinder`, `code-review`, `to-tickets`, `ask-matt`, `to-spec`, `triage`, their docs pages, `README.md`, `CONTEXT.md`, and `.claude-plugin/plugin.json`). No backward-compat shim, consistent with this repo's prior renames (`review` → `code-review`, `to-prd` → `to-spec`).
+  - **Changeset package key fixed**: every `.changeset/*.md` file's frontmatter used `"mattpocock-skills"`, which doesn't match `package.json`'s real name (`alexrebula-skills`) and was silently breaking `npx changeset status`/`version` (`Found changeset ... for package mattpocock-skills which is not in the workspace`). All existing changesets now key on `"alexrebula-skills"`.
+  - **Changelog target repointed to this fork**: `CHANGELOG.md`'s heading and `.changeset/config.json`'s `changelog-github` repo now read `alexrebula-skills` / `AlexRebula/skills`, so future entries link to this fork's own PRs and commits instead of upstream's. Historical changelog entries are untouched — those really did happen on `mattpocock/skills` before this fork diverged further.
+
+### Patch Changes
+
+- [#127](https://github.com/AlexRebula/skills/pull/127) [`cad7e1d`](https://github.com/AlexRebula/skills/commit/cad7e1d3808aa474f8bfa708f8a5492f8e70d9a2) Thanks [@AlexRebula](https://github.com/AlexRebula)! - `deslopify`: calibrate density to context, narrative content gets flattened into real prose written the way an experienced writer would, reference/technical content keeps its bullets, bold labels, and tables instead of being flattened. Scopes the no-em-dash rule to text being written to a file only; live chat and agent-session replies that aren't saved to disk are exempt.
+
+  `load-session-guidelines`: adds a commit/push approval gate as its own step, show the diff, get an explicit yes, per action, in any repo, approval for one action never carries over to another.
+
+- [#106](https://github.com/AlexRebula/skills/pull/106) [`d9dd141`](https://github.com/AlexRebula/skills/commit/d9dd14161d33661483766c1217b4090fe5e0aff5) Thanks [@AlexRebula](https://github.com/AlexRebula)! - domain-modeling: trigger on discussing codebase terminology and on writing or editing a CONTEXT.md or an ADR directly, replacing the narrower "pin down domain terminology or a ubiquitous language" / "record an architectural decision" phrasing. Also drops the "another skill needs to maintain the domain model" caveat, since that's the invoking skill's job to state explicitly, not this description's.
+
+- [#99](https://github.com/AlexRebula/skills/pull/99) [`96307e3`](https://github.com/AlexRebula/skills/commit/96307e374c3c2768441529a6fd7dfbf281713143) Thanks [@AlexRebula](https://github.com/AlexRebula)! - Fix `extract-vocabulary` under-extracting: Step 1's inclusion bar was too narrow ("insider jargon") and silently stopped after finding a handful of terms that fit existing concepts, missing foundational-but-still-beginner-unknown terms (JSON, DOM, UI, XML, ESM, CommonJS, templating engine, vanilla JS, etc.) entirely. The bar is now near-exhaustive — a complete-beginner-zero-background cutoff, not a "pick the interesting ones" cutoff — and Step 2 now defaults every term to the concept the source itself is primarily about (rather than requiring a dedicated concept per term), so generic terms don't need their own concept page just because they aren't htmx-specific in isolation. New concept pages are now reserved for terms that are both unmatched AND unrelated to the source's own topic.
+
+- [#106](https://github.com/AlexRebula/skills/pull/106) [`d9dd141`](https://github.com/AlexRebula/skills/commit/d9dd14161d33661483766c1217b4090fe5e0aff5) Thanks [@AlexRebula](https://github.com/AlexRebula)! - Quote the `description` front matter in `to-spec`, `code-review`, `setup-engineering-skills`, `writing-fragments`, `writing-shape`, and `wait-what`. An unquoted colon-space left over from the em-dash sweep in [#905](https://github.com/AlexRebula/skills/issues/905) made each block invalid YAML, so `skills.sh` skipped all six during discovery and they couldn't be listed or installed via `npx skills`.
+
+- [#106](https://github.com/AlexRebula/skills/pull/106) [`d9dd141`](https://github.com/AlexRebula/skills/commit/d9dd14161d33661483766c1217b4090fe5e0aff5) Thanks [@AlexRebula](https://github.com/AlexRebula)! - grilling: remove em-dashes from `SKILL.md`, replacing them with colons and semicolons so the instructions read as plain text.
+
+- [#106](https://github.com/AlexRebula/skills/pull/106) [`d9dd141`](https://github.com/AlexRebula/skills/commit/d9dd14161d33661483766c1217b4090fe5e0aff5) Thanks [@AlexRebula](https://github.com/AlexRebula)! - Remove every em-dash from the repo's prose (docs, `SKILL.md` files, ADRs, `README.md`, scripts, JSON/YAML metadata), hand-rewriting each sentence with a comma, colon, period, parentheses, or conjunction rather than mechanically substituting the character. `CLAUDE.md`/`AGENTS.md` now says not to reintroduce them.
+
+- [#106](https://github.com/AlexRebula/skills/pull/106) [`d9dd141`](https://github.com/AlexRebula/skills/commit/d9dd14161d33661483766c1217b4090fe5e0aff5) Thanks [@AlexRebula](https://github.com/AlexRebula)! - Standardize cross-skill invocation on an explicit "call the Skill tool" instruction instead of bare `/skill`-style prose, across `code-review`, `diagnosing-bugs`, `grill-with-docs`, `grill-me`, `improve-codebase-architecture`, `tdd`, `to-spec`, `to-tickets`, `triage`, and `wayfinder`.
+
+  - A skill that names another skill in prose ("run the `/grilling` skill") does not reliably cause it to load. This is the documented rough edge behind `grill-with-docs`'s most-reported problem. Naming the tool directly (`Call the Skill tool with "grilling"`) is intended to raise the hit rate. Dropping the leading `/` also makes the instruction harness-neutral rather than less: it no longer assumes Claude Code's trigger syntax.
+  - A step needing more than one skill now says so as multiple calls ("Call the Skill tool twice, for `grilling` and `domain-modeling`"), not one call carrying two names.
+  - Documents the convention in `.agents/invocation.md` for future skills to follow.
+
+- [#106](https://github.com/AlexRebula/skills/pull/106) [`d9dd141`](https://github.com/AlexRebula/skills/commit/d9dd14161d33661483766c1217b4090fe5e0aff5) Thanks [@AlexRebula](https://github.com/AlexRebula)! - Stop skills from trying to reach user-invoked skills through the Skill tool: fix cross-skill references that violated the "no other skill can call it" invariant in `.agents/invocation.md`, in `to-spec`, `wayfinder`, `to-tickets`, `triage`, `code-review`, and `diagnosing-bugs`.
+
+  - `to-spec`, `wayfinder`, `to-tickets`, `triage`, and `code-review` each carried a precondition ("...run `/setup-engineering-skills` if not") that PR [#878](https://github.com/AlexRebula/skills/issues/878) rewrote into a literal `Call the Skill tool with "setup-engineering-skills"` instruction. `setup-engineering-skills` is user-invoked, so none of these skills (user-invoked or model-invoked) can call it. Reworded all five as instructions for the agent to tell the human to run it instead.
+  - `diagnosing-bugs`'s Phase 6 post-mortem hand off to `improve-codebase-architecture` (also user-invoked) the same way, from an autonomous, often-unattended bug-fixing flow with no human in the loop to catch the failed call. Removed the hand-off outright rather than softening it, since it rarely fired in practice. Phase 6 is now "Cleanup" only; the mechanical checklist is untouched.
+  - Added a carve-out paragraph to `.agents/invocation.md`'s "Dependencies between them" section: the `Call the Skill tool with "name"` convention only applies when the named skill is model-invoked. This is the section PR [#878](https://github.com/AlexRebula/skills/issues/878) introduced without reconciling it against the user-invoked/model-invoked invariant stated eight lines above it; the gap is most of why this bug reached six call sites instead of one.
+
+  Fixes [#453](https://github.com/AlexRebula/skills/issues/453).
+
+- [#106](https://github.com/AlexRebula/skills/pull/106) [`d9dd141`](https://github.com/AlexRebula/skills/commit/d9dd14161d33661483766c1217b4090fe5e0aff5) Thanks [@AlexRebula](https://github.com/AlexRebula)! - wait-what: follow `CONTEXT-MAP.md` to the right `CONTEXT.md` when a repo indexes multiple contexts that way instead of keeping a single root `CONTEXT.md`.
+
 ## 1.2.3
 
 ### Patch Changes
@@ -153,7 +202,6 @@
   - **`docs/engineering/research.md`** pointed at `https://aihero.dev/skills-to-prd`, a dead slug for the renamed skill; it now links `to-spec` like the other nineteen docs pages do.
 
   The CHANGELOG and existing changesets still name PRDs where they document the rename itself, which is correct.
-
 
 ## 1.1.0
 
