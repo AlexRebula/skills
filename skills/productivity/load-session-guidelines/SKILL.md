@@ -2,15 +2,15 @@
 name: load-session-guidelines
 description: >
   Load all session guidelines in one go: Karpathy coding rules, OSS quality
-  standards (public + private), and PR conventions. Run at the start of every
-  session before any user task. Designed to be minimal — no full file
-  ingestion, only inline rules and access checks.
+  standards (public + private), PR conventions, and the commit/push approval
+  gate. Run at the start of every session before any user task. Designed to
+  be minimal — no full file ingestion, only inline rules and access checks.
 disable-model-invocation: true
 ---
 
 # Load Session Guidelines
 
-Runs three loads in sequence. Keep each step minimal.
+Runs seven steps in sequence. Keep each step minimal.
 
 ## Step 1 — Karpathy guidelines
 
@@ -67,7 +67,19 @@ Apply these rules to all PRs in this session. Do not load any file — these are
 
 Never push directly to `main` — every change goes through a branch and PR.
 
-## Step 4 — Reporting conventions (always active)
+## Step 4 — Commit and push approval (always active)
+
+Before running any `git commit`, `git add`, or `git checkout -b`, or any `git push`, in any repo:
+
+1. Show the user the exact files and diff that will be committed or pushed.
+2. Wait for explicit approval ("y", "go ahead", "looks good").
+3. Only then proceed.
+
+This applies to every repo touched in a session, not just the one the session started in.
+There are no exceptions for "trivial" or "obvious" changes. Approval for one action (a commit,
+say) does not carry over to a later, different action (a push, a merge) — ask again for each one.
+
+## Step 5 — Reporting conventions (always active)
 
 Apply this rule to every response in this session without exception:
 
@@ -82,7 +94,7 @@ Apply this rule to every response in this session without exception:
 Never reference a branch, PR, or issue without its `org/repo` qualifier.
 The reader must never have to guess which repository is being discussed.
 
-## Step 5 — Skills update policy (always active)
+## Step 6 — Skills update policy (always active)
 
 When writing or updating a skill in this session:
 
@@ -96,7 +108,7 @@ Before committing any skill change, verify:
 - [ ] No personal email addresses, GIDs, or account identifiers
 - [ ] Any project-specific paths or commands are marked as **⚙️ Configurable**
 
-## Step 6 — Skill authoring: no inline scripts (always active)
+## Step 7 — Skill authoring: no inline scripts (always active)
 
 **Multi-line shell belongs in a script file, never inlined in SKILL.md.**
 

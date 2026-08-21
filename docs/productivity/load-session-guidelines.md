@@ -1,6 +1,6 @@
 ## What it does
 
-`load-session-guidelines` loads every standing rule a session needs in one pass: Karpathy coding guidelines, OSS quality standards (public and private), and PR conventions, plus a couple of always-active reporting and skill-authoring rules carried inline rather than read from a file. It is deliberately minimal: no full document ingestion, just the rules that actually change behavior.
+`load-session-guidelines` loads every standing rule a session needs in one pass: Karpathy coding guidelines, OSS quality standards (public and private), PR conventions, and a commit/push approval gate, plus a few always-active reporting, skills-update, and skill-authoring rules carried inline rather than read from a file. It is deliberately minimal: no full document ingestion, just the rules that actually change behavior.
 
 ## When to reach for it
 
@@ -16,7 +16,9 @@ Run this at the start of every session, before any user task. It is model-invoke
 
 ## The rules that apply to everything after loading
 
-Two more rules stay active for the rest of the session, independent of whatever task comes next.
+Four more rules stay active for the rest of the session, independent of whatever task comes next.
+
+**Commit and push approval** requires showing the exact diff and getting an explicit yes before any `git commit`, `git add`, `git checkout -b`, or `git push`, in any repo touched during the session, not just the one it started in. There are no exceptions for changes that look trivial, and approval for one action never carries over to a different one: a yes to commit doesn't also authorize the push that follows.
 
 **Reporting conventions** require every branch, PR, and issue mentioned anywhere in the session to carry its full `org/repo` qualifier. A bare "PR #42" is wrong; "myorg/myrepo PR #42" is right. The point is that the reader should never have to guess which repository is being discussed.
 
