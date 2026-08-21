@@ -1,6 +1,6 @@
 {
   "name": "alexrebula-skills",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "A fork of mattpocock/skills extended with framework scaffolding, git/PR lifecycle tools, LittleBranches org skills, and daily productivity workflows.",
   "author": {
     "name": "Alex Rebula"
