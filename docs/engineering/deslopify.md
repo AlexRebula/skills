@@ -25,6 +25,8 @@ The pattern list is long, but it groups into a handful of families: puffery and 
 
 Finding and cutting those patterns is only half the job. Sterile, voiceless prose with every tell removed is its own kind of obvious. The pass also has to put opinion and rhythm back: react to what happened instead of listing it neutrally, vary sentence length instead of settling into one cadence, use "I" where it fits, and let a little unevenness stay rather than sanding every paragraph into the same shape.
 
+Not every target gets the same treatment. A blog draft or a wiki page meant to be read straight through gets flattened into real prose, written the way an experienced writer would write it. A research answer or an engineering Q&A meant to be scanned keeps its bullets, bold labels, and tables, since forcing a scannable list into paragraphs just makes it slower to read, not more human. Em dashes follow a similar split: banned from anything being written to a file, allowed in a live chat or agent-session reply that isn't being saved to disk.
+
 The last step is a self-audit: read the result and ask what still gives it away. Whatever's left gets fixed before the text is shown.
 
 ## The code pass
@@ -48,8 +50,8 @@ It stays. The code pass only removes scaffolding that isn't a real, intended fol
 
 ## It's working if
 
-- Nothing you show a person still reads as a first-draft AI dump: no puffery, no em dashes, no "I hope this helps!"
-- The rewritten prose has a point of view and an uneven rhythm, not just fewer banned words.
+- Nothing written to a file still reads as a first-draft AI dump: no puffery, no em dashes, no "I hope this helps!"
+- A narrative piece reads like an experienced writer wrote it; a reference answer stays scannable, bullets and bold labels intact, not flattened into longer paragraphs that say the same thing.
 - The code pass only ever runs when asked, and never as a side effect of a design review.
 - Every code-pass edit is reported with file and line in the same reply it was made in, not silently applied.
 - A finding that's really about design or duplication gets named and handed off, not force-fit into a rewrite.

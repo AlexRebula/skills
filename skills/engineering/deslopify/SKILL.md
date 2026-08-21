@@ -20,15 +20,42 @@ Prose pattern list adapted from cursor/plugins' `unslop` skill
 ## Prose
 
 Applies to anything meant for a human reader: blog drafts, PR descriptions, commit messages,
-wiki/doc pages, session summaries, chat responses that will be read rather than acted on.
+wiki/doc pages, session summaries, chat or agent-session replies. Every pattern below applies
+everywhere in that list except pattern 13 (em dashes), which applies only to text being written
+to a file, not to live chat or agent-session replies. See that pattern for the exact split.
 
 ### Process
 
-1. Scan for the patterns below.
-2. Rewrite. Preserve meaning, match the intended tone.
-3. Add soul (see below) — removing patterns is half the job, sterile voiceless writing is just
+1. Calibrate density to context (see below) before touching anything.
+2. Scan for the patterns below.
+3. Rewrite. Preserve meaning, match the intended tone and the density from step 1.
+4. Add soul (see below) — removing patterns is half the job, sterile voiceless writing is just
    as obvious a tell.
-4. Self-audit: "What makes this obviously AI-generated?" Fix whatever's left.
+5. Self-audit: "What makes this obviously AI-generated?" Fix whatever's left, without losing
+   density in a reference-context answer.
+
+### Calibrate density to context
+
+Decide what the target is for before rewriting. This changes what "fixed" looks like.
+
+- **Narrative** (blog drafts, essays, PR descriptions meant to be read end-to-end, wiki pages
+  written to be read straight through): flatten inline-header lists into prose per pattern 16,
+  vary sentence rhythm, let paragraphs run as long as the content earns. Write it the way an
+  experienced writer would, not a list that got mechanically joined into sentences. If you can't
+  tell the difference on read-back, it isn't done yet. See "Adding soul" below for the concrete
+  technique.
+- **Reference or technical** (research answers, engineering Q&A, rule or config summaries,
+  anything the reader will scan or jump back into): keep bullets, short bold labels, and tables.
+  Three or more distinct items get a numbered or bulleted list, never run together in one
+  sentence, even in a short reply. The tell being fixed is empty language, not structure. Turning
+  a scannable list into flowing paragraphs is not a fix here. It's a regression. It forces linear
+  reading onto information the reader wanted to scan, and makes the answer longer to get through,
+  not shorter.
+
+A fix must never add length. Deslopify removes noise, it does not pad. If cutting a pattern (a
+hedge, a filler phrase) leaves a gap, close it with fewer words, not more sentences. A rewrite
+that reads longer than the slop it replaced has moved the tell, not fixed it, that includes
+converting a tight bulleted answer into paragraphs that say the same thing at greater length.
 
 ### Adding soul
 
@@ -72,18 +99,24 @@ wiki/doc pages, session summaries, chat responses that will be read rather than 
 
 **Style**
 
-13. **Em dash overuse.** Avoid em dashes entirely. Use periods or commas only (no parentheses, no
-    en dashes, no hyphen-as-dash substitutes). Em dashes are an AI tell, and reaching for
-    parentheses instead just trades one tell for another. If a thought needs separation, end the
-    sentence or use a comma.
+13. **Em dash overuse, in committed text.** Applies to anything being written to a file: blog
+    drafts, commit messages, PR bodies, wiki or doc pages, session-summary files. Avoid em dashes
+    entirely there. Use periods or commas only (no parentheses, no en dashes, no hyphen-as-dash
+    substitutes). Em dashes are an AI tell in written artifacts, and reaching for parentheses
+    instead just trades one tell for another. If a thought needs separation, end the sentence or
+    use a comma. **Exception: live chat or agent-session replies that are not being saved to
+    disk.** Em dashes are allowed there. This pattern does not apply to that surface.
 14. **Colon overuse.** Colons are fine before a list or example, not as mid-sentence connectors.
     "If you're coming from traditional automation: instead of registering event handlers, you
     describe conditions" adds nothing with the colon. Rewrite to let the point stand on its own.
 15. **Boldface overuse.** Don't bold every proper noun or acronym.
 16. **Inline-header lists.** The tell is a bold label and colon that restates the line: "**
-    Performance:** Performance improved...". Convert to prose. A bold lead-in that ends in a
-    period, names the item, and is followed by genuinely new detail ("**Schema in TypeScript.**
-    Tables live in one file.") is fine, not a tell.
+    Performance:** Performance improved...". Fix the restating label (reword it or drop the
+    colon-restate). Only flatten the surrounding list into prose in a narrative context, in a
+    reference or technical context, keep the list and fix just the label (see "Calibrate density
+    to context" above). A bold lead-in that ends in a period, names the item, and is followed by
+    genuinely new detail ("**Schema in TypeScript.** Tables live in one file.") is fine, not a
+    tell, in either context.
 17. **Title case headings.** Use sentence case.
 18. **Decorative emojis.** Remove from headings and bullets.
 19. **Curly quotes.** Replace with straight quotes.
