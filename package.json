@@ -10,8 +10,9 @@
   },
   "packageManager": "npm@10.9.4",
   "scripts": {
-    "postinstall": "bash scripts/sync-agents-skills.sh",
+    "postinstall": "bash scripts/sync-agents-skills.sh && node scripts/setup-hooks.js",
     "test": "vitest run",
+    "lint:provenance-script": "eslint scripts/generate-provenance.ts scripts/generate-provenance.test.ts scripts/generate-skill-icons.ts",
     "check:docs-completeness": "tsx scripts/check-docs-completeness.ts",
     "changeset": "changeset",
     "version": "changeset version && node scripts/sync-plugin-version.mjs",
@@ -20,9 +21,15 @@
   "devDependencies": {
     "@changesets/changelog-github": "^0.7.0",
     "@changesets/cli": "^2.30.0",
+    "@eslint/js": "^9.39.5",
+    "@iconify-json/solar": "^1.2.9",
     "@types/node": "^20.0.0",
+    "eslint": "^9.39.5",
+    "eslint-config-prettier": "^10.1.8",
+    "eslint-plugin-sonarjs": "^4.2.0",
     "prettier": "^3.0.0",
     "tsx": "^4.0.0",
+    "typescript-eslint": "^8.67.0",
     "vitest": "^2.0.0"
   }
 }

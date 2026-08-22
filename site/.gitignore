@@ -8,6 +8,8 @@
 .docusaurus
 .cache-loader
 src/data/skills-landing.json
+src/data/provenance.json
+src/data/solar-icons.json
 
 # Misc
 .DS_Store

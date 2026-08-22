@@ -1,0 +1,33 @@
+.commandRow {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: var(--ifm-color-emphasis-100);
+  border-radius: 0.35rem;
+  padding: 0.5rem 0.75rem;
+  font-family: var(--ifm-font-family-monospace);
+  font-size: 0.85rem;
+  overflow-x: auto;
+}
+
+.commandRow code {
+  background: none;
+  padding: 0;
+  flex: 1;
+  white-space: pre;
+}
+
+.copyButton {
+  flex-shrink: 0;
+  border: none;
+  background: var(--ifm-color-emphasis-200);
+  border-radius: 0.3rem;
+  padding: 0.3rem 0.6rem;
+  cursor: pointer;
+  font-size: 0.78rem;
+  color: var(--ifm-color-emphasis-800);
+}
+
+.copyButton:hover {
+  background: var(--ifm-color-emphasis-300);
+}

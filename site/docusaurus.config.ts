@@ -13,11 +13,18 @@ const config: Config = {
     v4: true,
   },
 
-  url: 'https://skills-two-cyan.vercel.app',
+  url: 'https://skills.alexrebula.com',
   baseUrl: '/',
 
   onBrokenLinks: 'throw',
   onBrokenMarkdownLinks: 'warn',
+
+  stylesheets: [
+    {
+      href: 'https://fonts.googleapis.com/css2?family=Public+Sans:ital,wght@0,300..800;1,300..800&family=Barlow:ital,wght@0,500;0,600;0,700;1,600&display=swap',
+      type: 'text/css',
+    },
+  ],
 
   i18n: {
     defaultLocale: 'en',

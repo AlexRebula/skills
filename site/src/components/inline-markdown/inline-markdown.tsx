@@ -1,4 +1,5 @@
 import React, { type ReactNode } from 'react';
+import type { InlineMarkdownProps } from './types';
 
 /**
  * Renders the small subset of inline Markdown actually used in the skill
@@ -7,20 +8,26 @@ import React, { type ReactNode } from 'react';
  * so it's safe against the HTML-looking tag names some descriptions
  * quote inside code spans (e.g. `<script setup>`).
  */
+// Each alternative has a mutually exclusive starting character ("`", "[", "**")
+// and only bounded, negated-class repetition (no nested/overlapping quantifiers),
+// so it isn't vulnerable to the catastrophic backtracking this lint rule guards
+// against, flagged as a false positive rather than simplified into something
+// harder to read.
+// eslint-disable-next-line sonarjs/super-linear-regex
 const TOKEN = /`([^`]+)`|\[([^\]]+)\]\(([^)]+)\)|\*\*([^*]+)\*\*/g;
 
-export default function InlineMarkdown({ text }: { text: string }): ReactNode {
+export function InlineMarkdown({ text }: InlineMarkdownProps): ReactNode {
   const nodes: ReactNode[] = [];
   let lastIndex = 0;
   let key = 0;
-  let match: RegExpExecArray | null;
 
-  TOKEN.lastIndex = 0;
-  while ((match = TOKEN.exec(text)) !== null) {
+  // matchAll takes its own copy of TOKEN's state instead of mutating the
+  // shared module-level regex, so repeated/concurrent calls stay safe.
+  for (const match of text.matchAll(TOKEN)) {
     if (match.index > lastIndex) {
       nodes.push(text.slice(lastIndex, match.index));
     }
-    const [, code, linkText, linkHref, bold] = match;
+    const [full, code, linkText, linkHref, bold] = match;
     if (code !== undefined) {
       nodes.push(<code key={key++}>{code}</code>);
     } else if (linkText !== undefined) {
@@ -32,7 +39,7 @@ export default function InlineMarkdown({ text }: { text: string }): ReactNode {
     } else if (bold !== undefined) {
       nodes.push(<strong key={key++}>{bold}</strong>);
     }
-    lastIndex = TOKEN.lastIndex;
+    lastIndex = match.index + full.length;
   }
   if (lastIndex < text.length) {
     nodes.push(text.slice(lastIndex));

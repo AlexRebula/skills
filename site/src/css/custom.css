@@ -4,27 +4,62 @@
  * work well for content-centric websites.
  */
 
-/* You can override the default Infima variables here. */
+/* Palette and fonts mirrored 1:1 from the AlexRebula portfolio (Minimals-based)
+   theme, so this site reads as the same brand:
+   rm/presentation/alexrebula/src/theme/theme-config.ts and src/theme/core/palette.ts */
 :root {
-  --ifm-color-primary: #2e8555;
-  --ifm-color-primary-dark: #29784c;
-  --ifm-color-primary-darker: #277148;
-  --ifm-color-primary-darkest: #205d3b;
-  --ifm-color-primary-light: #33925d;
-  --ifm-color-primary-lighter: #359962;
-  --ifm-color-primary-lightest: #3cad6e;
+  --ifm-font-family-base: 'Public Sans', system-ui, -apple-system, sans-serif;
+  --ifm-heading-font-family: 'Barlow', var(--ifm-font-family-base);
+
+  /* primary (green) */
+  --ifm-color-primary: #00a76f;
+  --ifm-color-primary-dark: #007867;
+  --ifm-color-primary-darker: #004b50;
+  --ifm-color-primary-darkest: #004b50;
+  --ifm-color-primary-light: #5be49b;
+  --ifm-color-primary-lighter: #c8fad6;
+  --ifm-color-primary-lightest: #c8fad6;
+
+  /* secondary (purple): no native Infima slot, kept for anything that needs it */
+  --portfolio-color-secondary: #8e33ff;
+  --portfolio-color-secondary-light: #c684ff;
+  --portfolio-color-secondary-lighter: #efd6ff;
+  --portfolio-color-secondary-dark: #5119b7;
+  --portfolio-color-secondary-darker: #27097a;
+  --ifm-color-info: #00b8d9;
+  --ifm-color-info-dark: #006c9c;
+  --ifm-color-info-darker: #003768;
+  --ifm-color-info-light: #61f3f3;
+  --ifm-color-info-lighter: #cafdf5;
+  --ifm-color-success: #22c55e;
+  --ifm-color-success-dark: #118d57;
+  --ifm-color-success-darker: #065e49;
+  --ifm-color-success-light: #77ed8b;
+  --ifm-color-success-lighter: #d3fcd2;
+  --ifm-color-warning: #ffab00;
+  --ifm-color-warning-dark: #b76e00;
+  --ifm-color-warning-darker: #7a4100;
+  --ifm-color-warning-light: #ffd666;
+  --ifm-color-warning-lighter: #fff5cc;
+  --ifm-color-danger: #ff5630;
+  --ifm-color-danger-dark: #b71d18;
+  --ifm-color-danger-darker: #7a0916;
+  --ifm-color-danger-light: #ffac82;
+  --ifm-color-danger-lighter: #ffe9d5;
+  --ifm-background-color: #fff;
+  --ifm-background-surface-color: #fff;
+  --ifm-font-color-base: #1c252e;
   --ifm-code-font-size: 95%;
-  --docusaurus-highlighted-code-line-bg: rgba(0, 0, 0, 0.1);
+  --docusaurus-highlighted-code-line-bg: rgb(0 0 0 / 10%);
 }
 
-/* For readability concerns, you should choose a lighter palette in dark mode. */
+/* The source theme keeps primary/secondary/info/success/warning/danger identical
+   between light and dark mode (only text/background/action differ) — see
+   palette.ts's `palette.light`/`palette.dark`, both spreading the same
+   `basePalette`. Only background and text color vary here, matching that. */
 [data-theme='dark'] {
-  --ifm-color-primary: #25c2a0;
-  --ifm-color-primary-dark: #21af90;
-  --ifm-color-primary-darker: #1fa588;
-  --ifm-color-primary-darkest: #1a8870;
-  --ifm-color-primary-light: #29d5b0;
-  --ifm-color-primary-lighter: #32d8b4;
-  --ifm-color-primary-lightest: #4fddbf;
-  --docusaurus-highlighted-code-line-bg: rgba(0, 0, 0, 0.3);
+  --ifm-background-color: #141a21;
+  --ifm-background-surface-color: #1c252e;
+  --ifm-font-color-base: #fff;
+  --docusaurus-highlighted-code-line-bg: rgb(0 0 0 / 30%);
 }
