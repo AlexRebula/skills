@@ -3,8 +3,14 @@ import clsx from 'clsx';
 import defaultProvenance from '../../data/provenance.json';
 import { getProvenanceEntry } from '../../data/provenance.utils';
 import type { ProvenanceMap, ProvenanceStatus } from '../../data/provenance.types';
+import { DiffModal } from '../diff-modal';
 import type { ProvenanceButtonProps } from './types';
 import styles from './provenance-button.module.css';
+
+/** The doc slug's last path segment, e.g. "/engineering/ask-matt" -> "ask-matt". */
+function skillNameFromSlug(slug: string): string {
+  return slug.replace(/\/$/, '').split('/').pop() ?? slug;
+}
 
 const LABEL: Record<ProvenanceStatus, string> = {
   upstream: 'Upstream - Unchanged',
@@ -102,12 +108,11 @@ function useRipple(): { ripples: Ripple[]; addRipple: (e: MouseEvent<HTMLElement
  * matching the badge colors this replaced), clickable only when modified.
  * No tooltip: the label text itself states the status plainly.
  *
- * - modified: enabled, opens a popover with the real diff stats and a
- *   change-summary sentence mechanically derived from SKILL.md's heading
- *   diff in generate-provenance.ts (never AI-written). The summary line is
- *   only rendered when one was actually derivable — no filler text when the
- *   diff never touched a heading.
- * - upstream / original: aria-disabled, same status color, no click behavior.
+ * - modified: enabled, opens the full-screen DiffModal (side-by-side, tabbed
+ *   per changed file) with the real line-level diff generate-provenance.ts
+ *   computed at build time.
+ * - upstream / original / inherited: aria-disabled, same status color, no
+ *   click behavior.
  */
 export function ProvenanceButton({
   slug,
@@ -119,8 +124,8 @@ export function ProvenanceButton({
   const entry = getProvenanceEntry(slug, provenanceMap);
   if (!entry) return null;
 
-  const diffStat = entry.status === 'modified' ? entry.diffStat : undefined;
-  const hasDiff = !!diffStat && diffStat.length > 0;
+  const files = entry.status === 'modified' ? entry.diffs : undefined;
+  const hasDiff = !!files && files.length > 0;
 
   function handleClick(e: MouseEvent<HTMLButtonElement>) {
     if (!hasDiff) return;
@@ -128,8 +133,6 @@ export function ProvenanceButton({
     setOpen((v) => !v);
   }
 
-  const added = diffStat?.reduce((sum, d) => sum + d.added, 0) ?? 0;
-  const removed = diffStat?.reduce((sum, d) => sum + d.removed, 0) ?? 0;
   const Icon = ICON[entry.status];
 
   return (
@@ -156,14 +159,12 @@ export function ProvenanceButton({
         {LABEL[entry.status]}
       </button>
       {open && hasDiff && (
-        <span className={styles.panel} role="dialog" aria-label="What's different from upstream">
-          <span className={styles.title}>Changed vs Upstream</span>
-          <span className={styles.stats}>
-            <span className={styles.added}>+{added}</span>{' '}
-            <span className={styles.removed}>-{removed}</span>
-          </span>
-          {entry.changeSummary && <span className={styles.summary}>{entry.changeSummary}</span>}
-        </span>
+        <DiffModal
+          skillName={skillNameFromSlug(slug)}
+          upstreamSha={entry.upstreamSha ?? ''}
+          files={files}
+          onClose={() => setOpen(false)}
+        />
       )}
     </span>
   );

@@ -9,16 +9,21 @@ const FIXTURE: ProvenanceMap = {
   'productivity/teach': { status: 'upstream' },
   'engineering/ask-matt': {
     status: 'modified',
+    upstreamSha: '5b15a47f2d7150f545fbcacbfe381787fc0230dc',
     diffStat: [
-      { file: 'SKILL.md', added: 8, removed: 4 },
-      { file: 'agents/openai.yaml', added: 2, removed: 0 },
+      { file: 'SKILL.md', added: 1, removed: 1 },
+      { file: 'agents/openai.yaml', added: 1, removed: 0 },
     ],
-    changeSummary: "Adds 'Review step'.",
-  },
-  'productivity/handoff': {
-    status: 'modified',
-    diffStat: [{ file: 'SKILL.md', added: 1, removed: 1 }],
-    // No changeSummary: wording-only change, no heading touched.
+    diffs: [
+      {
+        file: 'SKILL.md',
+        rows: [{ type: 'change', oldLineNumber: 1, oldContent: 'old wording', newLineNumber: 1, newContent: 'new wording' }],
+      },
+      {
+        file: 'agents/openai.yaml',
+        rows: [{ type: 'add', oldLineNumber: null, oldContent: null, newLineNumber: 1, newContent: 'new: true' }],
+      },
+    ],
   },
   'org/create-giselle-component': { status: 'original' },
   'personal/caveman': {
@@ -45,33 +50,31 @@ describe('ProvenanceButton', () => {
     expect(screen.queryByRole('tooltip')).not.toBeInTheDocument();
   });
 
-  it('renders the modified skill as an enabled button that reveals the diff popover on click', async () => {
+  it('renders the modified skill as an enabled button that opens the diff modal on click', async () => {
     const user = userEvent.setup();
     render(<ProvenanceButton slug="/engineering/ask-matt" provenanceMap={FIXTURE} />);
 
     const button = screen.getByRole('button', { name: "See what's different" });
     expect(button).toHaveAttribute('aria-disabled', 'false');
     expect(button).toHaveAttribute('aria-expanded', 'false');
-    expect(screen.queryByText('Changed vs Upstream')).not.toBeInTheDocument();
+    expect(screen.queryByRole('dialog')).not.toBeInTheDocument();
 
     await user.click(button);
 
     expect(button).toHaveAttribute('aria-expanded', 'true');
-    expect(screen.getByText('Changed vs Upstream')).toBeInTheDocument();
-    expect(screen.getByText('+10')).toBeInTheDocument(); // 8 + 2
-    expect(screen.getByText('-4')).toBeInTheDocument(); // 4 + 0
-    expect(screen.getByText("Adds 'Review step'.")).toBeInTheDocument();
+    const dialog = screen.getByRole('dialog');
+    expect(dialog).toHaveAccessibleName(/ask-matt/);
+    expect(screen.getByText('old wording')).toBeInTheDocument();
 
     await user.click(button);
-    expect(screen.queryByText('Changed vs Upstream')).not.toBeInTheDocument();
+    expect(screen.queryByRole('dialog')).not.toBeInTheDocument();
   });
 
-  it('omits the summary line entirely when no heading-level change was derivable, rather than showing filler text', async () => {
+  it('passes every file from diffs, not just SKILL.md, through to the modal', async () => {
     const user = userEvent.setup();
-    render(<ProvenanceButton slug="/productivity/handoff" provenanceMap={FIXTURE} />);
+    render(<ProvenanceButton slug="/engineering/ask-matt" provenanceMap={FIXTURE} />);
     await user.click(screen.getByRole('button', { name: "See what's different" }));
-    expect(screen.getByText('Changed vs Upstream')).toBeInTheDocument();
-    expect(screen.queryByText(/wording/i)).not.toBeInTheDocument();
+    expect(screen.getByRole('tab', { name: /agents\/openai\.yaml/ })).toBeInTheDocument();
   });
 
   it('renders a decorative icon that does not affect the button\'s accessible name', () => {

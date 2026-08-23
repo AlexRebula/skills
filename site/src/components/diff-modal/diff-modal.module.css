@@ -1,0 +1,181 @@
+.overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+  background-color: rgb(17 21 26 / 60%);
+}
+
+.panel {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  max-width: 64rem;
+  height: 100%;
+  max-height: 40rem;
+  overflow: hidden;
+  border-radius: 10px;
+  background-color: #fff;
+  box-shadow:
+    0 0 2px 0 rgb(145 158 171 / 24%),
+    -20px 20px 40px -4px rgb(145 158 171 / 24%);
+}
+
+:global([data-theme='dark']) .panel {
+  background-color: rgb(28 37 46 / 100%);
+  box-shadow:
+    0 0 2px 0 rgb(0 0 0 / 24%),
+    -20px 20px 40px -4px rgb(0 0 0 / 24%);
+}
+
+.header {
+  display: flex;
+  flex-shrink: 0;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 1rem 1.25rem;
+  border-bottom: 1px solid var(--ifm-color-emphasis-300);
+}
+
+.skillName {
+  font-family: var(--ifm-font-family-monospace);
+  font-weight: 700;
+  font-size: 1rem;
+}
+
+.sha {
+  font-family: var(--ifm-font-family-monospace);
+  font-size: 0.8rem;
+  color: var(--ifm-color-emphasis-600);
+}
+
+.closeButton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  margin-left: auto;
+  padding: 0;
+  border: none;
+  border-radius: 6px;
+  background: transparent;
+  color: var(--ifm-color-emphasis-700);
+  cursor: pointer;
+}
+
+.closeButton:hover,
+.closeButton:focus-visible {
+  background-color: var(--ifm-color-emphasis-200);
+}
+
+.closeButton svg {
+  width: 14px;
+  height: 14px;
+}
+
+.tabs {
+  display: flex;
+  flex-shrink: 0;
+  gap: 0.25rem;
+  overflow-x: auto;
+  padding: 0 0.75rem;
+  border-bottom: 1px solid var(--ifm-color-emphasis-300);
+}
+
+.tab {
+  padding: 0.6rem 0.75rem;
+  border: none;
+  border-bottom: 2px solid transparent;
+  background: transparent;
+  color: var(--ifm-color-emphasis-700);
+  font-family: var(--ifm-font-family-monospace);
+  font-size: 0.8rem;
+  white-space: nowrap;
+  cursor: pointer;
+}
+
+.tab:hover {
+  color: var(--ifm-font-color-base);
+}
+
+.tabActive {
+  border-bottom-color: var(--ifm-color-primary);
+  color: var(--ifm-font-color-base);
+  font-weight: 700;
+}
+
+.body {
+  flex: 1;
+  overflow: auto;
+}
+
+.diffTable {
+  width: 100%;
+  border-collapse: collapse;
+  font-family: var(--ifm-font-family-monospace);
+  font-size: 0.8rem;
+  line-height: 1.6;
+}
+
+.lineNumber {
+  width: 3rem;
+  padding: 0 0.5rem;
+  color: var(--ifm-color-emphasis-500);
+  text-align: right;
+  user-select: none;
+  white-space: nowrap;
+}
+
+.lineContent {
+  padding: 0 0.75rem;
+  white-space: pre;
+}
+
+/* Vertical divider between the old and new column pairs. */
+.lineContent:nth-child(2) {
+  border-right: 1px solid var(--ifm-color-emphasis-300);
+}
+
+.add td:nth-child(3),
+.add td:nth-child(4) {
+  background-color: rgb(46 160 67 / 15%);
+}
+
+.remove td:nth-child(1),
+.remove td:nth-child(2) {
+  background-color: rgb(248 81 73 / 15%);
+}
+
+.change td:nth-child(1),
+.change td:nth-child(2) {
+  background-color: rgb(248 81 73 / 15%);
+}
+
+.change td:nth-child(3),
+.change td:nth-child(4) {
+  background-color: rgb(46 160 67 / 15%);
+}
+
+:global([data-theme='dark']) .add td:nth-child(3),
+:global([data-theme='dark']) .add td:nth-child(4) {
+  background-color: rgb(46 160 67 / 20%);
+}
+
+:global([data-theme='dark']) .remove td:nth-child(1),
+:global([data-theme='dark']) .remove td:nth-child(2) {
+  background-color: rgb(248 81 73 / 20%);
+}
+
+:global([data-theme='dark']) .change td:nth-child(1),
+:global([data-theme='dark']) .change td:nth-child(2) {
+  background-color: rgb(248 81 73 / 20%);
+}
+
+:global([data-theme='dark']) .change td:nth-child(3),
+:global([data-theme='dark']) .change td:nth-child(4) {
+  background-color: rgb(46 160 67 / 20%);
+}
