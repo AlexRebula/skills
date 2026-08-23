@@ -21,6 +21,11 @@ const FIXTURE: ProvenanceMap = {
     // No changeSummary: wording-only change, no heading touched.
   },
   'org/create-giselle-component': { status: 'original' },
+  'personal/caveman': {
+    status: 'inherited',
+    upstreamSha: '221ffca96736afefdc08ca7cf0b3965e9ea83f41',
+    upstreamUrl: 'https://github.com/mattpocock/skills/tree/221ffca96736afefdc08ca7cf0b3965e9ea83f41/skills/productivity/caveman',
+  },
 };
 
 describe('ProvenanceButton', () => {
@@ -29,16 +34,13 @@ describe('ProvenanceButton', () => {
     expect(container).toBeEmptyDOMElement();
   });
 
-  it('renders the upstream skill as a disabled, non-clickable button with its label, no tooltip', () => {
-    render(<ProvenanceButton slug="/productivity/teach" provenanceMap={FIXTURE} />);
-    const button = screen.getByRole('button', { name: 'Upstream - Unchanged' });
-    expect(button).toHaveAttribute('aria-disabled', 'true');
-    expect(screen.queryByRole('tooltip')).not.toBeInTheDocument();
-  });
-
-  it('renders the original skill as a disabled, non-clickable button with its label, no tooltip', () => {
-    render(<ProvenanceButton slug="/org/create-giselle-component" provenanceMap={FIXTURE} />);
-    const button = screen.getByRole('button', { name: 'AlexRebula Original.' });
+  it.each([
+    ['/productivity/teach', 'Upstream - Unchanged'],
+    ['/org/create-giselle-component', 'AlexRebula Original.'],
+    ['/personal/caveman', 'Inherited from Matt Pocock'],
+  ])('renders the skill at %s as a disabled, non-clickable button labeled %s, no tooltip', (slug, label) => {
+    render(<ProvenanceButton slug={slug} provenanceMap={FIXTURE} />);
+    const button = screen.getByRole('button', { name: label });
     expect(button).toHaveAttribute('aria-disabled', 'true');
     expect(screen.queryByRole('tooltip')).not.toBeInTheDocument();
   });

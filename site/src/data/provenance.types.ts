@@ -4,7 +4,7 @@
  * this shape, per the companion-types / promotion rule (a type used by a
  * second module moves to one shared file rather than being redeclared).
  */
-export type ProvenanceStatus = 'upstream' | 'modified' | 'original';
+export type ProvenanceStatus = 'upstream' | 'modified' | 'original' | 'inherited';
 
 export interface DiffStatEntry {
   file: string;
@@ -14,6 +14,12 @@ export interface DiffStatEntry {
 
 export interface ProvenanceEntry {
   status: ProvenanceStatus;
+  /**
+   * For "upstream"/"modified": the current upstream commit. For "inherited"
+   * (no current upstream counterpart, but the skill existed upstream at some
+   * point in its history): the last commit where it still existed there,
+   * before it was removed or renamed.
+   */
   upstreamSha?: string;
   upstreamUrl?: string;
   /** Only present when status is "modified": per-file +/- line counts vs upstream. */

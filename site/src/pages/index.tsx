@@ -8,16 +8,25 @@ import { InlineMarkdown } from '../components/inline-markdown';
 import { CopyableCommand } from '../components/copyable-command';
 import { GitHubStars } from '../components/github-stars';
 import { ProvenanceButton } from '../components/provenance-button';
-import { OriginalSkillCard } from '../components/original-skill-card';
+import { SkillCard } from '../components/skill-card';
+import type { SkillCardColor } from '../components/skill-card';
 import { getProvenanceEntry } from '../data/provenance.utils';
 import skillsData from '../data/skills-landing.json';
 import provenanceData from '../data/provenance.json';
-import type { ProvenanceMap } from '../data/provenance.types';
+import type { ProvenanceMap, ProvenanceStatus } from '../data/provenance.types';
 import styles from './index.module.css';
 
 const provenanceMap = provenanceData as ProvenanceMap;
 
 const REPO = 'AlexRebula/skills';
+
+// Statuses with no live upstream counterpart render as a full SkillCard on
+// the landing page instead of a plain link + ProvenanceButton row: there's
+// no current upstream version to compare against or link to inline.
+const SKILL_CARD_CONFIG: Partial<Record<ProvenanceStatus, { color: SkillCardColor; label: string }>> = {
+  original: { color: 'green', label: 'AlexRebula Original.' },
+  inherited: { color: 'amber', label: 'Inherited from Matt Pocock' },
+};
 
 const CATEGORY_LABELS: Record<string, string> = {
   engineering: 'Engineering',
@@ -82,25 +91,29 @@ export default function Home(): ReactNode {
 
               <dl className={styles.skillList}>
                 {category.skills.map((skill) => {
-                  const isOriginal =
-                    getProvenanceEntry(`${category.key}/${skill.name}`, provenanceMap)?.status ===
-                    'original';
+                  const status = getProvenanceEntry(`${category.key}/${skill.name}`, provenanceMap)?.status;
+                  const cardConfig = status ? SKILL_CARD_CONFIG[status] : undefined;
 
                   return (
                     <div
                       key={skill.name}
-                      className={clsx(styles.skillRow, isOriginal && styles.skillRowOriginal)}
+                      className={clsx(styles.skillRow, cardConfig && styles.skillRowCard)}
                     >
-                      <dt className={isOriginal ? undefined : styles.skillTerm}>
-                        {isOriginal ? (
-                          <OriginalSkillCard category={category.key} name={skill.name} />
+                      <dt className={cardConfig ? undefined : styles.skillTerm}>
+                        {cardConfig ? (
+                          <SkillCard
+                            category={category.key}
+                            name={skill.name}
+                            color={cardConfig.color}
+                            label={cardConfig.label}
+                          />
                         ) : (
                           <Link to={`/${category.key}/${skill.name}`}>/{skill.name}</Link>
                         )}
                       </dt>
                       <dd className={styles.skillDefinition}>
                         <InlineMarkdown text={skill.description} />
-                        {!isOriginal && (
+                        {!cardConfig && (
                           <ProvenanceButton slug={`/${category.key}/${skill.name}`} compact />
                         )}
                       </dd>

@@ -1,13 +1,13 @@
 /**
- * Per-skill icon assignment for the AlexRebula-original skill summary cards
- * on the landing page (see the `original-skill-card` component). Maps each
- * "<category>/<name>" slug to a `solar` icon's base name (the `-bold-duotone`
- * suffix and `solar:` prefix are added at the call site).
+ * Per-skill icon assignment for the skill summary cards on the landing page
+ * (see the `skill-card` component). Maps each "<category>/<name>" slug to a
+ * `solar` icon's base name (the `-bold-duotone` suffix and `solar:` prefix
+ * are added at the call site).
  *
  * This file is the single source of truth for the mapping: `scripts/
  * generate-skill-icons.ts` reads it at build time to extract only these
  * icons' glyph data out of the full `@iconify-json/solar` set (7000+ icons)
- * into `solar-icons.json`, and the `OriginalSkillCard` component reads it at
+ * into `solar-icons.json`, and the `SkillCard` component reads it at
  * render time to know which icon to request. Every name here must exist in
  * `@iconify-json/solar`'s `icons.json` — the generator fails loudly if one
  * doesn't, rather than silently rendering a blank icon.

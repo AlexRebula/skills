@@ -83,12 +83,13 @@
   border-bottom: 1px solid var(--ifm-color-emphasis-200);
 }
 
-/* AlexRebula-original skills get the summary-card treatment (see
-   OriginalSkillCard), which needs real room to breathe: a fixed 11rem
-   column is too narrow for its icon + name. The card itself has no fixed
-   width (it stretches to fill this column via width: 100%); only the
-   column's own share of the row is what scales with viewport width here. */
-.skillRowOriginal {
+/* Skills with no live upstream counterpart (original or inherited) get the
+   summary-card treatment (see SkillCard), which needs real room to
+   breathe: a fixed 11rem column is too narrow for its icon + name. The
+   card itself has no fixed width (it stretches to fill this column via
+   width: 100%); only the column's own share of the row is what scales
+   with viewport width here. */
+.skillRowCard {
   grid-template-columns: minmax(220px, 32%) 1fr;
   align-items: center;
 }

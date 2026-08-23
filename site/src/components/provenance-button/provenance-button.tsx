@@ -10,6 +10,7 @@ const LABEL: Record<ProvenanceStatus, string> = {
   upstream: 'Upstream - Unchanged',
   modified: "See what's different",
   original: 'AlexRebula Original.',
+  inherited: 'Inherited from Matt Pocock',
 };
 
 /** Two small nodes forking down into one: upstream/modified both have a real relationship to a single upstream source. */
@@ -57,6 +58,9 @@ const ICON: Record<ProvenanceStatus, () => ReactNode> = {
   upstream: ForkIcon,
   modified: ForkIcon,
   original: NewIcon,
+  // Inherited has a real (historical) upstream relationship too, just not a
+  // current one, so it gets the fork icon rather than the "new" one.
+  inherited: ForkIcon,
 };
 
 interface Ripple {

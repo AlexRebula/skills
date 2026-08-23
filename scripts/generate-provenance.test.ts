@@ -4,27 +4,65 @@ import {
   deriveStatus,
   extractHeadings,
   extractSections,
+  parseHistoryLog,
   parseNumstat,
   summarizeChange,
+  toSkillFolderPath,
 } from './generate-provenance';
 
 describe('deriveStatus', () => {
-  it('classifies a path with no upstream counterpart as "original"', () => {
-    expect(deriveStatus(false, false)).toBe('original');
+  it('classifies a path with no upstream counterpart, never in upstream history, as "original"', () => {
+    expect(deriveStatus(false, false, false)).toBe('original');
+  });
+
+  it('classifies a path with no current upstream counterpart, but present in upstream history, as "inherited"', () => {
+    expect(deriveStatus(false, false, true)).toBe('inherited');
   });
 
   it('classifies an upstream path with no diff as "upstream"', () => {
-    expect(deriveStatus(true, true)).toBe('upstream');
+    expect(deriveStatus(true, true, false)).toBe('upstream');
   });
 
   it('classifies an upstream path with a diff as "modified"', () => {
-    expect(deriveStatus(true, false)).toBe('modified');
+    expect(deriveStatus(true, false, false)).toBe('modified');
   });
 
-  it('ignores the diff flag when the path does not exist upstream', () => {
-    // A path that doesn't exist upstream can't have been "unchanged" from it:
-    // existence takes priority regardless of what the diff flag says.
-    expect(deriveStatus(false, true)).toBe('original');
+  it('ignores the diff and history flags when the path currently exists upstream', () => {
+    // Existence takes priority regardless of what the other flags say.
+    expect(deriveStatus(true, true, true)).toBe('upstream');
+  });
+});
+
+describe('parseHistoryLog', () => {
+  it('parses (commit, path) pairs from `git log --pretty=format:%H --name-only` output, most recent first', () => {
+    const output = [
+      '7d3ada9716a9ee08d6c6f775d8a78ef889e1798f',
+      'skills/productivity/caveman/SKILL.md',
+      '',
+      '221ffca96736afefdc08ca7cf0b3965e9ea83f41',
+      'skills/productivity/caveman/SKILL.md',
+      '',
+    ].join('\n');
+
+    expect(parseHistoryLog(output)).toEqual([
+      { sha: '7d3ada9716a9ee08d6c6f775d8a78ef889e1798f', path: 'skills/productivity/caveman/SKILL.md' },
+      { sha: '221ffca96736afefdc08ca7cf0b3965e9ea83f41', path: 'skills/productivity/caveman/SKILL.md' },
+    ]);
+  });
+
+  it('returns an empty array for empty output (name never appeared in upstream history)', () => {
+    expect(parseHistoryLog('')).toEqual([]);
+  });
+
+  it('associates multiple paths in one commit with that same commit (e.g. a category move)', () => {
+    const output = ['abc123def456abc123def456abc123def456abc1', 'skills/misc/foo/SKILL.md', 'skills/productivity/foo/SKILL.md'].join(
+      '\n',
+    );
+
+    expect(parseHistoryLog(output)).toEqual([
+      { sha: 'abc123def456abc123def456abc123def456abc1', path: 'skills/misc/foo/SKILL.md' },
+      { sha: 'abc123def456abc123def456abc123def456abc1', path: 'skills/productivity/foo/SKILL.md' },
+    ]);
   });
 });
 
@@ -33,6 +71,12 @@ describe('buildUpstreamUrl', () => {
     expect(buildUpstreamUrl('skills/productivity/teach', 'abc1234')).toBe(
       'https://github.com/mattpocock/skills/tree/abc1234/skills/productivity/teach',
     );
+  });
+});
+
+describe('toSkillFolderPath', () => {
+  it('strips the trailing /SKILL.md to get the containing skill folder', () => {
+    expect(toSkillFolderPath('skills/personal/obsidian-vault/SKILL.md')).toBe('skills/personal/obsidian-vault');
   });
 });
 

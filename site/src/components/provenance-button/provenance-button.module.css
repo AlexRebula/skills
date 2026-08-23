@@ -104,6 +104,11 @@
   border: 1px solid transparent;
 }
 
+.inherited {
+  color: var(--ifm-color-warning-dark);
+  border: 1px solid transparent;
+}
+
 /* Stand-in for MUI's TouchRipple: expanding, fading circle from the click point. */
 .rippleLayer {
   position: absolute;

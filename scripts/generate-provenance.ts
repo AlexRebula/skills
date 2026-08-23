@@ -4,8 +4,10 @@
  *
  * For every skill folder, classifies it against the `upstream` remote
  * (mattpocock/skills) so the docs site can show, at the top of each skill's
- * doc page, whether it's an untouched upstream skill, a modified one, or an
- * AlexRebula-only addition, and credit/link the original where one exists.
+ * doc page, whether it's an untouched upstream skill, a modified one, an
+ * AlexRebula-only addition, or one that existed upstream at some point in
+ * its history and was later removed there ("inherited"), and credit/link
+ * the original where one exists.
  *
  * Always computed fresh at build time (never a committed/stale snapshot):
  * adds+fetches the `upstream` remote if it isn't already configured, then
@@ -83,6 +85,60 @@ function pathExistsInUpstream(path: string, upstreamSha: string): boolean {
   } catch {
     return false;
   }
+}
+
+export interface HistoricalOccurrence {
+  sha: string;
+  path: string;
+}
+
+/**
+ * Pure parsing of `git log --pretty=format:%H --name-only` output into
+ * (commit, path) pairs, most recent first. A commit with no matching path
+ * (shouldn't happen given the pathspec that produces this output, but kept
+ * defensive) contributes no pairs.
+ */
+export function parseHistoryLog(output: string): HistoricalOccurrence[] {
+  const occurrences: HistoricalOccurrence[] = [];
+  let currentSha: string | null = null;
+  for (const line of output.split('\n')) {
+    if (line.trim() === '') continue;
+    if (/^[0-9a-f]{40}$/.test(line)) {
+      currentSha = line;
+    } else if (currentSha) {
+      occurrences.push({ sha: currentSha, path: line });
+    }
+  }
+  return occurrences;
+}
+
+/**
+ * IO: every commit reachable from upstreamSha that ever touched a
+ * SKILL.md at this name under any category (a category move upstream
+ * before deletion still matches), most recent first.
+ */
+function historyOccurrences(name: string, upstreamSha: string): HistoricalOccurrence[] {
+  const log = execFileSync(
+    'git',
+    ['log', upstreamSha, '--name-only', '--pretty=format:%H', '--', `skills/*/${name}/SKILL.md`],
+    { cwd: REPO_ROOT, encoding: 'utf-8' },
+  );
+  return parseHistoryLog(log);
+}
+
+/**
+ * The most recent commit where a currently-nonexistent-upstream skill last
+ * actually existed there. `historyOccurrences` also matches the commit that
+ * *removed* the file (the pathspec still sees it in that diff), so this
+ * walks newest-first and returns the first occurrence that actually exists
+ * in that commit's tree, skipping the deletion commit itself. Returns null
+ * if the name never appeared anywhere in upstream's history.
+ */
+function findLastUpstreamOccurrence(name: string, upstreamSha: string): HistoricalOccurrence | null {
+  for (const occurrence of historyOccurrences(name, upstreamSha)) {
+    if (pathExistsInUpstream(occurrence.path, occurrence.sha)) return occurrence;
+  }
+  return null;
 }
 
 function isUnchangedVsUpstream(path: string, upstreamSha: string): boolean {
@@ -235,20 +291,45 @@ function skillFolders(category: string): string[] {
 }
 
 /** Pure decision logic, kept separate from the git I/O above so it's unit-testable. */
-export function deriveStatus(existsUpstream: boolean, unchangedVsUpstream: boolean): ProvenanceStatus {
-  if (!existsUpstream) return 'original';
-  return unchangedVsUpstream ? 'upstream' : 'modified';
+export function deriveStatus(
+  existsUpstream: boolean,
+  unchangedVsUpstream: boolean,
+  existedUpstreamHistorically: boolean,
+): ProvenanceStatus {
+  if (existsUpstream) return unchangedVsUpstream ? 'upstream' : 'modified';
+  return existedUpstreamHistorically ? 'inherited' : 'original';
 }
 
 export function buildUpstreamUrl(skillPath: string, upstreamSha: string): string {
   return `https://github.com/mattpocock/skills/tree/${upstreamSha}/${skillPath}`;
 }
 
+/** Pure: a historical occurrence's path always names the SKILL.md file; the tree URL wants the containing skill folder. */
+export function toSkillFolderPath(skillMdPath: string): string {
+  return skillMdPath.replace(/\/SKILL\.md$/, '');
+}
+
 function classify(category: string, name: string, upstreamSha: string): ProvenanceEntry {
   const path = `skills/${category}/${name}`;
   const existsUpstream = pathExistsInUpstream(path, upstreamSha);
-  const status = deriveStatus(existsUpstream, existsUpstream && isUnchangedVsUpstream(path, upstreamSha));
+  const historical = existsUpstream ? null : findLastUpstreamOccurrence(name, upstreamSha);
+  const status = deriveStatus(
+    existsUpstream,
+    existsUpstream && isUnchangedVsUpstream(path, upstreamSha),
+    historical !== null,
+  );
+
   if (status === 'original') return { status };
+
+  if (status === 'inherited') {
+    // Non-null: `historical` only feeds `deriveStatus` as true when it's set.
+    return {
+      status,
+      upstreamSha: historical!.sha,
+      upstreamUrl: buildUpstreamUrl(toSkillFolderPath(historical!.path), historical!.sha),
+    };
+  }
+
   const entry: ProvenanceEntry = { status, upstreamSha, upstreamUrl: buildUpstreamUrl(path, upstreamSha) };
   if (status === 'modified') {
     const diffStat = computeDiffStat(path, upstreamSha);
