@@ -221,4 +221,18 @@ describe('buildLineDiff', () => {
       { type: 'add', oldLineNumber: null, oldContent: null, newLineNumber: 2, newContent: 'dos' },
     ]);
   });
+
+  it('diffs a wholly new file (empty old side) as every line added, not silently empty', () => {
+    expect(buildLineDiff('', 'a\nb\n')).toEqual([
+      { type: 'add', oldLineNumber: null, oldContent: null, newLineNumber: 1, newContent: 'a' },
+      { type: 'add', oldLineNumber: null, oldContent: null, newLineNumber: 2, newContent: 'b' },
+    ]);
+  });
+
+  it('diffs a wholly deleted file (empty new side) as every line removed, not silently empty', () => {
+    expect(buildLineDiff('a\nb\n', '')).toEqual([
+      { type: 'remove', oldLineNumber: 1, oldContent: 'a', newLineNumber: null, newContent: null },
+      { type: 'remove', oldLineNumber: 2, oldContent: 'b', newLineNumber: null, newContent: null },
+    ]);
+  });
 });

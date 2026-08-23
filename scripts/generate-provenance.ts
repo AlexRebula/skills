@@ -291,15 +291,20 @@ export function buildLineDiff(oldContent: string, newContent: string): DiffRow[]
 
 function computeFileDiffs(path: string, upstreamSha: string, diffStat: DiffStatEntry[]): FileDiff[] {
   return diffStat
-    .map(({ file }): FileDiff | null => {
-      const oldContent = readFileAtRef(upstreamSha, `${path}/${file}`);
-      const newContent = readFileAtRef('HEAD', `${path}/${file}`);
-      // A file added or deleted (not modified in place) has no meaningful "old" or "new"
-      // side to diff line-by-line; diffStat already reports it, skip a line diff for it.
-      if (oldContent === null || newContent === null) return null;
+    .filter(
+      // added === removed === 0 only happens for a binary file (parseNumstat normalizes
+      // git's "-" marker to 0 for both): nothing line-diffable there, and there's no
+      // other way to tell a binary file apart from diffStat alone.
+      ({ added, removed }) => added > 0 || removed > 0,
+    )
+    .map(({ file }): FileDiff => {
+      // A file added or deleted outright (not modified in place) has no content on one
+      // side; treat that side as empty so it diffs as wholly added/removed, the same as
+      // any other add/remove, rather than being silently dropped.
+      const oldContent = readFileAtRef(upstreamSha, `${path}/${file}`) ?? '';
+      const newContent = readFileAtRef('HEAD', `${path}/${file}`) ?? '';
       return { file, rows: buildLineDiff(oldContent, newContent) };
-    })
-    .filter((fileDiff): fileDiff is FileDiff => fileDiff !== null);
+    });
 }
 
 /** Pure parsing: level-2 ("## ") headings only, in document order. Never matches "### ...". */
