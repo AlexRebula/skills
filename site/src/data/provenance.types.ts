@@ -12,6 +12,29 @@ export interface DiffStatEntry {
   removed: number;
 }
 
+export type DiffRowType = 'context' | 'add' | 'remove' | 'change';
+
+/**
+ * One row of a side-by-side diff: independent old/new line numbers and
+ * content so a two-column render can lay them out directly, without
+ * re-deriving alignment from a unified +/- stream. A row has only an old
+ * side ("remove"), only a new side ("add"), both sides from the same
+ * unchanged line ("context"), or both sides from a paired replace, i.e. a
+ * same-position wording change ("change").
+ */
+export interface DiffRow {
+  type: DiffRowType;
+  oldLineNumber: number | null;
+  oldContent: string | null;
+  newLineNumber: number | null;
+  newContent: string | null;
+}
+
+export interface FileDiff {
+  file: string;
+  rows: DiffRow[];
+}
+
 export interface ProvenanceEntry {
   status: ProvenanceStatus;
   /**
@@ -24,6 +47,12 @@ export interface ProvenanceEntry {
   upstreamUrl?: string;
   /** Only present when status is "modified": per-file +/- line counts vs upstream. */
   diffStat?: DiffStatEntry[];
+  /**
+   * Only present when status is "modified": the full line-level diff for
+   * every file listed in diffStat, computed once at build time so the diff
+   * modal never needs a runtime GitHub call.
+   */
+  diffs?: FileDiff[];
   /**
    * Only present when status is "modified" and SKILL.md's `##` headings
    * changed vs upstream. Mechanically derived from the actual heading diff,

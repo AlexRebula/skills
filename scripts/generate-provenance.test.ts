@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import {
+  buildLineDiff,
   buildUpstreamUrl,
   deriveStatus,
   extractHeadings,
@@ -182,5 +183,42 @@ describe('summarizeChange', () => {
     const oldMd = '## What it does\n\nSame wording.\n';
     const newMd = '## What it does\n\nSame wording.\n';
     expect(summarizeChange(oldMd, newMd)).toBeNull();
+  });
+});
+
+describe('buildLineDiff', () => {
+  it('reports a pure addition as a row with only a new side', () => {
+    expect(buildLineDiff('a\n', 'a\nb\n')).toEqual([
+      { type: 'context', oldLineNumber: 1, oldContent: 'a', newLineNumber: 1, newContent: 'a' },
+      { type: 'add', oldLineNumber: null, oldContent: null, newLineNumber: 2, newContent: 'b' },
+    ]);
+  });
+
+  it('reports a pure removal as a row with only an old side', () => {
+    expect(buildLineDiff('a\nb\n', 'a\n')).toEqual([
+      { type: 'context', oldLineNumber: 1, oldContent: 'a', newLineNumber: 1, newContent: 'a' },
+      { type: 'remove', oldLineNumber: 2, oldContent: 'b', newLineNumber: null, newContent: null },
+    ]);
+  });
+
+  it('pairs a same-position wording change onto one "change" row, not stacked remove-then-add rows', () => {
+    expect(buildLineDiff('a\nfoo\n', 'a\nbar\n')).toEqual([
+      { type: 'context', oldLineNumber: 1, oldContent: 'a', newLineNumber: 1, newContent: 'a' },
+      { type: 'change', oldLineNumber: 2, oldContent: 'foo', newLineNumber: 2, newContent: 'bar' },
+    ]);
+  });
+
+  it('reports every line as context, unpaired, when the file is fully unchanged', () => {
+    expect(buildLineDiff('a\nb\n', 'a\nb\n')).toEqual([
+      { type: 'context', oldLineNumber: 1, oldContent: 'a', newLineNumber: 1, newContent: 'a' },
+      { type: 'context', oldLineNumber: 2, oldContent: 'b', newLineNumber: 2, newContent: 'b' },
+    ]);
+  });
+
+  it('leaves the longer side unpaired when a replaced block has more lines on one side than the other', () => {
+    expect(buildLineDiff('one\n', 'uno\ndos\n')).toEqual([
+      { type: 'change', oldLineNumber: 1, oldContent: 'one', newLineNumber: 1, newContent: 'uno' },
+      { type: 'add', oldLineNumber: null, oldContent: null, newLineNumber: 2, newContent: 'dos' },
+    ]);
   });
 });

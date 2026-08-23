@@ -27,9 +27,12 @@ import { execFileSync } from 'node:child_process';
 import { writeFileSync, mkdirSync, existsSync, readdirSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { diffLines, type Change } from 'diff';
 import { TARGET_CATEGORIES } from './check-docs-completeness.ts';
 import type {
+  DiffRow,
   DiffStatEntry,
+  FileDiff,
   ProvenanceEntry,
   ProvenanceMap,
   ProvenanceStatus,
@@ -172,6 +175,131 @@ function computeDiffStat(path: string, upstreamSha: string): DiffStatEntry[] {
     encoding: 'utf-8',
   });
   return parseNumstat(numstat, path);
+}
+
+/** A diffLines() chunk, reduced to its own lines with a trailing-newline-produced empty element dropped. */
+interface LineChunk {
+  type: 'context' | 'add' | 'remove';
+  lines: string[];
+}
+
+function lineChunkType(change: Change): LineChunk['type'] {
+  if (change.added) return 'add';
+  if (change.removed) return 'remove';
+  return 'context';
+}
+
+function toLineChunks(oldContent: string, newContent: string): LineChunk[] {
+  return diffLines(oldContent, newContent).map((change) => {
+    const lines = change.value.split('\n');
+    if (lines[lines.length - 1] === '') lines.pop();
+    return { type: lineChunkType(change), lines };
+  });
+}
+
+/** Tracks the next old/new line number to assign as rows are built, mutated in place by each `*Rows` helper below. */
+interface LineCursor {
+  oldLineNumber: number;
+  newLineNumber: number;
+}
+
+function contextRows(lines: string[], cursor: LineCursor): DiffRow[] {
+  return lines.map((content) => ({
+    type: 'context',
+    oldLineNumber: cursor.oldLineNumber++,
+    oldContent: content,
+    newLineNumber: cursor.newLineNumber++,
+    newContent: content,
+  }));
+}
+
+function addRows(lines: string[], cursor: LineCursor): DiffRow[] {
+  return lines.map((content) => ({
+    type: 'add',
+    oldLineNumber: null,
+    oldContent: null,
+    newLineNumber: cursor.newLineNumber++,
+    newContent: content,
+  }));
+}
+
+function removeRows(lines: string[], cursor: LineCursor): DiffRow[] {
+  return lines.map((content) => ({
+    type: 'remove',
+    oldLineNumber: cursor.oldLineNumber++,
+    oldContent: content,
+    newLineNumber: null,
+    newContent: null,
+  }));
+}
+
+/**
+ * Pairs a "remove" chunk against an immediately-following "add" chunk (the
+ * common wording-change shape) line-by-line into "change" rows, rather than
+ * stacked remove-then-add rows, matching how a real diff reads: the same
+ * position, before and after. Any length mismatch spills over as plain
+ * remove/add rows for the unmatched tail. Returns how many chunks were
+ * consumed (2 when paired, 1 when there was nothing to pair with).
+ */
+function pairRemoveWithFollowingAdd(
+  removeChunk: LineChunk,
+  next: LineChunk | undefined,
+  cursor: LineCursor,
+): { rows: DiffRow[]; consumed: number } {
+  if (next?.type !== 'add') {
+    return { rows: removeRows(removeChunk.lines, cursor), consumed: 1 };
+  }
+
+  const pairCount = Math.min(removeChunk.lines.length, next.lines.length);
+  const rows: DiffRow[] = [];
+  for (let j = 0; j < pairCount; j++) {
+    rows.push({
+      type: 'change',
+      oldLineNumber: cursor.oldLineNumber++,
+      oldContent: removeChunk.lines[j],
+      newLineNumber: cursor.newLineNumber++,
+      newContent: next.lines[j],
+    });
+  }
+  rows.push(...removeRows(removeChunk.lines.slice(pairCount), cursor));
+  rows.push(...addRows(next.lines.slice(pairCount), cursor));
+  return { rows, consumed: 2 };
+}
+
+/** Pure: a side-by-side line diff between two full file contents. */
+export function buildLineDiff(oldContent: string, newContent: string): DiffRow[] {
+  const chunks = toLineChunks(oldContent, newContent);
+  const cursor: LineCursor = { oldLineNumber: 1, newLineNumber: 1 };
+  const rows: DiffRow[] = [];
+
+  for (let i = 0; i < chunks.length; i++) {
+    const chunk = chunks[i];
+    if (chunk.type === 'context') {
+      rows.push(...contextRows(chunk.lines, cursor));
+    } else if (chunk.type === 'add') {
+      // Only reached for an "add" not already consumed as the second half of a pairing below.
+      rows.push(...addRows(chunk.lines, cursor));
+    } else {
+      const paired = pairRemoveWithFollowingAdd(chunk, chunks[i + 1], cursor);
+      rows.push(...paired.rows);
+      i += paired.consumed - 1;
+    }
+  }
+
+  return rows;
+}
+
+function computeFileDiffs(path: string, upstreamSha: string, diffStat: DiffStatEntry[]): FileDiff[] {
+  return diffStat
+    .map(({ file }): FileDiff | null => {
+      const oldContent = readFileAtRef(upstreamSha, `${path}/${file}`);
+      const newContent = readFileAtRef('HEAD', `${path}/${file}`);
+      // A file added or deleted (not modified in place) has no meaningful "old" or "new"
+      // side to diff line-by-line; diffStat already reports it, skip a line diff for it.
+      if (oldContent === null || newContent === null) return null;
+      return { file, rows: buildLineDiff(oldContent, newContent) };
+    })
+    .filter((fileDiff): fileDiff is FileDiff => fileDiff !== null);
 }
 
 /** Pure parsing: level-2 ("## ") headings only, in document order. Never matches "### ...". */
@@ -340,6 +468,7 @@ function classify(category: string, name: string, upstreamSha: string): Provenan
   if (status === 'modified') {
     const diffStat = computeDiffStat(path, upstreamSha);
     entry.diffStat = diffStat;
+    entry.diffs = computeFileDiffs(path, upstreamSha, diffStat);
     const summary = computeChangeSummary(path, upstreamSha, diffStat);
     if (summary) entry.changeSummary = summary;
   }
