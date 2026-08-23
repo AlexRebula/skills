@@ -290,12 +290,18 @@ function skillFolders(category: string): string[] {
     .sort();
 }
 
+export interface StatusInputs {
+  existsUpstream: boolean;
+  unchangedVsUpstream: boolean;
+  existedUpstreamHistorically: boolean;
+}
+
 /** Pure decision logic, kept separate from the git I/O above so it's unit-testable. */
-export function deriveStatus(
-  existsUpstream: boolean,
-  unchangedVsUpstream: boolean,
-  existedUpstreamHistorically: boolean,
-): ProvenanceStatus {
+export function deriveStatus({
+  existsUpstream,
+  unchangedVsUpstream,
+  existedUpstreamHistorically,
+}: StatusInputs): ProvenanceStatus {
   if (existsUpstream) return unchangedVsUpstream ? 'upstream' : 'modified';
   return existedUpstreamHistorically ? 'inherited' : 'original';
 }
@@ -313,11 +319,11 @@ function classify(category: string, name: string, upstreamSha: string): Provenan
   const path = `skills/${category}/${name}`;
   const existsUpstream = pathExistsInUpstream(path, upstreamSha);
   const historical = existsUpstream ? null : findLastUpstreamOccurrence(name, upstreamSha);
-  const status = deriveStatus(
+  const status = deriveStatus({
     existsUpstream,
-    existsUpstream && isUnchangedVsUpstream(path, upstreamSha),
-    historical !== null,
-  );
+    unchangedVsUpstream: existsUpstream && isUnchangedVsUpstream(path, upstreamSha),
+    existedUpstreamHistorically: historical !== null,
+  });
 
   if (status === 'original') return { status };
 

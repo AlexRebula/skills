@@ -12,24 +12,34 @@ import {
 
 describe('deriveStatus', () => {
   it('classifies a path with no upstream counterpart, never in upstream history, as "original"', () => {
-    expect(deriveStatus(false, false, false)).toBe('original');
+    expect(
+      deriveStatus({ existsUpstream: false, unchangedVsUpstream: false, existedUpstreamHistorically: false }),
+    ).toBe('original');
   });
 
   it('classifies a path with no current upstream counterpart, but present in upstream history, as "inherited"', () => {
-    expect(deriveStatus(false, false, true)).toBe('inherited');
+    expect(
+      deriveStatus({ existsUpstream: false, unchangedVsUpstream: false, existedUpstreamHistorically: true }),
+    ).toBe('inherited');
   });
 
   it('classifies an upstream path with no diff as "upstream"', () => {
-    expect(deriveStatus(true, true, false)).toBe('upstream');
+    expect(
+      deriveStatus({ existsUpstream: true, unchangedVsUpstream: true, existedUpstreamHistorically: false }),
+    ).toBe('upstream');
   });
 
   it('classifies an upstream path with a diff as "modified"', () => {
-    expect(deriveStatus(true, false, false)).toBe('modified');
+    expect(
+      deriveStatus({ existsUpstream: true, unchangedVsUpstream: false, existedUpstreamHistorically: false }),
+    ).toBe('modified');
   });
 
   it('ignores the diff and history flags when the path currently exists upstream', () => {
     // Existence takes priority regardless of what the other flags say.
-    expect(deriveStatus(true, true, true)).toBe('upstream');
+    expect(
+      deriveStatus({ existsUpstream: true, unchangedVsUpstream: true, existedUpstreamHistorically: true }),
+    ).toBe('upstream');
   });
 });
 
