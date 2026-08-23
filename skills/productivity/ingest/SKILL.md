@@ -205,6 +205,12 @@ The resolved `<group>` is used in all subsequent steps wherever `wiki/sources/<g
 
 ---
 
+## Step 3.8 — Reconcile unfiled quotes
+
+Check `wiki/quotes/_unfiled/` for a file whose `raw_path:` matches `<path>`. If found: move it to `wiki/quotes/<group>/<slug>-quotes.md`, replace `raw_path:` with `source: wiki/sources/<group>/<slug>.md`, drop `status: unfiled`, replace its "not yet linked" line with `→ [[<slug>|Back to the source page]]`, and drop ` *(unfiled)*` from its line in `wiki/quotes/quotes-index.md`. Do this silently — no need to ask. If none found, skip.
+
+---
+
 ## Step 4 — Write the source page
 
 Write `wiki/sources/<group>/<slug>.md` using the source page template from `SCHEMA.md`:
@@ -230,8 +236,10 @@ Content (in order):
    - If `raw_path` is null but `url` is set: `→ [Original source](<url>)`
 2. **Summary** — one paragraph: what this source is and why it matters
 3. **Key takeaways** — 3–7 bullet points (refined from Step 3 discussion)
-4. **Quotes** — 1–3 verbatim excerpts worth keeping (optional; omit if none stand out)
-5. **Related pages** — wikilinks to any existing `wiki/` pages this source informs (check `wiki/index.md`)
+4. **Related pages** — wikilinks to any existing `wiki/` pages this source informs (check `wiki/index.md`)
+5. If Step 3.8 reconciled a quote page for this source, add: `→ Quotes from this source: [[<slug>-quotes|Quotes]]`
+
+Do not extract verbatim quotes here — that's `/extract-quotes`'s job, run as a separate companion pass (same relationship `/extract-vocabulary` has to this skill). See Step 8.
 
 - If `--deep`: add `deep_dive: wiki/deep/<slug>-deep.md` to frontmatter and append `→ [[<slug>-deep|Deep dive]]` at the bottom
 
@@ -340,3 +348,9 @@ Tell the user:
 - Related pages updated: list any pages touched
 - New pages created: list any new pages
 - Suggested next ingests: if the source references other sources worth adding, name them
+
+**Then, once ingest is fully done, ask — do not run either automatically:**
+
+> "This source is ingested. Want me to also run `/extract-vocabulary` (pulls jargon/terms into the vocabulary layer) and/or `/extract-quotes` (pulls quotable lines into the quotes layer) on it? Both are optional companion passes, not part of ingest itself."
+
+`/extract-vocabulary` and `/extract-quotes` are strictly opt-in — never invoke either without the user explicitly saying yes to this question (or asking for one by name later, e.g. "pull the jargon out of this," "extract quotes from this"). Don't pre-judge a source as "not jargon/quote-worthy" and skip asking on its behalf — that call belongs to the user, not to an inference about source type. Ask about both together in one question rather than as two separate interruptions.
