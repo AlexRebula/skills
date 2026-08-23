@@ -1,21 +1,29 @@
 .overlay {
   position: fixed;
   inset: 0;
-  z-index: 100;
+
+  /* Docusaurus's own sticky navbar sits at Infima's --ifm-z-index-fixed
+     (200): a genuinely full-screen modal has to paint above that too, not
+     just above the page content, or the navbar covers its top edge and
+     swallows clicks meant for the modal underneath it. */
+  z-index: 300;
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 2rem;
+  padding: 1rem;
   background-color: rgb(17 21 26 / 60%);
 }
 
+/*
+ * Genuinely full-screen (fills nearly the entire viewport, not just "a big
+ * dialog"): same paper background/shadow treatment ProvenanceButton's old
+ * popover used, at the size a whole-file side-by-side diff actually needs.
+ */
 .panel {
   display: flex;
   flex-direction: column;
   width: 100%;
-  max-width: 64rem;
   height: 100%;
-  max-height: 40rem;
   overflow: hidden;
   border-radius: 10px;
   background-color: #fff;
@@ -135,47 +143,23 @@
   white-space: pre;
 }
 
-/* Vertical divider between the old and new column pairs. */
-.lineContent:nth-child(2) {
+/* Vertical divider between the old and new column pairs: purely
+   presentational (which physical column this is), unrelated to which rows
+   are add/remove/change, so a plain structural selector is fine here. */
+.oldColumn {
   border-right: 1px solid var(--ifm-color-emphasis-300);
 }
 
-.add td:nth-child(3),
-.add td:nth-child(4) {
-  background-color: rgb(46 160 67 / 15%);
+/*
+ * Tint derived from this site's own success/danger theme tokens via
+ * color-mix(), not a separately hand-picked palette: stays in sync with
+ * whatever those tokens are, and needs no separate dark-mode override block
+ * since the mix is computed from the (already theme-aware) token each time.
+ */
+.addedSide {
+  background-color: color-mix(in srgb, var(--ifm-color-success) 15%, transparent);
 }
 
-.remove td:nth-child(1),
-.remove td:nth-child(2) {
-  background-color: rgb(248 81 73 / 15%);
-}
-
-.change td:nth-child(1),
-.change td:nth-child(2) {
-  background-color: rgb(248 81 73 / 15%);
-}
-
-.change td:nth-child(3),
-.change td:nth-child(4) {
-  background-color: rgb(46 160 67 / 15%);
-}
-
-:global([data-theme='dark']) .add td:nth-child(3),
-:global([data-theme='dark']) .add td:nth-child(4) {
-  background-color: rgb(46 160 67 / 20%);
-}
-
-:global([data-theme='dark']) .remove td:nth-child(1),
-:global([data-theme='dark']) .remove td:nth-child(2) {
-  background-color: rgb(248 81 73 / 20%);
-}
-
-:global([data-theme='dark']) .change td:nth-child(1),
-:global([data-theme='dark']) .change td:nth-child(2) {
-  background-color: rgb(248 81 73 / 20%);
-}
-
-:global([data-theme='dark']) .change td:nth-child(3),
-:global([data-theme='dark']) .change td:nth-child(4) {
-  background-color: rgb(46 160 67 / 20%);
+.removedSide {
+  background-color: color-mix(in srgb, var(--ifm-color-danger) 15%, transparent);
 }

@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState, type ReactNode } from 'react';
+import React, { useEffect, useRef, useState, type KeyboardEvent as ReactKeyboardEvent, type ReactNode } from 'react';
 import clsx from 'clsx';
 import type { DiffRow } from '../../data/provenance.types';
 import type { DiffModalProps } from './types';
@@ -19,14 +19,46 @@ function lineCounts(rows: DiffRow[]): { added: number; removed: number } {
   return { added, removed };
 }
 
+// A file's name can contain characters (like the "/" in "agents/openai.yaml")
+// that are unconventional in an id/CSS selector context; sanitize rather than
+// relying on the raw filename being safe as one.
+function slug(file: string): string {
+  return file.replace(/[^a-zA-Z0-9_-]/g, '-');
+}
+
+const tabId = (file: string): string => `diff-tab-${slug(file)}`;
+const panelId = (file: string): string => `diff-panel-${slug(file)}`;
+
+/** Whether this row's old (removed) side should be tinted. */
+function oldSideClass(row: DiffRow): string | undefined {
+  return row.type === 'remove' || row.type === 'change' ? styles.removedSide : undefined;
+}
+
+/** Whether this row's new (added) side should be tinted. */
+function newSideClass(row: DiffRow): string | undefined {
+  return row.type === 'add' || row.type === 'change' ? styles.addedSide : undefined;
+}
+
 function DiffRowView({ row }: { row: DiffRow }): ReactNode {
   return (
-    <tr className={styles[row.type]}>
-      <td className={styles.lineNumber}>{row.oldLineNumber ?? ''}</td>
-      <td className={styles.lineContent}>{row.oldContent}</td>
-      <td className={styles.lineNumber}>{row.newLineNumber ?? ''}</td>
-      <td className={styles.lineContent}>{row.newContent}</td>
+    <tr>
+      <td className={clsx(styles.lineNumber, oldSideClass(row))}>{row.oldLineNumber ?? ''}</td>
+      <td className={clsx(styles.lineContent, styles.oldColumn, oldSideClass(row))}>{row.oldContent}</td>
+      <td className={clsx(styles.lineNumber, newSideClass(row))}>{row.newLineNumber ?? ''}</td>
+      <td className={clsx(styles.lineContent, newSideClass(row))}>{row.newContent}</td>
     </tr>
+  );
+}
+
+/**
+ * Every element inside the panel that Tab should be able to reach, in DOM
+ * order: excludes disabled elements and, importantly, the inactive tabs
+ * (real <button> elements, but deliberately given tabIndex={-1} as part of
+ * the roving-tabindex pattern, so they must not count as "focusable" here).
+ */
+function focusableElements(panel: HTMLElement): HTMLElement[] {
+  return Array.from(panel.querySelectorAll<HTMLElement>('button, [href], [tabindex]')).filter(
+    (el) => !el.hasAttribute('disabled') && el.getAttribute('tabindex') !== '-1',
   );
 }
 
@@ -37,13 +69,21 @@ function DiffRowView({ row }: { row: DiffRow }): ReactNode {
  * diffing, and no network call, happens here.
  *
  * Tabs only appear when there's more than one changed file: a single-file
- * diff (the common case) goes straight to the two-column view.
+ * diff (the common case) goes straight to the two-column view. Follows the
+ * WAI-ARIA tabs pattern for real (roving tabindex, arrow-key navigation,
+ * tab/tabpanel linked via aria-controls), not just the tablist/tab roles
+ * with none of the accompanying behavior.
  */
 export function DiffModal({ skillName, upstreamSha, files, onClose }: DiffModalProps): ReactNode {
   const [activeFile, setActiveFile] = useState(() => defaultFile(files));
+  const panelRef = useRef<HTMLDivElement>(null);
   const closeButtonRef = useRef<HTMLButtonElement>(null);
+  const tabRefs = useRef<Record<string, HTMLButtonElement | null>>({});
   const previouslyFocused = useRef<Element | null>(null);
 
+  // Move focus in on mount, restore it to whatever had it before (the
+  // trigger button, in practice) on unmount, rather than letting it fall
+  // back to document.body when this component disappears.
   useEffect(() => {
     previouslyFocused.current = document.activeElement;
     closeButtonRef.current?.focus();
@@ -52,19 +92,57 @@ export function DiffModal({ skillName, upstreamSha, files, onClose }: DiffModalP
     };
   }, []);
 
+  // Escape closes the dialog; Tab/Shift+Tab wrap at the panel's edges
+  // instead of escaping into the page behind the modal (a focus trap).
   useEffect(() => {
     function handleKeyDown(e: KeyboardEvent) {
-      if (e.key === 'Escape') onClose();
+      if (e.key === 'Escape') {
+        onClose();
+        return;
+      }
+      if (e.key !== 'Tab' || !panelRef.current) return;
+      const focusable = focusableElements(panelRef.current);
+      if (focusable.length === 0) return;
+      const first = focusable[0];
+      const last = focusable[focusable.length - 1];
+      if (e.shiftKey && document.activeElement === first) {
+        e.preventDefault();
+        last.focus();
+      } else if (!e.shiftKey && document.activeElement === last) {
+        e.preventDefault();
+        first.focus();
+      }
     }
     document.addEventListener('keydown', handleKeyDown);
     return () => document.removeEventListener('keydown', handleKeyDown);
   }, [onClose]);
 
+  function focusTabAt(index: number) {
+    const file = files[index]?.file;
+    if (!file) return;
+    setActiveFile(file);
+    tabRefs.current[file]?.focus();
+  }
+
+  // Roving-tabindex arrow-key navigation, per the WAI-ARIA tabs pattern:
+  // only the active tab is in the normal Tab order, arrow keys move (and
+  // activate) between tabs directly.
+  function handleTabKeyDown(e: ReactKeyboardEvent<HTMLButtonElement>, index: number) {
+    if (e.key === 'ArrowRight') {
+      e.preventDefault();
+      focusTabAt((index + 1) % files.length);
+    } else if (e.key === 'ArrowLeft') {
+      e.preventDefault();
+      focusTabAt((index - 1 + files.length) % files.length);
+    }
+  }
+
+  const hasTabs = files.length > 1;
   const activeDiff = files.find((f) => f.file === activeFile) ?? files[0];
 
   return (
     <div className={styles.overlay}>
-      <div className={styles.panel} role="dialog" aria-modal="true" aria-label={`What's different in ${skillName}`}>
+      <div ref={panelRef} className={styles.panel} role="dialog" aria-modal="true" aria-label={`What's different in ${skillName}`}>
         <div className={styles.header}>
           <span className={styles.skillName}>{skillName}</span>
           <span className={styles.sha}>upstream @ {shortSha(upstreamSha)}</span>
@@ -75,27 +153,40 @@ export function DiffModal({ skillName, upstreamSha, files, onClose }: DiffModalP
           </button>
         </div>
 
-        {files.length > 1 && (
+        {hasTabs && (
           <div className={styles.tabs} role="tablist">
-            {files.map((f) => (
-              <button
-                key={f.file}
-                type="button"
-                role="tab"
-                aria-selected={f.file === activeFile}
-                className={clsx(styles.tab, f.file === activeFile && styles.tabActive)}
-                onClick={() => setActiveFile(f.file)}
-              >
-                {f.file} ({(() => {
-                  const { added, removed } = lineCounts(f.rows);
-                  return `+${added}/-${removed}`;
-                })()})
-              </button>
-            ))}
+            {files.map((f, index) => {
+              const isActive = f.file === activeFile;
+              const { added, removed } = lineCounts(f.rows);
+              return (
+                <button
+                  key={f.file}
+                  ref={(el) => {
+                    tabRefs.current[f.file] = el;
+                  }}
+                  type="button"
+                  id={tabId(f.file)}
+                  role="tab"
+                  aria-selected={isActive}
+                  aria-controls={panelId(f.file)}
+                  tabIndex={isActive ? 0 : -1}
+                  className={clsx(styles.tab, isActive && styles.tabActive)}
+                  onClick={() => setActiveFile(f.file)}
+                  onKeyDown={(e) => handleTabKeyDown(e, index)}
+                >
+                  {f.file} (+{added}/-{removed})
+                </button>
+              );
+            })}
           </div>
         )}
 
-        <div className={styles.body}>
+        <div
+          className={styles.body}
+          role={hasTabs ? 'tabpanel' : undefined}
+          id={hasTabs ? panelId(activeDiff.file) : undefined}
+          aria-labelledby={hasTabs ? tabId(activeDiff.file) : undefined}
+        >
           <table className={styles.diffTable}>
             <tbody>
               {activeDiff.rows.map((row, i) => (

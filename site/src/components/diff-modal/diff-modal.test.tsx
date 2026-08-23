@@ -90,4 +90,62 @@ describe('DiffModal', () => {
     expect(screen.getByText('foo')).toBeInTheDocument();
     expect(screen.getByText('bar')).toBeInTheDocument();
   });
+
+  it('links each tab to its panel by id, per the WAI-ARIA tabs pattern', () => {
+    render(<DiffModal skillName="ask-matt" upstreamSha="abc1234" files={[REFERENCE_DIFF, SKILL_MD_DIFF]} onClose={() => {}} />);
+    const activeTab = screen.getByRole('tab', { name: /SKILL\.md/ });
+    const panel = screen.getByRole('tabpanel');
+    expect(activeTab).toHaveAttribute('aria-controls', panel.id);
+    expect(panel).toHaveAttribute('aria-labelledby', activeTab.id);
+  });
+
+  it('moves focus and activates the next tab on ArrowRight, wrapping at the end', async () => {
+    const user = userEvent.setup();
+    render(<DiffModal skillName="ask-matt" upstreamSha="abc1234" files={[REFERENCE_DIFF, SKILL_MD_DIFF]} onClose={() => {}} />);
+    const skillTab = screen.getByRole('tab', { name: /SKILL\.md/ }); // last tab, active by default
+    skillTab.focus();
+
+    await user.keyboard('{ArrowRight}');
+
+    const referenceTab = screen.getByRole('tab', { name: /reference\.md/ });
+    expect(referenceTab).toHaveAttribute('aria-selected', 'true');
+    expect(document.activeElement).toBe(referenceTab);
+  });
+
+  it('moves focus and activates the previous tab on ArrowLeft, wrapping at the start', async () => {
+    const user = userEvent.setup();
+    render(<DiffModal skillName="ask-matt" upstreamSha="abc1234" files={[REFERENCE_DIFF, SKILL_MD_DIFF]} onClose={() => {}} />);
+    const skillTab = screen.getByRole('tab', { name: /SKILL\.md/ }); // last tab, active by default
+    skillTab.focus();
+
+    await user.keyboard('{ArrowLeft}');
+
+    const referenceTab = screen.getByRole('tab', { name: /reference\.md/ });
+    expect(referenceTab).toHaveAttribute('aria-selected', 'true');
+    expect(document.activeElement).toBe(referenceTab);
+  });
+
+  it('traps Tab focus inside the panel: Tab from the last focusable element wraps to the first', async () => {
+    const user = userEvent.setup();
+    render(<DiffModal skillName="ask-matt" upstreamSha="abc1234" files={[REFERENCE_DIFF, SKILL_MD_DIFF]} onClose={() => {}} />);
+    const closeButton = screen.getByRole('button', { name: /close/i });
+    const skillTab = screen.getByRole('tab', { name: /SKILL\.md/ }); // active tab: the only tab in the Tab order
+    skillTab.focus();
+
+    await user.tab();
+
+    expect(document.activeElement).toBe(closeButton);
+  });
+
+  it('traps Shift+Tab focus inside the panel: Shift+Tab from the first focusable element wraps to the last', async () => {
+    const user = userEvent.setup();
+    render(<DiffModal skillName="ask-matt" upstreamSha="abc1234" files={[REFERENCE_DIFF, SKILL_MD_DIFF]} onClose={() => {}} />);
+    const closeButton = screen.getByRole('button', { name: /close/i });
+    const skillTab = screen.getByRole('tab', { name: /SKILL\.md/ }); // active tab: the only tab in the Tab order
+    closeButton.focus();
+
+    await user.tab({ shift: true });
+
+    expect(document.activeElement).toBe(skillTab);
+  });
 });
