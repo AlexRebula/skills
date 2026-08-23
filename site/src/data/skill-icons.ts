@@ -38,7 +38,6 @@ export const SKILL_ICON_NAMES: Record<string, string> = {
   'productivity/standup-prep-preflight': 'checklist',
   'productivity/sync': 'refresh',
   'productivity/wiki-lint': 'magnifer-bug',
-  'productivity/writing-great-skills': 'magic-stick-3',
 
   'git/commit-wip': 'diskette',
   'git/create-pr': 'send-square',
