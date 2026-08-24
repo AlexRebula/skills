@@ -5,6 +5,7 @@ import {
   deriveStatus,
   parseHistoryLog,
   parseNumstat,
+  pickCurrentUpstreamPath,
   toSkillFolderPath,
 } from './generate-provenance';
 
@@ -85,6 +86,31 @@ describe('buildUpstreamUrl', () => {
 describe('toSkillFolderPath', () => {
   it('strips the trailing /SKILL.md to get the containing skill folder', () => {
     expect(toSkillFolderPath('skills/personal/obsidian-vault/SKILL.md')).toBe('skills/personal/obsidian-vault');
+  });
+});
+
+describe('pickCurrentUpstreamPath', () => {
+  it('returns the candidate path that currently exists upstream, even when it differs from the local category', () => {
+    // The exact scenario a local-only bucket move creates: the skill's only
+    // ever-known upstream path is "productivity", regardless of what local
+    // category the caller happens to be checking against.
+    const existsNow = (path: string) => path === 'skills/productivity/grill-me';
+    expect(pickCurrentUpstreamPath(['skills/productivity/grill-me'], existsNow)).toBe('skills/productivity/grill-me');
+  });
+
+  it('picks whichever candidate currently exists when a name has moved category upstream too', () => {
+    const existsNow = (path: string) => path === 'skills/productivity/foo';
+    expect(pickCurrentUpstreamPath(['skills/misc/foo', 'skills/productivity/foo'], existsNow)).toBe(
+      'skills/productivity/foo',
+    );
+  });
+
+  it('returns null when none of the candidate paths currently exist upstream', () => {
+    expect(pickCurrentUpstreamPath(['skills/personal/caveman'], () => false)).toBeNull();
+  });
+
+  it('returns null for an empty candidate list', () => {
+    expect(pickCurrentUpstreamPath([], () => true)).toBeNull();
   });
 });
 

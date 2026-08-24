@@ -144,8 +144,37 @@ function findLastUpstreamOccurrence(name: string, upstreamSha: string): Historic
   return null;
 }
 
-function isUnchangedVsUpstream(path: string, upstreamSha: string): boolean {
-  const diff = execFileSync('git', ['diff', '--stat', upstreamSha, 'HEAD', '--', path], {
+/**
+ * Pure: which of a name's ever-known upstream paths (from history, any
+ * category) currently exists upstream, per the given existence check.
+ * Separated from the git I/O that actually answers "does this path exist"
+ * so the decision itself, including the case a local bucket move creates
+ * (the local category doesn't match any upstream one, but a *different*
+ * historical candidate does), is testable without shelling out to git.
+ */
+export function pickCurrentUpstreamPath(candidatePaths: string[], existsNow: (path: string) => boolean): string | null {
+  for (const path of candidatePaths) {
+    if (existsNow(path)) return path;
+  }
+  return null;
+}
+
+/**
+ * IO: the skill's current upstream path, by name, across any category the
+ * skill has ever been filed under upstream, not just whatever local category
+ * happens to be passed at the call site. This is what makes a purely local
+ * bucket reorganization (this fork moving a skill to a different local
+ * folder than upstream's) distinguishable from Matt actually deleting it:
+ * the two look identical if "does this exist upstream" only ever checks the
+ * exact local path.
+ */
+function findCurrentUpstreamPath(name: string, upstreamSha: string): string | null {
+  const candidates = [...new Set(historyOccurrences(name, upstreamSha).map((o) => toSkillFolderPath(o.path)))];
+  return pickCurrentUpstreamPath(candidates, (path) => pathExistsInUpstream(path, upstreamSha));
+}
+
+function isUnchangedVsUpstream(upstreamPath: string, localPath: string, upstreamSha: string): boolean {
+  const diff = execFileSync('git', ['diff', '--stat', `${upstreamSha}:${upstreamPath}`, `HEAD:${localPath}`], {
     cwd: REPO_ROOT,
     encoding: 'utf-8',
   }).trim();
@@ -169,12 +198,19 @@ export function parseNumstat(numstatOutput: string, skillPath: string): DiffStat
     });
 }
 
-function computeDiffStat(path: string, upstreamSha: string): DiffStatEntry[] {
-  const numstat = execFileSync('git', ['diff', '--numstat', upstreamSha, 'HEAD', '--', path], {
-    cwd: REPO_ROOT,
-    encoding: 'utf-8',
-  });
-  return parseNumstat(numstat, path);
+// Diffing two arbitrary tree paths (git diff <sha>:<pathA> <sha>:<pathB>) rather
+// than one path across two revisions (git diff <sha1> <sha2> -- <path>) is what
+// makes this work when the local and upstream categories differ. As a side
+// effect, paths in the output are already bare (relative to each tree's own
+// root, e.g. "SKILL.md"), never prefixed with the skill folder: parseNumstat's
+// prefix-stripping is a no-op here, not wrong, just nothing left to strip.
+function computeDiffStat(upstreamPath: string, localPath: string, upstreamSha: string): DiffStatEntry[] {
+  const numstat = execFileSync(
+    'git',
+    ['diff', '--numstat', `${upstreamSha}:${upstreamPath}`, `HEAD:${localPath}`],
+    { cwd: REPO_ROOT, encoding: 'utf-8' },
+  );
+  return parseNumstat(numstat, localPath);
 }
 
 /** A diffLines() chunk, reduced to its own lines with a trailing-newline-produced empty element dropped. */
@@ -289,7 +325,12 @@ export function buildLineDiff(oldContent: string, newContent: string): DiffRow[]
   return rows;
 }
 
-function computeFileDiffs(path: string, upstreamSha: string, diffStat: DiffStatEntry[]): FileDiff[] {
+function computeFileDiffs(
+  upstreamPath: string,
+  localPath: string,
+  upstreamSha: string,
+  diffStat: DiffStatEntry[],
+): FileDiff[] {
   return diffStat
     .filter(
       // added === removed === 0 only happens for a binary file (parseNumstat normalizes
@@ -301,8 +342,8 @@ function computeFileDiffs(path: string, upstreamSha: string, diffStat: DiffStatE
       // A file added or deleted outright (not modified in place) has no content on one
       // side; treat that side as empty so it diffs as wholly added/removed, the same as
       // any other add/remove, rather than being silently dropped.
-      const oldContent = readFileAtRef(upstreamSha, `${path}/${file}`) ?? '';
-      const newContent = readFileAtRef('HEAD', `${path}/${file}`) ?? '';
+      const oldContent = readFileAtRef(upstreamSha, `${upstreamPath}/${file}`) ?? '';
+      const newContent = readFileAtRef('HEAD', `${localPath}/${file}`) ?? '';
       return { file, rows: buildLineDiff(oldContent, newContent) };
     });
 }
@@ -350,12 +391,16 @@ export function toSkillFolderPath(skillMdPath: string): string {
 }
 
 function classify(category: string, name: string, upstreamSha: string): ProvenanceEntry {
-  const path = `skills/${category}/${name}`;
-  const existsUpstream = pathExistsInUpstream(path, upstreamSha);
+  const localPath = `skills/${category}/${name}`;
+  // Found by name across any category, not the exact localPath: a skill filed
+  // under a different local bucket than upstream's must still classify as
+  // upstream/modified, not fall through to the historical (deleted) case.
+  const upstreamPath = findCurrentUpstreamPath(name, upstreamSha);
+  const existsUpstream = upstreamPath !== null;
   const historical = existsUpstream ? null : findLastUpstreamOccurrence(name, upstreamSha);
   const status = deriveStatus({
     existsUpstream,
-    unchangedVsUpstream: existsUpstream && isUnchangedVsUpstream(path, upstreamSha),
+    unchangedVsUpstream: existsUpstream && isUnchangedVsUpstream(upstreamPath!, localPath, upstreamSha),
     existedUpstreamHistorically: historical !== null,
   });
 
@@ -370,9 +415,10 @@ function classify(category: string, name: string, upstreamSha: string): Provenan
     };
   }
 
-  const entry: ProvenanceEntry = { status, upstreamSha, upstreamUrl: buildUpstreamUrl(path, upstreamSha) };
+  // Non-null: `existsUpstream` only feeds `deriveStatus` as true when it's set.
+  const entry: ProvenanceEntry = { status, upstreamSha, upstreamUrl: buildUpstreamUrl(upstreamPath!, upstreamSha) };
   if (status === 'modified') {
-    entry.diffs = computeFileDiffs(path, upstreamSha, computeDiffStat(path, upstreamSha));
+    entry.diffs = computeFileDiffs(upstreamPath!, localPath, upstreamSha, computeDiffStat(upstreamPath!, localPath, upstreamSha));
   }
   return entry;
 }
