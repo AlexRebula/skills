@@ -1,6 +1,6 @@
 ---
 name: capture
-description: Capture a freeform thought, task, or note mid-session — routes it to the correct content project, creates a real Asana task, writes a schema-compliant local markdown file, then opens a PR on a dedicated branch. Use when the user says /capture or "capture this".
+description: Capture a freeform thought, task, or note mid-session. It routes it to the correct content project, creates a real Asana task, writes a schema-compliant local markdown file, then opens a PR on a dedicated branch. Use when the user says /capture or "capture this".
 ---
 
 # Capture
@@ -15,11 +15,11 @@ Capture freeform input into the correct content project in a single command with
 
 ## Arguments
 
-`/capture "<text>"` — required. Ask if omitted.
+`/capture "<text>"`: required. Ask if omitted.
 
 ---
 
-## Step 1 — Get the text
+## Step 1: Get the text
 
 If no argument was provided, ask:
 
@@ -27,7 +27,7 @@ If no argument was provided, ask:
 
 ---
 
-## Step 2 — Run the capture script
+## Step 2: Run the capture script
 
 ```sh
 ASANA_TOKEN=$(printenv ASANA_TOKEN) npm run capture "<text>"
@@ -37,9 +37,9 @@ Save the exit code and stdout.
 
 ---
 
-## Step 3 — Handle the result
+## Step 3: Handle the result
 
-**Exit 0 — success:**
+**Exit 0: success:**
 
 Parse the JSON from stdout. Report:
 
@@ -48,13 +48,13 @@ Parse the JSON from stdout. Report:
 > Asana: https://app.asana.com/0/<asanaGid>
 > Branch: `<branch>` → PR: <prUrl>"
 
-If `branch` or `prUrl` is `null`, the file was written and the Asana task was created, but the git step failed — report that so the user can push manually.
+If `branch` or `prUrl` is `null`, the file was written and the Asana task was created, but the git step failed: report that so the user can push manually.
 
 Done.
 
 ---
 
-**Exit 2 — ambiguous routing:**
+**Exit 2: ambiguous routing:**
 
 Parse the JSON from stdout. The `suggestedProject` is the safe default. Show the user:
 
@@ -74,7 +74,7 @@ Report success as in Exit 0.
 
 ---
 
-**Exit 1 — error:**
+**Exit 1: error:**
 
 Print the stderr message. Common causes and fixes:
 
@@ -87,8 +87,8 @@ Print the stderr message. Common causes and fixes:
 This skill depends on a project-provided capture script that:
 
 1. Reads routing rules from project config or `.asana-config.json`
-2. Calls Asana to create the task immediately (using the real GID in the filename — no rename needed)
+2. Calls Asana to create the task immediately (using the real GID in the filename: no rename needed)
 3. Writes a frontmatter-compliant markdown file to the configured output folder
-4. Creates a branch `capture/<YYYYMMDD>-<slug>` from `origin/main`, commits the file, pushes, and opens a PR against `main` via `gh pr create` — PRs stay open for manual merge
-5. Outputs JSON: `{ status, project, section, asanaGid, filePath, branch, prUrl }` — `branch` and `prUrl` are `null` if the git step failed
+4. Creates a branch `capture/<YYYYMMDD>-<slug>` from `origin/main`, commits the file, pushes, and opens a PR against `main` via `gh pr create`: PRs stay open for manual merge
+5. Outputs JSON: `{ status, project, section, asanaGid, filePath, branch, prUrl }`: `branch` and `prUrl` are `null` if the git step failed
 6. Exits 2 (not 0) when routing is ambiguous, with `{ status: "ambiguous", suggestedProject, allProjects, text }`

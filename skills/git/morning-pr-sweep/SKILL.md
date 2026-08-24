@@ -5,7 +5,7 @@ description: Clear all open PR review debt across your repos in one session. Dis
 
 # Morning PR Sweep
 
-Run this at the start of each working day. Its job is simple: **no PR should leave the session with an unacknowledged review thread**. By the end of the sweep, every open thread has been triaged, replied to, fixed (if valid), and confirmed — leaving only the manual merge step for you.
+Run this at the start of each working day. Its job is simple: **no PR should leave the session with an unacknowledged review thread**. By the end of the sweep, every open thread has been triaged, replied to, fixed (if valid), and confirmed, leaving only the manual merge step for you.
 
 The key difference from calling `/respond-pr-review` N times: all threads across all PRs are triaged **together, before any code is touched**. This means one context load, one standards load, one pass through all the code, one commit per PR. Not N context loads, N fix cycles, N pushes.
 
@@ -17,9 +17,9 @@ The key difference from calling `/respond-pr-review` N times: all threads across
 
 | Action | Scope | Visibility |
 | --- | --- | --- |
-| Posts acknowledgement replies to open review threads | Per thread, before any fix | Public — visible to anyone with repo access |
-| Pushes fix commits to the PR branch | Per PR, after fixes | Public — appears in the PR timeline |
-| Posts SHA confirmation replies to every thread | Per thread, after push | Public — visible to anyone with repo access |
+| Posts acknowledgement replies to open review threads | Per thread, before any fix | Public: visible to anyone with repo access |
+| Pushes fix commits to the PR branch | Per PR, after fixes | Public: appears in the PR timeline |
+| Posts SHA confirmation replies to every thread | Per thread, after push | Public: visible to anyone with repo access |
 
 **This applies to both private and public repositories.** On a public repo, your replies are visible to the entire internet.
 
@@ -35,11 +35,11 @@ The skill always shows a full impact table and waits for your explicit confirmat
 
 ## Arguments
 
-`/morning-pr-sweep` — discovers and sweeps all repos owned by the authenticated GitHub user. `/morning-pr-sweep <owner>/<repo>` — sweeps a single repo only. `/morning-pr-sweep --repos <owner>/<repo>,<owner>/<repo>` — sweeps a specific set of repos. `/morning-pr-sweep --orgs <org1>,<org2>` — sweeps all repos in the specified orgs instead of the authenticated user's repos. `/morning-pr-sweep --standards-url <url>` — loads a shared standards file (AGENTS.md) for all repos in the sweep instead of per-repo discovery.
+`/morning-pr-sweep`: discovers and sweeps all repos owned by the authenticated GitHub user. `/morning-pr-sweep <owner>/<repo>`: sweeps a single repo only. `/morning-pr-sweep --repos <owner>/<repo>,<owner>/<repo>`: sweeps a specific set of repos. `/morning-pr-sweep --orgs <org1>,<org2>`: sweeps all repos in the specified orgs instead of the authenticated user's repos. `/morning-pr-sweep --standards-url <url>`: loads a shared standards file (AGENTS.md) for all repos in the sweep instead of per-repo discovery.
 
 ---
 
-## Phase 0 — Discover
+## Phase 0: Discover
 
 ### 0a. Load the standards _(if available)_
 
@@ -52,7 +52,7 @@ gh api repos/<owner>/<repo>/contents/AGENTS.md --jq '.name' 2>/dev/null
 - **Found:** fetch the full file and load its rules for that repo's PR reviews.
 - **Not found:** proceed without standards. Note in the report that no standards file was found for this repo.
 
-**Override:** Pass `--standards-url <url>` to load a shared standards file for all repos in the sweep — useful when your org maintains a central AGENTS.md. This overrides per-repo discovery.
+**Override:** Pass `--standards-url <url>` to load a shared standards file for all repos in the sweep, useful when your org maintains a central AGENTS.md. This overrides per-repo discovery.
 
 > **Tip:** If your organisation maintains a shared standards file, pass its URL via `--standards-url` or ensure each repo's `AGENTS.md` references it.
 
@@ -89,7 +89,7 @@ gh pr list --repo <owner>/<repo> --state open \
   --jq '.[] | select(.isDraft == false)'
 ```
 
-Skip draft PRs — they are not ready for morning sweep.
+Skip draft PRs: they are not ready for morning sweep.
 
 ### 0d. Classify each PR
 
@@ -120,12 +120,12 @@ gh api --paginate repos/<owner>/<repo>/pulls/<N>/comments \
 | `merge-ready` | Every bot thread has an author reply containing a commit SHA | Reports for manual merge |
 | `blocked` | CI failing, merge conflicts, or draft | Flags; skip |
 
-### 0e. Show the discovery table — wait for confirmation
+### 0e. Show the discovery table and wait for confirmation
 
 Present the full picture before doing anything:
 
 ```
-MORNING PR SWEEP — 22 May 2026
+MORNING PR SWEEP: 22 May 2026
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 Repo                             Vis      PR    State            Branch
 MyOrg/repo-a                     public   #63   needs-response   feature/stat-card
@@ -140,7 +140,7 @@ MyOrg/repo-c                     public   #8    merge-ready      chore/pr-workfl
 Proceed? (yes / no / list only)
 ```
 
-**`yes`** — proceed with full sweep. **`no`** — abort. No writes made. **`list only`** — print the discovery table but make no writes. Useful for reviewing scope before committing.
+**`yes`**: proceed with full sweep. **`no`**: abort. No writes made. **`list only`**: print the discovery table but make no writes. Useful for reviewing scope before committing.
 
 Wait for explicit confirmation before proceeding.
 
@@ -148,7 +148,7 @@ Wait for explicit confirmation before proceeding.
 
 ---
 
-## Phase 1 — Unified triage
+## Phase 1: Unified triage
 
 This is the most important phase. Do not touch any file until it is complete.
 
@@ -169,17 +169,17 @@ gh api repos/<owner>/<repo>/pulls/<N>/comments --paginate \
   --jq ".[] | select(.user.login == \"$AUTHOR\")"
 ```
 
-Do not skip `--paginate` — large PRs silently omit older comments without it.
+Do not skip `--paginate`: large PRs silently omit older comments without it.
 
 ### 1b. Build the combined triage table
 
 One table across all PRs. Assign a verdict to every unresponded thread:
 
-- `✅ Valid` — fix it
-- `❌ Not valid` — explain why
-- `⚠️ Partially valid` — fix the valid part, reject the wrong part
-- `⏸️ Needs branch owner input` — missing context; do not guess
-- `⏭️ Valid but deferred` — real issue, out of scope; will open a tracking issue
+- `✅ Valid`: fix it
+- `❌ Not valid`: explain why
+- `⚠️ Partially valid`: fix the valid part, reject the wrong part
+- `⏸️ Needs branch owner input`: missing context; do not guess
+- `⏭️ Valid but deferred`: real issue, out of scope; will open a tracking issue
 
 Security and WCAG comments are always valid unless you have a specific technical reason they are false positives.
 
@@ -201,9 +201,9 @@ Wait for triage approval.
 
 ---
 
-## Phase 2 — Reply in-thread before fixing (all PRs)
+## Phase 2: Reply in-thread before fixing (all PRs)
 
-For every thread in the triage table — in the order they appear — post a pre-fix reply using the nested reply endpoint:
+For every thread in the triage table (in the order they appear), post a pre-fix reply using the nested reply endpoint:
 
 ```sh
 gh api --method POST \
@@ -229,11 +229,11 @@ Reply formats:
 
 For `⏭️` threads: open the tracking issue first, then reply with the issue link.
 
-Handle GitHub suggested change blocks explicitly — accept them into the fix batch or reject them in-thread. Never silently skip a suggested change.
+Handle GitHub suggested change blocks explicitly: accept them into the fix batch or reject them in-thread. Never silently skip a suggested change.
 
 ---
 
-## Phase 3 — Batch fix (one commit per PR)
+## Phase 3: Batch fix (one commit per PR)
 
 Group all `✅` and `⚠️` fixes by PR. Fix one PR at a time, all changes in one working pass.
 
@@ -263,7 +263,7 @@ git commit -m "fix: address PR #<N> Copilot review comments"
 git push origin <branch>
 ```
 
-**One commit per PR. Not one commit per fix.** If the quality gate fails, fix the gate failure in the same commit — do not push a partial fix.
+**One commit per PR. Not one commit per fix.** If the quality gate fails, fix the gate failure in the same commit: do not push a partial fix.
 
 Switch branches between PRs as needed:
 
@@ -273,9 +273,9 @@ git checkout <branch-for-next-pr>
 
 ---
 
-## Phase 4 — SHA confirmations (all threads)
+## Phase 4: SHA confirmations (all threads)
 
-**Before posting any SHA reply, build a checklist.** For each PR, list every thread where a fix was applied (✅ or ⚠️) or a tracking issue was opened (⏭️). This is your Phase 4 checklist — every item must be ticked before the PR is considered complete.
+**Before posting any SHA reply, build a checklist.** For each PR, list every thread where a fix was applied (✅ or ⚠️) or a tracking issue was opened (⏭️). This is your Phase 4 checklist: every item must be ticked before the PR is considered complete.
 
 ```
 Phase 4 checklist for PR #<N>:
@@ -299,9 +299,9 @@ For deferred threads, post the issue link instead of a SHA.
 
 ---
 
-## Phase 5 — Close-out audit
+## Phase 5: Close-out audit
 
-Before reporting, scan **every reply posted under your account on any thread in every swept PR** — not just replies from this session — for unresolved commitment signals. This catches dangling commitments left by prior sessions.
+Before reporting, scan **every reply posted under your account on any thread in every swept PR** (not just replies from this session) for unresolved commitment signals. This catches dangling commitments left by prior sessions.
 
 - `will` / `fix` / `fixing`
 - `follow-up` / `open an issue` / `track`
@@ -319,18 +319,18 @@ If any artifact is missing, create it now.
 
 ---
 
-## Phase 6 — Morning report
+## Phase 6: Morning report
 
 Print the final status table:
 
 ```
-MORNING PR SWEEP — COMPLETE
+MORNING PR SWEEP: COMPLETE
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 Repo                          PR    Status          Threads  Commit    Action
 MyOrg/my-app                  #63   ✅ merge-ready  3/3      a1b2c3d   Resolve threads + merge in GitHub
 MyOrg/my-app                  #64   ✅ merge-ready  2/2      e4f5g6h   Resolve threads + merge in GitHub
-my-username/my-lib            #12   ⏸️ no review    —        —         Waiting for Copilot review to appear
-MyOrg/standards               #8    ✅ merge-ready  0/0      —         Ready to merge
+my-username/my-lib            #12   ⏸️ no review    n/a      n/a       Waiting for Copilot review to appear
+MyOrg/standards               #8    ✅ merge-ready  0/0      n/a       Ready to merge
 
 NEXT STEP: Go to GitHub UI → resolve threads → merge PRs #63 and #64.
 Then return here to start fresh work.

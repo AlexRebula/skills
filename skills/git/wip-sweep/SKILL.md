@@ -1,11 +1,11 @@
 ---
 name: wip-sweep
-description: Sweep dirty repos for uncommitted work and create OSS §2.1-compliant snapshot branches. Groups dirty files by logical concern, proposes branch names and commit messages, then runs a tiered action model — T2 (local commit), T3 (push to remote), T4 (draft PR) — with a confirmation gate at each tier. Use after /repo-status has produced a dirty state table.
+description: "Sweep dirty repos for uncommitted work and create OSS §2.1-compliant snapshot branches. Groups dirty files by logical concern, proposes branch names and commit messages, then runs a tiered action model: T2 (local commit), T3 (push to remote), T4 (draft PR), with a confirmation gate at each tier. Use after /repo-status has produced a dirty state table."
 ---
 
 # WIP Sweep
 
-## Scope selection (T1 — automatic)
+## Scope selection (T1: automatic)
 
 **This tier runs automatically.** Show the dirty state table from `/repo-status` to the developer and ask:
 
@@ -17,7 +17,7 @@ Wait for the developer's answer before proceeding.
 
 ---
 
-## T2 — Stage and commit locally (ask before running)
+## T2: Stage and commit locally (ask before running)
 
 Process only the repos selected above.
 
@@ -37,16 +37,16 @@ For each selected dirty repo:
    - Config/tooling files (`.json`, `.yml`, `.mjs`) → `chore/`
    - Source (`.tsx`, `.ts` component or page) → `feature/`
    - Tests only (`*.test.ts`) → `test/`
-   - Mixed types → `chore/` (safe default — ask the developer to correct if wrong)
+   - Mixed types → `chore/` (safe default: ask the developer to correct if wrong)
 
-   `wip/` is never valid. Full §2.1 table is in OSS AGENTS.md — fetch on demand if unsure.
+   `wip/` is never valid. Full §2.1 table is in OSS AGENTS.md: fetch on demand if unsure.
 
-   Branch name format: `<prefix>/YYYYMMDD-<group-slug>` Commit format: `<type>(standup-prep): snapshot — <group> — YYYY-MM-DD`
+   Branch name format: `<prefix>/YYYYMMDD-<group-slug>` Commit format: `<type>(standup-prep): snapshot (<group>, YYYY-MM-DD)`
 
    Examples:
-   - Docs group → `docs/20260523-dashboard-plan-updates` / `docs(standup-prep): snapshot — dashboard-plan — 2026-05-23`
-   - CI config group → `chore/20260523-ci-config` / `chore(standup-prep): snapshot — ci-config — 2026-05-23`
-   - Component work → `feature/20260523-stat-card-progress` / `feature(standup-prep): snapshot — stat-card — 2026-05-23`
+   - Docs group → `docs/20260523-dashboard-plan-updates` / `docs(standup-prep): snapshot (dashboard-plan, 2026-05-23)`
+   - CI config group → `chore/20260523-ci-config` / `chore(standup-prep): snapshot (ci-config, 2026-05-23)`
+   - Component work → `feature/20260523-stat-card-progress` / `feature(standup-prep): snapshot (stat-card, 2026-05-23)`
 
 4. Present the full plan:
 
@@ -62,12 +62,12 @@ For each selected dirty repo:
    ```sh
    git -C <repo-path> checkout -b <prefix>/YYYYMMDD-<group-slug>
    git -C <repo-path> add <files-in-group>
-   git -C <repo-path> commit -m "<type>(standup-prep): snapshot — <group> — YYYY-MM-DD"
+   git -C <repo-path> commit -m "<type>(standup-prep): snapshot (<group>, YYYY-MM-DD)"
    ```
 
 ---
 
-## T3 — Push to remote (ask per repo, after T2)
+## T3: Push to remote (ask per repo, after T2)
 
 After T2 completes, ask:
 
@@ -89,7 +89,7 @@ gh pr view --json number,title,body --repo <owner>/<repo> <branch>
 
 If an open PR exists:
 
-1. **Update the PR description.** Delegate to the correct PR skill with an `update` flag — do not construct the body inline. Use the same routing table as T4:
+1. **Update the PR description.** Delegate to the correct PR skill with an `update` flag. Do not construct the body inline. Use the same routing table as T4:
 
    | Repo               | Skill to invoke                                           |
    | ------------------ | --------------------------------------------------------- |
@@ -104,17 +104,17 @@ If an open PR exists:
 
 3. Confirm to the developer: `"PR #N description updated."` with a link to the PR.
 
-A push to a branch with an open PR **always** triggers a description update. There are no exceptions — a stale PR description is worse than no description.
+A push to a branch with an open PR **always** triggers a description update. There are no exceptions: a stale PR description is worse than no description.
 
 ---
 
-## T4 — Open pull requests (ask, default NO)
+## T4: Open pull requests (ask, default NO)
 
 After T3, ask:
 
 > "Open pull requests for the pushed branches? Default: NO. [y/n/select]"
 
-If yes, for each pushed branch, **delegate to the correct PR skill** — do not construct a `--body` string inline. Delegating ensures the repo's PR template is read and filled correctly, and that all quality checks and companion-doc conventions are applied.
+If yes, for each pushed branch, **delegate to the correct PR skill**. Do not construct a `--body` string inline. Delegating ensures the repo's PR template is read and filled correctly, and that all quality checks and companion-doc conventions are applied.
 
 **Routing rule:**
 
@@ -123,7 +123,7 @@ If yes, for each pushed branch, **delegate to the correct PR skill** — do not 
 | Custom org variant | Your org-specific PR creation skill (if one exists) |
 | Default            | `/create-pr <branch> skip-hygiene`                  |
 
-The `skip-hygiene` flag is always passed — T2/T3 already created and pushed the branch cleanly; there is nothing to re-check.
+The `skip-hygiene` flag is always passed: T2/T3 already created and pushed the branch cleanly; there is nothing to re-check.
 
 **Do not** call `gh pr create --body` or `gh pr create --body-file` directly in this step. Those bypass the repo's pull request template and produce non-conforming PR descriptions. The `create-pr` skill (or your org's custom variant) reads the template from `.github/pull_request_template.md`, fills every section, and opens the PR correctly.
 
@@ -131,7 +131,7 @@ PRs are created as **drafts**. The delegated PR creation skill must pass `--draf
 
 ---
 
-## ⛔ Non-negotiable invariant — T4
+## ⛔ Non-negotiable invariant: T4
 
 **NEVER call `gh pr create` directly in T4. Not even once. Not even for "simple" PRs.**
 

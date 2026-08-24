@@ -1,34 +1,34 @@
 ---
 name: query
-description: Answer a question using the personal wiki — reads the index, drills into relevant pages, synthesises an answer with citations, and optionally files the answer as a new wiki page. Use when the user asks a question and wants the wiki to answer it, or says "query the wiki".
+description: Answer a question using the personal wiki. It reads the index, drills into relevant pages, synthesises an answer with citations, and optionally files the answer as a new wiki page. Use when the user asks a question and wants the wiki to answer it, or says "query the wiki".
 ---
 
 Answer a question against the wiki at `{{WIKI_ROOT}}`.
 
 ## Arguments
 
-- `/query <question>` — the question to answer. Required. Ask if omitted.
-- `/query <question> --save` — also file the answer as a new wiki page.
+- `/query <question>`: the question to answer. Required. Ask if omitted.
+- `/query <question> --save`: also file the answer as a new wiki page.
 
 ---
 
-## Step 1 — Orient
+## Step 1: Orient
 
-Read `wiki/index.md` in full. Do not read individual pages yet — use the index to decide which pages are relevant to the question.
+Read `wiki/index.md` in full. Do not read individual pages yet. Use the index to decide which pages are relevant to the question.
 
 List the pages you plan to read and why. If no pages seem relevant, say so and offer to search `raw/` sources instead.
 
 ---
 
-## Step 2 — Read relevant pages
+## Step 2: Read relevant pages
 
 Read each page identified in Step 1. Follow `[[wikilinks]]` one level deep if they lead to something directly relevant.
 
-Also check `wiki/log.md` (last 10 entries) — if a recent ingest or query touched this topic, factor that in.
+Also check `wiki/log.md` (last 10 entries): if a recent ingest or query touched this topic, factor that in.
 
 ---
 
-## Step 3 — Synthesise
+## Step 3: Synthesise
 
 Write the answer. Format depends on the question:
 
@@ -45,7 +45,7 @@ If the wiki doesn't have enough to answer well, say what's missing and suggest w
 
 ---
 
-## Step 4 — Save (--save only)
+## Step 4: Save (--save only)
 
 If `--save` was passed, write the answer as a new wiki page.
 
@@ -74,7 +74,7 @@ If `--save` was not passed, still append to `wiki/log.md`:
 
 ---
 
-## Step 5 — Report
+## Step 5: Report
 
 - Answer (inline in the response)
 - Pages consulted: list with one-line description of what each contributed

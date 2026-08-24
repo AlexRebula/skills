@@ -1,36 +1,36 @@
 ---
 name: wiki-lint
-description: Health-check the personal wiki — scans for contradictions, orphan pages, stale claims, missing cross-references, and data gaps. Produces a prioritised finding list and suggests next ingests. Use when the user says "lint the wiki", "health check the wiki", or "what's wrong with the wiki".
+description: "Health-check the personal wiki: scans for contradictions, orphan pages, stale claims, missing cross-references, and data gaps. Produces a prioritised finding list and suggests next ingests. Use when the user says \"lint the wiki\", \"health check the wiki\", or \"what's wrong with the wiki\"."
 ---
 
 Health-check the wiki at `{{WIKI_ROOT}}`.
 
 ## Arguments
 
-- `/wiki-lint` — full lint pass: wiki page health checks + broken link scan across entire repo.
-- `/wiki-lint --fix` — same, then automatically apply safe fixes: wikilinks, `updated:` dates, and broken links where exactly one match exists in the repo. Ask before structural changes (creating stub pages, removing or rewriting content, resolving contradictions, applying multi-match link fixes).
+- `/wiki-lint`: full lint pass: wiki page health checks + broken link scan across entire repo.
+- `/wiki-lint --fix`: same, then automatically apply safe fixes: wikilinks, `updated:` dates, and broken links where exactly one match exists in the repo. Ask before structural changes (creating stub pages, removing or rewriting content, resolving contradictions, applying multi-match link fixes).
 
 ---
 
-## Step 1 — Orient
+## Step 1: Orient
 
 Read:
 
-1. `wiki/index.md` — get the full list of pages
-2. `wiki/log.md` — understand what was done recently (avoid re-flagging things just ingested)
+1. `wiki/index.md`: get the full list of pages
+2. `wiki/log.md`: understand what was done recently (avoid re-flagging things just ingested)
 
 ---
 
-## Step 2 — Scan wiki/index.md structure
+## Step 2: Scan wiki/index.md structure
 
 Before scanning individual pages, check `wiki/index.md` itself:
 
-- [ ] Every `## Category` heading and, under `## Sources`, every `### Subcategory` heading has a 1–2 sentence prose description directly beneath it (before the item list) — per `SCHEMA.md`'s Index Format section
+- [ ] Every `## Category` heading and, under `## Sources`, every `### Subcategory` heading has a 1–2 sentence prose description directly beneath it (before the item list), per `SCHEMA.md`'s Index Format section
 - [ ] Each description still accurately reflects what's actually in that category/subcategory (spot-check against the linked pages; flag if the category's content has visibly drifted from what the description claims)
 
 Missing descriptions are 🟡 Medium findings (an index gap, not misleading content); stale/inaccurate descriptions are 🔴 Critical (actively misleading, since the whole point is skipping the linked pages).
 
-## Step 3 — Scan all wiki pages
+## Step 3: Scan all wiki pages
 
 Read every page listed in `wiki/index.md`. For each page, check:
 
@@ -50,13 +50,13 @@ Read every page listed in `wiki/index.md`. For each page, check:
 
 ---
 
-## Step 4 — Produce findings
+## Step 4: Produce findings
 
 Group findings by severity:
 
-- **🔴 Critical** — content is wrong, contradicted, or actively misleading
-- **🟡 Medium** — missing cross-references, orphan pages, stubs that should be filled
-- **⚪ Low** — cosmetic, missing optional fields, minor gaps
+- **🔴 Critical**: content is wrong, contradicted, or actively misleading
+- **🟡 Medium**: missing cross-references, orphan pages, stubs that should be filled
+- **⚪ Low**: cosmetic, missing optional fields, minor gaps
 
 Format:
 
@@ -64,20 +64,20 @@ Format:
 ## Findings
 
 ### 🔴 Critical
-- `wiki/concepts/foo.md` contradicts `wiki/concepts/bar.md` on [claim] — one of these needs updating
+- `wiki/concepts/foo.md` contradicts `wiki/concepts/bar.md` on [claim], and one of these needs updating
 
 ### 🟡 Medium
-- `wiki/concepts/baz.md` — orphan page, not linked from anywhere
+- `wiki/concepts/baz.md`: orphan page, not linked from anywhere
 - `wiki/concepts/qux.md` mentions [[some-concept]] but that page doesn't exist
-- `wiki/sources/old-source.md` — claim about X may be superseded by more recent ingest on [date]
+- `wiki/sources/old-source.md`: claim about X may be superseded by more recent ingest on [date]
 
 ### ⚪ Low
-- `wiki/people/name.md` — `updated` field is stale (last touched [date])
+- `wiki/people/name.md`: `updated` field is stale (last touched [date])
 ```
 
 ---
 
-## Step 5 — Suggest next actions
+## Step 5: Suggest next actions
 
 After findings, produce two lists:
 
@@ -95,7 +95,7 @@ After findings, produce two lists:
 
 ---
 
-## Step 6 — Apply fixes (--fix only)
+## Step 6: Apply fixes (--fix only)
 
 If `--fix` was passed, apply these automatically without asking:
 
@@ -110,7 +110,7 @@ Ask before:
 
 ---
 
-## Step 7 — Update log
+## Step 7: Update log
 
 Append to `wiki/log.md`:
 
@@ -126,7 +126,7 @@ If `--fix` was passed and fixes were applied:
 
 ---
 
-## Step 8 — Report
+## Step 8: Report
 
 - Total pages scanned
 - Finding counts by severity

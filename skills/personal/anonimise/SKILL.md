@@ -14,7 +14,7 @@ Implements the wiki anonymisation pattern: sensitive personal data lives in `vau
 - Vault example: `$WIKI_ROOT/vault.md.example`
 - Path registry: `$WIKI_ROOT/paths.md`
 
-## Direction 1 — Anonymise (real data → placeholders)
+## Direction 1: Anonymise (real data → placeholders)
 
 Use when the user wants to redact a file before pushing, or asks to "anonimise" content.
 
@@ -24,7 +24,7 @@ Use when the user wants to redact a file before pushing, or asks to "anonimise" 
 
 2. **Read vault.md** (if it exists) to learn existing variable names and avoid duplicates.
 
-3. **Identify sensitive data** — look for:
+3. **Identify sensitive data**: look for:
    - Full names, preferred names, nicknames
    - Email addresses, phone numbers
    - Physical locations (home address, city, country of residence)
@@ -49,9 +49,9 @@ Use when the user wants to redact a file before pushing, or asks to "anonimise" 
 
    Confirm or adjust before proceeding.
 
-6. **Edit the file** — replace all identified values with their `{{VARIABLE}}` placeholders.
+6. **Edit the file**: replace all identified values with their `{{VARIABLE}}` placeholders.
 
-7. **Update vault.md** — append any new variables under `## Variables`:
+7. **Update vault.md**: append any new variables under `## Variables`:
 
    ```md
    - NEW_VARIABLE: real value
@@ -63,7 +63,7 @@ Use when the user wants to redact a file before pushing, or asks to "anonimise" 
 
 ---
 
-## Direction 2 — Resolve (placeholders → real values, local context only)
+## Direction 2: Resolve (placeholders → real values, local context only)
 
 Use when the user is working locally and asks you to "resolve", "de-anonymise", or "show the real values" for a file containing `{{VARIABLES}}`.
 
@@ -73,7 +73,7 @@ Use when the user is working locally and asks you to "resolve", "de-anonymise", 
 
 2. **Read the target file(s).**
 
-3. **Substitute** all `{{VARIABLE}}` occurrences with their vault.md values inline in your response — do NOT write the resolved version back to disk.
+3. **Substitute** all `{{VARIABLE}}` occurrences with their vault.md values inline in your response. Do NOT write the resolved version back to disk.
 
 4. **Flag any unresolved variables** (present in the file but missing from vault.md).
 
@@ -82,7 +82,7 @@ Use when the user is working locally and asks you to "resolve", "de-anonymise", 
 ## Rules
 
 - Never write real personal values into any file tracked by git.
-- vault.md must be gitignored in the wiki repo — before writing to it, verify an ignore rule (e.g. `**/vault.md`) exists in the wiki's `.gitignore`; if it’s missing, stop and warn the user (offer to add the rule) and do not write any secrets until it’s fixed.
+- vault.md must be gitignored in the wiki repo. Before writing to it, verify an ignore rule (e.g. `**/vault.md`) exists in the wiki's `.gitignore`; if it’s missing, stop and warn the user (offer to add the rule) and do not write any secrets until it’s fixed.
 - If a value is already a placeholder (`{{...}}`), do not double-wrap it.
 - Prefer reusing existing vault variables over creating new ones for the same value.
 - Variable names should be descriptive but not so specific they leak context (e.g. `{{CASE_SUBJECT_NAME}}` not `{{JESS_FULL_NAME}}`).

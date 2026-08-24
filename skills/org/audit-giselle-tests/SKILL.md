@@ -11,9 +11,9 @@ Use this skill to review existing tests in `giselle-mui` and produce an actionab
 
 There are three buckets. Classify every test file into one before proposing any fixes.
 
-### Bucket A — Placeholder stubs (leave alone)
+### Bucket A: Placeholder stubs (leave alone)
 
-Compliant with **AGENTS.md §5.5 two-phase scaffold** — `it.todo` stubs only, no implementation yet:
+Compliant with **AGENTS.md §5.5 two-phase scaffold** (`it.todo` stubs only, no implementation yet):
 
 ```ts
 // @vitest-environment jsdom
@@ -25,11 +25,11 @@ describe('<ComponentName>', () => {
 });
 ```
 
-The quality-gate (`src/quality-gate/two-phase-scaffold.test.ts`) enforces this pattern automatically — any new `.test.ts` file without `it.todo` stubs will fail CI.
+The quality-gate (`src/quality-gate/two-phase-scaffold.test.ts`) enforces this pattern automatically. Any new `.test.ts` file without `it.todo` stubs will fail CI.
 
 **Action: leave as-is. Do not delete or rewrite.**
 
-### Bucket B — MUI-mock anti-pattern (rewrite)
+### Bucket B: MUI-mock anti-pattern (rewrite)
 
 Symptom: the test file contains `vi.mock('@mui/material/...')` or `vi.mock('@mui/material/styles')`.
 
@@ -42,7 +42,7 @@ vi.mock('@mui/material/styles', () => ({ useTheme: vi.fn(() => ...) }));
 
 **Action: rewrite using `renderWithTheme` helper (see fix pattern below).**
 
-### Bucket C — Good tests (leave alone)
+### Bucket C: Good tests (leave alone)
 
 Tests that:
 
@@ -56,7 +56,7 @@ Tests that:
 
 ## Audit workflow
 
-### Step 1 — Inventory
+### Step 1: Inventory
 
 Scan for each pattern across all `*.test.ts` files:
 
@@ -68,7 +68,7 @@ Scan for each pattern across all `*.test.ts` files:
 
 Report the count in each bucket before doing anything else.
 
-### Step 2 — Check required test cases in Bucket C
+### Step 2: Check required test cases in Bucket C
 
 For each Bucket C file, verify these test cases exist:
 
@@ -76,13 +76,13 @@ For each Bucket C file, verify these test cases exist:
 | ---------------------- | ----------------------------------------------------- |
 | Smoke render           | `it('renders without crashing', ...)`                 |
 | Required props         | `it('renders the <prop>', ...)`                       |
-| Optional variants      | `it('applies <variant>...', ...)` — one per variant   |
+| Optional variants      | `it('applies <variant>...', ...)`: one per variant   |
 | `...other` passthrough | `it('forwards arbitrary props', ...)`                 |
-| `ref` forwarding       | `it('forwards ref', ...)` — only if `forwardRef` used |
+| `ref` forwarding       | `it('forwards ref', ...)`: only if `forwardRef` used |
 
 Report missing cases as a list before rewriting anything.
 
-### Step 3 — Confirm fix scope with user
+### Step 3: Confirm fix scope with user
 
 Before touching a single file, present:
 
@@ -96,11 +96,11 @@ Before touching a single file, present:
 
 ---
 
-## Fix pattern — replacing MUI mocks with GiselleThemeProvider
+## Fix pattern: replacing MUI mocks with GiselleThemeProvider
 
 ### First: create or verify `src/test-utils.ts` exists
 
-`giselle-mui` uses MUI CSS variables mode (`extendTheme`). Plain `createTheme` does **not** populate `theme.vars.*` — any `sx` callback referencing those tokens crashes at render time. `GiselleThemeProvider` is the only correct wrapper for component tests in this codebase.
+`giselle-mui` uses MUI CSS variables mode (`extendTheme`). Plain `createTheme` does **not** populate `theme.vars.*`. Any `sx` callback referencing those tokens crashes at render time. `GiselleThemeProvider` is the only correct wrapper for component tests in this codebase.
 
 ```ts
 // src/test-utils.ts
@@ -155,8 +155,8 @@ it('renders the label', () => {
 - Remove ALL `vi.mock` calls for MUI modules
 - Replace `renderToStaticMarkup` calls with `renderWithTheme`
 - Keep test descriptions focused on behavior, not structure
-- Do not test `data-testid` values added by mocks — those testids belonged to the fake components
-- One test file at a time — run `npm run check` after each file before moving on
+- Do not test `data-testid` values added by mocks: those testids belonged to the fake components
+- One test file at a time: run `npm run check` after each file before moving on
 
 ---
 
@@ -177,7 +177,7 @@ This makes the PR reviewable and allows reverting a single component if needed.
 
 ## Definition of done for the audit
 
-- [ ] All Bucket B files rewritten — zero `vi.mock('@mui/material/...')` calls remain
+- [ ] All Bucket B files rewritten: zero `vi.mock('@mui/material/...')` calls remain
 - [ ] All Bucket C files have the 5 required test cases (or N/A with reason)
 - [ ] `src/test-utils.ts` exists and is used consistently
 - [ ] Quality gate green: `npm run check`

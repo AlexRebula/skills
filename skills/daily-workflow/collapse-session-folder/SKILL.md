@@ -1,6 +1,6 @@
 ---
 name: collapse-session-folder
-description: Collapse all same-day session wrap folders into one combined folder. Announces the plan, derives a combined slug, renumbers files sequentially, repairs → Next footer links, deletes old folders, and updates sessions-index.md. Depends on SESSIONS_ROOT — resolved via /resolve-ai-paths. Called automatically by /session-wrap but can be invoked independently to fix uncollapsed same-day folders at any time.
+description: Collapse all same-day session wrap folders into one combined folder. Announces the plan, derives a combined slug, renumbers files sequentially, repairs → Next footer links, deletes old folders, and updates sessions-index.md. Depends on SESSIONS_ROOT, resolved via /resolve-ai-paths. Called automatically by /session-wrap but can be invoked independently to fix uncollapsed same-day folders at any time.
 ---
 
 # Collapse Session Folder
@@ -11,13 +11,13 @@ Collapse all `YYYY-MM-DD-*` session folders for a given date into one combined f
 
 Invoke `/resolve-ai-paths` to resolve `SESSIONS_ROOT`. Skip Step 2 of the resolver (you do not need `PROMPTS_ROOT`). Substitute the returned value throughout.
 
-**Date** — defaults to today (`YYYY-MM-DD`). If the user specifies a different date, use that.
+**Date**: defaults to today (`YYYY-MM-DD`). If the user specifies a different date, use that.
 
 > ⚠️ **Safety note when using a past date:** collapsing a past-date folder rewrites committed history (file paths, `→ Next` links). Only collapse a past date if those files have **not yet been pushed to a remote** or the rewrite is intentional and the branch has not been shared. Never collapse past-date folders that are already part of a public or team-shared branch without explicit confirmation from the user.
 
 ---
 
-## Step 1 — Scan for same-day folders
+## Step 1: Scan for same-day folders
 
 List all immediate subdirectories of `{{SESSIONS_ROOT}}` whose name starts with the target date in `YYYY-MM-DD-*` format.
 
@@ -25,9 +25,9 @@ List all immediate subdirectories of `{{SESSIONS_ROOT}}` whose name starts with 
 
 ---
 
-## Step 2 — Generate a combined slug
+## Step 2: Generate a combined slug
 
-Look at the folder **names only** — do not read file content.
+Look at the folder **names only**: do not read file content.
 
 Extract the slug portion (everything after `YYYY-MM-DD-`) from each folder name and build a combined slug:
 
@@ -36,7 +36,7 @@ Extract the slug portion (everything after `YYYY-MM-DD-`) from each folder name 
 - Good: `pr-sweep-morning-brief`, `bucket-restructure-wip-pr64`, `asana-obsidian-pr-review`
 - Never use generic words: `session`, `wrap`, `work`, `misc`, `updates`.
 
-Print the plan before running (informational — no confirmation needed):
+Print the plan before running (informational, no confirmation needed):
 
 ```
 Found N same-day session folders for YYYY-MM-DD:
@@ -48,7 +48,7 @@ Collapsing into: 2026-05-27-<combined-slug>/
 
 ---
 
-## Step 3 — Run the collapse script
+## Step 3: Run the collapse script
 
 ```sh
 npx tsx "{{SKILLS_ROOT}}/scripts/collapse-sessions.ts" \

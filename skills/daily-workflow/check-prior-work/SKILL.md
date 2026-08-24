@@ -9,9 +9,9 @@ Before doing anything else, look for a `<conversation-summary>` block in the cur
 
 If one is present:
 
-- It describes **earlier work from THIS same session** that was compacted — not a different session.
+- It describes **earlier work from THIS same session** that was compacted, not a different session.
 - Read it fully. Extract: completed tasks, files edited, git actions taken, decisions made.
-- Store this as **"pre-standup work"** — it will be merged into the morning brief later.
+- Store this as **"pre-standup work"**: it will be merged into the morning brief later.
 - Do NOT label it as "previous session work".
 
 If none is present, continue normally.

@@ -1,6 +1,6 @@
 ---
 name: sync-branches
-description: Syncs all local branches in a git repo against origin and against the repo's default branch — resolves the default branch per repo (main, master, or other), fetches latest, flags already-merged branches, pulls each stale branch from origin, then merges the default branch into every active branch. Use when asked to "sync branches", "update local branches", "merge main into all branches", "branch hygiene", or "cleanup local branches".
+description: Syncs all local branches in a git repo against origin and against the repo's default branch. Resolves the default branch per repo (main, master, or other), fetches latest, flags already-merged branches, pulls each stale branch from origin, then merges the default branch into every active branch. Use when asked to "sync branches", "update local branches", "merge main into all branches", "branch hygiene", or "cleanup local branches".
 ---
 
 # Sync Branches
@@ -8,12 +8,12 @@ description: Syncs all local branches in a git repo against origin and against t
 Brings every local branch up to date with origin and with the repo's default branch. Works on one
 repo or many, including a mix of `main` and `master` repos in the same sweep.
 
-## Phase 1 — Triage (read-only, no checkout switches)
+## Phase 1: Triage (read-only, no checkout switches)
 
 Run `triage.sh`. It fetches, resolves each repo's default branch, and prints everything needed to
 plan Phases 2–4. It never checks out, merges, pushes, commits, or deletes a branch.
 
-> **Locating the script.** `scripts/triage.sh` sits **next to this file, in the skill directory** —
+> **Locating the script.** `scripts/triage.sh` sits **next to this file, in the skill directory**,
 > not in the repo you are triaging. Because you run it from the target repo, a bare
 > `scripts/triage.sh` resolves against the wrong root and fails. Always invoke it by full path.
 > Substitute your own skill directory for `$SKILL` below; for a default install that is
@@ -23,60 +23,60 @@ plan Phases 2–4. It never checks out, merges, pushes, commits, or deletes a br
 "$SKILL/scripts/triage.sh"
 ```
 
-For several repos at once — pass every path in one call so all planning happens before any
+For several repos at once, pass every path in one call so all planning happens before any
 checkout switches. The paths are arguments, so you do not need to `cd` anywhere:
 
 ```bash
 "$SKILL/scripts/triage.sh" /path/to/repo-a /path/to/repo-b /path/to/repo-c
 ```
 
-Diagnostics (`!!` lines) go to **stderr**; the report goes to **stdout**, so keep stderr visible —
+Diagnostics (`!!` lines) go to **stderr**; the report goes to **stdout**, so keep stderr visible:
 do not discard it. Exit codes: `0` all repos triaged · `2` at least one repo could not be triaged
 (the sweep continues past a failure rather than aborting). Run `"$SKILL/scripts/triage.sh" --help`
-for usage — note `--help` is only recognised as the first argument.
+for usage: note `--help` is only recognised as the first argument.
 
 ### Why the script resolves the default branch instead of assuming `main`
 
-**Never hardcode `origin/main`.** Not every repo uses `main` — `master` is still common, and some
+**Never hardcode `origin/main`.** Not every repo uses `main`: `master` is still common, and some
 repos use `develop` or `trunk`. A `main`-hardcoded triage fails two different ways:
 
 | Repo state | What happens |
 | --- | --- |
-| No `origin/main` ref at all | `fatal: malformed object name origin/main` on stderr — but the diagnostic **does not stop**. The `\|\| true` guard forces success, so the branch listing still prints and the whole chain exits `0` |
+| No `origin/main` ref at all | `fatal: malformed object name origin/main` on stderr, but the diagnostic **does not stop**. The `\|\| true` guard forces success, so the branch listing still prints and the whole chain exits `0` |
 | `origin/main` exists but is not the default (stale or abandoned) | No error at all. The merged list is computed against the wrong base |
 
 Both cases are the same defect: a **wrong answer with no failure signal**. That is the dangerous
 part, because the merged list feeds branch deletions.
 
 The script resolves `origin/HEAD` per repo. Because **`origin/HEAD` is written at clone time and is
-never updated by `git fetch`** — not even with `--prune` — a ref left behind after the remote's
+never updated by `git fetch`** (not even with `--prune`), a ref left behind after the remote's
 default branch moved still resolves cleanly and is silently wrong. So the script runs
 `git remote set-head origin --auto` **unconditionally**, not only when the ref is missing: that
 re-queries the remote and rewrites the **local** ref, mutating nothing on the remote. If the ref
 was stale, it says so on stderr rather than correcting it quietly.
 
 It **stops with `!!` if it cannot resolve**, and never falls back to `main`. If the remote cannot be
-reached, an existing local value is treated as unverified and is deliberately **not** used — the
+reached, an existing local value is treated as unverified and is deliberately **not** used: the
 repo is skipped, because a stale answer here is worse than no answer. If you see that, ask the
 developer which branch is the default rather than guessing.
 
 Below, `$DEFAULT_REF` means the remote-tracking default the script reported (e.g. `origin/master`)
-and `$DEFAULT_BRANCH` the bare name (e.g. `master`). Substitute the reported values — never the
+and `$DEFAULT_BRANCH` the bare name (e.g. `master`). Substitute the reported values, never the
 literal string `main`.
 
 **Reading the output:**
 
 | Section | What it means |
 | --- | --- |
-| `=== DEFAULT: … ===` | The resolved default branch for that repo. Check it before acting — this is what everything else is measured against. |
-| `=== MERGED … ===` block | Branches **fully merged into `$DEFAULT_REF`** — flag these; skip them in Phases 2–4; candidates for deletion |
+| `=== DEFAULT: … ===` | The resolved default branch for that repo. Check it before acting: this is what everything else is measured against. |
+| `=== MERGED … ===` block | Branches **fully merged into `$DEFAULT_REF`**: flag these; skip them in Phases 2–4; candidates for deletion |
 | `=== CURRENT BRANCH ===` | The branch you are on, reported separately because `MERGED` filters it out. `ahead=0` means it is merged and is itself a deletion candidate. |
 | `=== WORKING TREE ===` | `clean`, or the dirty files. Do not start Phases 2–4 with uncommitted work you care about. |
 | `branch\|origin/branch\|` (no track) | In sync with origin |
-| `branch\|origin/branch\|[behind N]` | Stale local — pull needed (Phase 2) |
-| `branch\|origin/branch\|[ahead N]` | Local is ahead of origin — push needed (out of scope) |
-| `branch\|origin/branch\|[ahead N, behind M]` | Diverged — skip auto-pull; flag for manual review |
-| `branch\|\|` (no upstream) | Ambiguous — check the `=== SAME-NAME ORIGIN WITHOUT UPSTREAM ===` block before calling it local-only |
+| `branch\|origin/branch\|[behind N]` | Stale local: pull needed (Phase 2) |
+| `branch\|origin/branch\|[ahead N]` | Local is ahead of origin: push needed (out of scope) |
+| `branch\|origin/branch\|[ahead N, behind M]` | Diverged: skip auto-pull; flag for manual review |
+| `branch\|\|` (no upstream) | Ambiguous: check the `=== SAME-NAME ORIGIN WITHOUT UPSTREAM ===` block before calling it local-only |
 | `branch\|origin/branch\|[same-name remote, no upstream]\|behind=N\|ahead=M` | Remote branch exists but local tracking was never set; treat it like the matching tracked state |
 
 **Important:** `branch||` does **not** automatically mean local-only. First check whether `origin/<branch>` exists. If it does, the branch was missed by tracking config, not by Git history.
@@ -91,9 +91,9 @@ Default branch: master (origin/master)
 Branch              | Merged? | Status       | Action
 --------------------|---------|--------------|-----------------------------
 feature/my-work     | No      | In sync      | Merge default only
-docs/old-stuff      | YES     | —            | Skip — merged, flag for delete
+docs/old-stuff      | YES     | n/a          | Skip: merged, flag for delete
 chore/update        | No      | Behind 3     | Pull then merge default
-fix/bug             | No      | Diverged     | Flag — manual review needed
+fix/bug             | No      | Diverged     | Flag: manual review needed
 docs/missed-branch  | No      | No upstream, remote exists, ahead 12 | Merge default; push with `-u`
 ```
 
@@ -101,7 +101,7 @@ Confirm the plan with the developer before Phase 2.
 
 ---
 
-## Phase 2 — Pull stale branches
+## Phase 2: Pull stale branches
 
 For each `[behind N]` branch (not diverged, not merged):
 
@@ -138,7 +138,7 @@ If the remote merge conflicts, resolve it in place using the same no-abort rule 
 
 ---
 
-## Phase 3 — Merge the default branch into active branches
+## Phase 3: Merge the default branch into active branches
 
 For each branch that is **not** in the merged list and not flagged for manual review:
 
@@ -146,7 +146,7 @@ For each branch that is **not** in the merged list and not flagged for manual re
 git checkout <branch> && git merge "$DEFAULT_REF" --no-edit && echo "DONE_CLEAN" || echo "CONFLICTS"
 ```
 
-**Conflict resolution — in-place only (never abort):**
+**Conflict resolution (in-place only, never abort):**
 
 ```sh
 # Take the default branch's version for known conflict files:
@@ -155,7 +155,7 @@ git add -A
 git commit --no-edit
 ```
 
-**Never use `git merge --abort` on Windows/MINGW64** — it triggers interactive directory-deletion prompts that must be answered one by one.
+**Never use `git merge --abort` on Windows/MINGW64**: it triggers interactive directory-deletion prompts that must be answered one by one.
 
 ### Phase 3 push follow-up for no-upstream branches
 
@@ -167,7 +167,7 @@ git push -u origin <branch>
 
 ---
 
-## Phase 4 — Final report
+## Phase 4: Final report
 
 After all merges, print a summary:
 
@@ -179,7 +179,7 @@ Branch              | Merged into default? | Was stale? | Merge result
 feature/my-work     | No                   | No         | ✅ Clean
 chore/update        | No                   | Yes        | ✅ Clean
 docs/missed-branch  | No                   | No upstream, remote existed | ✅ Clean + upstream set
-docs/old-stuff      | YES — delete?        | —          | Skipped
+docs/old-stuff      | YES, delete?         | n/a        | Skipped
 fix/bug             | No                   | Diverged   | ⚠️ Manual
 ```
 
@@ -198,8 +198,8 @@ gh api repos/<owner>/<repo>/branches/<branch-url-encoded> --jq '.protected' 2>&1
 Branch names with `/` must be URL-encoded (replace `/` with `%2F`) in the API path.
 
 ```sh
-git branch -d <merged-branch>               # local delete (safe — won't delete unmerged)
-git push origin --delete <merged-branch>    # remote delete — only after protection check passes AND developer confirms
+git branch -d <merged-branch>               # local delete (safe, won't delete unmerged)
+git push origin --delete <merged-branch>    # remote delete: only after protection check passes AND developer confirms
 ```
 
 Extend the Phase 4 table with a Protected? column for all merged branches that have a remote:
@@ -208,7 +208,7 @@ Extend the Phase 4 table with a Protected? column for all merged branches that h
 Branch          | Merged? | Protected? | Local delete | Remote delete
 ----------------|---------|------------|--------------|---------------
 docs/old-stuff  | YES     | false      | ✅ Done      | ✅ Done
-fix/shipped     | YES     | true       | ✅ Done      | ⛔ Skipped — protected
+fix/shipped     | YES     | true       | ✅ Done      | ⛔ Skipped: protected
 ```
 
 ---
@@ -222,7 +222,7 @@ This batches all planning before any checkout switches happen.
 "$SKILL/scripts/triage.sh" /path/to/repo-a /path/to/repo-b /path/to/repo-c
 ```
 
-The script resolves the default branch **per repo** — a workspace routinely mixes `main` and
+The script resolves the default branch **per repo**: a workspace routinely mixes `main` and
 `master`, and one unresolvable repo does not abort the sweep of the rest.
 
 ---
@@ -231,10 +231,10 @@ The script resolves the default branch **per repo** — a workspace routinely mi
 
 | Path | What it does |
 | --- | --- |
-| [`scripts/triage.sh`](scripts/triage.sh) | Phase 1 — fetch, resolve default branch, print the read-only triage report. One repo or many. |
+| [`scripts/triage.sh`](scripts/triage.sh) | Phase 1: fetch, resolve default branch, print the read-only triage report. One repo or many. |
 
 Paths in this table are relative to the **skill directory**, not to the repo being triaged. Invoke
-by full path — see [Phase 1](#phase-1--triage-read-only-no-checkout-switches).
+by full path, see [Phase 1](#phase-1-triage-read-only-no-checkout-switches).
 
 Phases 2–4 are single git commands run one branch at a time, with a developer decision between
 each. They are written out inline below rather than scripted, deliberately: they check out,
@@ -245,4 +245,4 @@ in a batch you cannot inspect.
 
 ## Windows / MINGW64 notes
 
-`git checkout` to a branch that removes directories triggers an interactive `Deletion of directory X failed. Should I try again? (y/n)` prompt. Answer `n` to each — git still completes the checkout. This is cosmetic and non-fatal.
+`git checkout` to a branch that removes directories triggers an interactive `Deletion of directory X failed. Should I try again? (y/n)` prompt. Answer `n` to each; git still completes the checkout. This is cosmetic and non-fatal.

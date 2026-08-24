@@ -1,12 +1,12 @@
 ---
 name: next-issue
-description: Identify the next GitHub issue to assign to a student or apprentice. Audits the candidate issue body against a principles index, produces a list of problems, and drafts fixes for approval before touching GitHub. Student, repo, and principles file are all configurable — works for any learner on any repo.
+description: Identify the next GitHub issue to assign to a student or apprentice. Audits the candidate issue body against a principles index, produces a list of problems, and drafts fixes for approval before touching GitHub. Student, repo, and principles file are all configurable. Works for any learner on any repo.
 disable-model-invocation: true
 ---
 
 # Next Issue
 
-Identify, audit, and prepare the next issue for a student — without touching GitHub until you approve the draft.
+Identify, audit, and prepare the next issue for a student, without touching GitHub until you approve the draft.
 
 ## Input
 
@@ -21,7 +21,7 @@ Identify, audit, and prepare the next issue for a student — without touching G
 
 ## Process
 
-### Step 1 — Resolve inputs
+### Step 1: Resolve inputs
 
 **Repo:** If `--repo` was not provided, run:
 
@@ -43,7 +43,7 @@ find . -name "*issue-principles*" -o -name "*principles-index*" | grep -v node_m
 - Multiple results → list them and ask: "Which principles file should I use?"
 - None → warn: "No principles index found. Audit will be skipped. Create a principles index at `wiki/sources/<repo-name>/<student>-issue-principles.md` to enable auditing."
 
-### Step 2 — Resolve the current issue
+### Step 2: Resolve the current issue
 
 If `current-issue-number` was provided, fetch it:
 
@@ -59,7 +59,7 @@ gh issue list --repo <repo> --assignee <student> --state open --json number,titl
 
 If nothing is found either way, tell the user and stop.
 
-### Step 3 — Build learner history
+### Step 3: Build learner history
 
 Before evaluating any candidate, run:
 
@@ -67,14 +67,14 @@ Before evaluating any candidate, run:
 /learner-history <student>
 ```
 
-This produces a structured summary table of every issue the learner has completed, partially completed, or left open — with sequence labels, tiers, completion types, and evidence sources. Read the table from context; do not re-implement this lookup here.
+This produces a structured summary table of every issue the learner has completed, partially completed, or left open, with sequence labels, tiers, completion types, and evidence sources. Read the table from context; do not re-implement this lookup here.
 
 Use the history to:
 - Identify the highest `sequence` label the learner has completed at `full` quality
 - List concepts already encountered (from prior issue titles and sequence labels)
-- Note any `admin-closed` or `partial` entries — these are concepts introduced but not fully absorbed
+- Note any `admin-closed` or `partial` entries: these are concepts introduced but not fully absorbed
 
-### Step 4 — Identify the next candidate
+### Step 4: Identify the next candidate
 
 Fetch all open, unassigned issues sorted by number ascending:
 
@@ -88,21 +88,21 @@ gh issue list --repo <repo> --state open --assignee "" --json number,title,label
 
 **Difficulty ceiling:** Count distinct new concepts introduced. If more than 2 are new, flag it.
 
-If the primary candidate fails progression or difficulty checks, note the flags — do not silently skip to the next issue. Present the flags and let the user decide.
+If the primary candidate fails progression or difficulty checks, note the flags. Do not silently skip to the next issue. Present the flags and let the user decide.
 
-### Step 5 — Load the principles index
+### Step 5: Load the principles index
 
 Read the resolved principles file. Extract all principles (P1, P2, P3 …) and the issue sequencing criteria.
 
 If no principles file was found (warned in Step 1), skip the audit and note it in the output.
 
-### Step 6 — Audit the candidate issue body
+### Step 6: Audit the candidate issue body
 
-For each principle in the index, check the candidate issue body. The specific checks depend on the principles defined in the index — read them from the file rather than hardcoding them here.
+For each principle in the index, check the candidate issue body. The specific checks depend on the principles defined in the index: read them from the file rather than hardcoding them here.
 
 For each failed check, note the exact line or section in the issue body that fails it.
 
-### Step 7 — Build the output
+### Step 7: Build the output
 
 Print a structured report:
 
@@ -116,23 +116,23 @@ Print a structured report:
   <url>
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-SEQUENCING     Issue #<M> — next unassigned by number ✅
-PROGRESSION    <list new concepts introduced — or "no new concepts" ✅>
-DIFFICULTY     <N new concepts — pass ✅ / exceeds ceiling ⚠️>
+SEQUENCING     Issue #<M>: next unassigned by number ✅
+PROGRESSION    <list new concepts introduced, or "no new concepts" ✅>
+DIFFICULTY     <N new concepts: pass ✅ / exceeds ceiling ⚠️>
 
 PRINCIPLES AUDIT
   <for each principle from the index:>
-  P<N> — <principle name>
+  P<N>: <principle name>
     ✅ / ⚠️ <finding>
 
-  (Skipped — no principles index found) if applicable
+  (Skipped: no principles index found) if applicable
 
 VERDICT
-  <"Ready to assign" if all pass, or "N issues found — see draft fixes below">
+  <"Ready to assign" if all pass, or "N issues found: see draft fixes below">
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 ```
 
-### Step 8 — Draft fixes (if any issues found)
+### Step 8: Draft fixes (if any issues found)
 
 For each failed principle check, produce a draft replacement for the offending section. Format as:
 
@@ -146,7 +146,7 @@ For each failed principle check, produce a draft replacement for the offending s
 
 Present all drafts together. Do not touch GitHub yet.
 
-### Step 9 — Wait for approval
+### Step 9: Wait for approval
 
 After presenting the report and any draft fixes, ask:
 
@@ -154,9 +154,9 @@ After presenting the report and any draft fixes, ask:
 Apply fixes to issue #<M> on GitHub? [yes / no / edit first]
 ```
 
-- **yes** — apply all proposed replacements to the issue body via `gh issue edit`
-- **no** — stop; leave the issue unchanged
-- **edit first** — show each draft fix one at a time and wait for per-fix confirmation
+- **yes**: apply all proposed replacements to the issue body via `gh issue edit`
+- **no**: stop; leave the issue unchanged
+- **edit first**: show each draft fix one at a time and wait for per-fix confirmation
 
 Only after explicit approval does the skill touch GitHub.
 
@@ -176,8 +176,8 @@ If the project keeps a per-task folder (steps, quiz, notes), check the candidate
 before handing it over. Two things are worth verifying, because both are easy to omit and
 neither shows up as a failure until much later.
 
-**A notes file.** If the setup asks the learner to keep notes per task — the raw material
-for a knowledge base they build later — then every task needs one, not just the interesting
+**A notes file.** If the setup asks the learner to keep notes per task (the raw material
+for a knowledge base they build later), then every task needs one, not just the interesting
 ones. A habit that skips three tasks in a row has ended. Check the section count is in the
 Definition of Done too, or every box can be ticked with every note blank.
 
@@ -189,7 +189,7 @@ item:
 gh pr diff <a-comparable-merged-PR> --name-only
 ```
 
-That list routinely includes documentation the code never references — index tables, a
+That list routinely includes documentation the code never references: index tables, a
 component's own README, a status or roadmap file. Those are the items a DoD written from
 the task description misses, and the learner is then marked complete while the work is
 half done.
@@ -198,14 +198,14 @@ half done.
 
 ## Closing the loop
 
-Findings from Step 6 are worth more than the fix. See **"Closing the loop — turning a
-finding into a principle"** in [`audit-issue`](https://github.com/AlexRebula/skills/blob/main/skills/mentoring/audit-issue/SKILL.md) — it covers naming the rule so it
+Findings from Step 6 are worth more than the fix. See **"Closing the loop: turning a
+finding into a principle"** in [`audit-issue`](https://github.com/AlexRebula/skills/blob/main/skills/mentoring/audit-issue/SKILL.md): it covers naming the rule so it
 generalises, drafting the incident record, and encoding the rule into a template so the
 next author inherits it rather than having to remember it. Do not re-implement that here.
 
 The same file's **"Capturing this to an LLM wiki"** section covers filing the result, and
 `/learner-history` has its own for milestone snapshots. All three follow the same contract:
-detect a wiki, skip silently if there is none, never write into the wiki tree directly —
+detect a wiki, skip silently if there is none, never write into the wiki tree directly:
 write a raw source file and hand off to `/ingest`.
 
 ---

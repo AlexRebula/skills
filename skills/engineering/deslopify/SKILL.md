@@ -2,10 +2,10 @@
 name: deslopify
 description: >
   Strip AI tells from prose and code and restore a human voice. For prose (blog drafts, PR
-  descriptions, commit messages, wiki pages, docs, session summaries) this must always apply —
+  descriptions, commit messages, wiki pages, docs, session summaries) this must always apply:
   scan and rewrite any Claude-authored text meant for a human reader before it's shown, the same
   way a human editor would pass over their own first draft. For code, only on explicit request
-  (`/deslopify <file>` or as part of a review) — never silently rewrite code that wasn't asked
+  (`/deslopify <file>` or as part of a review): never silently rewrite code that wasn't asked
   for.
 ---
 
@@ -29,7 +29,7 @@ to a file, not to live chat or agent-session replies. See that pattern for the e
 1. Calibrate density to context (see below) before touching anything.
 2. Scan for the patterns below.
 3. Rewrite. Preserve meaning, match the intended tone and the density from step 1.
-4. Add soul (see below) — removing patterns is half the job, sterile voiceless writing is just
+4. Add soul (see below): removing patterns is half the job, sterile voiceless writing is just
    as obvious a tell.
 5. Self-audit: "What makes this obviously AI-generated?" Fix whatever's left, without losing
    density in a reference-context answer.
@@ -170,12 +170,12 @@ converting a tight bulleted answer into paragraphs that say the same thing at gr
 
 ## Code
 
-Applies only when explicitly invoked — `/deslopify <file>` or as an explicit step in a review.
+Applies only when explicitly invoked: `/deslopify <file>` or as an explicit step in a review.
 Never auto-triggers on code, and never runs alongside a design/simplification review as a
 substitute for one.
 
-**Scope note:** this pass hunts *generation tells* — leftovers from an AI writing pass that a
-careful human wouldn't have left in — not general code quality. Questions like "is this the
+**Scope note:** this pass hunts *generation tells* (leftovers from an AI writing pass that a
+careful human wouldn't have left in), not general code quality. Questions like "is this the
 simplest design", "is this reused elsewhere", or "does this follow the repo's standards" belong
 to `karpathy-guidelines`, `/simplify`, and `/review-pr` respectively. If a finding is really
 about design or duplication rather than a tell, name it but leave the actual fix to one of those.
@@ -183,7 +183,7 @@ about design or duplication rather than a tell, name it but leave the actual fix
 ### Process
 
 1. Scan the target file(s) for the patterns below.
-2. Fix each one directly — this is a rewrite pass, not a findings report.
+2. Fix each one directly: this is a rewrite pass, not a findings report.
 3. Self-audit: "What in this file looks like it was generated rather than written?" Fix whatever
    is left.
 
@@ -210,6 +210,6 @@ about design or duplication rather than a tell, name it but leave the actual fix
    values left behind from a generation pass rather than tracking a real, intended follow-up.
    Remove scaffolding that isn't a genuine open task; leave real TODOs alone.
 
-Report what you changed and why, file:line, in the same reply — don't just make the edits
+Report what you changed and why, file:line, in the same reply: don't just make the edits
 silently for the code half, since (unlike the always-on prose half) the human didn't watch this
 one happen turn by turn.

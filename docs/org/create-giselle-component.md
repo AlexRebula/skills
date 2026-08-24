@@ -11,7 +11,7 @@ Use it any time you're creating a new component in `giselle-mui`, from the very 
 | A brand-new component in `giselle-mui`, nothing built yet | `create-giselle-component` |
 | Existing tests need a quality pass before new work starts | [audit-giselle-tests](./audit-giselle-tests.md), run first |
 | A behaviour needs building test-first, outside `giselle-mui`'s specific conventions | [tdd](https://aihero.dev/skills-tdd) |
-| The new component's diff needs a standards-and-spec review before merging | [code-review](https://aihero.dev/skills-code-review) |
+| The new component's diff needs a standards-and-spec review before merging | [review-pr](../git/review-pr.md) |
 
 ## Prerequisites
 
@@ -19,7 +19,7 @@ Eight answers, locked in before any code exists: component name, layer folder, c
 
 ## Two phases, one commit boundary between them
 
-Phase 1 creates exactly five things: `types.ts` (a props stub with JSDoc, not the real interface), `<name>.test.ts` (`it.todo` stubs only), `README.md`, `roadmap.md`, and a commented-out `index.ts`. It deliberately does **not** create `<name>.tsx` — the component file's existence is the signal, elsewhere in the codebase, that a component is implemented rather than planned. Committing Phase 1 before starting Phase 2 is not optional; the quality gate's two-phase-scaffold check depends on that commit boundary existing.
+Phase 1 creates exactly five things: `types.ts` (a props stub with JSDoc, not the real interface), `<name>.test.ts` (`it.todo` stubs only), `README.md`, `roadmap.md`, and a commented-out `index.ts`. It deliberately does **not** create `<name>.tsx`: the component file's existence is the signal, elsewhere in the codebase, that a component is implemented rather than planned. Committing Phase 1 before starting Phase 2 is not optional; the quality gate's two-phase-scaffold check depends on that commit boundary existing.
 
 Phase 2 replaces every stub for real: types first, then the component file, then each `it.todo` swapped for a real test one at a time, red before green, no batch of tests landing ahead of the implementation.
 
@@ -55,8 +55,8 @@ No. One component, one branch, one PR, so a rejected or reverted component never
 - Every `it.todo` gets replaced one at a time, red before green, never as a batch ahead of the implementation.
 - No `vi.mock` for a MUI module appears anywhere in the new test file.
 - The Storybook `title` mirrors the folder path exactly, and if the two ever disagree, the story gets fixed, not the folder.
-- The checklist before PR — quality gate green, coverage, no hardcoded colours, `ref` forwarding where needed, barrel exports both the component and its props type — is actually walked, not skimmed.
+- The checklist before PR (quality gate green, coverage, no hardcoded colours, `ref` forwarding where needed, barrel exports both the component and its props type) is actually walked, not skimmed.
 
 ## Where it fits
 
-`create-giselle-component` is the `giselle-mui`-specific version of the build loop that [tdd](https://aihero.dev/skills-tdd) documents generically, with the repo's own scaffold gate, naming rules, and theme-provider requirement layered on top. Run [audit-giselle-tests](./audit-giselle-tests.md) first if you want the existing suite audited against the same bar before adding to it, and hand the finished diff to [code-review](https://aihero.dev/skills-code-review) before merging.
+`create-giselle-component` is the `giselle-mui`-specific version of the build loop that [tdd](https://aihero.dev/skills-tdd) documents generically, with the repo's own scaffold gate, naming rules, and theme-provider requirement layered on top. Run [audit-giselle-tests](./audit-giselle-tests.md) first if you want the existing suite audited against the same bar before adding to it, and hand the finished diff to [review-pr](../git/review-pr.md) before merging.

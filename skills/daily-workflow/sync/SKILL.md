@@ -15,11 +15,11 @@ Sync all configured content projects bidirectionally between Asana and local mar
 
 ## Arguments
 
-`/sync` — no arguments required.
+`/sync`: no arguments required.
 
 ---
 
-## Step 1 — Check prerequisites
+## Step 1: Check prerequisites
 
 Verify `.asana-config.json` exists at the project root. If not:
 
@@ -29,7 +29,7 @@ Stop.
 
 ---
 
-## Step 2 — Run the sync script
+## Step 2: Run the sync script
 
 ```sh
 ASANA_TOKEN=$(grep ASANA_TOKEN .env | cut -d= -f2) \
@@ -44,7 +44,7 @@ Capture stdout. The script prints one line per project:
 
 ---
 
-## Step 3 — Commit changed files
+## Step 3: Commit changed files
 
 After the sync, stage and commit any changed files in the configured content folder:
 
@@ -57,7 +57,7 @@ If nothing changed, skip the commit.
 
 ---
 
-## Step 4 — Report
+## Step 4: Report
 
 Print a summary table:
 
@@ -67,11 +67,11 @@ Print a summary table:
 
 If any conflicts were resolved, note:
 
-> "⚠ N conflict(s) resolved — local files won. Asana was updated with local values."
+> "⚠ N conflict(s) resolved: local files won. Asana was updated with local values."
 
 If everything was 0/0/0:
 
-> "Nothing changed on either side — no writes, no commit."
+> "Nothing changed on either side: no writes, no commit."
 
 ---
 

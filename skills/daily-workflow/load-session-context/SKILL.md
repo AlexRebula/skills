@@ -22,7 +22,7 @@ Find the **5 most recent rows** by date. Note the title and primary work for eac
 3. Read the **highest-numbered file** (e.g. `05-...md` if it exists, else `01-...md`).
 4. This is your "where we left off" context. Extract: pending tasks, unresolved blockers, decisions made.
 
-**Do NOT load all wrap files from the session** — only the latest one. Older files in the same session folder are superseded by the latest.
+**Do NOT load all wrap files from the session**: only the latest one. Older files in the same session folder are superseded by the latest.
 
 ## Today's morning brief (if it exists)
 
@@ -30,14 +30,14 @@ Check `{{MORNING_BRIEFS_ROOT}}/<today's date>/`. If any `.md` files exist, read 
 
 ## Older sessions
 
-For the 4 older sessions: read titles and projects from the index only — do not open their files unless they contain an unresolved blocker flagged as relevant to today.
+For the 4 older sessions: read titles and projects from the index only. Do not open their files unless they contain an unresolved blocker flagged as relevant to today.
 
 ## Verify pending tasks before surfacing
 
 For each pending task extracted from the wrap file, run two checks before including it in the report:
 
-1. **GitHub issue status** — if the task references an issue number, run `gh issue view <N> --json state --jq '.state'`. Skip the task if the result is `CLOSED`.
-2. **Actual implementation** — do a quick check (grep or file existence) to confirm the work has not already landed. Skip the task if it has.
+1. **GitHub issue status**: if the task references an issue number, run `gh issue view <N> --json state --jq '.state'`. Skip the task if the result is `CLOSED`.
+2. **Actual implementation**: do a quick check (grep or file existence) to confirm the work has not already landed. Skip the task if it has.
 
 Only include tasks that pass both checks. Do not surface tasks that are already done.
 

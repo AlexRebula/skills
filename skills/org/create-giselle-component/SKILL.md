@@ -9,20 +9,20 @@ Two phases. The scaffold phase creates the folder structure and stubs. The imple
 
 ---
 
-## Before writing any code — alignment (8 required answers)
+## Before writing any code: alignment (8 required answers)
 
 Ask the user:
 
-1. Component name — PascalCase (derives all file names from this)
+1. Component name: PascalCase (derives all file names from this)
 2. Layer folder: `material/`, `chart/`, `motion/`, `lab/`, `theming/`, or `section/`
 3. Category subfolder within that layer (mirrors MUI taxonomy: `data-display/`, `inputs/`, `surfaces/`, `navigation/`, `layout/`, `feedback/`)
-4. MUI root component it wraps (e.g. `Card`, `Button`, `Box`) — or `none`
+4. MUI root component it wraps (e.g. `Card`, `Button`, `Box`), or `none`
 5. Required props and their types
 6. Optional props and their variants
 7. Does it need `ref` forwarding? (yes for anything wrapping a DOM element or MUI component)
 8. Does it use `useTheme` or `sx`? (determines whether the GiselleThemeProvider test helper is needed)
 
-Do not proceed until all 8 are answered — unless batch invocation applies (see below). No code until alignment is locked.
+Do not proceed until all 8 are answered, unless batch invocation applies (see below). No code until alignment is locked.
 
 **Batch invocation:** If all 8 answers are already provided in the invocation message (e.g. when delegating from a parent agent or running multiple components in parallel), skip the questions and proceed directly to Phase 1. Example:
 
@@ -43,9 +43,9 @@ Uses sx: yes
 
 | File           | Convention                                                         |
 | -------------- | ------------------------------------------------------------------ |
-| Folder         | kebab-case — `metric-card/`                                        |
-| Main component | `<name>.tsx` — or role-based for deep nesting (see below)          |
-| Types          | `types.ts` — always a separate file, never inline in the component |
+| Folder         | kebab-case: `metric-card/`                                        |
+| Main component | `<name>.tsx`, or role-based for deep nesting (see below)          |
+| Types          | `types.ts`: always a separate file, never inline in the component |
 | Barrel         | `index.ts`                                                         |
 | Tests          | `<name>.test.ts`                                                   |
 | Style tests    | `<name>.styles.test.ts`                                            |
@@ -57,7 +57,7 @@ Uses sx: yes
 | Animations     | `<name>.animations.ts`                                             |
 | Docs           | `README.md` + `roadmap.md`                                         |
 
-**Role-based file naming** — when a component folder has 3+ nesting levels, the file is named after its role within that level, not after the full component name:
+**Role-based file naming**: when a component folder has 3+ nesting levels, the file is named after its role within that level, not after the full component name:
 
 ```
 src/components/inputs/button/toggle/icon/
@@ -79,16 +79,16 @@ src/components/chart/radial-progress/
 
 ---
 
-## Phase 1 — Scaffold (commit before implementing)
+## Phase 1: Scaffold (commit before implementing)
 
-> **Two-phase scaffold — AGENTS.md §5.5.** Phase 1 is a commit with stubs only. The `<name>.tsx` component file must NOT exist. The quality-gate (`src/quality-gate/two-phase-scaffold.test.ts`) enforces this automatically: any new `.test.ts` added without `it.todo` stubs fails CI immediately via the `two-phase-scaffold-legacy-missing-todo.json` baseline check. Do not start Phase 2 until Phase 1 is committed.
+> **Two-phase scaffold: AGENTS.md §5.5.** Phase 1 is a commit with stubs only. The `<name>.tsx` component file must NOT exist. The quality-gate (`src/quality-gate/two-phase-scaffold.test.ts`) enforces this automatically: any new `.test.ts` added without `it.todo` stubs fails CI immediately via the `two-phase-scaffold-legacy-missing-todo.json` baseline check. Do not start Phase 2 until Phase 1 is committed.
 
 ### Files to create in the scaffold phase
 
 ```
 src/components/<layer>/<category>/<name>/
 ├── types.ts          ← Props interface stub with JSDoc skeleton
-├── <name>.test.ts    ← it.todo stubs only — no implementation yet
+├── <name>.test.ts    ← it.todo stubs only: no implementation yet
 ├── README.md         ← why it exists, planned API, design decisions
 ├── roadmap.md        ← planned status and open improvements (initially empty)
 └── index.ts          ← stub barrel (commented-out exports)
@@ -96,12 +96,12 @@ src/components/<layer>/<category>/<name>/
 
 **Do NOT create in the scaffold phase:**
 
-- `<name>.tsx` — its existence = component is implemented; absence = still a placeholder
-- `<name>.styles.ts` — created when implementation begins
-- `<name>.const.ts` — created when implementation begins
-- `<name>.stories.tsx` — created when implementation begins
+- `<name>.tsx`: its existence = component is implemented; absence = still a placeholder
+- `<name>.styles.ts`: created when implementation begins
+- `<name>.const.ts`: created when implementation begins
+- `<name>.stories.tsx`: created when implementation begins
 
-### `types.ts` — scaffold template
+### `types.ts`: scaffold template
 
 ```ts
 import type { SxProps, Theme } from '@mui/material/styles';
@@ -115,18 +115,18 @@ import type { SxProps, Theme } from '@mui/material/styles';
  * See README.md for the planned API.
  */
 export interface <ComponentName>Props {
-  /** MUI sx prop — forwarded to root element. */
+  /** MUI sx prop: forwarded to root element. */
   sx?: SxProps<Theme>;
 }
 ```
 
-### `<name>.test.ts` — scaffold template (it.todo stubs only)
+### `<name>.test.ts`: scaffold template (it.todo stubs only)
 
 ```ts
 // @vitest-environment jsdom
 import { describe, it } from 'vitest';
 
-// Placeholder test file — stubs filled in before implementation begins.
+// Placeholder test file: stubs filled in before implementation begins.
 // See README.md for planned behaviours.
 
 describe('<ComponentName>', () => {
@@ -136,7 +136,7 @@ describe('<ComponentName>', () => {
 });
 ```
 
-### `README.md` — scaffold template
+### `README.md`: scaffold template
 
 ```md
 # <ComponentName>
@@ -153,11 +153,11 @@ _One paragraph: why this is reusable across projects (not project-specific)._
 
 | Prop | Type             | Default | Description              |
 | ---- | ---------------- | ------- | ------------------------ |
-| `sx` | `SxProps<Theme>` | —       | MUI sx forwarded to root |
+| `sx` | `SxProps<Theme>` | None       | MUI sx forwarded to root |
 
 ## Design decisions
 
-_Key choices made during design — preserved so they survive future refactors._
+_Key choices made during design, preserved so they survive future refactors._
 
 ## Phase
 
@@ -168,14 +168,14 @@ Phase: `<phase-label>` | Priority tier: `T<N>`
 _Filled in when implementation begins._
 ```
 
-### `roadmap.md` — scaffold template
+### `roadmap.md`: scaffold template
 
 ```md
-# <ComponentName> — Component Roadmap
+# <ComponentName>: Component Roadmap
 
 ## Status
 
-Planned — not yet implemented.
+Planned: not yet implemented.
 
 ## Open improvements
 
@@ -186,10 +186,10 @@ _Filled in as the component evolves._
 _None yet._
 ```
 
-### `index.ts` — scaffold template (stub)
+### `index.ts`: scaffold template (stub)
 
 ```ts
-// Placeholder — not yet implemented.
+// Placeholder: not yet implemented.
 // When <ComponentName> is built, replace with:
 // export { <ComponentName> } from './<name>';
 // export type { <ComponentName>Props } from './types';
@@ -197,9 +197,9 @@ _None yet._
 
 ---
 
-## Phase 2 — Implementation (TDD loop)
+## Phase 2: Implementation (TDD loop)
 
-### Types — fill in `types.ts` first, before any JSX
+### Types: fill in `types.ts` first, before any JSX
 
 ```ts
 import type { SxProps, Theme } from '@mui/material/styles';
@@ -219,7 +219,7 @@ export interface MyCardProps extends CardProps {
 - Props are always in `types.ts`, never inline in the component file
 - Props type is exported from the barrel (`index.ts`) via `export type { MyCardProps } from './types'`
 
-### Component file — `<name>.tsx`
+### Component file: `<name>.tsx`
 
 ```ts
 import React from 'react';
@@ -245,43 +245,43 @@ MyCard.displayName = 'MyCard';
 
 **Rules (oss-quality-standards §5–§6):**
 
-- `sx` merged with array syntax — never `sx={{ ...sx, prop: value }}`
-- `...other` spread onto root element — forwards `data-*`, `aria-*`, event handlers
-- No hardcoded colours — use MUI theme tokens only (`palette.text.primary`, `background.paper`)
-- No `React.FC` — use function declarations or `forwardRef`
+- `sx` merged with array syntax: never `sx={{ ...sx, prop: value }}`
+- `...other` spread onto root element: forwards `data-*`, `aria-*`, event handlers
+- No hardcoded colours: use MUI theme tokens only (`palette.text.primary`, `background.paper`)
+- No `React.FC`: use function declarations or `forwardRef`
 - `displayName` set on every component
 - `forwardRef` required for anything wrapping a DOM element or MUI component
 - Never use `dangerouslySetInnerHTML`
-- No bare `<Box>` with semantic meaning — `<Box>` is a layout primitive only; elements with roles, ARIA attributes, or meaningful visual styling must be named components (§6.6)
+- No bare `<Box>` with semantic meaning: `<Box>` is a layout primitive only; elements with roles, ARIA attributes, or meaningful visual styling must be named components (§6.6)
 - `shouldForwardProp` required on any `styled()` component with custom props that must not reach the DOM (§6.7)
 - Icon slots: accept icons as `React.ReactNode`; decorative icons must have `aria-hidden="true"`; icon-only buttons carry `aria-label` on the `<button>`, not on the icon (§6.10)
 
-**Input security — applies to any component in the `inputs/` layer (§6.12):**
+**Input security: applies to any component in the `inputs/` layer (§6.12):**
 
-- URL props (`href`, `src`, `action`) must reject the `javascript:` scheme — validate at the component boundary
+- URL props (`href`, `src`, `action`) must reject the `javascript:` scheme: validate at the component boundary
 - Password fields must use `type="password"` and must not expose the value in `data-*` or ARIA attributes
 - The `sx` prop must never accept raw user-provided strings as property values
-- Client-side validation is UX only — never document it as a security boundary
+- Client-side validation is UX only: never document it as a security boundary
 
-### Barrel `index.ts` — final (replace stub)
+### Barrel `index.ts`: final (replace stub)
 
 ```ts
 export { MyCard } from './my-card';
 export type { MyCardProps } from './types';
 ```
 
-### TDD loop — replace `it.todo` stubs with real tests one at a time
+### TDD loop: replace `it.todo` stubs with real tests one at a time
 
 ```
 RED:   Replace first it.todo with a real test → run → confirm it fails
 GREEN: Write minimal implementation to pass it → run → confirm it passes
 REPEAT for each remaining test case
-REFACTOR: After all tests pass — extract duplication, deepen modules
+REFACTOR: After all tests pass, extract duplication, deepen modules
 ```
 
 Never write all tests before any implementation (horizontal slicing). Never refactor while any test is red.
 
-### Required test cases — replace each it.todo stub
+### Required test cases: replace each it.todo stub
 
 ```ts
 // 1. Smoke render
@@ -290,17 +290,17 @@ it('renders without crashing', () => { ... });
 // 2. Required props appear in output
 it('renders the label', () => { ... });
 
-// 3. Each optional variant — one test per variant
+// 3. Each optional variant: one test per variant
 it('applies outlined variant', () => { ... });
 
 // 4. ...other passthrough
 it('forwards arbitrary props to the root element', () => { ... });
 
-// 5. ref forwarding — only if forwardRef is used
+// 5. ref forwarding: only if forwardRef is used
 it('forwards ref to the root element', () => { ... });
 ```
 
-### Test helper — use GiselleThemeProvider, never mock MUI
+### Test helper: use GiselleThemeProvider, never mock MUI
 
 Check whether `src/test-utils.ts` already exists in the repo. If it does, import from it. If it does not, create it:
 
@@ -310,13 +310,13 @@ import React from 'react';
 import { renderToStaticMarkup } from 'react-dom/server';
 import { GiselleThemeProvider } from './components/theming/theme-provider/giselle/giselle';
 
-/** Use for pure rendering checks — no interaction needed. */
+/** Use for pure rendering checks: no interaction needed. */
 export function renderWithTheme(element: React.ReactElement): string {
   return renderToStaticMarkup(React.createElement(GiselleThemeProvider, null, element));
 }
 ```
 
-**Why `GiselleThemeProvider` and not `ThemeProvider + createTheme()`:** giselle-mui uses MUI CSS variables mode (`extendTheme`). This populates `theme.vars.*` as CSS variable strings. Plain `createTheme()` does NOT do this — any component whose `sx` prop references `theme.vars.*` will crash at render time without a proper provider. `GiselleThemeProvider` is the only correct wrapper for component render tests in this codebase. Style tests (which test style functions in isolation via `createTheme()`) are exempt — they never call `theme.vars.*` directly.
+**Why `GiselleThemeProvider` and not `ThemeProvider + createTheme()`:** giselle-mui uses MUI CSS variables mode (`extendTheme`). This populates `theme.vars.*` as CSS variable strings. Plain `createTheme()` does NOT do this. Any component whose `sx` prop references `theme.vars.*` will crash at render time without a proper provider. `GiselleThemeProvider` is the only correct wrapper for component render tests in this codebase. Style tests (which test style functions in isolation via `createTheme()`) are exempt. They never call `theme.vars.*` directly.
 
 For interaction tests that need user events or state transitions:
 
@@ -341,7 +341,7 @@ Use `renderToStaticMarkup` for pure rendering. Use `@testing-library/react` + `u
 
 ### Accessibility (oss-quality-standards §9)
 
-Every component must meet **WCAG 2.2 Level AA**. Accessibility gaps found in PR review are always blocking — no counter-argument overrides this.
+Every component must meet **WCAG 2.2 Level AA**. Accessibility gaps found in PR review are always blocking. No counter-argument overrides this.
 
 | Rule | Requirement |
 | --- | --- |
@@ -352,7 +352,7 @@ Every component must meet **WCAG 2.2 Level AA**. Accessibility gaps found in PR 
 | Loading states | `aria-busy` + `aria-live` on the container |
 | Error messages | `aria-describedby` pointing to the error element |
 | Toggle buttons | `aria-pressed` reflects current state |
-| Animations | Respect `prefers-reduced-motion` — wrap in the appropriate media query or hook |
+| Animations | Respect `prefers-reduced-motion`: wrap in the appropriate media query or hook |
 
 Add accessibility test cases alongside behaviour tests:
 
@@ -380,7 +380,7 @@ it('returns correct padding from theme spacing', () => {
 
 ---
 
-## Stories — `<name>.stories.tsx`
+## Stories: `<name>.stories.tsx`
 
 **CRITICAL: The `title` must mirror the `src/components/` folder path exactly.**
 
@@ -391,7 +391,7 @@ src/components/motion/floating-side-nav/        → 'Motion/Floating Side Nav'
 src/components/section/hero/                    → 'Section/Hero'
 ```
 
-Rule: folder path = story title. If they ever disagree, fix the story title — never the folder.
+Rule: folder path = story title. If they ever disagree, fix the story title, never the folder.
 
 ```ts
 // metric-card.stories.tsx
@@ -416,11 +416,11 @@ export const Outlined: Story = {
 };
 ```
 
-Story names: PascalCase. Never repeat the component name in the story name. No real names, emails, or client data in any story — use generic placeholders.
+Story names: PascalCase. Never repeat the component name in the story name. No real names, emails, or client data in any story: use generic placeholders.
 
 ---
 
-## Update README.md — fill in the File structure section
+## Update README.md: fill in the File structure section
 
 After implementation, update the `README.md` File structure section with the actual files:
 
@@ -428,22 +428,22 @@ After implementation, update the `README.md` File structure section with the act
 ## File structure
 
 src/components/<layer>/<category>/<name>/
-  <name>.tsx            — component
-  <name>.styles.ts      — style functions
-  <name>.test.ts        — unit tests
-  <name>.styles.test.ts — style tests
-  <name>.stories.tsx    — Storybook stories
-  types.ts              — Props interface
-  index.ts              — barrel export
-  README.md             — this file
-  roadmap.md            — open improvements and completed tasks
+  <name>.tsx            : component
+  <name>.styles.ts      : style functions
+  <name>.test.ts        : unit tests
+  <name>.styles.test.ts : style tests
+  <name>.stories.tsx    : Storybook stories
+  types.ts              : Props interface
+  index.ts              : barrel export
+  README.md             : this file
+  roadmap.md            : open improvements and completed tasks
 ```
 
 ---
 
 ## Commit convention (oss-quality-standards §2.2)
 
-Format: `<type>(<scope>): <description>` — scope is the component name in kebab-case.
+Format: `<type>(<scope>): <description>`: scope is the component name in kebab-case.
 
 ```
 feature(metric-card): scaffold folder structure and it.todo stubs
@@ -455,7 +455,7 @@ Use `feature` for new component work, `fix` for bug corrections, `test` for test
 
 ---
 
-## After implementation — open a PR
+## After implementation: open a PR
 
 Create a branch before starting Phase 1:
 
@@ -473,14 +473,14 @@ One component = one branch = one PR. Do not mix multiple components in a single 
 
 ---
 
-## After implementation — checklist before PR
+## After implementation: checklist before PR
 
 ### Code
 
 - [ ] Quality gate green: `npm run check`
 - [ ] All `it.todo` stubs replaced with real passing tests
 - [ ] 80%+ line coverage on the component file
-- [ ] No `vi.mock` for MUI modules — `renderWithTheme` used instead
+- [ ] No `vi.mock` for MUI modules: `renderWithTheme` used instead
 - [ ] No hardcoded colours
 - [ ] `sx` array-safe
 - [ ] `...other` passthrough present

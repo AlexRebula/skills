@@ -1,14 +1,14 @@
 ---
 name: create-pr
-description: Prepare a branch for a pull request — verify branch hygiene, run the quality gate, create the PR with a well-formed description via the gh CLI, and optionally request a review. Use when asked to "create pr <branch>", "open a PR for <branch>", or "create a pull request".
+description: Prepare a branch for a pull request. Verify branch hygiene, run the quality gate, create the PR with a well-formed description via the gh CLI, and optionally request a review. Use when asked to "create pr <branch>", "open a PR for <branch>", or "create a pull request".
 ---
 
 # Create PR
 
 Covers two phases:
 
-- **Phase 0 — Branch hygiene**: every commit belongs to the branch's stated purpose; quality gate passes.
-- **Phase 1 — PR creation**: PR created via `gh pr create` with a complete description; review optionally triggered.
+- **Phase 0: Branch hygiene**: every commit belongs to the branch's stated purpose; quality gate passes.
+- **Phase 1: PR creation**: PR created via `gh pr create` with a complete description; review optionally triggered.
 
 ## Configurable defaults (read before using)
 
@@ -27,19 +27,19 @@ Six points in this workflow are opinionated. They are called out inline with **�
 
 ## Arguments
 
-`/create-pr <branch>` — branch to create the PR for. Required. Ask if omitted.  
-`/create-pr <branch> skip-hygiene` — skip Phase 0 (use when hygiene was already done in this session).  
-`/create-pr <branch> request-review` — trigger a review bot after PR creation.  
-`/create-pr <branch> auto-approve` — skip the green-light gate in Phase 1 Step 4 and create the PR immediately.  
-`/create-pr <branch> <owner>/<repo>` — if the repo cannot be inferred from context.
+`/create-pr <branch>`: branch to create the PR for. Required. Ask if omitted.  
+`/create-pr <branch> skip-hygiene`: skip Phase 0 (use when hygiene was already done in this session).  
+`/create-pr <branch> request-review`: trigger a review bot after PR creation.  
+`/create-pr <branch> auto-approve`: skip the green-light gate in Phase 1 Step 4 and create the PR immediately.  
+`/create-pr <branch> <owner>/<repo>`: if the repo cannot be inferred from context.
 
 ---
 
-## Phase 0 — Branch hygiene
+## Phase 0: Branch hygiene
 
 > Skip this phase if `skip-hygiene` was passed.
 
-### Step 1 — Identify the branch's working set
+### Step 1: Identify the branch's working set
 
 ```sh
 gh repo view --json nameWithOwner --jq '.nameWithOwner'
@@ -47,11 +47,11 @@ DEFAULT_BRANCH=$(gh repo view --json defaultBranchRef --jq '.defaultBranchRef.na
 git log ${DEFAULT_BRANCH}..<branch> --oneline
 ```
 
-Save `$DEFAULT_BRANCH` — use it in place of `main` throughout Phase 0 and Phase 1.
+Save `$DEFAULT_BRANCH`: use it in place of `main` throughout Phase 0 and Phase 1.
 
 Note every commit on the branch. This is the working set for the rest of Phase 0.
 
-### Step 1b — Verify the branch is not stacked on another open PR
+### Step 1b: Verify the branch is not stacked on another open PR
 
 The single most common snowball trigger is a branch cut from another branch that is
 still in review: the child can't merge until the parent does, and review debt compounds.
@@ -67,7 +67,7 @@ gh pr list --state open --json number,headRefName,headRefOid
 Compare: if any open PR's `headRefOid` appears in the `git log origin/${DEFAULT_BRANCH}..<branch>`
 output, this branch is **stacked** on that PR's branch.
 
-**If stacked — stop and surface it:**
+**If stacked, stop and surface it:**
 
 > "This branch is stacked on `<other-branch>` (PR #<N>), which hasn't merged yet.
 > Stacking is the fastest path to a PR snowball. Options:
@@ -77,7 +77,7 @@ output, this branch is **stacked** on that PR's branch.
 Do not create the PR until the branch is based on `${DEFAULT_BRANCH}`, unless the user
 explicitly accepts the stacked dependency.
 
-### Step 2 — Verify every commit belongs on this branch
+### Step 2: Verify every commit belongs on this branch
 
 Read the branch prefix to determine the stated purpose:
 
@@ -89,7 +89,7 @@ Read the branch prefix to determine the stated purpose:
 | `refactor/` | Code restructure with no behaviour change |
 | `docs/`     | Documentation only                        |
 
-> **⚙️ Configurable — branch prefixes:** Add or remove prefixes to match your conventions. A common addition is `data/` for data-file-only changes (e.g. seed or fixture updates). That prefix is not included by default because it is specific to projects that version their data files in the repository.
+> **⚙️ Configurable (branch prefixes):** Add or remove prefixes to match your conventions. A common addition is `data/` for data-file-only changes (e.g. seed or fixture updates). That prefix is not included by default because it is specific to projects that version their data files in the repository.
 
 For each commit, decide: does it relate to the branch's stated purpose?
 
@@ -101,16 +101,16 @@ For each commit, decide: does it relate to the branch's stated purpose?
 1. Identify the correct branch prefix for each unrelated commit.
 2. Check whether a branch for that purpose already exists. If yes, cherry-pick onto it. If no, create a new branch from `$DEFAULT_BRANCH`.
 3. Remove the commit from the original branch via interactive rebase.
-4. Force-push the original branch — **only after confirming no open PR exists for it**. If a PR already exists, ask the user before force-pushing; force-pushing rewrites history and invalidates outstanding review threads.
+4. Force-push the original branch, **only after confirming no open PR exists for it**. If a PR already exists, ask the user before force-pushing; force-pushing rewrites history and invalidates outstanding review threads.
 
 ```sh
 git rebase -i ${DEFAULT_BRANCH}
 git push --force-with-lease origin <branch>
 ```
 
-### Step 3 — Run the quality gate
+### Step 3: Run the quality gate
 
-> **⚙️ Configurable — quality gate command:** The command below is a typical example. Replace it with your own gate command. A quality gate is any command that exits 0 when formatting, linting, type-checking, and tests all pass. Common alternatives:
+> **⚙️ Configurable (quality gate command):** The command below is a typical example. Replace it with your own gate command. A quality gate is any command that exits 0 when formatting, linting, type-checking, and tests all pass. Common alternatives:
 >
 > - `npm run lint && npm run typecheck && npm test`
 > - `pnpm check`
@@ -125,7 +125,7 @@ Do not continue to Phase 1 if the gate fails. Fix the failures first.
 
 ---
 
-## Phase 1 — PR creation
+## Phase 1: PR creation
 
 > **Note:** `DEFAULT_BRANCH` is set unconditionally here so Phase 1 works correctly even when Phase 0 was skipped via `skip-hygiene`.
 
@@ -133,13 +133,13 @@ Do not continue to Phase 1 if the gate fails. Fix the failures first.
 DEFAULT_BRANCH=$(gh repo view --json defaultBranchRef --jq '.defaultBranchRef.name' 2>/dev/null || echo 'main')
 ```
 
-### Step 4 — Wait for the green light
+### Step 4: Wait for the green light
 
-> **⚙️ Configurable — green light gate:** By default this skill waits for an explicit instruction before creating the PR ("go ahead", "create it", "open it"). This prevents accidental PR creation mid-task. If you prefer immediate creation without the gate, pass `auto-approve` as an argument.
+> **⚙️ Configurable (green light gate):** By default this skill waits for an explicit instruction before creating the PR ("go ahead", "create it", "open it"). This prevents accidental PR creation mid-task. If you prefer immediate creation without the gate, pass `auto-approve` as an argument.
 
 Do not proceed to Step 5 until the user explicitly approves PR creation.
 
-### Step 4b — Skills sync check (automatic)
+### Step 4b: Skills sync check (automatic)
 
 Run immediately before building the PR description. Skip silently if no locally installed skill files are in the diff.
 
@@ -154,12 +154,12 @@ If any skill file appears in the diff:
 1. Extract the skill name(s) from the path.
 2. Add a mandatory checklist item to the PR description (Step 5):
    ```
-   - [ ] Sync `<skill-name>` changes to the canonical skills repo — generalize any project-specific references, then run `npx skills@latest update <skill-name>` to reinstall
+   - [ ] Sync `<skill-name>` changes to the canonical skills repo, generalize any project-specific references, then run `npx skills@latest update <skill-name>` to reinstall
    ```
 3. Warn the user before creating the PR:
-   > "This PR edits a locally installed skill. The canonical skills repo must receive the same change, generalized for any project. The checklist item above is mandatory — do not merge without completing it."
+   > "This PR edits a locally installed skill. The canonical skills repo must receive the same change, generalized for any project. The checklist item above is mandatory. Do not merge without completing it."
 
-### Step 5 — Build the PR description
+### Step 5: Build the PR description
 
 Check for an existing template:
 
@@ -171,7 +171,7 @@ cat .github/pull_request_template.md 2>/dev/null
 
 **If no template exists**, use this fallback structure and fill it completely:
 
-> **⚙️ Configurable — fallback PR template sections:** These fields are a widely useful default. Replace or extend them to match your team's conventions.
+> **⚙️ Configurable (fallback PR template sections):** These fields are a widely useful default. Replace or extend them to match your team's conventions.
 
 ```md
 ## What does this PR do?
@@ -180,11 +180,11 @@ cat .github/pull_request_template.md 2>/dev/null
 
 ## Why
 
-<reason this change is needed — link to an issue, roadmap entry, or prior conversation>
+<reason this change is needed: link to an issue, roadmap entry, or prior conversation>
 
 ## Mergeable bar
 
-<the done condition, agreed before review opens — what must be true to merge, and which
+<the done condition, agreed before review opens: what must be true to merge, and which
 review threads are blocking vs tracked-deferred vs won't-fix. Reviewers apply THIS bar.>
 
 ## Type of change
@@ -205,18 +205,18 @@ review threads are blocking vs tracked-deferred vs won't-fix. Reviewers apply TH
 <anything non-obvious the reviewer should check first>
 ```
 
-**PR title format:** `<type>(<scope>): <short description>` — mirrors the conventional commits convention.
+**PR title format:** `<type>(<scope>): <short description>` (mirrors the conventional commits convention).
 
-> **⚙️ Configurable — PR title format:** Conventional commits titles are widely used but not universal. Replace with your team's format if needed.
+> **⚙️ Configurable (PR title format):** Conventional commits titles are widely used but not universal. Replace with your team's format if needed.
 
 **The `## Mergeable bar` section is mandatory and must be filled before the PR is opened.**
 If a `.github/pull_request_template.md` exists but has no equivalent section, append the
 Mergeable bar block above to the body. A PR with no stated done-condition is the root cause
-of review escalation — threads multiply with no exit condition. Do not open the PR without
+of review escalation: threads multiply with no exit condition. Do not open the PR without
 it, unless the user explicitly waives the requirement. See
 `raw/reference/pr-snowball-mitigation.md` (guardrail #4).
 
-### Step 6 — Create the PR
+### Step 6: Create the PR
 
 **Do not use the GitHub web UI to create the PR.** The UI pre-fills the template structure but leaves every section empty, requiring manual content entry and producing inconsistent descriptions. Always create via `gh pr create`.
 
@@ -228,11 +228,11 @@ gh pr create \
   --head <branch>
 ```
 
-> **⚙️ Configurable — base branch:** `DEFAULT_BRANCH` is detected automatically in Phase 0. If detection fails it falls back to `main`. Override as needed (`master`, `develop`, `trunk`, etc.).
+> **⚙️ Configurable (base branch):** `DEFAULT_BRANCH` is detected automatically in Phase 0. If detection fails it falls back to `main`. Override as needed (`master`, `develop`, `trunk`, etc.).
 
 Save the PR number from the command output.
 
-### Step 7 — Trigger a review (optional)
+### Step 7: Trigger a review (optional)
 
 > **Only run this step if `request-review` was passed.** Requires a GitHub Copilot subscription with the code review feature enabled. If you use a different review bot (e.g. CodeRabbit, Graphite), adapt this step accordingly.
 
@@ -246,7 +246,7 @@ If `github-copilot[bot]` already appears, skip this step.
 
 If not, trigger it manually via the GitHub UI: **PR → "Reviewers" → "Request" → Copilot**
 
-There is no reliable CLI or API path for requesting a bot review — the GitHub UI is required.
+There is no reliable CLI or API path for requesting a bot review. The GitHub UI is required.
 
 Stop here. Do not respond to review threads in this skill. Use `/respond-pr-review <PR-number>` when you are ready to address the review.
 

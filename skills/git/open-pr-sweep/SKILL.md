@@ -1,13 +1,13 @@
 ---
 name: open-pr-sweep
-description: Discover all non-draft open pull requests across one or more GitHub organisations or users. Pure discovery — no writes. Produces a table of open PRs for use in a morning brief or session triage. Run after /repo-status or independently whenever you need to know what PRs need attention.
+description: "Discover all non-draft open pull requests across one or more GitHub organisations or users. Pure discovery: no writes. Produces a table of open PRs for use in a morning brief or session triage. Run after /repo-status or independently whenever you need to know what PRs need attention."
 ---
 
 # Open PR Sweep
 
 ## Arguments
 
-`/open-pr-sweep` — discovers PRs across repos owned by the authenticated GitHub user. `/open-pr-sweep --orgs <org1>,<org2>` — filters to the specified GitHub organisations or users (comma-separated, e.g. `--orgs MyOrg,my-username`).
+`/open-pr-sweep`: discovers PRs across repos owned by the authenticated GitHub user. `/open-pr-sweep --orgs <org1>,<org2>`: filters to the specified GitHub organisations or users (comma-separated, e.g. `--orgs MyOrg,my-username`).
 
 Discover all repos (capped at 200 per owner):
 
