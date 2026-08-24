@@ -40,6 +40,7 @@ const config: Config = {
           routeBasePath: '/',
           sidebarPath: './sidebars.ts',
           include: [
+            'overview.md',
             'engineering/**/*.{md,mdx}',
             'productivity/**/*.{md,mdx}',
             'git/**/*.{md,mdx}',
