@@ -28,7 +28,7 @@ import { writeFileSync, mkdirSync, existsSync, readdirSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { diffLines, type Change } from 'diff';
-import { TARGET_CATEGORIES } from './check-docs-completeness.ts';
+import { TARGET_CATEGORIES } from '../site/src/data/categories.ts';
 import type {
   DiffRow,
   DiffStatEntry,

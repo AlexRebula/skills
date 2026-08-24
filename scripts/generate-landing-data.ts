@@ -21,24 +21,10 @@
 import { readFileSync, writeFileSync, mkdirSync, existsSync, readdirSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { TARGET_CATEGORIES } from './check-docs-completeness.ts';
+import { CATEGORY_INFO, TARGET_CATEGORIES } from '../site/src/data/categories.ts';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const REPO_ROOT = join(__dirname, '..');
-
-/** README's own heading text for each category folder key. */
-const CATEGORY_HEADINGS: Record<(typeof TARGET_CATEGORIES)[number], string> = {
-  engineering: 'Engineering',
-  wiki: 'Wiki',
-  'daily-workflow': 'Daily Workflow',
-  mentoring: 'Mentoring',
-  'thinking-tools': 'Thinking Tools',
-  framework: 'Framework',
-  git: 'Git',
-  org: 'Organisation (LittleBranches)',
-  misc: 'Misc',
-  personal: 'Personal',
-};
 
 interface SkillEntry {
   name: string;
@@ -111,7 +97,7 @@ function main(): void {
   const errors: string[] = [];
 
   for (const category of TARGET_CATEGORIES) {
-    const heading = CATEGORY_HEADINGS[category];
+    const heading = CATEGORY_INFO[category].heading;
     let section: string;
     try {
       section = extractSection(readme, heading);

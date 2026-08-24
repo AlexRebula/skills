@@ -10,6 +10,8 @@ import { GitHubStars } from '../components/github-stars';
 import { ProvenanceButton } from '../components/provenance-button';
 import { SkillCard } from '../components/skill-card';
 import type { SkillCardColor } from '../components/skill-card';
+import { CATEGORY_INFO } from '../data/categories';
+import type { CategoryKey } from '../data/categories';
 import { getProvenanceEntry } from '../data/provenance.utils';
 import skillsData from '../data/skills-landing.json';
 import provenanceData from '../data/provenance.json';
@@ -26,19 +28,6 @@ const REPO = 'AlexRebula/skills';
 const SKILL_CARD_CONFIG: Partial<Record<ProvenanceStatus, { color: SkillCardColor; label: string }>> = {
   original: { color: 'green', label: 'AlexRebula Original.' },
   inherited: { color: 'amber', label: 'Inherited from Matt Pocock' },
-};
-
-const CATEGORY_LABELS: Record<string, string> = {
-  engineering: 'Engineering',
-  wiki: 'Wiki',
-  'daily-workflow': 'Daily Workflow',
-  mentoring: 'Mentoring',
-  'thinking-tools': 'Thinking Tools',
-  git: 'Git',
-  framework: 'Framework',
-  org: 'Organisation',
-  personal: 'Personal',
-  misc: 'Misc',
 };
 
 export default function Home(): ReactNode {
@@ -83,10 +72,10 @@ export default function Home(): ReactNode {
           {categories.map((category, i) => (
             <section key={category.key} className={styles.categorySection}>
               <p className={styles.kicker}>
-                {String(i + 1).padStart(2, '0')} · {CATEGORY_LABELS[category.key] ?? category.heading}
+                {String(i + 1).padStart(2, '0')} · {CATEGORY_INFO[category.key as CategoryKey]?.label ?? category.heading}
               </p>
               <Heading as="h2" className={styles.categoryTitle}>
-                {CATEGORY_LABELS[category.key] ?? category.heading}
+                {CATEGORY_INFO[category.key as CategoryKey]?.label ?? category.heading}
               </Heading>
               <p className={styles.categoryDescription}>
                 <InlineMarkdown text={category.description} />
