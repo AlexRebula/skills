@@ -18,8 +18,8 @@
  *   npx tsx scripts/generate-skill-icons.ts [--out <path>]
  *
  * Exit codes:
- *   0 — icon collection written
- *   1 — a name in SKILL_ICON_NAMES doesn't exist in the real solar icon set
+ *   0: icon collection written
+ *   1: a name in SKILL_ICON_NAMES doesn't exist in the real solar icon set
  */
 
 import { createRequire } from 'node:module';

@@ -6,7 +6,7 @@ import type * as Preset from '@docusaurus/preset-classic';
 
 const config: Config = {
   title: 'AlexRebula Skills',
-  tagline: 'Agent skills for Claude Code — install, reference, and extend',
+  tagline: 'Agent skills for Claude Code: install, reference, and extend',
   favicon: 'img/favicon.ico',
 
   future: {
@@ -54,7 +54,7 @@ const config: Config = {
           ],
           exclude: ['roadmap.md', 'generalization.md', 'pr-messages/**'],
           // No landing page exists at "/" (routeBasePath above), so disable
-          // breadcrumbs' "Home" link — it would otherwise point at a route
+          // breadcrumbs' "Home" link, since it would otherwise point at a route
           // with no page and fail the onBrokenLinks: 'throw' check.
           breadcrumbs: false,
           // Docs live at repo-root `docs/` (configured above via `path: '../docs'`),
@@ -80,7 +80,7 @@ const config: Config = {
         alt: 'AlexRebula Skills Logo',
         src: 'img/logo.svg',
         // The navbar brand always links somewhere (Docusaurus falls back to
-        // "/" otherwise), and there's no landing page at "/" — routeBasePath
+        // "/" otherwise), and there's no landing page at "/". routeBasePath
         // sends the root straight into the docs sidebar with no page of its
         // own. Point the brand at the GitHub repo instead of an internal
         // route so it doesn't trip onBrokenLinks: 'throw'.

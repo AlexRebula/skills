@@ -17,8 +17,8 @@
  *   npx tsx scripts/check-docs-completeness.ts [--skills-root <path>] [--docs-root <path>]
  *
  * Exit codes:
- *   0 — every enumerated skill has a docs page
- *   1 — at least one skill is missing a docs page
+ *   0: every enumerated skill has a docs page
+ *   1: at least one skill is missing a docs page
  */
 
 import { existsSync, readdirSync, statSync } from 'node:fs';

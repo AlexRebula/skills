@@ -4,7 +4,7 @@ import { defineConfig } from 'vitest/config';
 export default defineConfig({
   resolve: {
     alias: {
-      // Not real packages — Docusaurus resolves these via its own webpack
+      // Not real packages, since Docusaurus resolves these via its own webpack
       // alias, which Vite/Vitest has no knowledge of. See test/mocks/*.
       '@docusaurus/Link': fileURLToPath(new URL('./test/mocks/docusaurus-link.tsx', import.meta.url)),
       '@docusaurus/useBaseUrl': fileURLToPath(

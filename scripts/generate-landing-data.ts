@@ -13,8 +13,8 @@
  *   npx tsx scripts/generate-landing-data.ts [--out <path>]
  *
  * Exit codes:
- *   0 — data file written
- *   1 — a category heading or skill listed in README.md could not be
+ *   0: data file written
+ *   1: a category heading or skill listed in README.md could not be
  *       parsed, or a real skill folder has no matching README entry
  */
 

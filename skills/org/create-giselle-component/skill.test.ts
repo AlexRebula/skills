@@ -8,7 +8,7 @@ const SKILL = readFileSync(join(__dirname, 'SKILL.md'), 'utf8');
 
 describe('create-giselle-component', () => {
 
-  // ── §10 Testing — test helper ────────────────────────────────────────────
+  // ── §10 Testing: test helper ────────────────────────────────────────────
   it('uses GiselleThemeProvider as the test wrapper, not createTheme()', () => {
     expect(SKILL).toContain('GiselleThemeProvider');
   });
@@ -45,11 +45,11 @@ describe('create-giselle-component', () => {
     expect(SKILL).toContain('shouldForwardProp');
   });
 
-  it('covers icon slot conventions — aria-hidden on decorative icons (§6.10)', () => {
+  it('covers icon slot conventions: aria-hidden on decorative icons (§6.10)', () => {
     expect(SKILL).toContain('aria-hidden');
   });
 
-  // ── §11 Definition of Done — missing checklist items ────────────────────
+  // ── §11 Definition of Done: missing checklist items ────────────────────
   it('DoD checklist includes no console.log / commented-out code check (§11)', () => {
     expect(SKILL).toMatch(/console\.log|commented.out/i);
   });
@@ -64,7 +64,7 @@ describe('create-giselle-component', () => {
   });
 
   // ── Batch invocation mode ────────────────────────────────────────────────
-  it('supports batch invocation — skip questions when answers are pre-supplied', () => {
+  it('supports batch invocation: skips questions when answers are pre-supplied', () => {
     expect(SKILL).toMatch(/pre.suppli|answers.*provided|already.*answer|batch/i);
   });
 

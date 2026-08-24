@@ -90,7 +90,7 @@ describe('checkDocsCompleteness', () => {
 
     expect(report.totalMissing).toBe(0);
     expect(report.missingByCategory).toEqual({});
-    // Only the one engineering skill was ever counted — deprecated/in-progress
+    // Only the one engineering skill was ever counted: deprecated/in-progress
     // skills must not contribute to totalSkillsChecked either.
     expect(report.totalSkillsChecked).toBe(1);
     expect(report.missingByCategory.deprecated).toBeUndefined();

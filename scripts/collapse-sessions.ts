@@ -15,8 +15,8 @@
  *     [--date YYYY-MM-DD]          (default: today)
  *
  * Exit codes:
- *   0 — success or nothing to collapse
- *   1 — argument error or fatal I/O error
+ *   0: success or nothing to collapse
+ *   1: argument error or fatal I/O error
  */
 
 import {
@@ -217,7 +217,7 @@ function updateSessionsIndex(
 ): void {
   const indexPath = join(sessionsRoot, 'sessions-index.md');
   if (!existsSync(indexPath)) {
-    console.log('  ⚠ sessions-index.md not found — skipping index update');
+    console.log('  ⚠ sessions-index.md not found, skipping index update');
     return;
   }
 
@@ -242,7 +242,7 @@ function updateSessionsIndex(
   }
 
   if (matchingIndices.length === 0) {
-    console.log('  ⚠ No matching rows in sessions-index.md — skipping index update');
+    console.log('  ⚠ No matching rows in sessions-index.md, skipping index update');
     return;
   }
 
@@ -283,7 +283,7 @@ function updateSessionsIndex(
     .filter((l: string | null): l is string => l !== null);
 
   writeFileSync(indexPath, newLines.join('\n'), 'utf8');
-  console.log(`  Updated sessions-index.md — merged ${matchingRows.length} row(s) into 1`);
+  console.log(`  Updated sessions-index.md: merged ${matchingRows.length} row(s) into 1`);
 }
 
 // ---------------------------------------------------------------------------
@@ -320,7 +320,7 @@ function buildLinkMaps(renameMap: RenameEntry[]): {
     // Key by "oldFolderName/oldBaseName" to avoid collisions when multiple source
     // folders share a filename (e.g. "01-initial.md" from two different sessions).
     // Wiki-link repair uses a bare oldBaseName lookup as a fallback for links that
-    // lack folder context — prefer the folder-qualified key when available.
+    // lack folder context. Prefer the folder-qualified key when available.
     const qualifiedKey = `${entry.oldFolderName}/${entry.oldBaseName}`;
     baseNameMap.set(qualifiedKey, entry.newBaseName);
     // Also register the bare name, but only if no collision exists yet.
@@ -458,13 +458,13 @@ function addBridgeLinks(combinedFolderPath: string, renameMap: RenameEntry[]): v
 
     // Skip if a real → Next wikilink already exists in this file.
     // Do NOT skip if the file only has the trailing placeholder
-    // "**→ Next:** _(next session not yet started)_" — that placeholder
+    // "**→ Next:** _(next session not yet started)_". That placeholder
     // must be replaced with a real wikilink when files are collapsed.
     const hasRealNextLink = /→ Next:.*\[\[/.test(sourceContent);
     if (hasRealNextLink) continue;
 
     const title = extractTitle(targetFilePath, targetEntry.semanticSlug.replace(/-/g, ' '));
-    const nextLink = `\n\n---\n\n**→ Next:** [[${targetEntry.newBaseName}|${targetEntry.newNn} — ${title}]]`;
+    const nextLink = `\n\n---\n\n**→ Next:** [[${targetEntry.newBaseName}|${targetEntry.newNn}: ${title}]]`;
 
     writeFileSync(sourceFilePath, sourceContent.trimEnd() + nextLink + '\n', 'utf8');
     console.log(`  Added → Next bridge: ${sourceEntry.newFileName} → ${targetEntry.newFileName}`);
@@ -542,7 +542,7 @@ function main(): void {
   }
 
   const totalFiles = renameMap.length;
-  console.log(`\n✅ Done — ${totalFiles} file(s) in ${combinedFolderName}/`);
+  console.log(`\n✅ Done: ${totalFiles} file(s) in ${combinedFolderName}/`);
 }
 
 main();
