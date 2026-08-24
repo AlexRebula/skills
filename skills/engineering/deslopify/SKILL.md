@@ -177,7 +177,7 @@ substitute for one.
 **Scope note:** this pass hunts *generation tells* — leftovers from an AI writing pass that a
 careful human wouldn't have left in — not general code quality. Questions like "is this the
 simplest design", "is this reused elsewhere", or "does this follow the repo's standards" belong
-to `karpathy-guidelines`, `/simplify`, and `/code-review` respectively. If a finding is really
+to `karpathy-guidelines`, `/simplify`, and `/review-pr` respectively. If a finding is really
 about design or duplication rather than a tell, name it but leave the actual fix to one of those.
 
 ### Process
