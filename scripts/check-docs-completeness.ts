@@ -31,7 +31,10 @@ const REPO_ROOT = join(__dirname, '..');
 /** The only categories this check ever considers. */
 export const TARGET_CATEGORIES = [
   'engineering',
-  'productivity',
+  'wiki',
+  'daily-workflow',
+  'mentoring',
+  'thinking-tools',
   'git',
   'framework',
   'org',

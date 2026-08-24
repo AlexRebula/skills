@@ -21,17 +21,21 @@ It is published and installable by anyone: `npx skills@latest add AlexRebula/ski
 Skills are organized into bucket folders under `skills/`:
 
 - `engineering/`: framework-agnostic code craft and architecture
+- `wiki/`: keeping a personal knowledge base current (ingesting sources, extracting quotes/vocabulary, querying, health-checking)
+- `daily-workflow/`: the scaffolding around every session (starting the day, Asana sync, closing out)
+- `mentoring/`: growing a student or apprentice contributor's own work, not your own
+- `thinking-tools/`: interview and communication-repair primitives
 - `framework/`: framework-specific scaffolding (React, Vue, Angular)
 - `git/`: git and PR lifecycle operations
 - `org/`: LittleBranches organisation-specific skills
-- `productivity/`: daily non-code workflow tools
 - `misc/`: kept around but rarely used, not promoted
 - `personal/`: tied to my own setup, not promoted
 - `in-progress/`: drafts not yet ready to ship
 - `deprecated/`: no longer used
 
-Every skill in `engineering/`, `framework/`, `git/`, `org/`, or `productivity/` (the **promoted**
-buckets) must have a reference in the top-level `README.md` and an entry in
+Every skill in `engineering/`, `wiki/`, `daily-workflow/`, `mentoring/`, `thinking-tools/`,
+`framework/`, `git/`, or `org/` (the **promoted** buckets) must have a reference in the top-level
+`README.md` and an entry in
 `.claude-plugin/plugin.json`'s `skills` array (the Claude Code plugin ships exactly the promoted
 set). Skills in `misc/`, `personal/`, `in-progress/`, and `deprecated/` must not appear in either.
 
@@ -44,9 +48,9 @@ it). Run `claude plugin validate . --strict` after touching either manifest.
 Each skill entry in the top-level `README.md` must link the skill name to its `SKILL.md`.
 
 Each bucket folder has a `README.md` that lists every skill in the bucket with a one-line
-description, with the skill name linked to its `SKILL.md`. The `engineering/` and `productivity/`
-bucket `README.md`s group entries into **User-invoked** and **Model-invoked**; other bucket
-`README.md`s use a flat list.
+description, with the skill name linked to its `SKILL.md`. The `engineering/` bucket `README.md`
+groups entries into **User-invoked** and **Model-invoked**; other bucket `README.md`s use a flat
+list.
 
 Every `SKILL.md` is either user-invoked (`disable-model-invocation: true`, reachable only when you
 type the slash command) or model-invoked (model- or user-reachable via rich trigger phrasing). See

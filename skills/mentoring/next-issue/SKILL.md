@@ -199,7 +199,7 @@ half done.
 ## Closing the loop
 
 Findings from Step 6 are worth more than the fix. See **"Closing the loop — turning a
-finding into a principle"** in [`audit-issue`](https://github.com/AlexRebula/skills/blob/main/skills/productivity/audit-issue/SKILL.md) — it covers naming the rule so it
+finding into a principle"** in [`audit-issue`](https://github.com/AlexRebula/skills/blob/main/skills/mentoring/audit-issue/SKILL.md) — it covers naming the rule so it
 generalises, drafting the incident record, and encoding the rule into a template so the
 next author inherits it rather than having to remember it. Do not re-implement that here.
 
@@ -212,4 +212,4 @@ write a raw source file and hand off to `/ingest`.
 
 ## Pattern reference
 
-This skill is the GitHub-integrated wrapper around the public [`audit-issue`](https://github.com/AlexRebula/skills/blob/main/skills/productivity/audit-issue/SKILL.md) pattern. The audit logic, output format, and starter template are documented there. This wrapper adds: automatic issue fetching via `gh`, principles file discovery from the wiki, and candidate selection.
+This skill is the GitHub-integrated wrapper around the public [`audit-issue`](https://github.com/AlexRebula/skills/blob/main/skills/mentoring/audit-issue/SKILL.md) pattern. The audit logic, output format, and starter template are documented there. This wrapper adds: automatic issue fetching via `gh`, principles file discovery from the wiki, and candidate selection.

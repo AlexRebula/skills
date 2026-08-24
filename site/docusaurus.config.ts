@@ -42,7 +42,10 @@ const config: Config = {
           include: [
             'overview.md',
             'engineering/**/*.{md,mdx}',
-            'productivity/**/*.{md,mdx}',
+            'wiki/**/*.{md,mdx}',
+            'daily-workflow/**/*.{md,mdx}',
+            'mentoring/**/*.{md,mdx}',
+            'thinking-tools/**/*.{md,mdx}',
             'git/**/*.{md,mdx}',
             'framework/**/*.{md,mdx}',
             'org/**/*.{md,mdx}',

@@ -73,8 +73,8 @@ This is just the same in the AI age. There is a communication gap between you an
 
 **The Fix** is to use:
 
-- [`/grill-me`](./skills/productivity/grill-me/SKILL.md), for non-code uses
-- [`/grill-with-docs`](./skills/engineering/grill-with-docs/SKILL.md), same as [`/grill-me`](./skills/productivity/grill-me/SKILL.md), but adds more goodies (see below)
+- [`/grill-me`](./skills/thinking-tools/grill-me/SKILL.md), for non-code uses
+- [`/grill-with-docs`](./skills/engineering/grill-with-docs/SKILL.md), same as [`/grill-me`](./skills/thinking-tools/grill-me/SKILL.md), but adds more goodies (see below)
 
 These are my most popular skills. They help you align with the agent before you get started, and think deeply about the change you're making. Use them _every_ time you want to make a change.
 
@@ -190,6 +190,7 @@ Skills I use daily for code work.
 - **[resolving-merge-conflicts](./skills/engineering/resolving-merge-conflicts/SKILL.md)**: Work through an in-progress git merge or rebase conflict hunk by hunk, resolving by intent traced to each side's primary source, then finish the operation, never `--abort`.
 - **[deslopify](./skills/engineering/deslopify/SKILL.md)**: Strip AI tells from prose and code and restore a human voice. Always applies to prose meant for a human reader (blog drafts, PR descriptions, commit messages, docs); the code half is manual-only (`/deslopify <file>`) and scoped to generation tells (restating comments, impossible error handling, dead defensive branches), not general design review.
 - **[wizard](./skills/engineering/wizard/SKILL.md)**: Generate an interactive bash wizard that walks a human through steps only they can perform: provisioning infrastructure, setting up credentials or CI secrets, walking an unfamiliar third-party dashboard, or running a one-off migration or cutover.
+- **[writing-for-agents](./skills/engineering/writing-for-agents/SKILL.md)**: Writing documents for agents: skills, AGENTS.md/CLAUDE.md, and any doc an agent reaches by a pointer.
 
 ---
 
@@ -233,47 +234,59 @@ Skills specific to the [LittleBranches](https://github.com/LittleBranches) organ
 
 ---
 
-## Productivity
+## Wiki
 
-General workflow tools, not code-specific.
+Skills for keeping a personal knowledge base current: ingesting sources, extracting what's quotable or jargon-heavy out of them, answering questions from it, and health-checking the whole thing.
 
-**User-invoked**
+- **[ingest](./skills/wiki/ingest/SKILL.md)**: Ingest a raw source file into the personal wiki: reads the source, extracts metadata, writes a wiki/sources/ synthesis page, updates related wiki pages, and updates wiki/index.md and wiki/log.md. Add --deep to also write a long-form deep dive at wiki/deep/<slug>-deep.md.
+- **[query](./skills/wiki/query/SKILL.md)**: Answer a question using the personal wiki: reads the index, drills into relevant pages, synthesises an answer with citations, and optionally files the answer as a new wiki page.
+- **[wiki-lint](./skills/wiki/wiki-lint/SKILL.md)**: Health-check the personal wiki: scans for contradictions, orphan pages, stale claims, missing cross-references, and data gaps. Produces a prioritised finding list and suggests next ingests.
+- **[extract-quotes](./skills/wiki/extract-quotes/SKILL.md)**: Companion to `/ingest`: pull the most quotable verbatim lines from a source into a per-source quotes page and a vault-wide speaker-grouped barrel. Works without a completed ingest (from a raw file, URL, or pasted text), staging unfiled quotes until ingest files them. Optional topic argument narrows or expands focus. Opt-in, curatorial not exhaustive.
+- **[extract-vocabulary](./skills/wiki/extract-vocabulary/SKILL.md)**: Companion to `/ingest`: pull jargon out of an already-ingested source and file each term into its own vocabulary file under the owning concept's folder (ELI5/junior-dev level), cross-linked from the concept page, a flat A-Z barrel index, and the source page. Opt-in: run manually on jargon-heavy sources, not every ingest.
+- **[rebuild-root-index](./skills/wiki/rebuild-root-index/SKILL.md)**: Rescan every git repo under `$AR_ROOT` and refresh the master barrel index. Diffs against a content-hash manifest so only new/changed/deleted files are re-summarized. Chained from `/ingest` or run standalone.
+- **[log-incident](./skills/wiki/log-incident/SKILL.md)**: Log an AI behavioural incident or workflow violation to the wiki's incidents hub. Drafts the structured record from the current conversation, gets approval, then writes the file, updates the index, and opens a PR. No Asana involved.
 
-- **[grill-me](./skills/productivity/grill-me/SKILL.md)**: Get relentlessly interviewed about a plan or design until every branch of the decision tree is resolved.
-- **[handoff](./skills/productivity/handoff/SKILL.md)**: Compact the current conversation into a handoff document so another agent can continue the work.
-- **[teach](./skills/productivity/teach/SKILL.md)**: Teach the user a new skill or concept over multiple sessions, using the current directory as a stateful teaching workspace.
-- **[to-questionnaire](./skills/productivity/to-questionnaire/SKILL.md)**: Turn a decision you can't answer alone into a Markdown questionnaire for the one person who can, filled in async, or together over a meeting. It grills you about the send (who it's for, what you need back), not the subject.
-- **[wait-what](./skills/productivity/wait-what/SKILL.md)**: Fire this the moment a message doesn't land. The agent re-pitches it with the context you're missing, in plain English, using your `CONTEXT.md` vocabulary.
+---
 
-**Model-invoked**
+## Daily Workflow
 
-- **[grilling](./skills/productivity/grilling/SKILL.md)**: Interview the user relentlessly about a plan, decision, or idea until every branch of the decision tree is resolved. The reusable interview primitive behind `grill-me`, `grill-with-docs`, `triage`, `wayfinder`, and `improve-codebase-architecture`.
-- **[writing-for-agents](./skills/productivity/writing-for-agents/SKILL.md)**: Writing documents for agents: skills, AGENTS.md/CLAUDE.md, and any doc an agent reaches by a pointer.
+The scaffolding around every session: starting the day, keeping Asana in sync, and closing out cleanly when context runs low or the work is done.
 
-**AlexRebula extensions** (not in upstream)
+- **[standup-prep](./skills/daily-workflow/standup-prep/SKILL.md)**: Daily session startup coordinator. Runs preflight → session context → repo status + WIP sweep → open PR sweep → morning brief → file write → Asana sync.
+- **[standup-prep-preflight](./skills/daily-workflow/standup-prep-preflight/SKILL.md)**: Composite pre-flight: runs `/check-prior-work`, `/load-oss-standards`, and `/load-dependency-chain` in sequence.
+- **[session-wrap](./skills/daily-workflow/session-wrap/SKILL.md)**: Write a session wrap doc, update the session index, and hand off to `/wip-sweep`. More powerful sibling of `/handoff`. Use at context >55% or after completing major work.
+- **[check-prior-work](./skills/daily-workflow/check-prior-work/SKILL.md)**: Scans context for a `<conversation-summary>` block and extracts earlier session work for continuity.
+- **[load-session-context](./skills/daily-workflow/load-session-context/SKILL.md)**: Load the session index and latest wrap file; check for an existing morning brief for today.
+- **[load-session-guidelines](./skills/daily-workflow/load-session-guidelines/SKILL.md)**: Load all session guidelines in one go: Karpathy coding rules, OSS quality standards, and PR/branch conventions. Run at the start of every session before any user task.
+- **[handoff](./skills/daily-workflow/handoff/SKILL.md)**: Compact the current conversation into a handoff document so another agent can continue the work.
+- **[collapse-session-folder](./skills/daily-workflow/collapse-session-folder/SKILL.md)**: Collapse all same-day session wrap folders into one combined folder. Repairs → Next footer links and updates sessions-index.md. Called automatically by /session-wrap.
+- **[extract-session-worktree](./skills/daily-workflow/extract-session-worktree/SKILL.md)**: Split one session's uncommitted changes out of a working directory shared by multiple concurrent sessions, into its own isolated git worktree and branch, without touching any other session's pending work.
+- **[resolve-ai-paths](./skills/daily-workflow/resolve-ai-paths/SKILL.md)**: Resolve `SESSIONS_ROOT`, `PROMPTS_ROOT`, `MORNING_BRIEFS_ROOT`, and `SKILLS_ROOT` for AI workflow skills. Call this at the start of any skill that reads/writes the sessions, morning-briefs, prompts, or skills-repo folders.
+- **[asana-sync](./skills/daily-workflow/asana-sync/SKILL.md)**: Opt-in Asana sync for morning briefs: locate or bootstrap `.asana-config.json`, create the Morning Briefs section if missing, seed tasks with full metadata, post a Status Update, and log results back to the brief file.
+- **[sync](./skills/daily-workflow/sync/SKILL.md)**: Bidirectional Asana ↔ local markdown sync: pulls new/updated tasks from Asana, pushes local changes, resolves conflicts (local wins), and commits.
+- **[capture](./skills/daily-workflow/capture/SKILL.md)**: Capture a freeform thought, task, or note mid-session: routes it to the correct content project, creates a real Asana task, writes a local markdown file, and commits it.
 
-- **[capture](./skills/productivity/capture/SKILL.md)**: Capture a freeform thought, task, or note mid-session: routes it to the correct content project, creates a real Asana task, writes a local markdown file, and commits it.
-- **[sync](./skills/productivity/sync/SKILL.md)**: Bidirectional Asana ↔ local markdown sync: pulls new/updated tasks from Asana, pushes local changes, resolves conflicts (local wins), and commits.
-- **[asana-sync](./skills/productivity/asana-sync/SKILL.md)**: Opt-in Asana sync for morning briefs: locate or bootstrap `.asana-config.json`, create the Morning Briefs section if missing, seed tasks with full metadata, post a Status Update, and log results back to the brief file.
-- **[check-prior-work](./skills/productivity/check-prior-work/SKILL.md)**: Scans context for a `<conversation-summary>` block and extracts earlier session work for continuity.
-- **[ingest](./skills/productivity/ingest/SKILL.md)**: Ingest a raw source file into the personal wiki: reads the source, extracts metadata, writes a wiki/sources/ synthesis page, updates related wiki pages, and updates wiki/index.md and wiki/log.md. Add --deep to also write a long-form deep dive at wiki/deep/<slug>-deep.md.
-- **[extract-vocabulary](./skills/productivity/extract-vocabulary/SKILL.md)**: Companion to `/ingest`: pull jargon out of an already-ingested source and file each term into its own vocabulary file under the owning concept's folder (ELI5/junior-dev level), cross-linked from the concept page, a flat A–Z barrel index, and the source page. Opt-in: run manually on jargon-heavy sources, not every ingest.
-- **[extract-quotes](./skills/productivity/extract-quotes/SKILL.md)**: Companion to `/ingest`: pull the most quotable verbatim lines from a source into a per-source quotes page and a vault-wide speaker-grouped barrel. Works without a completed ingest (from a raw file, URL, or pasted text), staging unfiled quotes until ingest files them. Optional topic argument narrows or expands focus. Opt-in, curatorial not exhaustive.
-- **[load-session-context](./skills/productivity/load-session-context/SKILL.md)**: Load the session index and latest wrap file; check for an existing morning brief for today.
-- **[collapse-session-folder](./skills/productivity/collapse-session-folder/SKILL.md)**: Collapse all same-day session wrap folders into one combined folder. Repairs → Next footer links and updates sessions-index.md. Called automatically by /session-wrap.
-- **[resolve-ai-paths](./skills/productivity/resolve-ai-paths/SKILL.md)**: Resolve `SESSIONS_ROOT`, `PROMPTS_ROOT`, `MORNING_BRIEFS_ROOT`, and `SKILLS_ROOT` for AI workflow skills. Call this at the start of any skill that reads/writes the sessions, morning-briefs, prompts, or skills-repo folders.
-- **[query](./skills/productivity/query/SKILL.md)**: Answer a question using the personal wiki: reads the index, drills into relevant pages, synthesises an answer with citations, and optionally files the answer as a new wiki page.
-- **[session-wrap](./skills/productivity/session-wrap/SKILL.md)**: Write a session wrap doc, update the session index, and hand off to `/wip-sweep`. More powerful sibling of `/handoff`. Use at context >55% or after completing major work.
-- **[standup-prep](./skills/productivity/standup-prep/SKILL.md)**: Daily session startup coordinator. Runs preflight → session context → repo status + WIP sweep → open PR sweep → morning brief → file write → Asana sync.
-- **[standup-prep-preflight](./skills/productivity/standup-prep-preflight/SKILL.md)**: Composite pre-flight: runs `/check-prior-work`, `/load-oss-standards`, and `/load-dependency-chain` in sequence.
-- **[wiki-lint](./skills/productivity/wiki-lint/SKILL.md)**: Health-check the personal wiki: scans for contradictions, orphan pages, stale claims, missing cross-references, and data gaps. Produces a prioritised finding list and suggests next ingests.
-- **[learner-history](./skills/productivity/learner-history/SKILL.md)**: Build a factual, source-verified history of a learner's GitHub issue work across an org. Call this before `/audit-issue` or `/next-issue` to establish what concepts the learner has already encountered and at what quality.
-- **[audit-issue](./skills/productivity/audit-issue/SKILL.md)**: Audit a GitHub issue body against a principles index and draft fixes for approval before touching GitHub. Paste the issue body and your principles directly in chat: no `gh` CLI or file paths required. The lower-level primitive that `/next-issue` wraps with automatic issue fetching.
-- **[log-incident](./skills/productivity/log-incident/SKILL.md)**: Log an AI behavioural incident or workflow violation to the wiki's incidents hub. Drafts the structured record from the current conversation, gets approval, then writes the file, updates the index, and opens a PR. No Asana involved.
-- **[next-issue](./skills/productivity/next-issue/SKILL.md)**: Identify, audit, and prepare the next GitHub issue for a student or apprentice. GitHub-integrated wrapper around `/audit-issue` that adds automatic issue fetching, principles file discovery, and learner progression checks via `/learner-history`.
-- **[rebuild-root-index](./skills/productivity/rebuild-root-index/SKILL.md)**: Rescan every git repo under `$AR_ROOT` and refresh the master barrel index. Diffs against a content-hash manifest so only new/changed/deleted files are re-summarized. Chained from `/ingest` or run standalone.
-- **[load-session-guidelines](./skills/productivity/load-session-guidelines/SKILL.md)**: Load all session guidelines in one go: Karpathy coding rules, OSS quality standards, and PR/branch conventions. Run at the start of every session before any user task.
-- **[extract-session-worktree](./skills/productivity/extract-session-worktree/SKILL.md)**: Split one session's uncommitted changes out of a working directory shared by multiple concurrent sessions, into its own isolated git worktree and branch, without touching any other session's pending work.
+---
+
+## Mentoring
+
+Skills about growing someone else's work, not your own: preparing and auditing GitHub issues for a student or apprentice contributor.
+
+- **[audit-issue](./skills/mentoring/audit-issue/SKILL.md)**: Audit a GitHub issue body against a principles index and draft fixes for approval before touching GitHub. Paste the issue body and your principles directly in chat: no `gh` CLI or file paths required. The lower-level primitive that `/next-issue` wraps with automatic issue fetching.
+- **[learner-history](./skills/mentoring/learner-history/SKILL.md)**: Build a factual, source-verified history of a learner's GitHub issue work across an org. Call this before `/audit-issue` or `/next-issue` to establish what concepts the learner has already encountered and at what quality.
+- **[next-issue](./skills/mentoring/next-issue/SKILL.md)**: Identify, audit, and prepare the next GitHub issue for a student or apprentice. GitHub-integrated wrapper around `/audit-issue` that adds automatic issue fetching, principles file discovery, and learner progression checks via `/learner-history`.
+- **[teach](./skills/mentoring/teach/SKILL.md)**: Teach the user a new skill or concept over multiple sessions, using the current directory as a stateful teaching workspace.
+
+---
+
+## Thinking Tools
+
+Interview and communication-repair primitives, reached for directly or run underneath other skills.
+
+- **[grill-me](./skills/thinking-tools/grill-me/SKILL.md)**: Get relentlessly interviewed about a plan or design until every branch of the decision tree is resolved.
+- **[grilling](./skills/thinking-tools/grilling/SKILL.md)**: Interview the user relentlessly about a plan, decision, or idea until every branch of the decision tree is resolved. The reusable interview primitive behind `grill-me`, `grill-with-docs`, `triage`, `wayfinder`, and `improve-codebase-architecture`.
+- **[to-questionnaire](./skills/thinking-tools/to-questionnaire/SKILL.md)**: Turn a decision you can't answer alone into a Markdown questionnaire for the one person who can, filled in async, or together over a meeting. It grills you about the send (who it's for, what you need back), not the subject.
+- **[wait-what](./skills/thinking-tools/wait-what/SKILL.md)**: Fire this the moment a message doesn't land. The agent re-pitches it with the context you're missing, in plain English, using your `CONTEXT.md` vocabulary.
 
 ---
 
