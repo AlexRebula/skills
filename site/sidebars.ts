@@ -96,10 +96,7 @@ const FLOW_STAGES = [
     { category: 'productivity', name: 'ingest' },
     { category: 'productivity', name: 'query' },
     { category: 'productivity', name: 'wiki-lint' },
-    // extract-quotes deliberately excluded: it has no docs/productivity/extract-quotes.md
-    // yet, so there's no real doc for a sidebar entry to point at. Pre-existing gap,
-    // unrelated to this ticket's scope; run `npm run check:docs-completeness` from the
-    // repo root to re-surface it (and confirm whether it's still the only one).
+    { category: 'productivity', name: 'extract-quotes' },
     { category: 'productivity', name: 'extract-vocabulary' },
     { category: 'productivity', name: 'rebuild-root-index' },
     { category: 'productivity', name: 'log-incident' },
