@@ -112,6 +112,24 @@ describe('pickCurrentUpstreamPath', () => {
   it('returns null for an empty candidate list', () => {
     expect(pickCurrentUpstreamPath([], () => true)).toBeNull();
   });
+
+  it('composed with deriveStatus: a skill filed under a different local bucket than upstream still classifies as upstream, not inherited', () => {
+    // This is the full decision chain classify() runs, without shelling out to
+    // git: path-picking feeds status-deriving. Exercises the actual bug a
+    // local-only bucket move would otherwise cause (see generate-provenance.ts's
+    // classify() and findCurrentUpstreamPath doc comments for the full story).
+    const upstreamPath = pickCurrentUpstreamPath(
+      ['skills/productivity/grill-me'], // grill-me's only ever-known upstream path
+      (path) => path === 'skills/productivity/grill-me', // it currently exists there
+    );
+    expect(
+      deriveStatus({
+        existsUpstream: upstreamPath !== null,
+        unchangedVsUpstream: true,
+        existedUpstreamHistorically: false, // irrelevant once existsUpstream is true; included for realism
+      }),
+    ).toBe('upstream');
+  });
 });
 
 describe('parseNumstat', () => {

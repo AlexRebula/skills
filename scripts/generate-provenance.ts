@@ -173,8 +173,23 @@ function findCurrentUpstreamPath(name: string, upstreamSha: string): string | nu
   return pickCurrentUpstreamPath(candidates, (path) => pathExistsInUpstream(path, upstreamSha));
 }
 
-function isUnchangedVsUpstream(upstreamPath: string, localPath: string, upstreamSha: string): boolean {
-  const diff = execFileSync('git', ['diff', '--stat', `${upstreamSha}:${upstreamPath}`, `HEAD:${localPath}`], {
+/**
+ * A skill's two paths, once its local bucket can differ from upstream's:
+ * named fields rather than two adjacent same-typed positional strings, so a
+ * transposed argument is a type/property error, not a silently-wrong diff.
+ */
+interface SkillPathPair {
+  upstreamPath: string;
+  localPath: string;
+}
+
+/** `git diff` accepts a `<ref>:<path>` pointer to an arbitrary blob/tree; this just names that construction. */
+function atRef(ref: string, path: string): string {
+  return `${ref}:${path}`;
+}
+
+function isUnchangedVsUpstream({ upstreamPath, localPath }: SkillPathPair, upstreamSha: string): boolean {
+  const diff = execFileSync('git', ['diff', '--stat', atRef(upstreamSha, upstreamPath), atRef('HEAD', localPath)], {
     cwd: REPO_ROOT,
     encoding: 'utf-8',
   }).trim();
@@ -202,15 +217,16 @@ export function parseNumstat(numstatOutput: string, skillPath: string): DiffStat
 // than one path across two revisions (git diff <sha1> <sha2> -- <path>) is what
 // makes this work when the local and upstream categories differ. As a side
 // effect, paths in the output are already bare (relative to each tree's own
-// root, e.g. "SKILL.md"), never prefixed with the skill folder: parseNumstat's
-// prefix-stripping is a no-op here, not wrong, just nothing left to strip.
-function computeDiffStat(upstreamPath: string, localPath: string, upstreamSha: string): DiffStatEntry[] {
+// root, e.g. "SKILL.md"), never prefixed with the skill folder, so there's
+// nothing for parseNumstat's prefix-stripping to do here; pass '' rather than
+// a path that reads as if it mattered.
+function computeDiffStat({ upstreamPath, localPath }: SkillPathPair, upstreamSha: string): DiffStatEntry[] {
   const numstat = execFileSync(
     'git',
-    ['diff', '--numstat', `${upstreamSha}:${upstreamPath}`, `HEAD:${localPath}`],
+    ['diff', '--numstat', atRef(upstreamSha, upstreamPath), atRef('HEAD', localPath)],
     { cwd: REPO_ROOT, encoding: 'utf-8' },
   );
-  return parseNumstat(numstat, localPath);
+  return parseNumstat(numstat, '');
 }
 
 /** A diffLines() chunk, reduced to its own lines with a trailing-newline-produced empty element dropped. */
@@ -326,8 +342,7 @@ export function buildLineDiff(oldContent: string, newContent: string): DiffRow[]
 }
 
 function computeFileDiffs(
-  upstreamPath: string,
-  localPath: string,
+  { upstreamPath, localPath }: SkillPathPair,
   upstreamSha: string,
   diffStat: DiffStatEntry[],
 ): FileDiff[] {
@@ -396,11 +411,11 @@ function classify(category: string, name: string, upstreamSha: string): Provenan
   // under a different local bucket than upstream's must still classify as
   // upstream/modified, not fall through to the historical (deleted) case.
   const upstreamPath = findCurrentUpstreamPath(name, upstreamSha);
-  const existsUpstream = upstreamPath !== null;
-  const historical = existsUpstream ? null : findLastUpstreamOccurrence(name, upstreamSha);
+  const paths: SkillPathPair | null = upstreamPath === null ? null : { upstreamPath, localPath };
+  const historical = paths === null ? findLastUpstreamOccurrence(name, upstreamSha) : null;
   const status = deriveStatus({
-    existsUpstream,
-    unchangedVsUpstream: existsUpstream && isUnchangedVsUpstream(upstreamPath!, localPath, upstreamSha),
+    existsUpstream: paths !== null,
+    unchangedVsUpstream: paths !== null && isUnchangedVsUpstream(paths, upstreamSha),
     existedUpstreamHistorically: historical !== null,
   });
 
@@ -415,10 +430,10 @@ function classify(category: string, name: string, upstreamSha: string): Provenan
     };
   }
 
-  // Non-null: `existsUpstream` only feeds `deriveStatus` as true when it's set.
-  const entry: ProvenanceEntry = { status, upstreamSha, upstreamUrl: buildUpstreamUrl(upstreamPath!, upstreamSha) };
+  // Non-null: `existsUpstream` (⇐ paths !== null) only feeds `deriveStatus` as true when it's set.
+  const entry: ProvenanceEntry = { status, upstreamSha, upstreamUrl: buildUpstreamUrl(paths!.upstreamPath, upstreamSha) };
   if (status === 'modified') {
-    entry.diffs = computeFileDiffs(upstreamPath!, localPath, upstreamSha, computeDiffStat(upstreamPath!, localPath, upstreamSha));
+    entry.diffs = computeFileDiffs(paths!, upstreamSha, computeDiffStat(paths!, upstreamSha));
   }
   return entry;
 }
