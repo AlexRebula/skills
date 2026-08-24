@@ -45,22 +45,12 @@ export interface ProvenanceEntry {
    */
   upstreamSha?: string;
   upstreamUrl?: string;
-  /** Only present when status is "modified": per-file +/- line counts vs upstream. */
-  diffStat?: DiffStatEntry[];
   /**
    * Only present when status is "modified": the full line-level diff for
-   * every file listed in diffStat, computed once at build time so the diff
-   * modal never needs a runtime GitHub call.
+   * every changed file, computed once at build time so the diff modal never
+   * needs a runtime GitHub call.
    */
   diffs?: FileDiff[];
-  /**
-   * Only present when status is "modified" and SKILL.md's `##` headings
-   * changed vs upstream. Mechanically derived from the actual heading diff,
-   * never AI-generated: e.g. "Adds 'Review step'; removes 'Legacy notes'".
-   * Silent (undefined) when the diff didn't touch any heading, since a
-   * heading-level summary can't honestly describe a same-section wording change.
-   */
-  changeSummary?: string;
 }
 
 export type ProvenanceMap = Record<string, ProvenanceEntry>;

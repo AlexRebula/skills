@@ -10,10 +10,6 @@ const FIXTURE: ProvenanceMap = {
   'engineering/ask-matt': {
     status: 'modified',
     upstreamSha: '5b15a47f2d7150f545fbcacbfe381787fc0230dc',
-    diffStat: [
-      { file: 'SKILL.md', added: 1, removed: 1 },
-      { file: 'agents/openai.yaml', added: 1, removed: 0 },
-    ],
     diffs: [
       {
         file: 'SKILL.md',

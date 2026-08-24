@@ -307,111 +307,12 @@ function computeFileDiffs(path: string, upstreamSha: string, diffStat: DiffStatE
     });
 }
 
-/** Pure parsing: level-2 ("## ") headings only, in document order. Never matches "### ...". */
-export function extractHeadings(markdown: string): string[] {
-  return [...markdown.matchAll(/^## (.+)$/gm)].map((m) => m[1].trim());
-}
-
-const INTRO_LABEL = 'the introduction';
-
-interface Section {
-  heading: string;
-  body: string;
-}
-
-/** Pure parsing: splits into (heading, body-until-next-heading) pairs, plus a leading "the introduction" pseudo-section for anything before the first "## ". */
-export function extractSections(markdown: string): Section[] {
-  const sections: Section[] = [{ heading: INTRO_LABEL, body: '' }];
-  for (const line of markdown.split('\n')) {
-    const match = /^## (.+)$/.exec(line);
-    if (match) {
-      sections.push({ heading: match[1].trim(), body: '' });
-    } else {
-      sections[sections.length - 1].body += `${line}\n`;
-    }
-  }
-  return sections;
-}
-
-function formatList(items: string[]): string {
-  const quoted = items.map((s) => (s === INTRO_LABEL ? s : `'${s}'`));
-  if (quoted.length === 1) return quoted[0];
-  if (quoted.length === 2) return `${quoted[0]} and ${quoted[1]}`;
-  return `${quoted.slice(0, -1).join(', ')}, and ${quoted[quoted.length - 1]}`;
-}
-
-function capitalize(sentence: string): string {
-  return `${sentence.charAt(0).toUpperCase()}${sentence.slice(1)}.`;
-}
-
-/**
- * Pure, mechanical, always-honest summary of what changed in a markdown
- * file: which top-level sections were added, removed, or had their wording
- * changed while keeping the same heading (including "the introduction", the
- * text before the first heading). Never AI-generated: this is a structural
- * diff, not an interpretation of intent. Returns null only when nothing at
- * the section level actually differs (e.g. a pure whitespace/EOF change).
- */
-export function summarizeChange(oldMarkdown: string, newMarkdown: string): string | null {
-  const oldSections = extractSections(oldMarkdown);
-  const newSections = extractSections(newMarkdown);
-  const oldHeadings = oldSections.map((s) => s.heading);
-  const newHeadings = newSections.map((s) => s.heading);
-
-  const added = newHeadings.filter((h) => h !== INTRO_LABEL && !oldHeadings.includes(h));
-  const removed = oldHeadings.filter((h) => h !== INTRO_LABEL && !newHeadings.includes(h));
-
-  const changedWording = newSections
-    .filter((s) => !added.includes(s.heading))
-    .filter((s) => {
-      const oldSection = oldSections.find((o) => o.heading === s.heading);
-      return !!oldSection && oldSection.body.trim() !== s.body.trim();
-    })
-    .map((s) => s.heading);
-
-  const parts: string[] = [];
-  if (added.length > 0) parts.push(`adds ${formatList(added)}`);
-  if (removed.length > 0) parts.push(`removes ${formatList(removed)}`);
-  if (changedWording.length > 0) parts.push(`changes wording in ${formatList(changedWording)}`);
-  if (parts.length === 0) return null;
-  return capitalize(parts.join('; '));
-}
-
 function readFileAtRef(ref: string, path: string): string | null {
   try {
     return execFileSync('git', ['show', `${ref}:${path}`], { cwd: REPO_ROOT, encoding: 'utf-8' });
   } catch {
     return null; // file doesn't exist at that ref (added/removed/renamed)
   }
-}
-
-/**
- * Always produces a human-readable sentence for a modified skill, in order
- * of preference: (1) the SKILL.md section-level diff; (2) which non-SKILL.md
- * files changed, if SKILL.md itself didn't; (3) raw +/- line counts for
- * SKILL.md, if section parsing somehow found no difference (e.g. a pure
- * whitespace change). Only returns undefined if there is truly nothing in
- * diffStat to describe.
- */
-function computeChangeSummary(path: string, upstreamSha: string, diffStat: DiffStatEntry[]): string | undefined {
-  const skillMdPath = `${path}/SKILL.md`;
-  const oldContent = readFileAtRef(upstreamSha, skillMdPath);
-  const newContent = readFileAtRef('HEAD', skillMdPath);
-
-  if (oldContent !== null && newContent !== null) {
-    const summary = summarizeChange(oldContent, newContent);
-    if (summary) return summary;
-  }
-
-  const otherFiles = diffStat.map((d) => d.file).filter((f) => f !== 'SKILL.md');
-  if (otherFiles.length > 0) return capitalize(`changes ${formatList(otherFiles)}`);
-
-  const skillMdStat = diffStat.find((d) => d.file === 'SKILL.md');
-  if (skillMdStat) {
-    return `Changes wording in SKILL.md (+${skillMdStat.added}/-${skillMdStat.removed} lines).`;
-  }
-
-  return undefined;
 }
 
 function skillFolders(category: string): string[] {
@@ -471,11 +372,7 @@ function classify(category: string, name: string, upstreamSha: string): Provenan
 
   const entry: ProvenanceEntry = { status, upstreamSha, upstreamUrl: buildUpstreamUrl(path, upstreamSha) };
   if (status === 'modified') {
-    const diffStat = computeDiffStat(path, upstreamSha);
-    entry.diffStat = diffStat;
-    entry.diffs = computeFileDiffs(path, upstreamSha, diffStat);
-    const summary = computeChangeSummary(path, upstreamSha, diffStat);
-    if (summary) entry.changeSummary = summary;
+    entry.diffs = computeFileDiffs(path, upstreamSha, computeDiffStat(path, upstreamSha));
   }
   return entry;
 }
