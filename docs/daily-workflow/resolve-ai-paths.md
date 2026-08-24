@@ -39,4 +39,4 @@ Anything that would invoke `collapse-sessions.ts` gets skipped or handled manual
 
 ## Where it fits
 
-`resolve-ai-paths` is infrastructure for the rest of the productivity set rather than something you reach for on its own. `/session-wrap` and `/standup-prep` both lean on it at their own preflight, and anything you build that reads or writes to the sessions, prompts, or morning-briefs folders should call it too instead of inlining its own path-guessing logic.
+`resolve-ai-paths` is infrastructure for the rest of the daily-workflow set rather than something you reach for on its own. `/session-wrap` and `/standup-prep` both lean on it at their own preflight, and anything you build that reads or writes to the sessions, prompts, or morning-briefs folders should call it too instead of inlining its own path-guessing logic.

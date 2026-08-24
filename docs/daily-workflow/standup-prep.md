@@ -49,4 +49,4 @@ No. Step 5's sync creates one task with the brief content in the Morning Briefs 
 
 ## Where it fits
 
-`standup-prep` is the entry point for a day of work, and everything else in the productivity set is either a step it calls (`/repo-status`, `/wip-sweep`, `/open-pr-sweep`, `/asana-sync`) or the thing it eventually hands off to (a normal coding session, ending later in `/session-wrap`). `/standup-prep-preflight` is its own first step, not a separate routine you'd normally run on its own.
+`standup-prep` is the entry point for a day of work, and everything else in the daily-workflow set is either a step it calls (`/repo-status`, `/wip-sweep`, `/open-pr-sweep`, `/asana-sync`) or the thing it eventually hands off to (a normal coding session, ending later in `/session-wrap`). `/standup-prep-preflight` is its own first step, not a separate routine you'd normally run on its own.

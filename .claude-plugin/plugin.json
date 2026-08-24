@@ -1,7 +1,7 @@
 {
   "name": "alexrebula-skills",
   "version": "1.1.0",
-  "description": "A fork of mattpocock/skills extended with framework scaffolding, git/PR lifecycle tools, LittleBranches org skills, and daily productivity workflows.",
+  "description": "A fork of mattpocock/skills extended with framework scaffolding, git/PR lifecycle tools, LittleBranches org skills, and daily workflow tools.",
   "author": {
     "name": "Alex Rebula"
   },
@@ -14,7 +14,9 @@
     "code-review",
     "grilling",
     "domain-modeling",
-    "productivity"
+    "daily-workflow",
+    "wiki",
+    "mentoring"
   ],
   "skills": [
     "./skills/engineering/ask-matt",
