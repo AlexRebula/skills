@@ -28,7 +28,8 @@ export function UpstreamCredit({ slug, provenanceMap = defaultProvenance as Prov
   if (!entry) return null;
 
   const wording = WORDING[entry.status];
-  if (!wording || !entry.upstreamUrl) return null;
+  if (!wording) return null; // this status has nothing of Matt's to credit
+  if (!entry.upstreamUrl) return null; // shouldn't happen for a creditable status; nothing to link to if it somehow does
 
   return (
     <p className={styles.credit}>
