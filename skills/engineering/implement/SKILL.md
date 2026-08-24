@@ -10,6 +10,6 @@ Use /tdd where possible, at pre-agreed seams.
 
 Run typechecking regularly, single test files regularly, and the full test suite once at the end.
 
-Once done, use /review-pr --branch <current-branch> to review the work.
+Once done, use /review-pr --branch, passing the current branch's name, to review the work.
 
 Commit your work to the current branch.
