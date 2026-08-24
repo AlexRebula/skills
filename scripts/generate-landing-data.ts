@@ -29,10 +29,13 @@ const REPO_ROOT = join(__dirname, '..');
 /** README's own heading text for each category folder key. */
 const CATEGORY_HEADINGS: Record<(typeof TARGET_CATEGORIES)[number], string> = {
   engineering: 'Engineering',
+  wiki: 'Wiki',
+  'daily-workflow': 'Daily Workflow',
+  mentoring: 'Mentoring',
+  'thinking-tools': 'Thinking Tools',
   framework: 'Framework',
   git: 'Git',
   org: 'Organisation (LittleBranches)',
-  productivity: 'Productivity',
   misc: 'Misc',
   personal: 'Personal',
 };

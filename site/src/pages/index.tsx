@@ -30,7 +30,10 @@ const SKILL_CARD_CONFIG: Partial<Record<ProvenanceStatus, { color: SkillCardColo
 
 const CATEGORY_LABELS: Record<string, string> = {
   engineering: 'Engineering',
-  productivity: 'Productivity',
+  wiki: 'Wiki',
+  'daily-workflow': 'Daily Workflow',
+  mentoring: 'Mentoring',
+  'thinking-tools': 'Thinking Tools',
   git: 'Git',
   framework: 'Framework',
   org: 'Organisation',
