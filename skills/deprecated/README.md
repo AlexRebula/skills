@@ -2,7 +2,7 @@
 
 Skills I no longer use.
 
-- **[code-review](./code-review/SKILL.md)**: Superseded by `/review-pr`, which reimplements the same two-axis Standards/Spec idea plus GitHub PR Reviews API posting and a `--branch` pre-PR mode. Its Standards axis checks documented repo standards and a fixed security/accessibility pattern list, not code-review's Fowler smell baseline.
+- **[code-review](./code-review/SKILL.md)**: Superseded by `/review-pr`, which reimplements the same two-axis Standards/Spec idea plus GitHub PR Reviews API posting and a `--branch` pre-PR mode, and carries forward code-review's Fowler smell baseline as an always-on floor of the Standards axis (reported as `suggestion` only, since it posts to real PRs where code-review only reported in chat).
 - **[design-an-interface](./design-an-interface/SKILL.md)**: Generate multiple radically different interface designs for a module using parallel sub-agents.
 - **[qa](./qa/SKILL.md)**: Interactive QA session where user reports bugs conversationally and the agent files GitHub issues.
 - **[request-refactor-plan](./request-refactor-plan/SKILL.md)**: Create a detailed refactor plan with tiny commits via user interview, then file it as a GitHub issue.
