@@ -6,6 +6,8 @@ Matt Pocock's own site groups his ~48 skills into Main Flow, Shaping, Upkeep, Pr
 
 Nothing on this page changes what bucket a skill's files live in (`skills/engineering/`, `skills/productivity/`, and so on stay exactly as they are). This is a second way to navigate the same 77 skills, not a second copy of them.
 
+Every skill below is named the same way regardless of where it came from: in backticks, never a link. Credit for the ones with real Matt Pocock lineage already lives on each skill's own doc page; repeating it here, or guessing at an aihero.dev URL for each one, would just be a second, less accurate copy of that.
+
 ## Start the day
 
 Before touching any actual work, know what state you're picking up.
@@ -44,7 +46,7 @@ Getting a change from a local branch into `main`.
 
 `/commit-wip` finds uncommitted work across every repo in the workspace and matches it to the right branch; `/wip-sweep` takes it from there with a tiered commit/push/draft-PR model, gated at each tier. `/create-pr` verifies branch hygiene, runs the quality gate, and opens the actual pull request. `/review-pr` reviews it on two separated axes (does it follow this repo's conventions, does it do what the issue asked), in PR mode or as a pre-flight on a branch before a PR exists; `/respond-pr-review` works through an existing Copilot review thread by thread, replying before fixing, batching the fixes into one commit. `/sync-branches` keeps every local branch current against its own default branch once the dust settles.
 
-`review-pr` is this fork's landing step, not `code-review`: `code-review` carries the same two-axis idea but predates `review-pr`'s PR-posting and pre-PR branch mode, and is being retired now that `review-pr` covers everything it did.
+`review-pr` is this fork's landing step, not `code-review`: `code-review` carries the same two-axis idea but predates `review-pr`'s PR-posting and pre-PR branch mode. It's still present today, but slated for removal once `review-pr` fully covers its ground (issue #135), so it isn't given its own stage here.
 
 ## When it breaks
 
