@@ -43,12 +43,12 @@ jobs:
       - name: Lint generate-provenance.ts
         run: npm run lint:provenance-script
 
-      - name: Run root tests
-        run: npm test
-
       - name: Install site dependencies
         working-directory: site
         run: npm ci
+
+      - name: Run root tests
+        run: npm test
 
       - name: Run site quality gate (typecheck, lint, stylelint, test)
         working-directory: site
