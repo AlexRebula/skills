@@ -1,6 +1,6 @@
 {
   "extends": ["stylelint-config-standard", "stylelint-config-css-modules"],
-  "ignoreFiles": ["build/**", ".docusaurus/**", "node_modules/**"],
+  "ignoreFiles": ["build/**", ".docusaurus/**", "node_modules/**", ".yalc/**"],
   "rules": {
     "custom-property-pattern": null,
     "selector-class-pattern": null
