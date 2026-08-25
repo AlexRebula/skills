@@ -1,10 +1,10 @@
 ## What this page is
 
-`ask-matt` already answers "which skill fits my situation" one question at a time. This page is the other direction: read straight through once, and see how all 77 skills in this fork actually fit together, not as a keyword index but as the shape of a real day.
+`ask-matt` already answers "which skill fits my situation" one question at a time. This page is the other direction: read straight through once, and see how all 76 skills in this fork actually fit together, not as a keyword index but as the shape of a real day.
 
 Matt Pocock's own site groups his ~48 skills into Main Flow, Shaping, Upkeep, Productivity Skills, and Reference Skills. That grouping doesn't fit here: this fork carries a full git and PR lifecycle, a personal wiki, session bookkeeping, apprentice mentoring, and LittleBranches org-specific tooling that he has no equivalent for. The stages below are this fork's own, built around when in a session you'd actually reach for something, not a reskin of his.
 
-Nothing on this page changes what bucket a skill's files live in (`skills/engineering/`, `skills/wiki/`, and so on stay exactly as they are). This is a second way to navigate the same 77 skills, not a second copy of them.
+Nothing on this page changes what bucket a skill's files live in (`skills/engineering/`, `skills/wiki/`, and so on stay exactly as they are). This is a second way to navigate the same 76 skills, not a second copy of them.
 
 Every skill below is named the same way regardless of where it came from: in backticks, never a link. Credit for the ones with real Matt Pocock lineage already lives on each skill's own doc page; repeating it here, or guessing at an aihero.dev URL for each one, would just be a second, less accurate copy of that.
 
