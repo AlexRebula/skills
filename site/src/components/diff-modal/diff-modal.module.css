@@ -122,6 +122,14 @@
 }
 
 .diffTable {
+  /* Infima's global `table { display: block }` responsive-table rule
+     (meant for simple markdown tables) otherwise applies here too,
+     stripping the table's own box type. Without a real table box, the
+     tbody/tr/td structure has no anonymous table wrapper to lay column
+     widths out against, so rows render at their unconstrained natural
+     width and silently overflow past .body's clipped edge instead of
+     making .body's own overflow: auto pick them up as scrollable content. */
+  display: table;
   width: 100%;
   border-collapse: collapse;
   font-family: var(--ifm-font-family-monospace);
