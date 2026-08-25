@@ -10,9 +10,11 @@ import { GitHubStars } from '../components/github-stars';
 import { ProvenanceButton } from '../components/provenance-button';
 import { SkillCard } from '../components/skill-card';
 import type { SkillCardColor } from '../components/skill-card';
+import { LandingStatsSection } from '../components/landing-stats-section';
 import { CATEGORY_INFO } from '../data/categories';
 import type { CategoryKey } from '../data/categories';
 import { getProvenanceEntry } from '../data/provenance.utils';
+import { computeLandingStats } from '../data/landing-stats';
 import skillsData from '../data/skills-landing.json';
 import provenanceData from '../data/provenance.json';
 import type { ProvenanceMap, ProvenanceStatus } from '../data/provenance.types';
@@ -33,6 +35,11 @@ const SKILL_CARD_CONFIG: Partial<Record<ProvenanceStatus, { color: SkillCardColo
 export default function Home(): ReactNode {
   const { categories } = skillsData;
   const totalSkills = categories.reduce((sum, c) => sum + c.skills.length, 0);
+  const landingStats = computeLandingStats({
+    totalSkills,
+    totalCategories: categories.length,
+    provenanceMap,
+  });
 
   return (
     <Layout
@@ -73,6 +80,8 @@ export default function Home(): ReactNode {
             New here? <Link to="/overview">Read the Flow</Link> — a walkthrough of all{' '}
             {totalSkills} skills in the order a real day actually uses them.
           </p>
+
+          <LandingStatsSection items={landingStats} />
 
           {categories.map((category, i) => (
             <section key={category.key} className={styles.categorySection}>
