@@ -19,7 +19,7 @@ const WORDING: Partial<Record<ProvenanceStatus, string>> = {
  * A minimal, doc-page-only credit line for any skill with real upstream
  * lineage, linking to the exact upstream source (generate-provenance.ts's
  * upstreamUrl, already computed but otherwise unused in the UI). Deliberately
- * not shown on the landing page: with 78 skills listed there, a repeated
+ * not shown on the landing page: with 76 skills listed there, a repeated
  * disclaimer per row would work against "inobtrusive", and the existing
  * status label already signals lineage at that dense a view.
  */
