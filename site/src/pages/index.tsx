@@ -69,6 +69,11 @@ export default function Home(): ReactNode {
             <GitHubStars repo={REPO} />
           </div>
 
+          <p className={styles.overviewLink}>
+            New here? <Link to="/overview">Read the Flow</Link> — a walkthrough of all{' '}
+            {totalSkills} skills in the order a real day actually uses them.
+          </p>
+
           {categories.map((category, i) => (
             <section key={category.key} className={styles.categorySection}>
               <p className={styles.kicker}>

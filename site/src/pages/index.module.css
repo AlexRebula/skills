@@ -56,6 +56,11 @@
   margin-bottom: 1rem;
 }
 
+.overviewLink {
+  margin-bottom: 1.5rem;
+  color: var(--ifm-color-emphasis-700);
+}
+
 .categorySection {
   margin-top: 3rem;
   padding-top: 1.5rem;
