@@ -18,7 +18,10 @@ import eslintConfigPrettier from 'eslint-config-prettier';
 // ----------------------------------------------------------------------
 
 export default [
-  { ignores: ['build/**', '.docusaurus/**', 'node_modules/**'] },
+  // .yalc/** holds a vendored copy of @littlebranches/giselle-mui's build output
+  // (added via `yalc add`, see docs on yalc-based local package consumption) —
+  // pre-built dist files, not source this repo owns or lints.
+  { ignores: ['build/**', '.docusaurus/**', 'node_modules/**', '.yalc/**'] },
   {
     languageOptions: {
       globals: { ...globals.browser, ...globals.node },
