@@ -31,15 +31,11 @@ import { existsSync, readdirSync, statSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { TARGET_CATEGORIES } from '../site/src/data/categories.ts';
-import { FLOW_STAGES, ROUTER_SKILL } from '../site/sidebars.ts';
+import { FLOW_STAGES } from '../site/sidebars.ts';
+import { ROUTER_SKILL, type SkillRef } from '../site/src/data/router-skill.ts';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const REPO_ROOT = join(__dirname, '..');
-
-export interface SkillRef {
-  category: string;
-  name: string;
-}
 
 export interface FlowStagesCoverageReport {
   /** "category/name" for every real docs page across TARGET_CATEGORIES, sorted */

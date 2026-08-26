@@ -3,7 +3,8 @@ import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { afterEach, beforeEach, describe, expect, it } from 'vitest';
 import { checkFlowStagesCoverage, formatReport, listRealSkills } from './check-flow-stages';
-import { FLOW_STAGES, ROUTER_SKILL } from '../site/sidebars';
+import { FLOW_STAGES } from '../site/sidebars';
+import { ROUTER_SKILL } from '../site/src/data/router-skill';
 
 describe('FLOW_STAGES data integrity (issue #155)', () => {
   it('exhaustively and non-redundantly covers every real skill docs page', () => {

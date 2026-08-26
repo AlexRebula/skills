@@ -1,4 +1,5 @@
 import type { SidebarsConfig } from '@docusaurus/plugin-content-docs';
+import { ROUTER_SKILL, type SkillRef } from './src/data/router-skill';
 
 // This runs in Node.js - Don't use client-side code here (browser APIs, JSX...)
 
@@ -9,16 +10,15 @@ import type { SidebarsConfig } from '@docusaurus/plugin-content-docs';
 type SidebarItemList = Extract<SidebarsConfig[keyof SidebarsConfig], unknown[]>;
 type SidebarItem = SidebarItemList[number];
 
-// One skill's (category, name) pair, kept as data rather than typing out
-// `{ type: 'doc', id: '<category>/<name>', label: '<name>' }` by hand ~76
-// times below: Docusaurus validates every id against a real doc at build
-// time (onBrokenLinks: 'throw' in docusaurus.config.ts), so a typo here
-// fails loudly rather than silently, the same safety net the handwritten
-// form would have had.
-interface SkillRef {
-  category: string;
-  name: string;
-}
+// SkillRef (one skill's (category, name) pair) and ROUTER_SKILL live in
+// ./src/data/router-skill.ts, not here: Docusaurus's sidebar-file loader
+// breaks if this file carries a second named export alongside FLOW_STAGES
+// (confirmed by bisection while fixing #155 - exporting ROUTER_SKILL
+// directly from this file made the loader misparse it, throwing "Invalid
+// sidebar items collection" at build time). FLOW_STAGES itself is fine to
+// export - only ROUTER_SKILL triggered it - but keeping both skill-data
+// exports in the same place avoids relying on that asymmetry staying true
+// across Docusaurus versions.
 
 function skillItem({ category, name }: SkillRef): SidebarItem {
   return { type: 'doc', id: `${category}/${name}`, label: name };
@@ -142,15 +142,6 @@ export const FLOW_STAGES = [
     { category: 'misc', name: 'setup-pre-commit' },
   ]),
 ];
-
-// The one skill deliberately excluded from FLOW_STAGES: ask-matt is a router
-// over the whole set (see docs/overview.md's "The router" section), not a
-// step inside any one stage, so it's called out on its own below instead of
-// nested in a stage. Named and exported (rather than inlined where it's
-// used) so check-flow-stages.test.ts can assert this is the *only* real
-// docs page FLOW_STAGES doesn't cover, instead of hardcoding a second,
-// disconnected copy of the same exception.
-export const ROUTER_SKILL: SkillRef = { category: 'engineering', name: 'ask-matt' };
 
 // The Flow: docs/overview.md as an explicit first row (not just a link
 // attached to the category header, which a reader could easily miss is
