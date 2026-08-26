@@ -80,39 +80,18 @@
   margin: 0;
 }
 
+/* Every skill renders through SkillCard (see the landing page), which needs
+   real room to breathe: a fixed narrow column is too tight for its icon +
+   name. The card itself has no fixed width (it stretches to fill this
+   column via width: 100%); only the column's own share of the row is what
+   scales with viewport width here. */
 .skillRow {
   display: grid;
-  grid-template-columns: 11rem 1fr;
+  grid-template-columns: minmax(220px, 32%) 1fr;
+  align-items: center;
   gap: 1.25rem;
   padding: 0.75rem 0;
   border-bottom: 1px solid var(--ifm-color-emphasis-200);
-}
-
-/* Skills with no live upstream counterpart (original or inherited) get the
-   summary-card treatment (see SkillCard), which needs real room to
-   breathe: a fixed 11rem column is too narrow for its icon + name. The
-   card itself has no fixed width (it stretches to fill this column via
-   width: 100%); only the column's own share of the row is what scales
-   with viewport width here. */
-.skillRowCard {
-  grid-template-columns: minmax(220px, 32%) 1fr;
-  align-items: center;
-}
-
-.skillTerm {
-  margin: 0;
-  font-family: var(--ifm-font-family-monospace);
-  font-weight: 600;
-  font-size: 0.9rem;
-}
-
-.skillTerm a {
-  color: var(--ifm-color-primary-dark);
-  text-decoration: none;
-}
-
-.skillTerm a:hover {
-  text-decoration: underline;
 }
 
 .skillDefinition {

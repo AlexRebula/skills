@@ -2,12 +2,10 @@ import React, { type ReactNode } from 'react';
 import Layout from '@theme/Layout';
 import Heading from '@theme/Heading';
 import Link from '@docusaurus/Link';
-import clsx from 'clsx';
 
 import { InlineMarkdown } from '../components/inline-markdown';
 import { CopyableCommand } from '../components/copyable-command';
 import { GitHubStars } from '../components/github-stars';
-import { ProvenanceButton } from '../components/provenance-button';
 import { SkillCard } from '../components/skill-card';
 import type { SkillCardColor } from '../components/skill-card';
 import { LandingStatsSection } from '../components/landing-stats-section';
@@ -24,12 +22,14 @@ const provenanceMap = provenanceData as ProvenanceMap;
 
 const REPO = 'AlexRebula/skills';
 
-// Statuses with no live upstream counterpart render as a full SkillCard on
-// the landing page instead of a plain link + ProvenanceButton row: there's
-// no current upstream version to compare against or link to inline.
-const SKILL_CARD_CONFIG: Partial<Record<ProvenanceStatus, { color: SkillCardColor; label: string }>> = {
+// Every provenance status renders as a SkillCard on the landing page, one
+// color/label per status; "modified" is the only one that ever gets a real
+// diff to show (see the diff lookup in the render loop below).
+const SKILL_CARD_CONFIG: Record<ProvenanceStatus, { color: SkillCardColor; label: string }> = {
   original: { color: 'green', label: 'AlexRebula Original.' },
   inherited: { color: 'amber', label: 'Inherited from Matt Pocock' },
+  upstream: { color: 'blue', label: 'Upstream - Unchanged' },
+  modified: { color: 'purple', label: 'Modified from Matt Pocock' },
 };
 
 export default function Home(): ReactNode {
@@ -97,31 +97,26 @@ export default function Home(): ReactNode {
 
               <dl className={styles.skillList}>
                 {category.skills.map((skill) => {
-                  const status = getProvenanceEntry(`${category.key}/${skill.name}`, provenanceMap)?.status;
-                  const cardConfig = status ? SKILL_CARD_CONFIG[status] : undefined;
+                  const entry = getProvenanceEntry(`${category.key}/${skill.name}`, provenanceMap);
+                  const cardConfig = SKILL_CARD_CONFIG[entry?.status ?? 'original'];
+                  const diff =
+                    entry?.status === 'modified' && entry.diffs && entry.diffs.length > 0
+                      ? { upstreamSha: entry.upstreamSha ?? '', files: entry.diffs }
+                      : undefined;
 
                   return (
-                    <div
-                      key={skill.name}
-                      className={clsx(styles.skillRow, cardConfig && styles.skillRowCard)}
-                    >
-                      <dt className={cardConfig ? undefined : styles.skillTerm}>
-                        {cardConfig ? (
-                          <SkillCard
-                            category={category.key}
-                            name={skill.name}
-                            color={cardConfig.color}
-                            label={cardConfig.label}
-                          />
-                        ) : (
-                          <Link to={`/${category.key}/${skill.name}`}>/{skill.name}</Link>
-                        )}
+                    <div key={skill.name} className={styles.skillRow}>
+                      <dt>
+                        <SkillCard
+                          category={category.key}
+                          name={skill.name}
+                          color={cardConfig.color}
+                          label={cardConfig.label}
+                          diff={diff}
+                        />
                       </dt>
                       <dd className={styles.skillDefinition}>
                         <InlineMarkdown text={skill.description} />
-                        {!cardConfig && (
-                          <ProvenanceButton slug={`/${category.key}/${skill.name}`} compact />
-                        )}
                       </dd>
                     </div>
                   );
