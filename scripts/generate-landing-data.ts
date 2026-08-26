@@ -22,21 +22,10 @@ import { readFileSync, writeFileSync, mkdirSync, existsSync, readdirSync } from 
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { CATEGORY_INFO, TARGET_CATEGORIES } from '../site/src/data/categories.ts';
+import type { CategoryEntry } from '../site/src/data/skills-landing.types.ts';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const REPO_ROOT = join(__dirname, '..');
-
-interface SkillEntry {
-  name: string;
-  description: string;
-}
-
-interface CategoryEntry {
-  key: string;
-  heading: string;
-  description: string;
-  skills: SkillEntry[];
-}
 
 function parseArgs(argv: string[]): { out: string } {
   let out = join(REPO_ROOT, 'site/src/data/skills-landing.json');
@@ -46,7 +35,13 @@ function parseArgs(argv: string[]): { out: string } {
   return { out };
 }
 
-function extractSection(readme: string, heading: string): string {
+/** A skill as parsed out of one category section, before its full cross-section `categories` membership is known. */
+export interface RawSkillEntry {
+  name: string;
+  description: string;
+}
+
+export function extractSection(readme: string, heading: string): string {
   const headingLine = `## ${heading}`;
   const start = readme.indexOf(`${headingLine}\n`);
   if (start === -1) {
@@ -57,7 +52,7 @@ function extractSection(readme: string, heading: string): string {
   return nextHeadingIdx === -1 ? rest : rest.slice(0, nextHeadingIdx);
 }
 
-function extractDescription(section: string): string {
+export function extractDescription(section: string): string {
   const lines = section.split('\n').map((l) => l.trim());
   for (const line of lines) {
     if (line === '') continue;
@@ -67,12 +62,12 @@ function extractDescription(section: string): string {
   throw new Error('Could not find a category description paragraph');
 }
 
-function extractSkills(section: string, category: string): SkillEntry[] {
+export function extractSkills(section: string, category: string): RawSkillEntry[] {
   const pattern = new RegExp(
     `- \\*\\*\\[([a-z0-9-]+)\\]\\(\\./skills/${category}/[a-z0-9-]+/SKILL\\.md\\)\\*\\*: (.+)`,
     'g',
   );
-  const skills: SkillEntry[] = [];
+  const skills: RawSkillEntry[] = [];
   let match: RegExpExecArray | null;
   while ((match = pattern.exec(section)) !== null) {
     skills.push({ name: match[1], description: match[2].trim() });
@@ -80,7 +75,7 @@ function extractSkills(section: string, category: string): SkillEntry[] {
   return skills;
 }
 
-function realSkillNames(category: string): string[] {
+export function realSkillNames(category: string): string[] {
   const dir = join(REPO_ROOT, 'skills', category);
   if (!existsSync(dir)) return [];
   return readdirSync(dir, { withFileTypes: true })
@@ -89,11 +84,44 @@ function realSkillNames(category: string): string[] {
     .sort();
 }
 
+/**
+ * Computes each skill's full category/label membership by name, merging
+ * across every category bucket it was found in. Skills normally appear in
+ * exactly one bucket today — no README section currently lists the same
+ * skill under two headings — but the merge itself is generic many-to-many:
+ * a skill bulleted under a second heading in the future is picked up here
+ * without any further change, and one category can obviously still cover
+ * many skills (that direction was already many-to-many via `skills[]`).
+ */
+export function collectSkillCategories(
+  categorySkills: { key: string; skills: RawSkillEntry[] }[],
+): Map<string, string[]> {
+  const categoriesByName = new Map<string, string[]>();
+  for (const { key, skills } of categorySkills) {
+    for (const skill of skills) {
+      const existing = categoriesByName.get(skill.name);
+      if (existing) {
+        if (!existing.includes(key)) existing.push(key);
+      } else {
+        categoriesByName.set(skill.name, [key]);
+      }
+    }
+  }
+  return categoriesByName;
+}
+
+interface RawCategoryEntry {
+  key: string;
+  heading: string;
+  description: string;
+  skills: RawSkillEntry[];
+}
+
 function main(): void {
   const { out } = parseArgs(process.argv.slice(2));
   const readme = readFileSync(join(REPO_ROOT, 'README.md'), 'utf-8');
 
-  const categories: CategoryEntry[] = [];
+  const rawCategories: RawCategoryEntry[] = [];
   const errors: string[] = [];
 
   for (const category of TARGET_CATEGORIES) {
@@ -125,7 +153,7 @@ function main(): void {
       continue;
     }
 
-    categories.push({ key: category, heading, description, skills });
+    rawCategories.push({ key: category, heading, description, skills });
   }
 
   if (errors.length > 0) {
@@ -134,10 +162,25 @@ function main(): void {
     process.exit(1);
   }
 
+  // Every skill's full category/label membership, merged across whichever
+  // buckets it was found in (see collectSkillCategories doc comment).
+  const skillCategories = collectSkillCategories(rawCategories);
+
+  const categories: CategoryEntry[] = rawCategories.map((category) => ({
+    ...category,
+    skills: category.skills.map((skill) => ({
+      ...skill,
+      categories: skillCategories.get(skill.name) ?? [category.key],
+    })),
+  }));
+
   mkdirSync(dirname(out), { recursive: true });
   writeFileSync(out, JSON.stringify({ categories }, null, 2) + '\n');
   const total = categories.reduce((sum, c) => sum + c.skills.length, 0);
   console.log(`Wrote ${total} skill(s) across ${categories.length} categories to ${out}`);
 }
 
-main();
+// Only run when executed directly (not when imported by tests).
+if (process.argv[1] && fileURLToPath(import.meta.url) === process.argv[1]) {
+  main();
+}
