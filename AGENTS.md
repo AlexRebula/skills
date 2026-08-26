@@ -90,6 +90,13 @@ from the rest of this repo:
   (`src/components/`) rather than redeclaring it inline in a page: `CopyableCommand` and
   `GitHubStars` were pulled out of `index.tsx` for exactly this reason.
 
+## Coding Conventions
+
+Read [`CONVENTIONS.md`](./CONVENTIONS.md) before writing any code in this repo — it covers
+general TypeScript hygiene, React-specific rules, a search-before-you-build duplication
+rule (formalizing the leaf-widget check two paragraphs up), and a growing list of
+repo-specific gotchas. Not restated here.
+
 ## AI Reviewer Instructions
 
 Load: https://raw.githubusercontent.com/LittleBranches/oss-quality-standards/main/docs/AGENTS.md
