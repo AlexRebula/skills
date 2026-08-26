@@ -22,11 +22,21 @@
   background-color: #fff;
   background-image: linear-gradient(135deg, var(--bg-1), var(--bg-2));
   color: var(--fg);
+}
+
+/* The clickable name/icon/label block: its own flex column so it lays out
+   exactly as it did when the whole card was one <a>, but scoped to just
+   this content — leaving room for a diff button as a sibling, not nested
+   inside the anchor (see the SkillCard doc comment for why). */
+.cardLink {
+  display: flex;
+  flex-direction: column;
+  color: inherit;
   text-decoration: none;
 }
 
-.card:hover,
-.card:focus-visible {
+.cardLink:hover,
+.cardLink:focus-visible {
   text-decoration: none;
   color: var(--fg);
 }
@@ -89,4 +99,48 @@
   --bg-2: rgb(255 183 77 / 48%);
   --fg: #5c3d00;
   --shape-tint: var(--ifm-color-warning);
+}
+
+/* "upstream": same treatment, cyan/info instead of green or amber — the
+   theme's own info color, matching what ProvenanceButton used for this
+   status before this card absorbed it. */
+.blue {
+  --bg-1: rgb(202 253 245 / 48%);
+  --bg-2: rgb(0 184 217 / 48%);
+  --fg: #003768;
+  --shape-tint: var(--ifm-color-info);
+}
+
+/* "modified": same treatment, the theme's secondary/violet — matching
+   ProvenanceButton's "modified" color before this card absorbed it. The
+   only variant with a .diffButton (see below). */
+.purple {
+  --bg-1: rgb(239 214 255 / 48%);
+  --bg-2: rgb(142 51 255 / 48%);
+  --fg: #27097a;
+  --shape-tint: var(--portfolio-color-secondary);
+}
+
+/* The "modified" card's own diff affordance: a small pill in the card's own
+   fg color, sitting below the name/label block instead of underneath the
+   card as a separate row (the old ProvenanceButton layout). */
+.diffButton {
+  align-self: flex-start;
+  margin-top: 1rem;
+  padding: 0.35rem 0.75rem;
+  border: 1px solid rgb(142 51 255 / 48%);
+  border-radius: 8px;
+  background: transparent;
+  color: var(--fg);
+  font-family: var(--ifm-font-family-base);
+  font-weight: 600;
+  font-size: 0.8rem;
+  cursor: pointer;
+  transition: background-color 0.15s ease, border-color 0.15s ease;
+}
+
+.diffButton:hover,
+.diffButton:focus-visible {
+  border-color: var(--portfolio-color-secondary);
+  background-color: rgb(142 51 255 / 8%);
 }
