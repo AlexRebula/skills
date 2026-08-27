@@ -20,6 +20,7 @@ describe('SkillSubList', () => {
   it('renders the heading and every skill when non-empty', () => {
     render(<SkillSubList heading="Original" skills={[SKILL]} />);
     expect(screen.getByText('Original')).toBeInTheDocument();
-    expect(screen.getByText('/deslopify')).toBeInTheDocument();
+    // SkillTimeline renders both a desktop and mobile Timeline variant.
+    expect(screen.getAllByText('/deslopify').length).toBeGreaterThan(0);
   });
 });

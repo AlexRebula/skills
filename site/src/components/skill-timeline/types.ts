@@ -1,5 +1,5 @@
 import type { FlowSkill } from '../../data/flow-sections.types';
 
-export interface SkillListItemProps {
-  skill: FlowSkill;
+export interface SkillTimelineProps {
+  skills: FlowSkill[];
 }
