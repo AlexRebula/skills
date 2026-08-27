@@ -27,7 +27,7 @@ import {
   OVERVIEW_LINK_TEXT,
   OVERVIEW_LINK_DESCRIPTION_PREFIX,
   OVERVIEW_LINK_DESCRIPTION_SUFFIX,
-} from './index.constants';
+} from '../data/index-page-copy';
 import styles from './index.module.css';
 
 const provenanceMap = provenanceData as ProvenanceMap;
