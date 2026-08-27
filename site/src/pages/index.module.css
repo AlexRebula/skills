@@ -68,12 +68,25 @@
 }
 
 .categoryTitle {
-  margin: 0 0 0.6rem;
+  margin: 0 0 1.25rem;
 }
 
-.categoryDescription {
-  color: var(--ifm-color-emphasis-700);
-  margin-bottom: 1.25rem;
+.subList {
+  margin-top: 1.5rem;
+}
+
+.subList:first-of-type {
+  margin-top: 0;
+}
+
+.subListHeading {
+  font-family: var(--ifm-font-family-base);
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--ifm-color-emphasis-600);
+  margin: 0 0 0.5rem;
 }
 
 .skillList {

@@ -9,16 +9,18 @@ import { GitHubStars } from '../components/github-stars';
 import { SkillCard } from '../components/skill-card';
 import type { SkillCardColor } from '../components/skill-card';
 import { LandingStatsSection } from '../components/landing-stats-section';
-import { CATEGORY_INFO } from '../data/categories';
-import type { CategoryKey } from '../data/categories';
-import { getProvenanceEntry } from '../data/provenance.utils';
 import { computeLandingStats } from '../data/landing-stats';
+import { buildFlowSections } from '../data/flow-sections';
+import type { FlowSkill, FlowStageSection } from '../data/flow-sections';
 import skillsData from '../data/skills-landing.json';
 import provenanceData from '../data/provenance.json';
 import type { ProvenanceMap, ProvenanceStatus } from '../data/provenance.types';
+import type { SkillsLandingData } from '../data/skills-landing.types';
+import { FLOW_STAGES } from '../../sidebars';
 import styles from './index.module.css';
 
 const provenanceMap = provenanceData as ProvenanceMap;
+const landingData = skillsData as SkillsLandingData;
 
 const REPO = 'AlexRebula/skills';
 
@@ -32,14 +34,77 @@ const SKILL_CARD_CONFIG: Record<ProvenanceStatus, { color: SkillCardColor; label
   modified: { color: 'purple', label: 'Modified from Matt Pocock' },
 };
 
+/** One skill's card + description, the row shape shared by both of a stage's sub-lists. */
+function SkillListItem({ skill }: { skill: FlowSkill }): ReactNode {
+  const cardConfig = SKILL_CARD_CONFIG[skill.status];
+  return (
+    <div className={styles.skillRow}>
+      <dt>
+        <SkillCard
+          category={skill.category}
+          name={skill.name}
+          color={cardConfig.color}
+          label={cardConfig.label}
+          diff={skill.diff}
+        />
+      </dt>
+      <dd className={styles.skillDefinition}>
+        <InlineMarkdown text={skill.description} />
+      </dd>
+    </div>
+  );
+}
+
+/**
+ * One of a stage's two sub-lists ("Original" or the Matt-lineage group).
+ * Renders nothing when empty, so a stage made up entirely of one kind of
+ * skill doesn't show a dangling empty heading (issue #156).
+ */
+function SkillSubList({ heading, skills }: { heading: string; skills: FlowSkill[] }): ReactNode {
+  if (skills.length === 0) return null;
+  return (
+    <div className={styles.subList}>
+      <p className={styles.subListHeading}>{heading}</p>
+      <dl className={styles.skillList}>
+        {skills.map((skill) => (
+          <SkillListItem key={`${skill.category}/${skill.name}`} skill={skill} />
+        ))}
+      </dl>
+    </div>
+  );
+}
+
+/**
+ * One flow-stage section: title/order come from FLOW_STAGES (site/sidebars.ts),
+ * not the old category buckets. Split into "Original" (mine) first, then
+ * everything with real Matt Pocock lineage - upstream/modified/inherited
+ * together - per #156's grilled decision; this is a physical re-sort, not
+ * just a color cue on top of #145's four-color SkillCard design.
+ */
+function FlowStageSectionView({ section, index }: { section: FlowStageSection; index: number }): ReactNode {
+  return (
+    <section className={styles.categorySection}>
+      <p className={styles.kicker}>
+        {String(index + 1).padStart(2, '0')} · {section.label}
+      </p>
+      <Heading as="h2" className={styles.categoryTitle}>
+        {section.label}
+      </Heading>
+      <SkillSubList heading="Original" skills={section.original} />
+      <SkillSubList heading="From Matt Pocock" skills={section.lineage} />
+    </section>
+  );
+}
+
 export default function Home(): ReactNode {
-  const { categories } = skillsData;
+  const { categories } = landingData;
   const totalSkills = categories.reduce((sum, c) => sum + c.skills.length, 0);
   const landingStats = computeLandingStats({
     totalSkills,
     totalCategories: categories.length,
     provenanceMap,
   });
+  const flowSections = buildFlowSections(FLOW_STAGES, landingData, provenanceMap);
 
   return (
     <Layout
@@ -83,46 +148,8 @@ export default function Home(): ReactNode {
 
           <LandingStatsSection items={landingStats} />
 
-          {categories.map((category, i) => (
-            <section key={category.key} className={styles.categorySection}>
-              <p className={styles.kicker}>
-                {String(i + 1).padStart(2, '0')} · {CATEGORY_INFO[category.key as CategoryKey]?.label ?? category.heading}
-              </p>
-              <Heading as="h2" className={styles.categoryTitle}>
-                {CATEGORY_INFO[category.key as CategoryKey]?.label ?? category.heading}
-              </Heading>
-              <p className={styles.categoryDescription}>
-                <InlineMarkdown text={category.description} />
-              </p>
-
-              <dl className={styles.skillList}>
-                {category.skills.map((skill) => {
-                  const entry = getProvenanceEntry(`${category.key}/${skill.name}`, provenanceMap);
-                  const cardConfig = SKILL_CARD_CONFIG[entry?.status ?? 'original'];
-                  const diff =
-                    entry?.status === 'modified' && entry.diffs && entry.diffs.length > 0
-                      ? { upstreamSha: entry.upstreamSha ?? '', files: entry.diffs }
-                      : undefined;
-
-                  return (
-                    <div key={skill.name} className={styles.skillRow}>
-                      <dt>
-                        <SkillCard
-                          category={category.key}
-                          name={skill.name}
-                          color={cardConfig.color}
-                          label={cardConfig.label}
-                          diff={diff}
-                        />
-                      </dt>
-                      <dd className={styles.skillDefinition}>
-                        <InlineMarkdown text={skill.description} />
-                      </dd>
-                    </div>
-                  );
-                })}
-              </dl>
-            </section>
+          {flowSections.map((section, i) => (
+            <FlowStageSectionView key={section.label} section={section} index={i} />
           ))}
         </div>
       </div>
