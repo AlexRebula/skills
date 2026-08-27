@@ -11,13 +11,20 @@ description: Load recent session history so a new session can pick up where the 
 
 Open `{{SESSIONS_ROOT}}/sessions-index.md`.
 
-Find the **5 most recent rows** by date. Note the title and primary work for each.
+**The index is append-only, not sorted by date.** New rows get added wherever a session happened to finish writing, so a row's position in the file is not a reliable proxy for recency — a session from three days ago can sit below one from a week earlier. Never treat "top of file" as "most recent."
+
+Determine the 5 most recent rows correctly:
+
+1. Parse every row's `Date` column and sort by it (descending) yourself — do not rely on file order.
+2. Cross-check against disk as a safety net: `ls -dt "{{SESSIONS_ROOT}}"/*/ | head -5` lists session folders by actual modification time. If this disagrees with your date-sorted read of the index (e.g. a folder exists on disk with a later date than the row you picked as "most recent"), trust disk and re-derive from there — the index row may be missing, misdated, or you mis-parsed it.
+
+Note the title and primary work for each of the resulting top 5.
 
 ## Latest wrap file
 
 **Always read the latest wrap file from the most recent session** (load it now):
 
-1. Take the session folder from the most recent row's `Folder` column.
+1. Take the session folder for the most recent row as determined above (by actual date, verified against disk — not file position).
 2. List the files in that folder: `ls "{{SESSIONS_ROOT}}/<session-name>/"`
 3. Read the **highest-numbered file** (e.g. `05-...md` if it exists, else `01-...md`).
 4. This is your "where we left off" context. Extract: pending tasks, unresolved blockers, decisions made.
