@@ -57,6 +57,8 @@
 }
 
 .overviewLink {
-  margin-bottom: 1.5rem;
+  margin-top: 2.5rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid var(--ifm-color-emphasis-200);
   color: var(--ifm-color-emphasis-700);
 }

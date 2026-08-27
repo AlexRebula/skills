@@ -1,6 +1,8 @@
 ## What this page is
 
-`ask-matt` already answers "which skill fits my situation" one question at a time. This page is the other direction: read straight through once, and see how all 76 skills in this fork actually fit together, not as a keyword index but as the shape of a real day.
+The homepage shows the same stages and the same skills, but only the shape — which skill belongs to which stage, nothing about why. This page is that reasoning written out.
+
+`ask-matt` already answers "which skill fits my situation" one question at a time. This page is the other direction: once you know the shape, read straight through here and see how all 76 skills in this fork actually fit together, not as a keyword index but as the shape of a real day.
 
 Matt Pocock's own site groups his ~48 skills into Main Flow, Shaping, Upkeep, Productivity Skills, and Reference Skills. That grouping doesn't fit here: this fork carries a full git and PR lifecycle, a personal wiki, session bookkeeping, apprentice mentoring, and LittleBranches org-specific tooling that he has no equivalent for. The stages below are this fork's own, built around when in a session you'd actually reach for something, not a reskin of his.
 

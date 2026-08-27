@@ -25,8 +25,7 @@ import {
   INSTALL_NOTE_PREFIX,
   OVERVIEW_LINK_PREFIX,
   OVERVIEW_LINK_TEXT,
-  OVERVIEW_LINK_DESCRIPTION_PREFIX,
-  OVERVIEW_LINK_DESCRIPTION_SUFFIX,
+  OVERVIEW_LINK_DESCRIPTION,
 } from '../data/index-page-copy';
 import styles from './index.module.css';
 
@@ -76,16 +75,15 @@ export default function Home(): ReactNode {
             <GitHubStars repo={REPO} />
           </div>
 
-          <p className={styles.overviewLink}>
-            {OVERVIEW_LINK_PREFIX} <Link to="/overview">{OVERVIEW_LINK_TEXT}</Link> — {OVERVIEW_LINK_DESCRIPTION_PREFIX}{' '}
-            {totalSkills} {OVERVIEW_LINK_DESCRIPTION_SUFFIX}
-          </p>
-
           <LandingStatsSection items={landingStats} />
 
           {flowSections.map((section, i) => (
             <FlowStageSectionView key={section.label} section={section} index={i} />
           ))}
+
+          <p className={styles.overviewLink}>
+            {OVERVIEW_LINK_PREFIX} <Link to="/overview">{OVERVIEW_LINK_TEXT}</Link> {OVERVIEW_LINK_DESCRIPTION}
+          </p>
         </div>
       </div>
     </Layout>

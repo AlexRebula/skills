@@ -12,7 +12,6 @@ export const UPSTREAM_REPO_LABEL = 'mattpocock/skills';
 export const INSTALL_LABEL = 'Install';
 export const INSTALL_NOTE_PREFIX = 'Or as a read-only Claude Code plugin:';
 
-export const OVERVIEW_LINK_PREFIX = 'New here?';
-export const OVERVIEW_LINK_TEXT = 'Read the Flow';
-export const OVERVIEW_LINK_DESCRIPTION_PREFIX = 'a walkthrough of all';
-export const OVERVIEW_LINK_DESCRIPTION_SUFFIX = 'skills in the order a real day actually uses them.';
+export const OVERVIEW_LINK_PREFIX = 'You just saw the shape.';
+export const OVERVIEW_LINK_TEXT = 'Read the Flow in detail';
+export const OVERVIEW_LINK_DESCRIPTION = 'for why these stages actually fit together.';
