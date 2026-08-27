@@ -1,5 +1,11 @@
 # alexrebula-skills
 
+## 1.1.1
+
+### Patch Changes
+
+- [#128](https://github.com/AlexRebula/skills/pull/128) [`defc086`](https://github.com/AlexRebula/skills/commit/defc086b4999ba6c6b6edbb394c1b72e3e7dc4d9) Thanks [@AlexRebula](https://github.com/AlexRebula)! - deslopify docs: fix the lead "What it does" paragraph, it still described the old 4-step process (missing the density-calibration step) and implied every listed content type gets identical treatment, glossing over the em-dash exception for live chat/agent-session replies.
+
 ## 1.1.0
 
 ### Minor Changes
