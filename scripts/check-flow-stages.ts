@@ -33,6 +33,7 @@ import { fileURLToPath } from 'node:url';
 import { TARGET_CATEGORIES } from '../site/src/data/categories.ts';
 import { FLOW_STAGES } from '../site/sidebars.ts';
 import { ROUTER_SKILL, type SkillRef } from '../site/src/data/router-skill.ts';
+import { extractDocIds } from '../site/src/data/sidebar-tree.ts';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const REPO_ROOT = join(__dirname, '..');
@@ -61,29 +62,6 @@ export function listRealSkills(docsRoot: string): string[] {
     }
   }
   return skills.sort();
-}
-
-/**
- * Recursively walks a Docusaurus sidebar item tree and collects every doc
- * item's id ("category/name"). Generic over the tree shape rather than
- * FLOW_STAGES's specific structure, so it doesn't need to know how deeply
- * stages nest their items.
- */
-function extractDocIds(items: unknown): string[] {
-  if (!Array.isArray(items)) return [];
-
-  const ids: string[] = [];
-  for (const item of items) {
-    if (!item || typeof item !== 'object') continue;
-
-    if ('type' in item && item.type === 'doc' && 'id' in item) {
-      ids.push(String(item.id));
-    }
-    if ('items' in item) {
-      ids.push(...extractDocIds((item as { items: unknown }).items));
-    }
-  }
-  return ids;
 }
 
 /**
