@@ -1,0 +1,19 @@
+.desktopOnly {
+  display: block;
+}
+
+.mobileOnly {
+  display: none;
+}
+
+/* Matches the breakpoint the old plain-list rendering used (see the removed
+   skill-list-item.module.css). Kept the same value so nothing shifts. */
+@media (width <= 700px) {
+  .desktopOnly {
+    display: none;
+  }
+
+  .mobileOnly {
+    display: block;
+  }
+}

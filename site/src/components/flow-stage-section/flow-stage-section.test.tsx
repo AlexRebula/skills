@@ -32,8 +32,9 @@ describe('FlowStageSectionView', () => {
     expect(screen.getByText('03 · Build it')).toBeInTheDocument();
     expect(screen.getByText('Original')).toBeInTheDocument();
     expect(screen.getByText('From Matt Pocock')).toBeInTheDocument();
-    expect(screen.getByText('/deslopify')).toBeInTheDocument();
-    expect(screen.getByText('/teach')).toBeInTheDocument();
+    // SkillTimeline renders both a desktop and mobile Timeline variant.
+    expect(screen.getAllByText('/deslopify').length).toBeGreaterThan(0);
+    expect(screen.getAllByText('/teach').length).toBeGreaterThan(0);
   });
 
   it('renders only the non-empty sub-list when a stage is entirely one kind of skill', () => {

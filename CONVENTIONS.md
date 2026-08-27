@@ -63,3 +63,11 @@ new ones surface, rather than letting them get rediscovered by the next person o
   overwrites `document.documentElement.className` wholesale on every client-side
   navigation. Use a dedicated attribute (e.g. `data-mui-mode`) that Docusaurus never
   touches.
+- **Don't use `useMediaQuery`/`useTheme` to switch between two structurally different
+  components at a breakpoint** (e.g. a desktop vs. mobile layout). This site is statically
+  generated (Docusaurus SSG): a JS breakpoint hook renders one variant on the server
+  (there's no viewport at build time, so it defaults to a fixed guess) and can render the
+  other on the client after hydration, producing a visible flash and risking a hydration
+  mismatch if the two variants' DOM shapes actually differ. Render both variants and toggle
+  visibility with a CSS media query instead (see `skill-timeline.module.css`). No
+  server/client disagreement is possible that way, since CSS evaluates identically on both.
