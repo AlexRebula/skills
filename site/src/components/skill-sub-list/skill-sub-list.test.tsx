@@ -9,6 +9,7 @@ const SKILL: FlowSkill = {
   name: 'deslopify',
   description: 'Strip AI tells from prose and code.',
   status: 'original',
+  personas: [],
 };
 
 describe('SkillSubList', () => {

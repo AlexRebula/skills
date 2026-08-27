@@ -9,6 +9,7 @@ const ORIGINAL_SKILL: FlowSkill = {
   name: 'deslopify',
   description: 'Strip AI tells from prose and code.',
   status: 'original',
+  personas: [],
 };
 
 const LINEAGE_SKILL: FlowSkill = {
@@ -16,6 +17,7 @@ const LINEAGE_SKILL: FlowSkill = {
   name: 'teach',
   description: 'Teach a concept.',
   status: 'upstream',
+  personas: [],
 };
 
 describe('FlowStageSectionView', () => {

@@ -1,4 +1,5 @@
 import type { FileDiff, ProvenanceStatus } from './provenance.types';
+import type { PersonaKey } from './personas.types';
 
 /** The data a "modified" skill's diff affordance needs; absent for every other status. */
 export interface FlowSkillDiff {
@@ -13,6 +14,14 @@ export interface FlowSkill {
   description: string;
   status: ProvenanceStatus;
   diff?: FlowSkillDiff;
+  /**
+   * Personas this skill belongs to, resolved via `personasForCategories`
+   * (#174) from the skill's *full* category membership (`SkillEntry.categories`),
+   * not just the single `category` bucket it's nested under for this stage.
+   * Empty for a misc-only skill — the homepage filter (#176) treats an empty
+   * array as "always visible", never as "matches nothing".
+   */
+  personas: PersonaKey[];
 }
 
 /**

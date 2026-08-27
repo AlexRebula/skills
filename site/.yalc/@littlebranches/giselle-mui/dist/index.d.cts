@@ -748,6 +748,25 @@ interface StatusLabelProps extends Omit<ChipProps, 'label' | 'color' | 'icon'> {
 declare const StatusLabel: react__default.ForwardRefExoticComponent<Omit<StatusLabelProps, "ref"> & react__default.RefAttributes<HTMLDivElement>>;
 
 /**
+ * Props for the {@link SelectableLabel} component.
+ *
+ * Extends MUI `ChipProps` — `size`, `disabled`, `sx`, and all other MUI
+ * `Chip` props are forwarded to the root element unchanged. `onClick` and
+ * `icon` are omitted because `SelectableLabel` owns them internally (the
+ * click handler drives `onSelectedChange`; the icon slot shows the
+ * selected-state checkmark).
+ */
+interface SelectableLabelProps extends Omit<ChipProps, 'onClick' | 'icon'> {
+    /** Whether this label is currently selected — maps to `aria-pressed`. */
+    selected: boolean;
+    /** Called with the next selected value when the label is activated. */
+    onSelectedChange?: (nextSelected: boolean) => void;
+}
+
+/** A toggleable chip for multi-select filter groups, built on MUI `Chip` with `SelectableCard`'s selected-state styling. */
+declare const SelectableLabel: react.ForwardRefExoticComponent<Omit<SelectableLabelProps, "ref"> & react.RefAttributes<HTMLDivElement>>;
+
+/**
  * Props for the {@link Accordion} component.
  *
  * Extends MUI `AccordionProps` — all expand/collapse controls (`expanded`,
@@ -2011,4 +2030,4 @@ interface TechIconStripProps extends Omit<BoxProps, 'children' | 'title'> {
  */
 declare function TechIconStrip({ items, heading, centeredWrap, sx, ...other }: TechIconStripProps): react.JSX.Element;
 
-export { TOGGLE_ICON_SIZE as ACCORDION_CHECK_ICON_SIZE, ACCORDION_DONE_MIN_TOUCH_TARGET, TOGGLE_MIN_TOUCH_TARGET as ACCORDION_ICON_BUTTON_MIN_SIZE, Accordion, type AccordionProps, AnimatedGradientText, type AnimatedGradientTextProps, type BaseSettingsState, DEFAULT_ICON_ACTIONS, GISELLE_PRIMARY_DARK_MAIN, GISELLE_PRIMARY_MAIN, GISELLE_SECONDARY_MAIN, GiselleIcon, type GiselleIconData, type GiselleIconMap, type GiselleIconProps, type GiselleSettingsContextValue, GiselleSettingsProvider, type GiselleSettingsProviderProps, GiselleThemeAndSettingsProvider, type GiselleThemeAndSettingsProviderProps, GiselleThemeProvider, type GiselleThemeProviderProps, type HeroColorKey, HeroSection, type HeroSectionProps, type HeroSlotProps, IconActionBar, type IconActionBarProps, type IconActionItem, MetricCard, type MetricCardColor, MetricCardDecoration, type MetricCardDecorationProps, type MetricCardProps, type NestedChecklistState, type PaletteColorKey, type ProfileStat, ProfileSummaryCard, type ProfileSummaryCardProps, QuoteCard, type QuoteCardProps, STAT_CARD_SPARKLINE_OPTIONS, SectionCaption, SectionContainer, type SectionContainerProps, SectionTitle, type SectionTitleProps, SelectableCard, type SelectableCardProps, type SetCookieOptions, type ShowcaseRowOrientation, StatCard, type StatCardColor, type StatCardItem, type StatCardProps, StatCardRow, type StatCardRowProps, type StatusColorKey, StatusLabel, type StatusLabelProps, type StatusLabelStatus, type StorageAdapter, TOGGLE_ICON_SIZE, TOGGLE_MIN_TOUCH_TARGET, type TechIconItem, TechIconStrip, type TechIconStripProps, ToggleIconButton, type ToggleIconButtonProps, TwoColumnShowcaseRow, type TwoColumnShowcaseRowProps, type TwoColumnShowcaseRowText, type UseLocalStorageReturn, channelAlpha, createIconRegistrar, getCookieValue, giselleTheme, giselleThemeOptions, hexToChannel, isDeepEqual, pxToRem, remToPx, resolveMaturityColor, resolveMaturityLabel, setCookieValue, useGiselleSettings, useLocalStorage, useNestedChecklist };
+export { TOGGLE_ICON_SIZE as ACCORDION_CHECK_ICON_SIZE, ACCORDION_DONE_MIN_TOUCH_TARGET, TOGGLE_MIN_TOUCH_TARGET as ACCORDION_ICON_BUTTON_MIN_SIZE, Accordion, type AccordionProps, AnimatedGradientText, type AnimatedGradientTextProps, type BaseSettingsState, DEFAULT_ICON_ACTIONS, GISELLE_PRIMARY_DARK_MAIN, GISELLE_PRIMARY_MAIN, GISELLE_SECONDARY_MAIN, GiselleIcon, type GiselleIconData, type GiselleIconMap, type GiselleIconProps, type GiselleSettingsContextValue, GiselleSettingsProvider, type GiselleSettingsProviderProps, GiselleThemeAndSettingsProvider, type GiselleThemeAndSettingsProviderProps, GiselleThemeProvider, type GiselleThemeProviderProps, type HeroColorKey, HeroSection, type HeroSectionProps, type HeroSlotProps, IconActionBar, type IconActionBarProps, type IconActionItem, MetricCard, type MetricCardColor, MetricCardDecoration, type MetricCardDecorationProps, type MetricCardProps, type NestedChecklistState, type PaletteColorKey, type ProfileStat, ProfileSummaryCard, type ProfileSummaryCardProps, QuoteCard, type QuoteCardProps, STAT_CARD_SPARKLINE_OPTIONS, SectionCaption, SectionContainer, type SectionContainerProps, SectionTitle, type SectionTitleProps, SelectableCard, type SelectableCardProps, SelectableLabel, type SelectableLabelProps, type SetCookieOptions, type ShowcaseRowOrientation, StatCard, type StatCardColor, type StatCardItem, type StatCardProps, StatCardRow, type StatCardRowProps, type StatusColorKey, StatusLabel, type StatusLabelProps, type StatusLabelStatus, type StorageAdapter, TOGGLE_ICON_SIZE, TOGGLE_MIN_TOUCH_TARGET, type TechIconItem, TechIconStrip, type TechIconStripProps, ToggleIconButton, type ToggleIconButtonProps, TwoColumnShowcaseRow, type TwoColumnShowcaseRowProps, type TwoColumnShowcaseRowText, type UseLocalStorageReturn, channelAlpha, createIconRegistrar, getCookieValue, giselleTheme, giselleThemeOptions, hexToChannel, isDeepEqual, pxToRem, remToPx, resolveMaturityColor, resolveMaturityLabel, setCookieValue, useGiselleSettings, useLocalStorage, useNestedChecklist };

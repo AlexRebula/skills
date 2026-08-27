@@ -3,15 +3,16 @@ import { buildSkillTimelinePhases } from './skill-timeline-phases';
 import type { FlowSkill } from './flow-sections.types';
 
 const SKILLS: FlowSkill[] = [
-  { category: 'engineering', name: 'tdd', description: 'Test-driven development.', status: 'original' },
+  { category: 'engineering', name: 'tdd', description: 'Test-driven development.', status: 'original', personas: [] },
   {
     category: 'engineering',
     name: 'ask-matt',
     description: 'Router over the whole skill set.',
     status: 'modified',
     diff: { upstreamSha: 'abc123', files: [{ file: 'SKILL.md', rows: [] }] },
+    personas: [],
   },
-  { category: 'wiki', name: 'ingest', description: 'Ingest a source.', status: 'inherited' },
+  { category: 'wiki', name: 'ingest', description: 'Ingest a source.', status: 'inherited', personas: [] },
 ];
 
 describe('buildSkillTimelinePhases', () => {

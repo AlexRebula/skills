@@ -55,6 +55,7 @@ __export(src_exports, {
   SectionContainer: () => SectionContainer,
   SectionTitle: () => SectionTitle,
   SelectableCard: () => SelectableCard,
+  SelectableLabel: () => SelectableLabel,
   StatCard: () => StatCard,
   StatCardRow: () => StatCardRow,
   StatusLabel: () => StatusLabel,
@@ -603,8 +604,81 @@ var StatusLabel = import_react9.default.forwardRef(function StatusLabel2({ statu
 });
 StatusLabel.displayName = "StatusLabel";
 
+// src/components/material/data-display/selectable-label/selectable-label.tsx
+var import_react10 = require("react");
+var import_Chip2 = __toESM(require("@mui/material/Chip"), 1);
+var import_SvgIcon = __toESM(require("@mui/material/SvgIcon"), 1);
+
+// src/components/material/data-display/selectable-label/selectable-label.styles.ts
+var selectableLabelSx = (selected) => (theme) => {
+  const vars = theme.vars;
+  return {
+    cursor: "pointer",
+    // Set explicitly rather than left to inherit — Chip's own base styles
+    // set `color: inherit`, which makes the label's visible color depend
+    // on whatever ambient text color the chip happens to be mounted
+    // under. StatusLabel (a working precedent) never relies on this
+    // either; every color this component shows should be self-contained.
+    color: vars.palette.text.primary,
+    transition: theme.transitions.create(["background-color", "box-shadow"], {
+      duration: theme.transitions.duration.shorter
+    }),
+    // --- Keyboard focus ring ---
+    // .Mui-focusVisible is applied on keyboard navigation only, so mouse
+    // users never see this ring — same convention as SelectableCard.
+    "&.Mui-focusVisible": {
+      outline: `3px solid ${vars.palette.primary.main}`,
+      outlineOffset: 2
+    },
+    // --- Selected ring (box-shadow, doesn't affect layout) ---
+    ...selected && {
+      boxShadow: `0 0 0 1.5px ${vars.palette.text.primary}`,
+      bgcolor: vars.palette.action.selected
+    },
+    // --- Disabled: muted + no pointer (Chip also sets aria-disabled) ---
+    "&.Mui-disabled": {
+      opacity: 0.48,
+      cursor: "default",
+      pointerEvents: "none"
+    }
+  };
+};
+var selectableLabelIconSx = {
+  fontSize: "1rem",
+  color: "text.primary"
+};
+
+// src/components/material/data-display/selectable-label/selectable-label.tsx
+var import_jsx_runtime6 = require("react/jsx-runtime");
+var CHECK_ICON = /* @__PURE__ */ (0, import_jsx_runtime6.jsx)(import_SvgIcon.default, { sx: selectableLabelIconSx, viewBox: "0 0 24 24", "aria-hidden": "true", children: /* @__PURE__ */ (0, import_jsx_runtime6.jsx)("path", { d: "M9 16.2l-3.5-3.5L4 14.2l5 5 11-11-1.4-1.4z" }) });
+var SelectableLabel = (0, import_react10.forwardRef)(
+  function SelectableLabel2({ selected, onSelectedChange, disabled, sx, ...other }, ref) {
+    const handleClick = (0, import_react10.useCallback)(
+      (e) => {
+        if (disabled) return;
+        e.stopPropagation();
+        onSelectedChange?.(!selected);
+      },
+      [selected, disabled, onSelectedChange]
+    );
+    return /* @__PURE__ */ (0, import_jsx_runtime6.jsx)(
+      import_Chip2.default,
+      {
+        ref,
+        onClick: handleClick,
+        disabled,
+        "aria-pressed": selected,
+        icon: selected ? CHECK_ICON : void 0,
+        sx: [selectableLabelSx(selected), ...Array.isArray(sx) ? sx : [sx]],
+        ...other
+      }
+    );
+  }
+);
+SelectableLabel.displayName = "SelectableLabel";
+
 // src/components/material/surfaces/card/accordion/accordion.tsx
-var import_react11 = require("react");
+var import_react12 = require("react");
 var import_Box2 = __toESM(require("@mui/material/Box"), 1);
 var import_Checkbox = __toESM(require("@mui/material/Checkbox"), 1);
 var import_Accordion = __toESM(require("@mui/material/Accordion"), 1);
@@ -613,11 +687,11 @@ var import_AccordionSummary = __toESM(require("@mui/material/AccordionSummary"),
 var import_Typography = __toESM(require("@mui/material/Typography"), 1);
 
 // src/components/material/input/toggle-icon-button/icon.tsx
-var import_react10 = require("react");
+var import_react11 = require("react");
 var import_IconButton = __toESM(require("@mui/material/IconButton"), 1);
 
 // src/components/material/input/toggle-icon-button/icon.defaults.tsx
-var import_SvgIcon = __toESM(require("@mui/material/SvgIcon"), 1);
+var import_SvgIcon2 = __toESM(require("@mui/material/SvgIcon"), 1);
 
 // src/components/material/input/toggle-icon-button/icon.const.ts
 var TOGGLE_ICON_SIZE = 20;
@@ -652,12 +726,12 @@ var defaultIconSvgSx = {
 };
 
 // src/components/material/input/toggle-icon-button/icon.defaults.tsx
-var import_jsx_runtime6 = require("react/jsx-runtime");
-var DEFAULT_PRESSED_ICON = /* @__PURE__ */ (0, import_jsx_runtime6.jsx)(import_SvgIcon.default, { sx: defaultIconSvgSx, viewBox: "0 0 24 24", children: /* @__PURE__ */ (0, import_jsx_runtime6.jsx)("path", { d: "M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z" }) });
-var DEFAULT_HOVER_ICON = /* @__PURE__ */ (0, import_jsx_runtime6.jsx)(import_SvgIcon.default, { sx: defaultIconSvgSx, viewBox: "0 0 24 24", children: /* @__PURE__ */ (0, import_jsx_runtime6.jsx)("path", { d: "M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm4.59-12.42L10 14.17l-2.59-2.58L6 13l4 4 8-8-1.41-1.42z" }) });
+var import_jsx_runtime7 = require("react/jsx-runtime");
+var DEFAULT_PRESSED_ICON = /* @__PURE__ */ (0, import_jsx_runtime7.jsx)(import_SvgIcon2.default, { sx: defaultIconSvgSx, viewBox: "0 0 24 24", children: /* @__PURE__ */ (0, import_jsx_runtime7.jsx)("path", { d: "M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z" }) });
+var DEFAULT_HOVER_ICON = /* @__PURE__ */ (0, import_jsx_runtime7.jsx)(import_SvgIcon2.default, { sx: defaultIconSvgSx, viewBox: "0 0 24 24", children: /* @__PURE__ */ (0, import_jsx_runtime7.jsx)("path", { d: "M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm4.59-12.42L10 14.17l-2.59-2.58L6 13l4 4 8-8-1.41-1.42z" }) });
 
 // src/components/material/input/toggle-icon-button/icon.tsx
-var import_jsx_runtime7 = require("react/jsx-runtime");
+var import_jsx_runtime8 = require("react/jsx-runtime");
 function ToggleIconButton({
   pressed,
   idleIcon,
@@ -667,14 +741,14 @@ function ToggleIconButton({
   sx,
   ...other
 }) {
-  const handleClick = (0, import_react10.useCallback)(
+  const handleClick = (0, import_react11.useCallback)(
     (e) => {
       e.stopPropagation();
       onPressedChange?.(!pressed);
     },
     [pressed, onPressedChange]
   );
-  return /* @__PURE__ */ (0, import_jsx_runtime7.jsxs)(
+  return /* @__PURE__ */ (0, import_jsx_runtime8.jsxs)(
     import_IconButton.default,
     {
       onClick: handleClick,
@@ -683,9 +757,9 @@ function ToggleIconButton({
       sx: [rootSx, ...Array.isArray(sx) ? sx : [sx]],
       ...other,
       children: [
-        /* @__PURE__ */ (0, import_jsx_runtime7.jsx)("span", { className: "ti-idle", children: idleIcon }),
-        /* @__PURE__ */ (0, import_jsx_runtime7.jsx)("span", { className: "ti-pressed", children: pressedIcon }),
-        /* @__PURE__ */ (0, import_jsx_runtime7.jsx)("span", { className: "ti-hover", children: hoverIcon })
+        /* @__PURE__ */ (0, import_jsx_runtime8.jsx)("span", { className: "ti-idle", children: idleIcon }),
+        /* @__PURE__ */ (0, import_jsx_runtime8.jsx)("span", { className: "ti-pressed", children: pressedIcon }),
+        /* @__PURE__ */ (0, import_jsx_runtime8.jsx)("span", { className: "ti-hover", children: hoverIcon })
       ]
     }
   );
@@ -714,7 +788,7 @@ var summarySx = {
 };
 
 // src/components/material/surfaces/card/accordion/accordion.tsx
-var import_jsx_runtime8 = require("react/jsx-runtime");
+var import_jsx_runtime9 = require("react/jsx-runtime");
 function Accordion({
   title,
   children,
@@ -732,7 +806,7 @@ function Accordion({
   sx,
   ...other
 }) {
-  const id = (0, import_react11.useId)();
+  const id = (0, import_react12.useId)();
   const summaryId = `accordion-summary-${id}`;
   const detailsId = `accordion-details-${id}`;
   const handleCheckboxChange = (_e, checked) => {
@@ -744,7 +818,7 @@ function Accordion({
   const hasLeadingElement = checklist || leadingIcon !== void 0 || leadingAction !== void 0;
   let leadingElement = null;
   if (checklist) {
-    leadingElement = checkIcon === void 0 ? /* @__PURE__ */ (0, import_jsx_runtime8.jsx)(
+    leadingElement = checkIcon === void 0 ? /* @__PURE__ */ (0, import_jsx_runtime9.jsx)(
       import_Checkbox.default,
       {
         checked: done,
@@ -759,7 +833,7 @@ function Accordion({
         size: "small",
         sx: checkboxSx
       }
-    ) : /* @__PURE__ */ (0, import_jsx_runtime8.jsx)(
+    ) : /* @__PURE__ */ (0, import_jsx_runtime9.jsx)(
       ToggleIconButton,
       {
         pressed: done,
@@ -771,12 +845,12 @@ function Accordion({
       }
     );
   } else if (leadingAction === void 0) {
-    leadingElement = /* @__PURE__ */ (0, import_jsx_runtime8.jsx)(import_Box2.default, { "aria-hidden": "true", sx: leadingIconSx, children: leadingIcon });
+    leadingElement = /* @__PURE__ */ (0, import_jsx_runtime9.jsx)(import_Box2.default, { "aria-hidden": "true", sx: leadingIconSx, children: leadingIcon });
   } else {
     leadingElement = leadingAction;
   }
-  const summaryContent = typeof title === "string" ? /* @__PURE__ */ (0, import_jsx_runtime8.jsx)(import_Typography.default, { component: "span", variant: "subtitle1", children: title }) : title;
-  const accordionSummary = /* @__PURE__ */ (0, import_jsx_runtime8.jsxs)(
+  const summaryContent = typeof title === "string" ? /* @__PURE__ */ (0, import_jsx_runtime9.jsx)(import_Typography.default, { component: "span", variant: "subtitle1", children: title }) : title;
+  const accordionSummary = /* @__PURE__ */ (0, import_jsx_runtime9.jsxs)(
     import_AccordionSummary.default,
     {
       expandIcon,
@@ -789,12 +863,12 @@ function Accordion({
       ]
     }
   );
-  return /* @__PURE__ */ (0, import_jsx_runtime8.jsxs)(import_Accordion.default, { sx: [accordionRootSx, ...Array.isArray(sx) ? sx : [sx]], ...other, children: [
-    hasLeadingElement ? /* @__PURE__ */ (0, import_jsx_runtime8.jsxs)(import_Box2.default, { sx: summaryRowSx, children: [
+  return /* @__PURE__ */ (0, import_jsx_runtime9.jsxs)(import_Accordion.default, { sx: [accordionRootSx, ...Array.isArray(sx) ? sx : [sx]], ...other, children: [
+    hasLeadingElement ? /* @__PURE__ */ (0, import_jsx_runtime9.jsxs)(import_Box2.default, { sx: summaryRowSx, children: [
       leadingElement,
       accordionSummary
     ] }) : accordionSummary,
-    /* @__PURE__ */ (0, import_jsx_runtime8.jsx)(import_AccordionDetails.default, { id: detailsId, children })
+    /* @__PURE__ */ (0, import_jsx_runtime9.jsx)(import_AccordionDetails.default, { id: detailsId, children })
   ] });
 }
 
@@ -855,17 +929,17 @@ var metricCardDecorationSx = (color) => (theme) => ({
 
 // src/components/material/surfaces/card/metric/metric-card-decoration.tsx
 var import_Box3 = __toESM(require("@mui/material/Box"), 1);
-var import_jsx_runtime9 = require("react/jsx-runtime");
+var import_jsx_runtime10 = require("react/jsx-runtime");
 function MetricCardDecoration({
   color = "primary",
   sx,
   ...other
 }) {
-  return /* @__PURE__ */ (0, import_jsx_runtime9.jsx)(import_Box3.default, { sx: [metricCardDecorationSx(color), ...Array.isArray(sx) ? sx : [sx]], ...other });
+  return /* @__PURE__ */ (0, import_jsx_runtime10.jsx)(import_Box3.default, { sx: [metricCardDecorationSx(color), ...Array.isArray(sx) ? sx : [sx]], ...other });
 }
 
 // src/components/material/surfaces/card/metric/metric-card.tsx
-var import_jsx_runtime10 = require("react/jsx-runtime");
+var import_jsx_runtime11 = require("react/jsx-runtime");
 function MetricCard({
   value,
   label,
@@ -877,18 +951,18 @@ function MetricCard({
   sx,
   ...other
 }) {
-  return /* @__PURE__ */ (0, import_jsx_runtime10.jsxs)(
+  return /* @__PURE__ */ (0, import_jsx_runtime11.jsxs)(
     import_Paper.default,
     {
       elevation,
       sx: [metricCardPaperSx, ...Array.isArray(sx) ? sx : [sx]],
       ...other,
       children: [
-        decoration && /* @__PURE__ */ (0, import_jsx_runtime10.jsx)(import_Box4.default, { "aria-hidden": "true", sx: decorationOverlaySx, children: decoration }),
-        /* @__PURE__ */ (0, import_jsx_runtime10.jsxs)(import_Box4.default, { sx: metricCardContentSx, children: [
-          /* @__PURE__ */ (0, import_jsx_runtime10.jsx)(import_Box4.default, { sx: { typography: "h3" }, children: value }),
-          /* @__PURE__ */ (0, import_jsx_runtime10.jsx)(import_Typography2.default, { noWrap: true, variant: "subtitle2", component: "div", sx: { color: "text.secondary" }, children: label }),
-          sublabel && /* @__PURE__ */ (0, import_jsx_runtime10.jsx)(
+        decoration && /* @__PURE__ */ (0, import_jsx_runtime11.jsx)(import_Box4.default, { "aria-hidden": "true", sx: decorationOverlaySx, children: decoration }),
+        /* @__PURE__ */ (0, import_jsx_runtime11.jsxs)(import_Box4.default, { sx: metricCardContentSx, children: [
+          /* @__PURE__ */ (0, import_jsx_runtime11.jsx)(import_Box4.default, { sx: { typography: "h3" }, children: value }),
+          /* @__PURE__ */ (0, import_jsx_runtime11.jsx)(import_Typography2.default, { noWrap: true, variant: "subtitle2", component: "div", sx: { color: "text.secondary" }, children: label }),
+          sublabel && /* @__PURE__ */ (0, import_jsx_runtime11.jsx)(
             import_Typography2.default,
             {
               noWrap: true,
@@ -899,7 +973,7 @@ function MetricCard({
             }
           )
         ] }),
-        icon && /* @__PURE__ */ (0, import_jsx_runtime10.jsx)(import_Box4.default, { "aria-hidden": "true", sx: metricCardIconBoxSx(color), children: icon })
+        icon && /* @__PURE__ */ (0, import_jsx_runtime11.jsx)(import_Box4.default, { "aria-hidden": "true", sx: metricCardIconBoxSx(color), children: icon })
       ]
     }
   );
@@ -950,7 +1024,7 @@ var selectableCardSx = (selected) => (theme) => ({
 });
 
 // src/components/material/surfaces/card/selectable/selectable-card.tsx
-var import_jsx_runtime11 = require("react/jsx-runtime");
+var import_jsx_runtime12 = require("react/jsx-runtime");
 function SelectableCard({
   selected = false,
   disabled = false,
@@ -958,7 +1032,7 @@ function SelectableCard({
   sx,
   ...other
 }) {
-  return /* @__PURE__ */ (0, import_jsx_runtime11.jsx)(
+  return /* @__PURE__ */ (0, import_jsx_runtime12.jsx)(
     import_ButtonBase.default,
     {
       disabled,
@@ -1002,7 +1076,7 @@ var quoteCardPaperSx = (color) => (theme) => ({
 });
 
 // src/components/material/surfaces/card/quote/quote-card.tsx
-var import_jsx_runtime12 = require("react/jsx-runtime");
+var import_jsx_runtime13 = require("react/jsx-runtime");
 function QuoteCard({
   quote,
   author,
@@ -1012,26 +1086,26 @@ function QuoteCard({
   sx,
   ...other
 }) {
-  return /* @__PURE__ */ (0, import_jsx_runtime12.jsx)(
+  return /* @__PURE__ */ (0, import_jsx_runtime13.jsx)(
     import_Paper2.default,
     {
       elevation,
       sx: [quoteCardPaperSx(color), ...Array.isArray(sx) ? sx : [sx]],
       ...other,
-      children: /* @__PURE__ */ (0, import_jsx_runtime12.jsxs)(import_Box5.default, { sx: { display: "flex", gap: 2 }, children: [
-        /* @__PURE__ */ (0, import_jsx_runtime12.jsx)(import_Typography3.default, { "aria-hidden": true, sx: quoteMarkSx(color), children: "\u201C" }),
-        /* @__PURE__ */ (0, import_jsx_runtime12.jsxs)(import_Box5.default, { sx: { flex: 1, minWidth: 0 }, children: [
-          /* @__PURE__ */ (0, import_jsx_runtime12.jsx)(import_Typography3.default, { variant: "body1", sx: quoteTextSx, children: quote }),
-          (author || source) && /* @__PURE__ */ (0, import_jsx_runtime12.jsxs)(
+      children: /* @__PURE__ */ (0, import_jsx_runtime13.jsxs)(import_Box5.default, { sx: { display: "flex", gap: 2 }, children: [
+        /* @__PURE__ */ (0, import_jsx_runtime13.jsx)(import_Typography3.default, { "aria-hidden": true, sx: quoteMarkSx(color), children: "\u201C" }),
+        /* @__PURE__ */ (0, import_jsx_runtime13.jsxs)(import_Box5.default, { sx: { flex: 1, minWidth: 0 }, children: [
+          /* @__PURE__ */ (0, import_jsx_runtime13.jsx)(import_Typography3.default, { variant: "body1", sx: quoteTextSx, children: quote }),
+          (author || source) && /* @__PURE__ */ (0, import_jsx_runtime13.jsxs)(
             import_Stack.default,
             {
               direction: "row",
               spacing: 0.75,
               sx: { mt: 2, color: "text.disabled", alignItems: "center" },
               children: [
-                author && /* @__PURE__ */ (0, import_jsx_runtime12.jsx)(import_Typography3.default, { variant: "caption", sx: { fontWeight: "fontWeightMedium" }, children: author }),
-                author && source && /* @__PURE__ */ (0, import_jsx_runtime12.jsx)(import_Typography3.default, { variant: "caption", "aria-hidden": true, sx: { opacity: 0.6 }, children: "\xB7" }),
-                source && /* @__PURE__ */ (0, import_jsx_runtime12.jsx)(import_Typography3.default, { variant: "caption", sx: { opacity: 0.72 }, children: source })
+                author && /* @__PURE__ */ (0, import_jsx_runtime13.jsx)(import_Typography3.default, { variant: "caption", sx: { fontWeight: "fontWeightMedium" }, children: author }),
+                author && source && /* @__PURE__ */ (0, import_jsx_runtime13.jsx)(import_Typography3.default, { variant: "caption", "aria-hidden": true, sx: { opacity: 0.6 }, children: "\xB7" }),
+                source && /* @__PURE__ */ (0, import_jsx_runtime13.jsx)(import_Typography3.default, { variant: "caption", sx: { opacity: 0.72 }, children: source })
               ]
             }
           )
@@ -1103,9 +1177,9 @@ var STAT_CARD_SPARKLINE_OPTIONS = {
 };
 
 // src/components/material/surfaces/card/stat/stat-card-shape.tsx
-var import_jsx_runtime13 = require("react/jsx-runtime");
+var import_jsx_runtime14 = require("react/jsx-runtime");
 function StatCardShape() {
-  return /* @__PURE__ */ (0, import_jsx_runtime13.jsxs)(
+  return /* @__PURE__ */ (0, import_jsx_runtime14.jsxs)(
     "svg",
     {
       width: "120",
@@ -1114,7 +1188,7 @@ function StatCardShape() {
       fill: "none",
       xmlns: "http://www.w3.org/2000/svg",
       children: [
-        /* @__PURE__ */ (0, import_jsx_runtime13.jsx)(
+        /* @__PURE__ */ (0, import_jsx_runtime14.jsx)(
           "rect",
           {
             x: "14",
@@ -1127,7 +1201,7 @@ function StatCardShape() {
             fillOpacity: "0.16"
           }
         ),
-        /* @__PURE__ */ (0, import_jsx_runtime13.jsx)(
+        /* @__PURE__ */ (0, import_jsx_runtime14.jsx)(
           "rect",
           {
             x: "32",
@@ -1146,7 +1220,7 @@ function StatCardShape() {
 }
 
 // src/components/material/surfaces/card/stat/stat-card.tsx
-var import_jsx_runtime14 = require("react/jsx-runtime");
+var import_jsx_runtime15 = require("react/jsx-runtime");
 function StatCard({
   label,
   value,
@@ -1159,17 +1233,17 @@ function StatCard({
   ...other
 }) {
   const isUp = (trend ?? 0) >= 0;
-  return /* @__PURE__ */ (0, import_jsx_runtime14.jsxs)(import_Card.default, { sx: [statCardRootSx(color), ...Array.isArray(sx) ? sx : [sx]], ...other, children: [
-    /* @__PURE__ */ (0, import_jsx_runtime14.jsx)(import_Box6.default, { "aria-hidden": "true", sx: decorationSx, children: /* @__PURE__ */ (0, import_jsx_runtime14.jsx)(StatCardShape, {}) }),
-    /* @__PURE__ */ (0, import_jsx_runtime14.jsx)(import_Box6.default, { sx: iconBoxSx, children: icon }),
-    trend !== void 0 && /* @__PURE__ */ (0, import_jsx_runtime14.jsxs)(import_Box6.default, { sx: trendBoxSx, children: [
-      /* @__PURE__ */ (0, import_jsx_runtime14.jsx)(GiselleIcon, { width: 20, icon: isUp ? "eva:trending-up-fill" : "eva:trending-down-fill" }),
-      /* @__PURE__ */ (0, import_jsx_runtime14.jsxs)(import_Typography4.default, { component: "span", variant: "subtitle2", children: [
+  return /* @__PURE__ */ (0, import_jsx_runtime15.jsxs)(import_Card.default, { sx: [statCardRootSx(color), ...Array.isArray(sx) ? sx : [sx]], ...other, children: [
+    /* @__PURE__ */ (0, import_jsx_runtime15.jsx)(import_Box6.default, { "aria-hidden": "true", sx: decorationSx, children: /* @__PURE__ */ (0, import_jsx_runtime15.jsx)(StatCardShape, {}) }),
+    /* @__PURE__ */ (0, import_jsx_runtime15.jsx)(import_Box6.default, { sx: iconBoxSx, children: icon }),
+    trend !== void 0 && /* @__PURE__ */ (0, import_jsx_runtime15.jsxs)(import_Box6.default, { sx: trendBoxSx, children: [
+      /* @__PURE__ */ (0, import_jsx_runtime15.jsx)(GiselleIcon, { width: 20, icon: isUp ? "eva:trending-up-fill" : "eva:trending-down-fill" }),
+      /* @__PURE__ */ (0, import_jsx_runtime15.jsxs)(import_Typography4.default, { component: "span", variant: "subtitle2", children: [
         isUp && "+",
         trend,
         "%"
       ] }),
-      trendLabel && /* @__PURE__ */ (0, import_jsx_runtime14.jsx)(
+      trendLabel && /* @__PURE__ */ (0, import_jsx_runtime15.jsx)(
         import_Typography4.default,
         {
           component: "span",
@@ -1179,10 +1253,10 @@ function StatCard({
         }
       )
     ] }),
-    /* @__PURE__ */ (0, import_jsx_runtime14.jsxs)(import_Box6.default, { sx: contentRowSx, children: [
-      /* @__PURE__ */ (0, import_jsx_runtime14.jsxs)(import_Box6.default, { sx: labelsBoxSx, children: [
-        /* @__PURE__ */ (0, import_jsx_runtime14.jsx)(import_Typography4.default, { variant: "subtitle2", sx: { mb: 0.5 }, children: label }),
-        /* @__PURE__ */ (0, import_jsx_runtime14.jsx)(import_Typography4.default, { variant: "h4", children: value })
+    /* @__PURE__ */ (0, import_jsx_runtime15.jsxs)(import_Box6.default, { sx: contentRowSx, children: [
+      /* @__PURE__ */ (0, import_jsx_runtime15.jsxs)(import_Box6.default, { sx: labelsBoxSx, children: [
+        /* @__PURE__ */ (0, import_jsx_runtime15.jsx)(import_Typography4.default, { variant: "subtitle2", sx: { mb: 0.5 }, children: label }),
+        /* @__PURE__ */ (0, import_jsx_runtime15.jsx)(import_Typography4.default, { variant: "h4", children: value })
       ] }),
       chart
     ] })
@@ -1191,9 +1265,9 @@ function StatCard({
 
 // src/components/material/surfaces/card/stat-row/stat-card-row.tsx
 var import_Grid = __toESM(require("@mui/material/Grid"), 1);
-var import_jsx_runtime15 = require("react/jsx-runtime");
+var import_jsx_runtime16 = require("react/jsx-runtime");
 function StatCardRow({ items, renderChart, sx, ...other }) {
-  return /* @__PURE__ */ (0, import_jsx_runtime15.jsx)(import_Grid.default, { container: true, spacing: 3, sx: [...Array.isArray(sx) ? sx : [sx]], ...other, children: items.map((item) => /* @__PURE__ */ (0, import_jsx_runtime15.jsx)(import_Grid.default, { size: { xs: 12, sm: 6, md: 3 }, children: /* @__PURE__ */ (0, import_jsx_runtime15.jsx)(
+  return /* @__PURE__ */ (0, import_jsx_runtime16.jsx)(import_Grid.default, { container: true, spacing: 3, sx: [...Array.isArray(sx) ? sx : [sx]], ...other, children: items.map((item) => /* @__PURE__ */ (0, import_jsx_runtime16.jsx)(import_Grid.default, { size: { xs: 12, sm: 6, md: 3 }, children: /* @__PURE__ */ (0, import_jsx_runtime16.jsx)(
     StatCard,
     {
       label: item.label,
@@ -1201,7 +1275,7 @@ function StatCardRow({ items, renderChart, sx, ...other }) {
       trend: item.trend,
       trendLabel: item.trendLabel,
       color: item.color,
-      icon: /* @__PURE__ */ (0, import_jsx_runtime15.jsx)(GiselleIcon, { icon: item.iconId, width: 28 }),
+      icon: /* @__PURE__ */ (0, import_jsx_runtime16.jsx)(GiselleIcon, { icon: item.iconId, width: 28 }),
       chart: renderChart?.(item)
     }
   ) }, item.label)) });
@@ -1223,7 +1297,7 @@ var avatarSx = {
 };
 
 // src/components/material/surfaces/card/profile-summary/profile-summary-card.tsx
-var import_jsx_runtime16 = require("react/jsx-runtime");
+var import_jsx_runtime17 = require("react/jsx-runtime");
 function ProfileSummaryCard({
   name,
   role,
@@ -1232,35 +1306,35 @@ function ProfileSummaryCard({
   sx,
   ...other
 }) {
-  return /* @__PURE__ */ (0, import_jsx_runtime16.jsxs)(import_Paper3.default, { sx: [{ p: 3, textAlign: "center" }, ...Array.isArray(sx) ? sx : [sx]], ...other, children: [
-    /* @__PURE__ */ (0, import_jsx_runtime16.jsx)(import_Avatar.default, { src: avatarSrc, alt: name, sx: avatarSx, children: name[0] }),
-    /* @__PURE__ */ (0, import_jsx_runtime16.jsx)(import_Typography5.default, { variant: "h6", children: name }),
-    role && /* @__PURE__ */ (0, import_jsx_runtime16.jsx)(import_Typography5.default, { variant: "body2", color: "text.secondary", sx: { mb: 2 }, children: role }),
-    /* @__PURE__ */ (0, import_jsx_runtime16.jsx)(import_Box7.default, { sx: { display: "flex", justifyContent: "center" }, children: stats.map((stat, index) => /* @__PURE__ */ (0, import_jsx_runtime16.jsxs)(import_Box7.default, { children: [
-      index > 0 && /* @__PURE__ */ (0, import_jsx_runtime16.jsx)(import_Divider.default, { orientation: "vertical", flexItem: true }),
-      /* @__PURE__ */ (0, import_jsx_runtime16.jsxs)(import_Box7.default, { sx: { px: 2 }, children: [
-        /* @__PURE__ */ (0, import_jsx_runtime16.jsx)(import_Typography5.default, { variant: "subtitle1", children: stat.value }),
-        /* @__PURE__ */ (0, import_jsx_runtime16.jsx)(import_Typography5.default, { variant: "caption", color: "text.secondary", children: stat.label })
+  return /* @__PURE__ */ (0, import_jsx_runtime17.jsxs)(import_Paper3.default, { sx: [{ p: 3, textAlign: "center" }, ...Array.isArray(sx) ? sx : [sx]], ...other, children: [
+    /* @__PURE__ */ (0, import_jsx_runtime17.jsx)(import_Avatar.default, { src: avatarSrc, alt: name, sx: avatarSx, children: name[0] }),
+    /* @__PURE__ */ (0, import_jsx_runtime17.jsx)(import_Typography5.default, { variant: "h6", children: name }),
+    role && /* @__PURE__ */ (0, import_jsx_runtime17.jsx)(import_Typography5.default, { variant: "body2", color: "text.secondary", sx: { mb: 2 }, children: role }),
+    /* @__PURE__ */ (0, import_jsx_runtime17.jsx)(import_Box7.default, { sx: { display: "flex", justifyContent: "center" }, children: stats.map((stat, index) => /* @__PURE__ */ (0, import_jsx_runtime17.jsxs)(import_Box7.default, { children: [
+      index > 0 && /* @__PURE__ */ (0, import_jsx_runtime17.jsx)(import_Divider.default, { orientation: "vertical", flexItem: true }),
+      /* @__PURE__ */ (0, import_jsx_runtime17.jsxs)(import_Box7.default, { sx: { px: 2 }, children: [
+        /* @__PURE__ */ (0, import_jsx_runtime17.jsx)(import_Typography5.default, { variant: "subtitle1", children: stat.value }),
+        /* @__PURE__ */ (0, import_jsx_runtime17.jsx)(import_Typography5.default, { variant: "caption", color: "text.secondary", children: stat.label })
       ] })
     ] }, stat.label)) })
   ] });
 }
 
 // src/utils/hooks/use-nested-checklist/use-nested-checklist.ts
-var import_react12 = require("react");
+var import_react13 = require("react");
 function useNestedChecklist(initialParentDone, initialChildrenDone) {
-  const [parentDone, setParentDone] = (0, import_react12.useState)(initialParentDone);
-  const [childrenDone, setChildrenDone] = (0, import_react12.useState)(initialChildrenDone);
-  const indeterminate = (0, import_react12.useMemo)(
+  const [parentDone, setParentDone] = (0, import_react13.useState)(initialParentDone);
+  const [childrenDone, setChildrenDone] = (0, import_react13.useState)(initialChildrenDone);
+  const indeterminate = (0, import_react13.useMemo)(
     () => childrenDone.some(Boolean) && !childrenDone.every(Boolean),
     [childrenDone]
   );
-  const toggleParent = (0, import_react12.useCallback)(() => {
+  const toggleParent = (0, import_react13.useCallback)(() => {
     const next = !parentDone;
     setParentDone(next);
     setChildrenDone((prev) => prev.map(() => next));
   }, [parentDone]);
-  const toggleChild = (0, import_react12.useCallback)((index) => {
+  const toggleChild = (0, import_react13.useCallback)((index) => {
     setChildrenDone((prev) => {
       const next = prev.map((v, i) => i === index ? !v : v);
       setParentDone(next.every(Boolean));
@@ -1284,26 +1358,26 @@ var iconActionBarRootSx = {
 };
 
 // src/components/material/data-display/icon/action-bar/icon-action-bar.defaults.tsx
-var import_jsx_runtime17 = require("react/jsx-runtime");
+var import_jsx_runtime18 = require("react/jsx-runtime");
 var DEFAULT_ICON_ACTIONS = [
-  { tooltip: "Edit", icon: /* @__PURE__ */ (0, import_jsx_runtime17.jsx)(GiselleIcon, { icon: "solar:pen-bold" }) },
-  { tooltip: "View", icon: /* @__PURE__ */ (0, import_jsx_runtime17.jsx)(GiselleIcon, { icon: "solar:eye-bold" }) },
+  { tooltip: "Edit", icon: /* @__PURE__ */ (0, import_jsx_runtime18.jsx)(GiselleIcon, { icon: "solar:pen-bold" }) },
+  { tooltip: "View", icon: /* @__PURE__ */ (0, import_jsx_runtime18.jsx)(GiselleIcon, { icon: "solar:eye-bold" }) },
   {
     tooltip: "Print",
-    icon: /* @__PURE__ */ (0, import_jsx_runtime17.jsx)(GiselleIcon, { icon: "solar:printer-minimalistic-bold" })
+    icon: /* @__PURE__ */ (0, import_jsx_runtime18.jsx)(GiselleIcon, { icon: "solar:printer-minimalistic-bold" })
   },
-  { tooltip: "Send", icon: /* @__PURE__ */ (0, import_jsx_runtime17.jsx)(GiselleIcon, { icon: "mdi:email" }) },
-  { tooltip: "Share", icon: /* @__PURE__ */ (0, import_jsx_runtime17.jsx)(GiselleIcon, { icon: "solar:share-bold" }) }
+  { tooltip: "Send", icon: /* @__PURE__ */ (0, import_jsx_runtime18.jsx)(GiselleIcon, { icon: "mdi:email" }) },
+  { tooltip: "Share", icon: /* @__PURE__ */ (0, import_jsx_runtime18.jsx)(GiselleIcon, { icon: "solar:share-bold" }) }
 ];
 
 // src/components/material/data-display/icon/action-bar/icon-action-bar.tsx
-var import_jsx_runtime18 = require("react/jsx-runtime");
+var import_jsx_runtime19 = require("react/jsx-runtime");
 function IconActionBar({
   actions = DEFAULT_ICON_ACTIONS,
   sx,
   ...other
 }) {
-  return /* @__PURE__ */ (0, import_jsx_runtime18.jsx)(import_Box8.default, { sx: [iconActionBarRootSx, ...Array.isArray(sx) ? sx : [sx]], ...other, children: actions.map((item, index) => {
+  return /* @__PURE__ */ (0, import_jsx_runtime19.jsx)(import_Box8.default, { sx: [iconActionBarRootSx, ...Array.isArray(sx) ? sx : [sx]], ...other, children: actions.map((item, index) => {
     const label = item["aria-label"] ?? item.tooltip;
     const buttonProps = {
       onClick: item.onClick,
@@ -1312,12 +1386,12 @@ function IconActionBar({
       ...item.component !== void 0 && { component: item.component },
       ...item.href !== void 0 && { href: item.href }
     };
-    return /* @__PURE__ */ (0, import_jsx_runtime18.jsx)(
+    return /* @__PURE__ */ (0, import_jsx_runtime19.jsx)(
       import_Tooltip.default,
       {
         title: item.tooltip,
         placement: item.tooltipPlacement ?? "bottom",
-        children: /* @__PURE__ */ (0, import_jsx_runtime18.jsx)("span", { children: /* @__PURE__ */ (0, import_jsx_runtime18.jsx)(import_IconButton2.default, { ...buttonProps, children: item.icon }) })
+        children: /* @__PURE__ */ (0, import_jsx_runtime19.jsx)("span", { children: /* @__PURE__ */ (0, import_jsx_runtime19.jsx)(import_IconButton2.default, { ...buttonProps, children: item.icon }) })
       },
       `${item.tooltip}-${index}`
     );
@@ -1329,7 +1403,7 @@ var import_Box9 = __toESM(require("@mui/material/Box"), 1);
 var import_Grid2 = __toESM(require("@mui/material/Grid"), 1);
 var import_Stack2 = __toESM(require("@mui/material/Stack"), 1);
 var import_Typography6 = __toESM(require("@mui/material/Typography"), 1);
-var import_jsx_runtime19 = require("react/jsx-runtime");
+var import_jsx_runtime20 = require("react/jsx-runtime");
 function TwoColumnShowcaseRow({
   text,
   controls,
@@ -1342,7 +1416,7 @@ function TwoColumnShowcaseRow({
 }) {
   const isVertical = orientation === "column" || orientation === "column-reverse";
   const itemSize = isVertical ? { xs: 12 } : { xs: 12, md: 6 };
-  return /* @__PURE__ */ (0, import_jsx_runtime19.jsxs)(
+  return /* @__PURE__ */ (0, import_jsx_runtime20.jsxs)(
     import_Grid2.default,
     {
       container: true,
@@ -1354,19 +1428,19 @@ function TwoColumnShowcaseRow({
       ],
       ...other,
       children: [
-        text && /* @__PURE__ */ (0, import_jsx_runtime19.jsx)(import_Grid2.default, { size: itemSize, children: /* @__PURE__ */ (0, import_jsx_runtime19.jsxs)(
+        text && /* @__PURE__ */ (0, import_jsx_runtime20.jsx)(import_Grid2.default, { size: itemSize, children: /* @__PURE__ */ (0, import_jsx_runtime20.jsxs)(
           import_Stack2.default,
           {
             spacing: 2,
             sx: [{ maxWidth: 520 }, ...Array.isArray(textSx) ? textSx : [textSx]],
             children: [
-              text.overline && /* @__PURE__ */ (0, import_jsx_runtime19.jsx)(import_Typography6.default, { variant: "overline", sx: { color: "text.secondary" }, children: text.overline }),
-              text.heading && /* @__PURE__ */ (0, import_jsx_runtime19.jsx)(import_Typography6.default, { variant: "h4", children: text.heading }),
-              text.description && /* @__PURE__ */ (0, import_jsx_runtime19.jsx)(import_Typography6.default, { variant: "body1", color: "text.secondary", children: text.description })
+              text.overline && /* @__PURE__ */ (0, import_jsx_runtime20.jsx)(import_Typography6.default, { variant: "overline", sx: { color: "text.secondary" }, children: text.overline }),
+              text.heading && /* @__PURE__ */ (0, import_jsx_runtime20.jsx)(import_Typography6.default, { variant: "h4", children: text.heading }),
+              text.description && /* @__PURE__ */ (0, import_jsx_runtime20.jsx)(import_Typography6.default, { variant: "body1", color: "text.secondary", children: text.description })
             ]
           }
         ) }),
-        /* @__PURE__ */ (0, import_jsx_runtime19.jsx)(import_Grid2.default, { size: itemSize, sx: { minWidth: 0 }, children: /* @__PURE__ */ (0, import_jsx_runtime19.jsx)(
+        /* @__PURE__ */ (0, import_jsx_runtime20.jsx)(import_Grid2.default, { size: itemSize, sx: { minWidth: 0 }, children: /* @__PURE__ */ (0, import_jsx_runtime20.jsx)(
           import_Stack2.default,
           {
             spacing: 2,
@@ -1374,7 +1448,7 @@ function TwoColumnShowcaseRow({
               { alignItems: controlsAlign, width: 1, minWidth: 0 },
               ...Array.isArray(controlsSx) ? controlsSx : [controlsSx]
             ],
-            children: /* @__PURE__ */ (0, import_jsx_runtime19.jsx)(import_Box9.default, { sx: { width: 1, minWidth: 0 }, children: controls })
+            children: /* @__PURE__ */ (0, import_jsx_runtime20.jsx)(import_Box9.default, { sx: { width: 1, minWidth: 0 }, children: controls })
           }
         ) })
       ]
@@ -1399,9 +1473,9 @@ var txtGradientSpanSx = (theme) => ({
 
 // src/components/material/layout/section-title/section-caption.tsx
 var import_Box10 = __toESM(require("@mui/material/Box"), 1);
-var import_jsx_runtime20 = require("react/jsx-runtime");
+var import_jsx_runtime21 = require("react/jsx-runtime");
 function SectionCaption({ title, sx, ...other }) {
-  return /* @__PURE__ */ (0, import_jsx_runtime20.jsx)(
+  return /* @__PURE__ */ (0, import_jsx_runtime21.jsx)(
     import_Box10.default,
     {
       component: "span",
@@ -1419,7 +1493,7 @@ function SectionCaption({ title, sx, ...other }) {
 }
 
 // src/components/material/layout/section-title/section-title.tsx
-var import_jsx_runtime21 = require("react/jsx-runtime");
+var import_jsx_runtime22 = require("react/jsx-runtime");
 function SectionTitle({
   sx,
   title,
@@ -1429,7 +1503,7 @@ function SectionTitle({
   description,
   ...other
 }) {
-  return /* @__PURE__ */ (0, import_jsx_runtime21.jsxs)(
+  return /* @__PURE__ */ (0, import_jsx_runtime22.jsxs)(
     import_Box11.default,
     {
       sx: [
@@ -1442,13 +1516,13 @@ function SectionTitle({
       ],
       ...other,
       children: [
-        caption && /* @__PURE__ */ (0, import_jsx_runtime21.jsx)(SectionCaption, { title: caption, sx: slotProps?.caption?.sx }),
-        /* @__PURE__ */ (0, import_jsx_runtime21.jsxs)(import_Typography7.default, { component: "h2", variant: "h2", sx: slotProps?.title?.sx, children: [
+        caption && /* @__PURE__ */ (0, import_jsx_runtime22.jsx)(SectionCaption, { title: caption, sx: slotProps?.caption?.sx }),
+        /* @__PURE__ */ (0, import_jsx_runtime22.jsxs)(import_Typography7.default, { component: "h2", variant: "h2", sx: slotProps?.title?.sx, children: [
           title,
           " ",
-          txtGradient && /* @__PURE__ */ (0, import_jsx_runtime21.jsx)(import_Box11.default, { component: "span", sx: txtGradientSpanSx, children: txtGradient })
+          txtGradient && /* @__PURE__ */ (0, import_jsx_runtime22.jsx)(import_Box11.default, { component: "span", sx: txtGradientSpanSx, children: txtGradient })
         ] }),
-        description && /* @__PURE__ */ (0, import_jsx_runtime21.jsx)(
+        description && /* @__PURE__ */ (0, import_jsx_runtime22.jsx)(
           import_Box11.default,
           {
             sx: [
@@ -1465,7 +1539,7 @@ function SectionTitle({
 
 // src/components/material/layout/section-container/section-container.tsx
 var import_Container = __toESM(require("@mui/material/Container"), 1);
-var import_jsx_runtime22 = require("react/jsx-runtime");
+var import_jsx_runtime23 = require("react/jsx-runtime");
 function SectionContainer({
   children,
   maxWidth = "lg",
@@ -1473,7 +1547,7 @@ function SectionContainer({
   sx,
   ...other
 }) {
-  return /* @__PURE__ */ (0, import_jsx_runtime22.jsx)(import_Container.default, { maxWidth, sx: [{ py }, ...Array.isArray(sx) ? sx : [sx]], ...other, children });
+  return /* @__PURE__ */ (0, import_jsx_runtime23.jsx)(import_Container.default, { maxWidth, sx: [{ py }, ...Array.isArray(sx) ? sx : [sx]], ...other, children });
 }
 
 // src/components/section/hero/section/hero-section.tsx
@@ -1506,7 +1580,7 @@ var heroIconsSlotSx = {
 };
 
 // src/components/section/hero/section/hero-section.tsx
-var import_jsx_runtime23 = require("react/jsx-runtime");
+var import_jsx_runtime24 = require("react/jsx-runtime");
 function HeroSection({
   heading,
   text,
@@ -1516,11 +1590,11 @@ function HeroSection({
   sx,
   ...other
 }) {
-  return /* @__PURE__ */ (0, import_jsx_runtime23.jsx)(import_Box12.default, { sx: [heroRootSx(color), ...Array.isArray(sx) ? sx : [sx]], ...other, children: /* @__PURE__ */ (0, import_jsx_runtime23.jsxs)(import_Container2.default, { maxWidth: "lg", sx: heroInnerSx, children: [
+  return /* @__PURE__ */ (0, import_jsx_runtime24.jsx)(import_Box12.default, { sx: [heroRootSx(color), ...Array.isArray(sx) ? sx : [sx]], ...other, children: /* @__PURE__ */ (0, import_jsx_runtime24.jsxs)(import_Container2.default, { maxWidth: "lg", sx: heroInnerSx, children: [
     heading,
     text,
-    actions && /* @__PURE__ */ (0, import_jsx_runtime23.jsx)(import_Box12.default, { sx: heroActionsRowSx, children: actions }),
-    icons && /* @__PURE__ */ (0, import_jsx_runtime23.jsx)(import_Box12.default, { sx: heroIconsSlotSx, children: icons })
+    actions && /* @__PURE__ */ (0, import_jsx_runtime24.jsx)(import_Box12.default, { sx: heroActionsRowSx, children: actions }),
+    icons && /* @__PURE__ */ (0, import_jsx_runtime24.jsx)(import_Box12.default, { sx: heroIconsSlotSx, children: icons })
   ] }) });
 }
 
@@ -1567,7 +1641,7 @@ var gradientTextSx = (color1, color2, duration) => ({
 });
 
 // src/components/material/data-display/animated-gradient/animated-gradient-text.tsx
-var import_jsx_runtime24 = require("react/jsx-runtime");
+var import_jsx_runtime25 = require("react/jsx-runtime");
 function AnimatedGradientText({
   children,
   color1 = ANIMATED_GRADIENT_DEFAULT_COLOR1,
@@ -1577,7 +1651,7 @@ function AnimatedGradientText({
   sx,
   ...other
 }) {
-  return /* @__PURE__ */ (0, import_jsx_runtime24.jsx)(
+  return /* @__PURE__ */ (0, import_jsx_runtime25.jsx)(
     import_Box13.default,
     {
       component,
@@ -1633,7 +1707,7 @@ var iconSlotSx = {
 };
 
 // src/components/material/data-display/icon/tech-strip/tech-icon-strip.tsx
-var import_jsx_runtime25 = require("react/jsx-runtime");
+var import_jsx_runtime26 = require("react/jsx-runtime");
 function TechIconStrip({
   items,
   heading,
@@ -1641,11 +1715,11 @@ function TechIconStrip({
   sx,
   ...other
 }) {
-  return /* @__PURE__ */ (0, import_jsx_runtime25.jsxs)(import_Box14.default, { sx: [stripRootSx, ...Array.isArray(sx) ? sx : [sx]], ...other, children: [
-    heading && /* @__PURE__ */ (0, import_jsx_runtime25.jsx)(import_Typography8.default, { component: "span", sx: titleSx, variant: "overline", children: heading }),
-    /* @__PURE__ */ (0, import_jsx_runtime25.jsx)(import_Box14.default, { sx: stripWrapperSx(centeredWrap), children: items.map((item) => /* @__PURE__ */ (0, import_jsx_runtime25.jsxs)(import_Box14.default, { sx: itemSx, children: [
-      /* @__PURE__ */ (0, import_jsx_runtime25.jsx)(import_Box14.default, { "aria-hidden": true, sx: iconSlotSx, children: item.icon }),
-      /* @__PURE__ */ (0, import_jsx_runtime25.jsx)(import_Typography8.default, { sx: { fontSize: TECH_ICON_STRIP_LABEL_FONT_SIZE }, variant: "caption", children: item.label })
+  return /* @__PURE__ */ (0, import_jsx_runtime26.jsxs)(import_Box14.default, { sx: [stripRootSx, ...Array.isArray(sx) ? sx : [sx]], ...other, children: [
+    heading && /* @__PURE__ */ (0, import_jsx_runtime26.jsx)(import_Typography8.default, { component: "span", sx: titleSx, variant: "overline", children: heading }),
+    /* @__PURE__ */ (0, import_jsx_runtime26.jsx)(import_Box14.default, { sx: stripWrapperSx(centeredWrap), children: items.map((item) => /* @__PURE__ */ (0, import_jsx_runtime26.jsxs)(import_Box14.default, { sx: itemSx, children: [
+      /* @__PURE__ */ (0, import_jsx_runtime26.jsx)(import_Box14.default, { "aria-hidden": true, sx: iconSlotSx, children: item.icon }),
+      /* @__PURE__ */ (0, import_jsx_runtime26.jsx)(import_Typography8.default, { sx: { fontSize: TECH_ICON_STRIP_LABEL_FONT_SIZE }, variant: "caption", children: item.label })
     ] }, item.label)) })
   ] });
 }
@@ -1675,6 +1749,7 @@ function TechIconStrip({
   SectionContainer,
   SectionTitle,
   SelectableCard,
+  SelectableLabel,
   StatCard,
   StatCardRow,
   StatusLabel,
