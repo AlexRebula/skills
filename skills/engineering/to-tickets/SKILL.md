@@ -62,6 +62,13 @@ Publish the approved tickets. **How** depends on the tracker `/setup-engineering
 - **Local files** → write one file per ticket under `.scratch/<feature-slug>/issues/<NN>-<slug>.md`, numbered from `01` in dependency order (blockers first). Each file's "Blocked by" lists the numbers/titles it depends on. Use the per-ticket file template below: one ticket per file, never a single combined file.
 - **A real issue tracker (GitHub, Linear, …)** → publish one issue per ticket in dependency order (blockers first) so each ticket's blocking edges can reference real identifiers. Use the platform's native blocking / sub-issue relationship where it has one; otherwise set each ticket's "Blocked by" to the blocking issues. Apply the `ready-for-agent` triage label unless instructed otherwise; the tickets are agent-grabbable by construction.
 
+**Native sub-issue linking (GitHub, mandatory when a parent issue exists):** if this breakdown was split from an existing parent issue, link every child to it via GitHub's native sub-issue relationship, not just a "Parent: #N" text reference in the body:
+
+- When creating a new child issue: `gh issue create --parent <parent-number> ...`
+- When linking an already-created child: `gh issue edit <parent-number> --add-sub-issue <child-number>`
+
+A "Parent: #N" line in the body (as in `<issue-template>` below) is still useful prose context, but it is not a substitute for the native link — the native link is what drives GitHub's own progress tracking on the parent, and is what this convention requires.
+
 Work the **frontier**: any ticket whose blockers are all done. For a purely linear chain that means top to bottom.
 
 Do NOT close or modify any parent issue.
@@ -78,6 +85,13 @@ Do NOT close or modify any parent issue.
 
 - [ ] Acceptance criterion 1
 - [ ] Acceptance criterion 2
+
+**Definition of Done:**
+
+- [ ] Quality gate passes (typecheck, lint, tests)
+- [ ] `/review-pr --branch` run against this ticket's branch with zero unresolved `blocking` findings
+- [ ] Every acceptance criterion above is met
+- [ ] No behaviour shipped beyond what this ticket describes (scope creep belongs in a new ticket, not folded in silently)
 
 </local-ticket-template>
 
@@ -96,6 +110,13 @@ The end-to-end behaviour this ticket makes work, from the user's perspective, no
 - [ ] Criterion 1
 - [ ] Criterion 2
 
+## Definition of Done
+
+- [ ] Quality gate passes (typecheck, lint, tests)
+- [ ] `/review-pr --branch` run against this ticket's branch with zero unresolved `blocking` findings
+- [ ] Every acceptance criterion above is met
+- [ ] No behaviour shipped beyond what this ticket describes (scope creep belongs in a new ticket, not folded in silently)
+
 ## Blocked by
 
 - A reference to each blocking ticket, or "None (can start immediately)".
@@ -103,3 +124,11 @@ The end-to-end behaviour this ticket makes work, from the user's perspective, no
 </issue-template>
 
 In either form, avoid specific file paths or code snippets: they go stale fast. Exception: if a prototype produced a snippet that encodes a decision more precisely than prose can (state machine, reducer, schema, type shape), inline it and note briefly that it came from a prototype. Trim to the decision-rich parts, not a working demo, just the important bits.
+
+## Parent issue lifecycle
+
+This section documents the full lifecycle a parent issue goes through once tickets are split from it — from this skill's own publish step through to closing the epic.
+
+- **At publish time** (this skill): child tickets link to the parent via GitHub's native sub-issue relationship (see above). The parent itself is never closed or edited here.
+- **While children are in flight**: the parent's native sub-issue tracking shows live child-completion progress automatically. That live count is informational only — it does not by itself mean the epic is done.
+- **Closing the parent**: even once every linked child is closed, do not auto-close the parent as a side effect of the last child closing. Post a manual summary comment on the parent first — what shipped, links to the child PRs/issues, anything explicitly descoped along the way — then close it. The native tracker view answers "what happened"; the summary comment answers "is this epic actually finished, and how." Both are required before the parent closes.
