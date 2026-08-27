@@ -522,6 +522,79 @@ var StatusLabel = React.forwardRef(function StatusLabel2({ status, label, size =
 });
 StatusLabel.displayName = "StatusLabel";
 
+// src/components/material/data-display/selectable-label/selectable-label.tsx
+import { forwardRef, useCallback as useCallback3 } from "react";
+import Chip2 from "@mui/material/Chip";
+import SvgIcon from "@mui/material/SvgIcon";
+
+// src/components/material/data-display/selectable-label/selectable-label.styles.ts
+var selectableLabelSx = (selected) => (theme) => {
+  const vars = theme.vars;
+  return {
+    cursor: "pointer",
+    // Set explicitly rather than left to inherit — Chip's own base styles
+    // set `color: inherit`, which makes the label's visible color depend
+    // on whatever ambient text color the chip happens to be mounted
+    // under. StatusLabel (a working precedent) never relies on this
+    // either; every color this component shows should be self-contained.
+    color: vars.palette.text.primary,
+    transition: theme.transitions.create(["background-color", "box-shadow"], {
+      duration: theme.transitions.duration.shorter
+    }),
+    // --- Keyboard focus ring ---
+    // .Mui-focusVisible is applied on keyboard navigation only, so mouse
+    // users never see this ring — same convention as SelectableCard.
+    "&.Mui-focusVisible": {
+      outline: `3px solid ${vars.palette.primary.main}`,
+      outlineOffset: 2
+    },
+    // --- Selected ring (box-shadow, doesn't affect layout) ---
+    ...selected && {
+      boxShadow: `0 0 0 1.5px ${vars.palette.text.primary}`,
+      bgcolor: vars.palette.action.selected
+    },
+    // --- Disabled: muted + no pointer (Chip also sets aria-disabled) ---
+    "&.Mui-disabled": {
+      opacity: 0.48,
+      cursor: "default",
+      pointerEvents: "none"
+    }
+  };
+};
+var selectableLabelIconSx = {
+  fontSize: "1rem",
+  color: "text.primary"
+};
+
+// src/components/material/data-display/selectable-label/selectable-label.tsx
+import { jsx as jsx6 } from "react/jsx-runtime";
+var CHECK_ICON = /* @__PURE__ */ jsx6(SvgIcon, { sx: selectableLabelIconSx, viewBox: "0 0 24 24", "aria-hidden": "true", children: /* @__PURE__ */ jsx6("path", { d: "M9 16.2l-3.5-3.5L4 14.2l5 5 11-11-1.4-1.4z" }) });
+var SelectableLabel = forwardRef(
+  function SelectableLabel2({ selected, onSelectedChange, disabled, sx, ...other }, ref) {
+    const handleClick = useCallback3(
+      (e) => {
+        if (disabled) return;
+        e.stopPropagation();
+        onSelectedChange?.(!selected);
+      },
+      [selected, disabled, onSelectedChange]
+    );
+    return /* @__PURE__ */ jsx6(
+      Chip2,
+      {
+        ref,
+        onClick: handleClick,
+        disabled,
+        "aria-pressed": selected,
+        icon: selected ? CHECK_ICON : void 0,
+        sx: [selectableLabelSx(selected), ...Array.isArray(sx) ? sx : [sx]],
+        ...other
+      }
+    );
+  }
+);
+SelectableLabel.displayName = "SelectableLabel";
+
 // src/components/material/surfaces/card/accordion/accordion.tsx
 import { useId } from "react";
 import Box2 from "@mui/material/Box";
@@ -532,11 +605,11 @@ import AccordionSummary from "@mui/material/AccordionSummary";
 import Typography from "@mui/material/Typography";
 
 // src/components/material/input/toggle-icon-button/icon.tsx
-import { useCallback as useCallback3 } from "react";
+import { useCallback as useCallback4 } from "react";
 import IconButton from "@mui/material/IconButton";
 
 // src/components/material/input/toggle-icon-button/icon.defaults.tsx
-import SvgIcon from "@mui/material/SvgIcon";
+import SvgIcon2 from "@mui/material/SvgIcon";
 
 // src/components/material/input/toggle-icon-button/icon.const.ts
 var TOGGLE_ICON_SIZE = 20;
@@ -571,12 +644,12 @@ var defaultIconSvgSx = {
 };
 
 // src/components/material/input/toggle-icon-button/icon.defaults.tsx
-import { jsx as jsx6 } from "react/jsx-runtime";
-var DEFAULT_PRESSED_ICON = /* @__PURE__ */ jsx6(SvgIcon, { sx: defaultIconSvgSx, viewBox: "0 0 24 24", children: /* @__PURE__ */ jsx6("path", { d: "M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z" }) });
-var DEFAULT_HOVER_ICON = /* @__PURE__ */ jsx6(SvgIcon, { sx: defaultIconSvgSx, viewBox: "0 0 24 24", children: /* @__PURE__ */ jsx6("path", { d: "M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm4.59-12.42L10 14.17l-2.59-2.58L6 13l4 4 8-8-1.41-1.42z" }) });
+import { jsx as jsx7 } from "react/jsx-runtime";
+var DEFAULT_PRESSED_ICON = /* @__PURE__ */ jsx7(SvgIcon2, { sx: defaultIconSvgSx, viewBox: "0 0 24 24", children: /* @__PURE__ */ jsx7("path", { d: "M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z" }) });
+var DEFAULT_HOVER_ICON = /* @__PURE__ */ jsx7(SvgIcon2, { sx: defaultIconSvgSx, viewBox: "0 0 24 24", children: /* @__PURE__ */ jsx7("path", { d: "M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm4.59-12.42L10 14.17l-2.59-2.58L6 13l4 4 8-8-1.41-1.42z" }) });
 
 // src/components/material/input/toggle-icon-button/icon.tsx
-import { jsx as jsx7, jsxs as jsxs2 } from "react/jsx-runtime";
+import { jsx as jsx8, jsxs as jsxs2 } from "react/jsx-runtime";
 function ToggleIconButton({
   pressed,
   idleIcon,
@@ -586,7 +659,7 @@ function ToggleIconButton({
   sx,
   ...other
 }) {
-  const handleClick = useCallback3(
+  const handleClick = useCallback4(
     (e) => {
       e.stopPropagation();
       onPressedChange?.(!pressed);
@@ -602,9 +675,9 @@ function ToggleIconButton({
       sx: [rootSx, ...Array.isArray(sx) ? sx : [sx]],
       ...other,
       children: [
-        /* @__PURE__ */ jsx7("span", { className: "ti-idle", children: idleIcon }),
-        /* @__PURE__ */ jsx7("span", { className: "ti-pressed", children: pressedIcon }),
-        /* @__PURE__ */ jsx7("span", { className: "ti-hover", children: hoverIcon })
+        /* @__PURE__ */ jsx8("span", { className: "ti-idle", children: idleIcon }),
+        /* @__PURE__ */ jsx8("span", { className: "ti-pressed", children: pressedIcon }),
+        /* @__PURE__ */ jsx8("span", { className: "ti-hover", children: hoverIcon })
       ]
     }
   );
@@ -633,7 +706,7 @@ var summarySx = {
 };
 
 // src/components/material/surfaces/card/accordion/accordion.tsx
-import { jsx as jsx8, jsxs as jsxs3 } from "react/jsx-runtime";
+import { jsx as jsx9, jsxs as jsxs3 } from "react/jsx-runtime";
 function Accordion({
   title,
   children,
@@ -663,7 +736,7 @@ function Accordion({
   const hasLeadingElement = checklist || leadingIcon !== void 0 || leadingAction !== void 0;
   let leadingElement = null;
   if (checklist) {
-    leadingElement = checkIcon === void 0 ? /* @__PURE__ */ jsx8(
+    leadingElement = checkIcon === void 0 ? /* @__PURE__ */ jsx9(
       Checkbox,
       {
         checked: done,
@@ -678,7 +751,7 @@ function Accordion({
         size: "small",
         sx: checkboxSx
       }
-    ) : /* @__PURE__ */ jsx8(
+    ) : /* @__PURE__ */ jsx9(
       ToggleIconButton,
       {
         pressed: done,
@@ -690,11 +763,11 @@ function Accordion({
       }
     );
   } else if (leadingAction === void 0) {
-    leadingElement = /* @__PURE__ */ jsx8(Box2, { "aria-hidden": "true", sx: leadingIconSx, children: leadingIcon });
+    leadingElement = /* @__PURE__ */ jsx9(Box2, { "aria-hidden": "true", sx: leadingIconSx, children: leadingIcon });
   } else {
     leadingElement = leadingAction;
   }
-  const summaryContent = typeof title === "string" ? /* @__PURE__ */ jsx8(Typography, { component: "span", variant: "subtitle1", children: title }) : title;
+  const summaryContent = typeof title === "string" ? /* @__PURE__ */ jsx9(Typography, { component: "span", variant: "subtitle1", children: title }) : title;
   const accordionSummary = /* @__PURE__ */ jsxs3(
     AccordionSummary,
     {
@@ -713,7 +786,7 @@ function Accordion({
       leadingElement,
       accordionSummary
     ] }) : accordionSummary,
-    /* @__PURE__ */ jsx8(AccordionDetails, { id: detailsId, children })
+    /* @__PURE__ */ jsx9(AccordionDetails, { id: detailsId, children })
   ] });
 }
 
@@ -774,17 +847,17 @@ var metricCardDecorationSx = (color) => (theme) => ({
 
 // src/components/material/surfaces/card/metric/metric-card-decoration.tsx
 import Box3 from "@mui/material/Box";
-import { jsx as jsx9 } from "react/jsx-runtime";
+import { jsx as jsx10 } from "react/jsx-runtime";
 function MetricCardDecoration({
   color = "primary",
   sx,
   ...other
 }) {
-  return /* @__PURE__ */ jsx9(Box3, { sx: [metricCardDecorationSx(color), ...Array.isArray(sx) ? sx : [sx]], ...other });
+  return /* @__PURE__ */ jsx10(Box3, { sx: [metricCardDecorationSx(color), ...Array.isArray(sx) ? sx : [sx]], ...other });
 }
 
 // src/components/material/surfaces/card/metric/metric-card.tsx
-import { jsx as jsx10, jsxs as jsxs4 } from "react/jsx-runtime";
+import { jsx as jsx11, jsxs as jsxs4 } from "react/jsx-runtime";
 function MetricCard({
   value,
   label,
@@ -803,11 +876,11 @@ function MetricCard({
       sx: [metricCardPaperSx, ...Array.isArray(sx) ? sx : [sx]],
       ...other,
       children: [
-        decoration && /* @__PURE__ */ jsx10(Box4, { "aria-hidden": "true", sx: decorationOverlaySx, children: decoration }),
+        decoration && /* @__PURE__ */ jsx11(Box4, { "aria-hidden": "true", sx: decorationOverlaySx, children: decoration }),
         /* @__PURE__ */ jsxs4(Box4, { sx: metricCardContentSx, children: [
-          /* @__PURE__ */ jsx10(Box4, { sx: { typography: "h3" }, children: value }),
-          /* @__PURE__ */ jsx10(Typography2, { noWrap: true, variant: "subtitle2", component: "div", sx: { color: "text.secondary" }, children: label }),
-          sublabel && /* @__PURE__ */ jsx10(
+          /* @__PURE__ */ jsx11(Box4, { sx: { typography: "h3" }, children: value }),
+          /* @__PURE__ */ jsx11(Typography2, { noWrap: true, variant: "subtitle2", component: "div", sx: { color: "text.secondary" }, children: label }),
+          sublabel && /* @__PURE__ */ jsx11(
             Typography2,
             {
               noWrap: true,
@@ -818,7 +891,7 @@ function MetricCard({
             }
           )
         ] }),
-        icon && /* @__PURE__ */ jsx10(Box4, { "aria-hidden": "true", sx: metricCardIconBoxSx(color), children: icon })
+        icon && /* @__PURE__ */ jsx11(Box4, { "aria-hidden": "true", sx: metricCardIconBoxSx(color), children: icon })
       ]
     }
   );
@@ -869,7 +942,7 @@ var selectableCardSx = (selected) => (theme) => ({
 });
 
 // src/components/material/surfaces/card/selectable/selectable-card.tsx
-import { jsx as jsx11 } from "react/jsx-runtime";
+import { jsx as jsx12 } from "react/jsx-runtime";
 function SelectableCard({
   selected = false,
   disabled = false,
@@ -877,7 +950,7 @@ function SelectableCard({
   sx,
   ...other
 }) {
-  return /* @__PURE__ */ jsx11(
+  return /* @__PURE__ */ jsx12(
     ButtonBase,
     {
       disabled,
@@ -921,7 +994,7 @@ var quoteCardPaperSx = (color) => (theme) => ({
 });
 
 // src/components/material/surfaces/card/quote/quote-card.tsx
-import { jsx as jsx12, jsxs as jsxs5 } from "react/jsx-runtime";
+import { jsx as jsx13, jsxs as jsxs5 } from "react/jsx-runtime";
 function QuoteCard({
   quote,
   author,
@@ -931,16 +1004,16 @@ function QuoteCard({
   sx,
   ...other
 }) {
-  return /* @__PURE__ */ jsx12(
+  return /* @__PURE__ */ jsx13(
     Paper2,
     {
       elevation,
       sx: [quoteCardPaperSx(color), ...Array.isArray(sx) ? sx : [sx]],
       ...other,
       children: /* @__PURE__ */ jsxs5(Box5, { sx: { display: "flex", gap: 2 }, children: [
-        /* @__PURE__ */ jsx12(Typography3, { "aria-hidden": true, sx: quoteMarkSx(color), children: "\u201C" }),
+        /* @__PURE__ */ jsx13(Typography3, { "aria-hidden": true, sx: quoteMarkSx(color), children: "\u201C" }),
         /* @__PURE__ */ jsxs5(Box5, { sx: { flex: 1, minWidth: 0 }, children: [
-          /* @__PURE__ */ jsx12(Typography3, { variant: "body1", sx: quoteTextSx, children: quote }),
+          /* @__PURE__ */ jsx13(Typography3, { variant: "body1", sx: quoteTextSx, children: quote }),
           (author || source) && /* @__PURE__ */ jsxs5(
             Stack,
             {
@@ -948,9 +1021,9 @@ function QuoteCard({
               spacing: 0.75,
               sx: { mt: 2, color: "text.disabled", alignItems: "center" },
               children: [
-                author && /* @__PURE__ */ jsx12(Typography3, { variant: "caption", sx: { fontWeight: "fontWeightMedium" }, children: author }),
-                author && source && /* @__PURE__ */ jsx12(Typography3, { variant: "caption", "aria-hidden": true, sx: { opacity: 0.6 }, children: "\xB7" }),
-                source && /* @__PURE__ */ jsx12(Typography3, { variant: "caption", sx: { opacity: 0.72 }, children: source })
+                author && /* @__PURE__ */ jsx13(Typography3, { variant: "caption", sx: { fontWeight: "fontWeightMedium" }, children: author }),
+                author && source && /* @__PURE__ */ jsx13(Typography3, { variant: "caption", "aria-hidden": true, sx: { opacity: 0.6 }, children: "\xB7" }),
+                source && /* @__PURE__ */ jsx13(Typography3, { variant: "caption", sx: { opacity: 0.72 }, children: source })
               ]
             }
           )
@@ -1022,7 +1095,7 @@ var STAT_CARD_SPARKLINE_OPTIONS = {
 };
 
 // src/components/material/surfaces/card/stat/stat-card-shape.tsx
-import { jsx as jsx13, jsxs as jsxs6 } from "react/jsx-runtime";
+import { jsx as jsx14, jsxs as jsxs6 } from "react/jsx-runtime";
 function StatCardShape() {
   return /* @__PURE__ */ jsxs6(
     "svg",
@@ -1033,7 +1106,7 @@ function StatCardShape() {
       fill: "none",
       xmlns: "http://www.w3.org/2000/svg",
       children: [
-        /* @__PURE__ */ jsx13(
+        /* @__PURE__ */ jsx14(
           "rect",
           {
             x: "14",
@@ -1046,7 +1119,7 @@ function StatCardShape() {
             fillOpacity: "0.16"
           }
         ),
-        /* @__PURE__ */ jsx13(
+        /* @__PURE__ */ jsx14(
           "rect",
           {
             x: "32",
@@ -1065,7 +1138,7 @@ function StatCardShape() {
 }
 
 // src/components/material/surfaces/card/stat/stat-card.tsx
-import { jsx as jsx14, jsxs as jsxs7 } from "react/jsx-runtime";
+import { jsx as jsx15, jsxs as jsxs7 } from "react/jsx-runtime";
 function StatCard({
   label,
   value,
@@ -1079,16 +1152,16 @@ function StatCard({
 }) {
   const isUp = (trend ?? 0) >= 0;
   return /* @__PURE__ */ jsxs7(Card, { sx: [statCardRootSx(color), ...Array.isArray(sx) ? sx : [sx]], ...other, children: [
-    /* @__PURE__ */ jsx14(Box6, { "aria-hidden": "true", sx: decorationSx, children: /* @__PURE__ */ jsx14(StatCardShape, {}) }),
-    /* @__PURE__ */ jsx14(Box6, { sx: iconBoxSx, children: icon }),
+    /* @__PURE__ */ jsx15(Box6, { "aria-hidden": "true", sx: decorationSx, children: /* @__PURE__ */ jsx15(StatCardShape, {}) }),
+    /* @__PURE__ */ jsx15(Box6, { sx: iconBoxSx, children: icon }),
     trend !== void 0 && /* @__PURE__ */ jsxs7(Box6, { sx: trendBoxSx, children: [
-      /* @__PURE__ */ jsx14(GiselleIcon, { width: 20, icon: isUp ? "eva:trending-up-fill" : "eva:trending-down-fill" }),
+      /* @__PURE__ */ jsx15(GiselleIcon, { width: 20, icon: isUp ? "eva:trending-up-fill" : "eva:trending-down-fill" }),
       /* @__PURE__ */ jsxs7(Typography4, { component: "span", variant: "subtitle2", children: [
         isUp && "+",
         trend,
         "%"
       ] }),
-      trendLabel && /* @__PURE__ */ jsx14(
+      trendLabel && /* @__PURE__ */ jsx15(
         Typography4,
         {
           component: "span",
@@ -1100,8 +1173,8 @@ function StatCard({
     ] }),
     /* @__PURE__ */ jsxs7(Box6, { sx: contentRowSx, children: [
       /* @__PURE__ */ jsxs7(Box6, { sx: labelsBoxSx, children: [
-        /* @__PURE__ */ jsx14(Typography4, { variant: "subtitle2", sx: { mb: 0.5 }, children: label }),
-        /* @__PURE__ */ jsx14(Typography4, { variant: "h4", children: value })
+        /* @__PURE__ */ jsx15(Typography4, { variant: "subtitle2", sx: { mb: 0.5 }, children: label }),
+        /* @__PURE__ */ jsx15(Typography4, { variant: "h4", children: value })
       ] }),
       chart
     ] })
@@ -1110,9 +1183,9 @@ function StatCard({
 
 // src/components/material/surfaces/card/stat-row/stat-card-row.tsx
 import Grid from "@mui/material/Grid";
-import { jsx as jsx15 } from "react/jsx-runtime";
+import { jsx as jsx16 } from "react/jsx-runtime";
 function StatCardRow({ items, renderChart, sx, ...other }) {
-  return /* @__PURE__ */ jsx15(Grid, { container: true, spacing: 3, sx: [...Array.isArray(sx) ? sx : [sx]], ...other, children: items.map((item) => /* @__PURE__ */ jsx15(Grid, { size: { xs: 12, sm: 6, md: 3 }, children: /* @__PURE__ */ jsx15(
+  return /* @__PURE__ */ jsx16(Grid, { container: true, spacing: 3, sx: [...Array.isArray(sx) ? sx : [sx]], ...other, children: items.map((item) => /* @__PURE__ */ jsx16(Grid, { size: { xs: 12, sm: 6, md: 3 }, children: /* @__PURE__ */ jsx16(
     StatCard,
     {
       label: item.label,
@@ -1120,7 +1193,7 @@ function StatCardRow({ items, renderChart, sx, ...other }) {
       trend: item.trend,
       trendLabel: item.trendLabel,
       color: item.color,
-      icon: /* @__PURE__ */ jsx15(GiselleIcon, { icon: item.iconId, width: 28 }),
+      icon: /* @__PURE__ */ jsx16(GiselleIcon, { icon: item.iconId, width: 28 }),
       chart: renderChart?.(item)
     }
   ) }, item.label)) });
@@ -1142,7 +1215,7 @@ var avatarSx = {
 };
 
 // src/components/material/surfaces/card/profile-summary/profile-summary-card.tsx
-import { jsx as jsx16, jsxs as jsxs8 } from "react/jsx-runtime";
+import { jsx as jsx17, jsxs as jsxs8 } from "react/jsx-runtime";
 function ProfileSummaryCard({
   name,
   role,
@@ -1152,21 +1225,21 @@ function ProfileSummaryCard({
   ...other
 }) {
   return /* @__PURE__ */ jsxs8(Paper3, { sx: [{ p: 3, textAlign: "center" }, ...Array.isArray(sx) ? sx : [sx]], ...other, children: [
-    /* @__PURE__ */ jsx16(Avatar, { src: avatarSrc, alt: name, sx: avatarSx, children: name[0] }),
-    /* @__PURE__ */ jsx16(Typography5, { variant: "h6", children: name }),
-    role && /* @__PURE__ */ jsx16(Typography5, { variant: "body2", color: "text.secondary", sx: { mb: 2 }, children: role }),
-    /* @__PURE__ */ jsx16(Box7, { sx: { display: "flex", justifyContent: "center" }, children: stats.map((stat, index) => /* @__PURE__ */ jsxs8(Box7, { children: [
-      index > 0 && /* @__PURE__ */ jsx16(Divider, { orientation: "vertical", flexItem: true }),
+    /* @__PURE__ */ jsx17(Avatar, { src: avatarSrc, alt: name, sx: avatarSx, children: name[0] }),
+    /* @__PURE__ */ jsx17(Typography5, { variant: "h6", children: name }),
+    role && /* @__PURE__ */ jsx17(Typography5, { variant: "body2", color: "text.secondary", sx: { mb: 2 }, children: role }),
+    /* @__PURE__ */ jsx17(Box7, { sx: { display: "flex", justifyContent: "center" }, children: stats.map((stat, index) => /* @__PURE__ */ jsxs8(Box7, { children: [
+      index > 0 && /* @__PURE__ */ jsx17(Divider, { orientation: "vertical", flexItem: true }),
       /* @__PURE__ */ jsxs8(Box7, { sx: { px: 2 }, children: [
-        /* @__PURE__ */ jsx16(Typography5, { variant: "subtitle1", children: stat.value }),
-        /* @__PURE__ */ jsx16(Typography5, { variant: "caption", color: "text.secondary", children: stat.label })
+        /* @__PURE__ */ jsx17(Typography5, { variant: "subtitle1", children: stat.value }),
+        /* @__PURE__ */ jsx17(Typography5, { variant: "caption", color: "text.secondary", children: stat.label })
       ] })
     ] }, stat.label)) })
   ] });
 }
 
 // src/utils/hooks/use-nested-checklist/use-nested-checklist.ts
-import { useCallback as useCallback4, useMemo as useMemo3, useState as useState3 } from "react";
+import { useCallback as useCallback5, useMemo as useMemo3, useState as useState3 } from "react";
 function useNestedChecklist(initialParentDone, initialChildrenDone) {
   const [parentDone, setParentDone] = useState3(initialParentDone);
   const [childrenDone, setChildrenDone] = useState3(initialChildrenDone);
@@ -1174,12 +1247,12 @@ function useNestedChecklist(initialParentDone, initialChildrenDone) {
     () => childrenDone.some(Boolean) && !childrenDone.every(Boolean),
     [childrenDone]
   );
-  const toggleParent = useCallback4(() => {
+  const toggleParent = useCallback5(() => {
     const next = !parentDone;
     setParentDone(next);
     setChildrenDone((prev) => prev.map(() => next));
   }, [parentDone]);
-  const toggleChild = useCallback4((index) => {
+  const toggleChild = useCallback5((index) => {
     setChildrenDone((prev) => {
       const next = prev.map((v, i) => i === index ? !v : v);
       setParentDone(next.every(Boolean));
@@ -1203,26 +1276,26 @@ var iconActionBarRootSx = {
 };
 
 // src/components/material/data-display/icon/action-bar/icon-action-bar.defaults.tsx
-import { jsx as jsx17 } from "react/jsx-runtime";
+import { jsx as jsx18 } from "react/jsx-runtime";
 var DEFAULT_ICON_ACTIONS = [
-  { tooltip: "Edit", icon: /* @__PURE__ */ jsx17(GiselleIcon, { icon: "solar:pen-bold" }) },
-  { tooltip: "View", icon: /* @__PURE__ */ jsx17(GiselleIcon, { icon: "solar:eye-bold" }) },
+  { tooltip: "Edit", icon: /* @__PURE__ */ jsx18(GiselleIcon, { icon: "solar:pen-bold" }) },
+  { tooltip: "View", icon: /* @__PURE__ */ jsx18(GiselleIcon, { icon: "solar:eye-bold" }) },
   {
     tooltip: "Print",
-    icon: /* @__PURE__ */ jsx17(GiselleIcon, { icon: "solar:printer-minimalistic-bold" })
+    icon: /* @__PURE__ */ jsx18(GiselleIcon, { icon: "solar:printer-minimalistic-bold" })
   },
-  { tooltip: "Send", icon: /* @__PURE__ */ jsx17(GiselleIcon, { icon: "mdi:email" }) },
-  { tooltip: "Share", icon: /* @__PURE__ */ jsx17(GiselleIcon, { icon: "solar:share-bold" }) }
+  { tooltip: "Send", icon: /* @__PURE__ */ jsx18(GiselleIcon, { icon: "mdi:email" }) },
+  { tooltip: "Share", icon: /* @__PURE__ */ jsx18(GiselleIcon, { icon: "solar:share-bold" }) }
 ];
 
 // src/components/material/data-display/icon/action-bar/icon-action-bar.tsx
-import { jsx as jsx18 } from "react/jsx-runtime";
+import { jsx as jsx19 } from "react/jsx-runtime";
 function IconActionBar({
   actions = DEFAULT_ICON_ACTIONS,
   sx,
   ...other
 }) {
-  return /* @__PURE__ */ jsx18(Box8, { sx: [iconActionBarRootSx, ...Array.isArray(sx) ? sx : [sx]], ...other, children: actions.map((item, index) => {
+  return /* @__PURE__ */ jsx19(Box8, { sx: [iconActionBarRootSx, ...Array.isArray(sx) ? sx : [sx]], ...other, children: actions.map((item, index) => {
     const label = item["aria-label"] ?? item.tooltip;
     const buttonProps = {
       onClick: item.onClick,
@@ -1231,12 +1304,12 @@ function IconActionBar({
       ...item.component !== void 0 && { component: item.component },
       ...item.href !== void 0 && { href: item.href }
     };
-    return /* @__PURE__ */ jsx18(
+    return /* @__PURE__ */ jsx19(
       Tooltip,
       {
         title: item.tooltip,
         placement: item.tooltipPlacement ?? "bottom",
-        children: /* @__PURE__ */ jsx18("span", { children: /* @__PURE__ */ jsx18(IconButton2, { ...buttonProps, children: item.icon }) })
+        children: /* @__PURE__ */ jsx19("span", { children: /* @__PURE__ */ jsx19(IconButton2, { ...buttonProps, children: item.icon }) })
       },
       `${item.tooltip}-${index}`
     );
@@ -1248,7 +1321,7 @@ import Box9 from "@mui/material/Box";
 import Grid2 from "@mui/material/Grid";
 import Stack2 from "@mui/material/Stack";
 import Typography6 from "@mui/material/Typography";
-import { jsx as jsx19, jsxs as jsxs9 } from "react/jsx-runtime";
+import { jsx as jsx20, jsxs as jsxs9 } from "react/jsx-runtime";
 function TwoColumnShowcaseRow({
   text,
   controls,
@@ -1273,19 +1346,19 @@ function TwoColumnShowcaseRow({
       ],
       ...other,
       children: [
-        text && /* @__PURE__ */ jsx19(Grid2, { size: itemSize, children: /* @__PURE__ */ jsxs9(
+        text && /* @__PURE__ */ jsx20(Grid2, { size: itemSize, children: /* @__PURE__ */ jsxs9(
           Stack2,
           {
             spacing: 2,
             sx: [{ maxWidth: 520 }, ...Array.isArray(textSx) ? textSx : [textSx]],
             children: [
-              text.overline && /* @__PURE__ */ jsx19(Typography6, { variant: "overline", sx: { color: "text.secondary" }, children: text.overline }),
-              text.heading && /* @__PURE__ */ jsx19(Typography6, { variant: "h4", children: text.heading }),
-              text.description && /* @__PURE__ */ jsx19(Typography6, { variant: "body1", color: "text.secondary", children: text.description })
+              text.overline && /* @__PURE__ */ jsx20(Typography6, { variant: "overline", sx: { color: "text.secondary" }, children: text.overline }),
+              text.heading && /* @__PURE__ */ jsx20(Typography6, { variant: "h4", children: text.heading }),
+              text.description && /* @__PURE__ */ jsx20(Typography6, { variant: "body1", color: "text.secondary", children: text.description })
             ]
           }
         ) }),
-        /* @__PURE__ */ jsx19(Grid2, { size: itemSize, sx: { minWidth: 0 }, children: /* @__PURE__ */ jsx19(
+        /* @__PURE__ */ jsx20(Grid2, { size: itemSize, sx: { minWidth: 0 }, children: /* @__PURE__ */ jsx20(
           Stack2,
           {
             spacing: 2,
@@ -1293,7 +1366,7 @@ function TwoColumnShowcaseRow({
               { alignItems: controlsAlign, width: 1, minWidth: 0 },
               ...Array.isArray(controlsSx) ? controlsSx : [controlsSx]
             ],
-            children: /* @__PURE__ */ jsx19(Box9, { sx: { width: 1, minWidth: 0 }, children: controls })
+            children: /* @__PURE__ */ jsx20(Box9, { sx: { width: 1, minWidth: 0 }, children: controls })
           }
         ) })
       ]
@@ -1318,9 +1391,9 @@ var txtGradientSpanSx = (theme) => ({
 
 // src/components/material/layout/section-title/section-caption.tsx
 import Box10 from "@mui/material/Box";
-import { jsx as jsx20 } from "react/jsx-runtime";
+import { jsx as jsx21 } from "react/jsx-runtime";
 function SectionCaption({ title, sx, ...other }) {
-  return /* @__PURE__ */ jsx20(
+  return /* @__PURE__ */ jsx21(
     Box10,
     {
       component: "span",
@@ -1338,7 +1411,7 @@ function SectionCaption({ title, sx, ...other }) {
 }
 
 // src/components/material/layout/section-title/section-title.tsx
-import { jsx as jsx21, jsxs as jsxs10 } from "react/jsx-runtime";
+import { jsx as jsx22, jsxs as jsxs10 } from "react/jsx-runtime";
 function SectionTitle({
   sx,
   title,
@@ -1361,13 +1434,13 @@ function SectionTitle({
       ],
       ...other,
       children: [
-        caption && /* @__PURE__ */ jsx21(SectionCaption, { title: caption, sx: slotProps?.caption?.sx }),
+        caption && /* @__PURE__ */ jsx22(SectionCaption, { title: caption, sx: slotProps?.caption?.sx }),
         /* @__PURE__ */ jsxs10(Typography7, { component: "h2", variant: "h2", sx: slotProps?.title?.sx, children: [
           title,
           " ",
-          txtGradient && /* @__PURE__ */ jsx21(Box11, { component: "span", sx: txtGradientSpanSx, children: txtGradient })
+          txtGradient && /* @__PURE__ */ jsx22(Box11, { component: "span", sx: txtGradientSpanSx, children: txtGradient })
         ] }),
-        description && /* @__PURE__ */ jsx21(
+        description && /* @__PURE__ */ jsx22(
           Box11,
           {
             sx: [
@@ -1384,7 +1457,7 @@ function SectionTitle({
 
 // src/components/material/layout/section-container/section-container.tsx
 import Container from "@mui/material/Container";
-import { jsx as jsx22 } from "react/jsx-runtime";
+import { jsx as jsx23 } from "react/jsx-runtime";
 function SectionContainer({
   children,
   maxWidth = "lg",
@@ -1392,7 +1465,7 @@ function SectionContainer({
   sx,
   ...other
 }) {
-  return /* @__PURE__ */ jsx22(Container, { maxWidth, sx: [{ py }, ...Array.isArray(sx) ? sx : [sx]], ...other, children });
+  return /* @__PURE__ */ jsx23(Container, { maxWidth, sx: [{ py }, ...Array.isArray(sx) ? sx : [sx]], ...other, children });
 }
 
 // src/components/section/hero/section/hero-section.tsx
@@ -1425,7 +1498,7 @@ var heroIconsSlotSx = {
 };
 
 // src/components/section/hero/section/hero-section.tsx
-import { jsx as jsx23, jsxs as jsxs11 } from "react/jsx-runtime";
+import { jsx as jsx24, jsxs as jsxs11 } from "react/jsx-runtime";
 function HeroSection({
   heading,
   text,
@@ -1435,11 +1508,11 @@ function HeroSection({
   sx,
   ...other
 }) {
-  return /* @__PURE__ */ jsx23(Box12, { sx: [heroRootSx(color), ...Array.isArray(sx) ? sx : [sx]], ...other, children: /* @__PURE__ */ jsxs11(Container2, { maxWidth: "lg", sx: heroInnerSx, children: [
+  return /* @__PURE__ */ jsx24(Box12, { sx: [heroRootSx(color), ...Array.isArray(sx) ? sx : [sx]], ...other, children: /* @__PURE__ */ jsxs11(Container2, { maxWidth: "lg", sx: heroInnerSx, children: [
     heading,
     text,
-    actions && /* @__PURE__ */ jsx23(Box12, { sx: heroActionsRowSx, children: actions }),
-    icons && /* @__PURE__ */ jsx23(Box12, { sx: heroIconsSlotSx, children: icons })
+    actions && /* @__PURE__ */ jsx24(Box12, { sx: heroActionsRowSx, children: actions }),
+    icons && /* @__PURE__ */ jsx24(Box12, { sx: heroIconsSlotSx, children: icons })
   ] }) });
 }
 
@@ -1486,7 +1559,7 @@ var gradientTextSx = (color1, color2, duration) => ({
 });
 
 // src/components/material/data-display/animated-gradient/animated-gradient-text.tsx
-import { jsx as jsx24 } from "react/jsx-runtime";
+import { jsx as jsx25 } from "react/jsx-runtime";
 function AnimatedGradientText({
   children,
   color1 = ANIMATED_GRADIENT_DEFAULT_COLOR1,
@@ -1496,7 +1569,7 @@ function AnimatedGradientText({
   sx,
   ...other
 }) {
-  return /* @__PURE__ */ jsx24(
+  return /* @__PURE__ */ jsx25(
     Box13,
     {
       component,
@@ -1552,7 +1625,7 @@ var iconSlotSx = {
 };
 
 // src/components/material/data-display/icon/tech-strip/tech-icon-strip.tsx
-import { jsx as jsx25, jsxs as jsxs12 } from "react/jsx-runtime";
+import { jsx as jsx26, jsxs as jsxs12 } from "react/jsx-runtime";
 function TechIconStrip({
   items,
   heading,
@@ -1561,10 +1634,10 @@ function TechIconStrip({
   ...other
 }) {
   return /* @__PURE__ */ jsxs12(Box14, { sx: [stripRootSx, ...Array.isArray(sx) ? sx : [sx]], ...other, children: [
-    heading && /* @__PURE__ */ jsx25(Typography8, { component: "span", sx: titleSx, variant: "overline", children: heading }),
-    /* @__PURE__ */ jsx25(Box14, { sx: stripWrapperSx(centeredWrap), children: items.map((item) => /* @__PURE__ */ jsxs12(Box14, { sx: itemSx, children: [
-      /* @__PURE__ */ jsx25(Box14, { "aria-hidden": true, sx: iconSlotSx, children: item.icon }),
-      /* @__PURE__ */ jsx25(Typography8, { sx: { fontSize: TECH_ICON_STRIP_LABEL_FONT_SIZE }, variant: "caption", children: item.label })
+    heading && /* @__PURE__ */ jsx26(Typography8, { component: "span", sx: titleSx, variant: "overline", children: heading }),
+    /* @__PURE__ */ jsx26(Box14, { sx: stripWrapperSx(centeredWrap), children: items.map((item) => /* @__PURE__ */ jsxs12(Box14, { sx: itemSx, children: [
+      /* @__PURE__ */ jsx26(Box14, { "aria-hidden": true, sx: iconSlotSx, children: item.icon }),
+      /* @__PURE__ */ jsx26(Typography8, { sx: { fontSize: TECH_ICON_STRIP_LABEL_FONT_SIZE }, variant: "caption", children: item.label })
     ] }, item.label)) })
   ] });
 }
@@ -1593,6 +1666,7 @@ export {
   SectionContainer,
   SectionTitle,
   SelectableCard,
+  SelectableLabel,
   StatCard,
   StatCardRow,
   StatusLabel,

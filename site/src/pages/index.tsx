@@ -1,4 +1,4 @@
-import React, { type ReactNode } from 'react';
+import React, { useMemo, useState, type ReactNode } from 'react';
 import Layout from '@theme/Layout';
 import Heading from '@theme/Heading';
 import Link from '@docusaurus/Link';
@@ -7,12 +7,14 @@ import { CopyableCommand } from '../components/copyable-command';
 import { GitHubStars } from '../components/github-stars';
 import { LandingStatsSection } from '../components/landing-stats-section';
 import { FlowStageSectionView } from '../components/flow-stage-section';
+import { PersonaFilterRow } from '../components/persona-filter-row';
 import { computeLandingStats } from '../data/landing-stats';
-import { buildFlowSections } from '../data/flow-sections';
+import { buildFlowSections, filterFlowSections } from '../data/flow-sections';
 import skillsData from '../data/skills-landing.json';
 import provenanceData from '../data/provenance.json';
 import type { ProvenanceMap } from '../data/provenance.types';
 import type { SkillsLandingData } from '../data/skills-landing.types';
+import type { PersonaKey } from '../data/personas.types';
 import { FLOW_STAGES } from '../../sidebars';
 import {
   REPO,
@@ -42,6 +44,26 @@ export default function Home(): ReactNode {
   });
   const flowSections = buildFlowSections(FLOW_STAGES, landingData, provenanceMap);
 
+  // Persona filter state (issue #176): local component state only, resets
+  // on refresh per this ticket's acceptance criteria - no localStorage/URL
+  // param persistence in scope here.
+  const [activePersonas, setActivePersonas] = useState<ReadonlySet<PersonaKey>>(new Set());
+  const togglePersona = (persona: PersonaKey) => {
+    setActivePersonas((prev) => {
+      const next = new Set(prev);
+      if (next.has(persona)) {
+        next.delete(persona);
+      } else {
+        next.add(persona);
+      }
+      return next;
+    });
+  };
+  const filteredFlowSections = useMemo(
+    () => filterFlowSections(flowSections, activePersonas),
+    [flowSections, activePersonas],
+  );
+
   return (
     <Layout
       title="Skills"
@@ -63,6 +85,8 @@ export default function Home(): ReactNode {
             {HERO_SUBTITLE_SUFFIX}
           </p>
 
+          <PersonaFilterRow activePersonas={activePersonas} onTogglePersona={togglePersona} />
+
           <div className={styles.callout}>
             <span className={styles.calloutLabel}>{INSTALL_LABEL}</span>
             <CopyableCommand command={`npx skills@latest add ${REPO}`} />
@@ -77,7 +101,7 @@ export default function Home(): ReactNode {
 
           <LandingStatsSection items={landingStats} />
 
-          {flowSections.map((section, i) => (
+          {filteredFlowSections.map((section, i) => (
             <FlowStageSectionView key={section.label} section={section} index={i} />
           ))}
 

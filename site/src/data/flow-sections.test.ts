@@ -1,7 +1,8 @@
 import { describe, expect, it } from 'vitest';
-import { buildFlowSections } from './flow-sections';
+import { buildFlowSections, filterFlowSections } from './flow-sections';
 import type { ProvenanceMap } from './provenance.types';
 import type { SkillsLandingData } from './skills-landing.types';
+import type { FlowStageSection } from './flow-sections.types';
 
 // Whether LANDING/PROVENANCE_MAP/FLOW_STAGES_FIXTURE below belong in a
 // separate fixtures file rather than inline in this test file is an open
@@ -136,5 +137,92 @@ describe('buildFlowSections', () => {
     ];
     const sections = buildFlowSections(flowStages, LANDING, PROVENANCE_MAP);
     expect(sections[0]?.original.map((s) => s.name)).toEqual(['tdd']);
+  });
+
+  it('resolves each skill\'s personas from its full category membership (issue #176)', () => {
+    const sections = buildFlowSections(FLOW_STAGES_FIXTURE, LANDING, PROVENANCE_MAP);
+    const tdd = sections.find((s) => s.label === 'Build it')?.original[0];
+    expect(tdd?.personas).toEqual(['software-engineering']);
+  });
+
+  it('resolves a misc-only skill to no persona', () => {
+    const landing: SkillsLandingData = {
+      categories: [
+        {
+          key: 'misc',
+          heading: 'Misc',
+          description: 'Misc skills.',
+          skills: [{ name: 'grab-bag', description: 'A misc skill.', categories: ['misc'] }],
+        },
+      ],
+    };
+    const flowStages = [{ type: 'category', label: 'Misc', items: [{ type: 'doc', id: 'misc/grab-bag', label: 'grab-bag' }] }];
+    const sections = buildFlowSections(flowStages, landing, {});
+    expect(sections[0]?.original[0]?.personas).toEqual([]);
+  });
+
+  it('unions personas across a skill that belongs to multiple categories', () => {
+    const landing: SkillsLandingData = {
+      categories: [
+        {
+          key: 'git',
+          heading: 'Git',
+          description: 'Git skills.',
+          skills: [{ name: 'commit-wip', description: 'Commit WIP.', categories: ['git', 'daily-workflow'] }],
+        },
+      ],
+    };
+    const flowStages = [{ type: 'category', label: 'Ship it', items: [{ type: 'doc', id: 'git/commit-wip', label: 'commit-wip' }] }];
+    const sections = buildFlowSections(flowStages, landing, {});
+    expect(sections[0]?.original[0]?.personas).toEqual(['software-engineering', 'running-the-practice']);
+  });
+});
+
+describe('filterFlowSections', () => {
+  const SECTIONS: FlowStageSection[] = [
+    {
+      label: 'Build it',
+      original: [
+        { category: 'engineering', name: 'tdd', description: 'TDD.', status: 'original', personas: ['software-engineering'] },
+      ],
+      lineage: [],
+    },
+    {
+      label: 'Teach it',
+      original: [
+        { category: 'mentoring', name: 'teach', description: 'Teach.', status: 'original', personas: ['teaching-mentoring'] },
+      ],
+      lineage: [],
+    },
+    {
+      label: 'Misc stage',
+      original: [{ category: 'misc', name: 'grab-bag', description: 'Grab bag.', status: 'original', personas: [] }],
+      lineage: [],
+    },
+  ];
+
+  it('returns every section unchanged when no persona is active', () => {
+    expect(filterFlowSections(SECTIONS, new Set())).toEqual(SECTIONS);
+  });
+
+  it('keeps only skills whose personas intersect the active set', () => {
+    const filtered = filterFlowSections(SECTIONS, new Set(['software-engineering']));
+    expect(filtered.map((s) => s.label)).toEqual(['Build it', 'Misc stage']);
+  });
+
+  it('unions matches across multiple active personas', () => {
+    const filtered = filterFlowSections(SECTIONS, new Set(['software-engineering', 'teaching-mentoring']));
+    expect(filtered.map((s) => s.label)).toEqual(['Build it', 'Teach it', 'Misc stage']);
+  });
+
+  it('always keeps a misc (no-persona) skill regardless of the active filter', () => {
+    const filtered = filterFlowSections(SECTIONS, new Set(['personal-knowledge-work']));
+    expect(filtered.map((s) => s.label)).toEqual(['Misc stage']);
+  });
+
+  it('drops a stage entirely when none of its skills match, rather than rendering it empty', () => {
+    const filtered = filterFlowSections(SECTIONS, new Set(['personal-knowledge-work']));
+    expect(filtered.find((s) => s.label === 'Build it')).toBeUndefined();
+    expect(filtered.find((s) => s.label === 'Teach it')).toBeUndefined();
   });
 });

@@ -9,6 +9,7 @@ const ORIGINAL_SKILL: FlowSkill = {
   name: 'deslopify',
   description: 'Strip AI tells from prose and code.',
   status: 'original',
+  personas: [],
 };
 
 const MODIFIED_SKILL: FlowSkill = {
@@ -17,6 +18,7 @@ const MODIFIED_SKILL: FlowSkill = {
   description: 'Router over the whole skill set.',
   status: 'modified',
   diff: { upstreamSha: 'abc123', files: [{ file: 'SKILL.md', rows: [] }] },
+  personas: [],
 };
 
 describe('SkillTimeline', () => {
