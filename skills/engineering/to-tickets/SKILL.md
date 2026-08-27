@@ -71,7 +71,7 @@ A "Parent: #N" line in the body (as in `<issue-template>` below) is still useful
 
 Work the **frontier**: any ticket whose blockers are all done. For a purely linear chain that means top to bottom.
 
-Do NOT close or modify any parent issue.
+Do NOT close or modify any parent issue **at this publish step**. This is not a permanent rule — see "Parent issue lifecycle" below for when and how the parent does eventually close.
 
 <local-ticket-template>
 
@@ -127,8 +127,8 @@ In either form, avoid specific file paths or code snippets: they go stale fast. 
 
 ## Parent issue lifecycle
 
-This section documents the full lifecycle a parent issue goes through once tickets are split from it — from this skill's own publish step through to closing the epic.
+This section documents the full lifecycle a parent issue goes through once tickets are split from it — from this skill's own publish step through to closing the epic. **The parent does not stay open indefinitely as a standing record once its children are done** — an issue with no remaining scope should close, same as any other. Closing does not lose anything: a closed issue's body and comments (the grilling decisions, the straddling-item lists, everything) stay exactly as readable and linkable as before; only the state badge changes. Leaving it open past that point produces no benefit and creates real cost — every later PR/issue sweep has to re-triage and re-explain a "why is this still open" state that has no actual answer.
 
-- **At publish time** (this skill): child tickets link to the parent via GitHub's native sub-issue relationship (see above). The parent itself is never closed or edited here.
+- **At publish time** (this skill): child tickets link to the parent via GitHub's native sub-issue relationship (see above). The parent itself is never closed or edited here — this is the "do NOT close" instruction above, and it is scoped to this step only.
 - **While children are in flight**: the parent's native sub-issue tracking shows live child-completion progress automatically. That live count is informational only — it does not by itself mean the epic is done.
-- **Closing the parent**: even once every linked child is closed, do not auto-close the parent as a side effect of the last child closing. Post a manual summary comment on the parent first — what shipped, links to the child PRs/issues, anything explicitly descoped along the way — then close it. The native tracker view answers "what happened"; the summary comment answers "is this epic actually finished, and how." Both are required before the parent closes.
+- **Closing the parent — do this, don't skip it:** once every linked child is closed, close the parent too. Do not auto-close it as a side effect of the last child closing, and do not just leave it open by default either — both are wrong. Post a manual summary comment on the parent first (what shipped, links to the child PRs/issues, anything explicitly descoped along the way), then close it. The native tracker view answers "what happened"; the summary comment answers "is this epic actually finished, and how." Both are required before the parent closes, and the close itself is required once they're both in place — this is an active step to perform, not a passive default to fall back on.
