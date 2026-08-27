@@ -3,6 +3,7 @@ import clsx from 'clsx';
 import defaultProvenance from '../../data/provenance.json';
 import { getProvenanceEntry } from '../../data/provenance.utils';
 import type { ProvenanceMap, ProvenanceStatus } from '../../data/provenance.types';
+import { PROVENANCE_BADGE_LABEL } from '../../data/provenance-display';
 import { DiffModal } from '../diff-modal';
 import type { ProvenanceButtonProps } from './types';
 import styles from './provenance-button.module.css';
@@ -12,11 +13,14 @@ function skillNameFromSlug(slug: string): string {
   return slug.replace(/\/$/, '').split('/').pop() ?? slug;
 }
 
-const LABEL: Record<ProvenanceStatus, string> = {
-  upstream: 'Upstream - Unchanged',
+// This button's own label, built on the shared badge label map: three of
+// the four statuses (original/upstream/inherited) show the exact same badge
+// text SkillCard shows elsewhere on the page. "modified" is the deliberate
+// exception - a clickable CTA ("see the diff") rather than a static badge,
+// so it overrides the shared label rather than reusing it.
+const LABEL: Record<keyof typeof PROVENANCE_BADGE_LABEL, string> = {
+  ...PROVENANCE_BADGE_LABEL,
   modified: "See what's different",
-  original: 'AlexRebula Original.',
-  inherited: 'Inherited from Matt Pocock',
 };
 
 /** Two small nodes forking down into one: upstream/modified both have a real relationship to a single upstream source. */

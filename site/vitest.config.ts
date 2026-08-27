@@ -10,6 +10,7 @@ export default defineConfig({
       '@docusaurus/useBaseUrl': fileURLToPath(
         new URL('./test/mocks/docusaurus-use-base-url.ts', import.meta.url),
       ),
+      '@theme/Heading': fileURLToPath(new URL('./test/mocks/theme-heading.tsx', import.meta.url)),
     },
   },
   test: {

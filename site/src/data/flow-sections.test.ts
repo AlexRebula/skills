@@ -3,6 +3,10 @@ import { buildFlowSections } from './flow-sections';
 import type { ProvenanceMap } from './provenance.types';
 import type { SkillsLandingData } from './skills-landing.types';
 
+// Whether LANDING/PROVENANCE_MAP/FLOW_STAGES_FIXTURE below belong in a
+// separate fixtures file rather than inline in this test file is an open
+// question, deliberately left unresolved (issue #156 rework item 8) - not a
+// blocker for this ticket.
 const LANDING: SkillsLandingData = {
   categories: [
     {
@@ -112,5 +116,25 @@ describe('buildFlowSections', () => {
     const sections = buildFlowSections(flowStages, LANDING, PROVENANCE_MAP);
     expect(sections[0]?.original).toEqual([]);
     expect(sections[0]?.lineage).toEqual([]);
+  });
+
+  it('finds a doc item nested inside a sub-category, not just top-level flat items (issue #156 rework item 6)', () => {
+    // Before this fix, the flat-only walker silently dropped anything
+    // nested under a further `items` array with no error or test coverage.
+    const flowStages = [
+      {
+        type: 'category',
+        label: 'Build it',
+        items: [
+          {
+            type: 'category',
+            label: 'Nested group',
+            items: [{ type: 'doc', id: 'engineering/tdd', label: 'tdd' }],
+          },
+        ],
+      },
+    ];
+    const sections = buildFlowSections(flowStages, LANDING, PROVENANCE_MAP);
+    expect(sections[0]?.original.map((s) => s.name)).toEqual(['tdd']);
   });
 });

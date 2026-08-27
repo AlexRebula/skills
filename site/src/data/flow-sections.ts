@@ -1,37 +1,8 @@
-import type { FileDiff, ProvenanceMap, ProvenanceStatus } from './provenance.types';
+import type { ProvenanceMap, ProvenanceStatus } from './provenance.types';
 import { getProvenanceEntry } from './provenance.utils';
 import type { SkillsLandingData } from './skills-landing.types';
-
-/** The data a "modified" skill's diff affordance needs; absent for every other status. */
-export interface FlowSkillDiff {
-  upstreamSha: string;
-  files: FileDiff[];
-}
-
-/** One skill, positioned in its flow stage, carrying everything the homepage card needs to render. */
-export interface FlowSkill {
-  category: string;
-  name: string;
-  description: string;
-  status: ProvenanceStatus;
-  diff?: FlowSkillDiff;
-}
-
-/**
- * One flow-stage section: skills split into "Original" (mine) first, then
- * everything with real Matt Pocock lineage (upstream/modified/inherited)
- * second - a physical re-sort, not just a color cue (issue #156).
- */
-export interface FlowStageSection {
-  label: string;
-  original: FlowSkill[];
-  lineage: FlowSkill[];
-}
-
-interface StageSkillRef {
-  category: string;
-  name: string;
-}
+import { extractDocIds } from './sidebar-tree';
+import type { FlowSkill, FlowSkillDiff, FlowStageSection, StageSkillRef } from './flow-sections.types';
 
 /**
  * Statuses that count as "real Matt Pocock lineage" for the lineage
@@ -42,24 +13,15 @@ const LINEAGE_STATUSES: ReadonlySet<ProvenanceStatus> = new Set(['upstream', 'mo
 
 /**
  * Reads one stage's doc ids ("category/name") back out of its Docusaurus
- * sidebar item shape (see site/sidebars.ts's `stage()`/`skillItem()`).
- * Stages only ever nest flat `{type:'doc'}` items (no sub-categories), so
- * this doesn't need the general recursive tree walk
- * scripts/check-flow-stages.ts uses to validate the whole sidebar - just
- * one flat `items` array per stage.
+ * sidebar item shape (see site/sidebars.ts's `stage()`/`skillItem()`), via
+ * the shared recursive walker (`extractDocIds`) so a nested stage item is
+ * never silently dropped.
  */
 function stageSkillRefs(items: unknown): StageSkillRef[] {
-  if (!Array.isArray(items)) return [];
-
   const refs: StageSkillRef[] = [];
-  for (const item of items) {
-    if (!item || typeof item !== 'object') continue;
-    if (!('type' in item) || item.type !== 'doc' || !('id' in item)) continue;
-
-    const id = String((item as { id: unknown }).id);
+  for (const id of extractDocIds(items)) {
     const slash = id.indexOf('/');
     if (slash === -1) continue;
-
     refs.push({ category: id.slice(0, slash), name: id.slice(slash + 1) });
   }
   return refs;
