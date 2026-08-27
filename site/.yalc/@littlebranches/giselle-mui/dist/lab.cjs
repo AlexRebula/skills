@@ -3105,7 +3105,6 @@ var centerColumnSx = {
 var timelineRootSx = {
   p: 0,
   m: 0,
-  overflowX: "hidden",
   "& .MuiTimelineItem-root:before": { flex: 0, padding: 0 }
 };
 var phaseDotWrapperSx = {
