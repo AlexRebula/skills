@@ -244,6 +244,7 @@ Skills for keeping a personal knowledge base current: ingesting sources, extract
 - **[extract-vocabulary](./skills/wiki/extract-vocabulary/SKILL.md)**: Companion to `/ingest`: pull jargon out of an already-ingested source and file each term into its own vocabulary file under the owning concept's folder (ELI5/junior-dev level), cross-linked from the concept page, a flat A-Z barrel index, and the source page. Opt-in: run manually on jargon-heavy sources, not every ingest.
 - **[rebuild-root-index](./skills/wiki/rebuild-root-index/SKILL.md)**: Rescan every git repo under `$AR_ROOT` and refresh the master barrel index. Diffs against a content-hash manifest so only new/changed/deleted files are re-summarized. Chained from `/ingest` or run standalone.
 - **[log-incident](./skills/wiki/log-incident/SKILL.md)**: Log an AI behavioural incident or workflow violation to the wiki's incidents hub. Drafts the structured record from the current conversation, gets approval, then writes the file, updates the index, and opens a PR. No Asana involved.
+- **[capture](./skills/daily-workflow/capture/SKILL.md)**: Routes a freeform note or task to the right content project — often the wiki itself. Full detail under Daily Workflow.
 
 ---
 
@@ -264,6 +265,8 @@ The scaffolding around every session: starting the day, keeping Asana in sync, a
 - **[asana-sync](./skills/daily-workflow/asana-sync/SKILL.md)**: Opt-in Asana sync for morning briefs: locate or bootstrap `.asana-config.json`, create the Morning Briefs section if missing, seed tasks with full metadata, post a Status Update, and log results back to the brief file.
 - **[sync](./skills/daily-workflow/sync/SKILL.md)**: Bidirectional Asana ↔ local markdown sync: pulls new/updated tasks from Asana, pushes local changes, resolves conflicts (local wins), and commits.
 - **[capture](./skills/daily-workflow/capture/SKILL.md)**: Capture a freeform thought, task, or note mid-session: routes it to the correct content project, creates a real Asana task, writes a local markdown file, and commits it.
+- **[repo-status](./skills/git/repo-status/SKILL.md)**: The `standup-prep` precursor step that surveys dirty state across every workspace repo. Full detail under Git.
+- **[commit-wip](./skills/git/commit-wip/SKILL.md)**: The `standup-prep` precursor step that sweeps and commits uncommitted work across every workspace repo. Full detail under Git.
 
 ---
 

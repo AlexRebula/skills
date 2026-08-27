@@ -43,15 +43,21 @@ describe('extractDescription', () => {
 describe('extractSkills', () => {
   it('parses name and description from a category section', () => {
     const section = '- **[foo](./skills/git/foo/SKILL.md)**: does foo.\n- **[bar](./skills/git/bar/SKILL.md)**: does bar.\n';
-    expect(extractSkills(section, 'git')).toEqual([
+    expect(extractSkills(section)).toEqual([
       { name: 'foo', description: 'does foo.' },
       { name: 'bar', description: 'does bar.' },
     ]);
   });
 
-  it('only matches entries whose path segment is the given category', () => {
-    const section = '- **[foo](./skills/misc/foo/SKILL.md)**: does foo.\n';
-    expect(extractSkills(section, 'git')).toEqual([]);
+  it('matches a bullet even when its link points to a different category folder than the section it is found in', () => {
+    // A skill physically living under skills/git/ can be honestly
+    // cross-listed under a different category's README section (its own
+    // real link, not a broken one) — category attribution comes from the
+    // section, not the link's path segment. See the function's doc comment.
+    const section = '- **[commit-wip](./skills/git/commit-wip/SKILL.md)**: sweeps repos for uncommitted work.\n';
+    expect(extractSkills(section)).toEqual([
+      { name: 'commit-wip', description: 'sweeps repos for uncommitted work.' },
+    ]);
   });
 });
 

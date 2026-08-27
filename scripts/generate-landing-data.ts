@@ -62,11 +62,19 @@ export function extractDescription(section: string): string {
   throw new Error('Could not find a category description paragraph');
 }
 
-export function extractSkills(section: string, category: string): RawSkillEntry[] {
-  const pattern = new RegExp(
-    `- \\*\\*\\[([a-z0-9-]+)\\]\\(\\./skills/${category}/[a-z0-9-]+/SKILL\\.md\\)\\*\\*: (.+)`,
-    'g',
-  );
+/**
+ * Extracts every skill bullet from a category section. The link's own
+ * category path segment (e.g. `./skills/git/commit-wip/SKILL.md`) is
+ * intentionally NOT required to match the section being scanned: a skill's
+ * category attribution comes from which README heading its bullet appears
+ * under, not from its physical folder location. This lets a skill be
+ * cross-listed under a second category's section with an honest link to
+ * its one real folder, rather than forcing a second physical copy or a
+ * broken link — the multi-category case `collectSkillCategories` below
+ * already merges.
+ */
+export function extractSkills(section: string): RawSkillEntry[] {
+  const pattern = /- \*\*\[([a-z0-9-]+)\]\(\.\/skills\/[a-z0-9-]+\/[a-z0-9-]+\/SKILL\.md\)\*\*: (.+)/g;
   const skills: RawSkillEntry[] = [];
   let match: RegExpExecArray | null;
   while ((match = pattern.exec(section)) !== null) {
@@ -142,7 +150,7 @@ function main(): void {
       continue;
     }
 
-    const skills = extractSkills(section, category);
+    const skills = extractSkills(section);
     const real = realSkillNames(category);
     const listed = new Set(skills.map((s) => s.name));
     const missing = real.filter((n) => !listed.has(n));
