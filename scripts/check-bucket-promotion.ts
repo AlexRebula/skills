@@ -37,7 +37,7 @@ export const NON_PROMOTED_CATEGORIES = ['misc', 'personal', 'in-progress', 'depr
 export const README_FORBIDDEN_CATEGORIES = ['in-progress', 'deprecated'] as const;
 
 export interface BucketViolation {
-  category: string;
+  category: (typeof NON_PROMOTED_CATEGORIES)[number];
   skill: string;
 }
 
