@@ -1,15 +1,17 @@
 ---
 name: create-giselle-component
-description: Scaffold and TDD a new Giselle MUI component from scratch. Enforces oss-quality-standards structure, API contract, and test patterns. Use when creating any new component in giselle-mui. Covers both the scaffold phase (folder + types + stubs) and the implementation phase (TDD loop, stories, barrel).
+description: Scaffold and TDD a new Giselle MUI component from scratch. Enforces oss-quality-standards structure, API contract, and test patterns. Use when creating any new component in giselle-mui. Covers both the scaffold phase (folder + types + stubs) and the implementation phase (TDD loop, stories, barrel). Also covers multi-component features — a parent component built from several internal sub-components.
 ---
 
 # Create Giselle MUI Component
 
 Two phases. The scaffold phase creates the folder structure and stubs. The implementation phase fills them in using a strict TDD red-green-refactor loop. Do not start the implementation phase until the scaffold phase is committed.
 
+Some components are really a parent plus several internal sub-components (`HeroSection`, `FaqSection`, `TimelineTwoColumn`, `FeatureFlowSection` all turned out this way). Alignment question 9 below decides whether you're on the single-component path or the **multi-component feature** path — see "Multi-component features" for the scaffold shape and "Multi-component implementation" for Phase 2. Everything else in this skill (naming rules, TDD loop, checklist) applies to both; the multi-component sections only add what's different.
+
 ---
 
-## Before writing any code: alignment (8 required answers)
+## Before writing any code: alignment (9 required answers)
 
 Ask the user:
 
@@ -21,10 +23,11 @@ Ask the user:
 6. Optional props and their variants
 7. Does it need `ref` forwarding? (yes for anything wrapping a DOM element or MUI component)
 8. Does it use `useTheme` or `sx`? (determines whether the GiselleThemeProvider test helper is needed)
+9. Does this feature need internal sub-components — a parent built from several distinct pieces that each render their own markup or behaviour (not just a prop-driven variant of the same markup)? If yes, name each sub-component and its one-line role. Answers 4–8 above then apply per sub-component, not only to the parent — go to "Multi-component features" below for the scaffold shape.
 
-Do not proceed until all 8 are answered, unless batch invocation applies (see below). No code until alignment is locked.
+Do not proceed until all 9 are answered, unless batch invocation applies (see below). No code until alignment is locked.
 
-**Batch invocation:** If all 8 answers are already provided in the invocation message (e.g. when delegating from a parent agent or running multiple components in parallel), skip the questions and proceed directly to Phase 1. Example:
+**Batch invocation:** If all 9 answers are already provided in the invocation message (e.g. when delegating from a parent agent or running multiple components in parallel), skip the questions and proceed directly to Phase 1. Example:
 
 ```
 /create-giselle-component
@@ -36,6 +39,8 @@ Optional props: trend ('up' | 'down' | 'flat')
 ref forwarding: yes
 Uses sx: yes
 ```
+
+A batch invocation for a multi-component feature adds a `Sub-components:` line naming each one and its role, e.g. `Sub-components: HighlightCarousel (scrollable list of feature highlights), ImageColumn (sticky reactive image tied to the active highlight)`.
 
 ---
 
@@ -76,6 +81,18 @@ src/components/chart/radial-progress/
 ```
 
 **Suffix vocabulary**: `Card`, `Row`, `List`, `Table`, `Section`, `Layout`, `Label`, `Sheet`, `Strip`, `Dialog`, `Drawer`, `Form`, `Field`, `Icon`, `Avatar`, `Chip`, `Tab`. Adding a new suffix requires explicit user approval.
+
+**Folders drop redundant category suffixes; files keep the full name.** A folder never repeats a word already supplied by its own parent path segment — the layer, the category, a generic type suffix that segment implies (`-section`, `-card`), or (in a multi-component feature) an ancestor component's own name. The `.tsx`/`.test.ts`/etc. files inside stay fully named regardless; only the folder is pruned. Confirmed by the shipped shapes in giselle-mui:
+
+| Folder                          | Not                                     | File inside keeps           |
+| -------------------------------- | ---------------------------------------- | ---------------------------- |
+| `section/feature-flow/`          | `section/feature-flow-section/`          | `feature-flow-section.tsx`   |
+| `chart/radial-progress/`         | `chart/radial-progress-card/`            | `radial-progress-card.tsx`   |
+| `section/hero/buttons-row/`      | `section/hero/hero-buttons-row/`         | `hero-buttons-row.tsx`       |
+| `section/hero/scroll-parallax/`  | `section/hero/hero-scroll-parallax/`     | `scroll-parallax-hero.tsx`   |
+| `section/faq/accordion/`         | `section/faq/faq-accordion/`             | `faq-accordion.tsx`          |
+
+Apply this to both the top-level component folder and, in a multi-component feature, every sub-component folder (see "Multi-component features" below).
 
 ---
 
@@ -197,6 +214,43 @@ _None yet._
 
 ---
 
+## Multi-component features (when alignment Q9 is yes)
+
+Trigger: the feature is a parent built from several distinct internal pieces, not a single component with variants. Real precedent that needed this: `HeroSection` (→ `buttons-row/`, `interactive-logo/`, `scroll-parallax/`), `TimelineTwoColumn` (→ `milestone-badge/`, `phase-card/`, `phase-warning-popover/`, `spine-connector/`, `timeline-dot/`), `FeatureFlowSection` (→ `highlight-carousel/`, `image-column/`, `item-detail/`).
+
+**The rule, unconditional:** every sub-component named in Q9 gets its own subfolder from the first commit — no size threshold, no exception for a piece that's internal or never exported outside the parent. A sub-component sitting flat as a loose file in the parent folder is the single most common review-time rewrite this skill exists to prevent. If you're unsure whether some internal piece is significant enough to count as a named sub-component versus a private helper that can stay flat, that judgment call is `docs/components/cleanup-workflow.md` Phase 0 in giselle-mui (Scenario A vs B) — don't re-derive it here; when in doubt, ask the user during alignment instead of guessing.
+
+### Scaffold folder structure
+
+```
+src/components/<layer>/<category>/<feature-name>/
+├── types.ts                    ← parent Props interface stub
+├── <feature-name>-*.test.ts    ← it.todo stubs for the parent
+├── README.md                   ← parent feature: why it exists, planned composition
+├── roadmap.md
+├── index.ts                    ← stub barrel
+├── <sub-1>/
+│   ├── types.ts                ← only if the sub-component takes props
+│   ├── <sub-1>.test.ts         ← it.todo stubs
+│   ├── README.md
+│   ├── roadmap.md
+│   └── index.ts                ← stub barrel
+├── <sub-2>/
+│   └── (same 5 files as <sub-1>)
+└── <sub-N>/
+    └── (same 5 files as <sub-1>)
+```
+
+Every sub-component folder uses the exact same five scaffold templates as the single-component Phase 1 above (`types.ts`, `<name>.test.ts`, `README.md`, `roadmap.md`, `index.ts`) — copy them verbatim, substituting the sub-component's own name. `<sub-N>.tsx` stays absent from every sub-component folder in this phase, same as the parent: Phase 1's no-implementation-yet discipline applies per sub-component, not only to the parent.
+
+In each sub-component's `README.md`, replace "Why it belongs in giselle-mui" with a one-line "why it's split out" note (what would live inline in the parent if this weren't its own piece) — that section is about package-level reuse, which usually doesn't apply to an internal piece.
+
+### Folder naming
+
+Drop the parent feature's own name from every sub-component folder, same as `hero/buttons-row/` drops `hero-` (not `hero/hero-buttons-row/`). See the redundant-suffix table above.
+
+---
+
 ## Phase 2: Implementation (TDD loop)
 
 ### Types: fill in `types.ts` first, before any JSX
@@ -255,6 +309,12 @@ MyCard.displayName = 'MyCard';
 - No bare `<Box>` with semantic meaning: `<Box>` is a layout primitive only; elements with roles, ARIA attributes, or meaningful visual styling must be named components (§6.6)
 - `shouldForwardProp` required on any `styled()` component with custom props that must not reach the DOM (§6.7)
 - Icon slots: accept icons as `React.ReactNode`; decorative icons must have `aria-hidden="true"`; icon-only buttons carry `aria-label` on the `<button>`, not on the icon (§6.10)
+
+### Multi-component implementation
+
+Implement each sub-component exactly like a standalone Phase 2 component: `types.ts` first, then `<sub>.tsx` with `forwardRef` + `displayName` if it wraps a DOM element or MUI component, and `...other` passthrough. **No exception for a sub-component that's never imported outside the parent folder** — `displayName` and `forwardRef` apply the same as the root component, from the first draft of the sub-component's `.tsx`, not as a follow-up fix. This is the concrete gap that shipped wrong in `FeatureFlowSection`: all three sub-components needed `forwardRef`, `displayName`, and `...other` passthrough added in a review-round fix instead of being correct from the scaffold. Don't repeat it.
+
+Each sub-component keeps its own barrel: `<sub>/index.ts` exports the sub-component and its `Props` type (if it has one). The parent's `index.ts` re-exports only what the parent chooses to make public — most sub-components stay private to the feature, imported by the parent via relative path rather than re-exported, unless a sub-component is independently useful enough to earn a public export. Use the same export-decision framework as `docs/components/cleanup-workflow.md` Phase 0b in giselle-mui (could a second project use this exactly as-is, is it used in more than one place, etc.) rather than exporting by default.
 
 **Input security: applies to any component in the `inputs/` layer (§6.12):**
 
@@ -451,6 +511,13 @@ feature(metric-card): implement label and variant props
 test(metric-card): replace MUI mocks with GiselleThemeProvider
 ```
 
+For a multi-component feature, scope is the parent feature name, and the scaffold commit covers the parent plus every sub-component folder in one commit:
+
+```
+feature(feature-flow): scaffold parent + 3 sub-component folders with it.todo stubs
+feature(feature-flow): implement highlight-carousel and image-column sub-components
+```
+
 Use `feature` for new component work, `fix` for bug corrections, `test` for test-only changes.
 
 ---
@@ -469,7 +536,7 @@ After Phase 2 is complete and the quality gate is green, open a pull request:
 gh pr create --title "feature(<component-name>): add <ComponentName>" --body "..."
 ```
 
-One component = one branch = one PR. Do not mix multiple components in a single PR.
+One component = one branch = one PR. Do not mix multiple components in a single PR. A multi-component feature is one component for this purpose: the parent and all its sub-components ship together in one branch and one PR — they are one deliverable, not N.
 
 ---
 
@@ -486,6 +553,7 @@ One component = one branch = one PR. Do not mix multiple components in a single 
 - [ ] `...other` passthrough present
 - [ ] `displayName` set
 - [ ] `ref` forwarding if wrapping a DOM element
+- [ ] Multi-component feature: every sub-component has its own subfolder, `displayName`, `forwardRef` (if applicable), and `...other` passthrough — no exception for pieces that are internal or unexported
 - [ ] Props interface in `types.ts` (not in component file)
 - [ ] Barrel `index.ts` exports component and `type { Props }` from `./types`
 - [ ] Library index updated (`src/index.ts` or the correct layer index)
