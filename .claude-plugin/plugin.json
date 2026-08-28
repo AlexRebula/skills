@@ -85,11 +85,6 @@
     "./skills/mentoring/next-issue",
     "./skills/wiki/rebuild-root-index",
     "./skills/daily-workflow/load-session-guidelines",
-    "./skills/daily-workflow/extract-session-worktree",
-    "./skills/misc/git-guardrails-claude-code",
-    "./skills/misc/karpathy-guidelines",
-    "./skills/misc/migrate-to-shoehorn",
-    "./skills/misc/scaffold-exercises",
-    "./skills/misc/setup-pre-commit"
+    "./skills/daily-workflow/extract-session-worktree"
   ]
 }
