@@ -4,9 +4,8 @@
  * work well for content-centric websites.
  */
 
-/* Palette and fonts mirrored 1:1 from the AlexRebula portfolio (Minimals-based)
-   theme, so this site reads as the same brand:
-   rm/presentation/alexrebula/src/theme/theme-config.ts and src/theme/core/palette.ts */
+/* Palette and fonts mirrored 1:1 from a private portfolio app's (Minimals-based)
+   theme, so this site reads as the same brand. */
 :root {
   --ifm-font-family-base: 'Public Sans', system-ui, -apple-system, sans-serif;
   --ifm-heading-font-family: 'Barlow', var(--ifm-font-family-base);
