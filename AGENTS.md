@@ -37,7 +37,13 @@ Every skill in `engineering/`, `wiki/`, `daily-workflow/`, `mentoring/`, `thinki
 `framework/`, `git/`, or `org/` (the **promoted** buckets) must have a reference in the top-level
 `README.md` and an entry in
 `.claude-plugin/plugin.json`'s `skills` array (the Claude Code plugin ships exactly the promoted
-set). Skills in `misc/`, `personal/`, `in-progress/`, and `deprecated/` must not appear in either.
+set). Skills in `misc/`, `personal/`, `in-progress/`, and `deprecated/` must not appear in
+`plugin.json`. `README.md` carries a narrower version of the same rule: `in-progress/` and
+`deprecated/` skills must not appear there either, but `misc/` and `personal/` are a required
+exception — `scripts/generate-landing-data.ts` parses `README.md`'s `## Misc`/`## Personal`
+sections directly to build the docs site's real, rendered homepage content (see
+`site/src/data/categories.ts`'s `TARGET_CATEGORIES`). `scripts/check-bucket-promotion.ts` enforces
+this asymmetric rule mechanically, in `npm test`.
 
 The repo is also its own single-plugin Claude Code marketplace: `.claude-plugin/marketplace.json`
 lists the one `alexrebula-skills` plugin. When bumping the release version, keep
@@ -74,7 +80,7 @@ from the rest of this repo:
 
 - `npm run check` inside `site/` runs typecheck + ESLint + Stylelint + Vitest, in that order.
   `npm run lint:fix` / `stylelint:fix` autofix what they can.
-- ESLint (`site/eslint.config.mjs`) mirrors `rm/presentation/alexrebula`'s plugin set
+- ESLint (`site/eslint.config.mjs`) mirrors a private consuming app's plugin set
   (typescript-eslint, react, react-hooks, import), plus two additions that repo's config doesn't
   have: `eslint-plugin-jsx-a11y` (static accessibility checks) and `eslint-plugin-sonarjs`
   (SonarSource's own JS/TS rule engine, run locally: there is no SonarCloud/SonarQube account
