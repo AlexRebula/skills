@@ -37,6 +37,7 @@ __export(src_exports, {
   Accordion: () => Accordion,
   AnimatedGradientText: () => AnimatedGradientText,
   DEFAULT_ICON_ACTIONS: () => DEFAULT_ICON_ACTIONS,
+  FeatureFlowSection: () => FeatureFlowSection,
   GISELLE_PRIMARY_DARK_MAIN: () => GISELLE_PRIMARY_DARK_MAIN,
   GISELLE_PRIMARY_MAIN: () => GISELLE_PRIMARY_MAIN,
   GISELLE_SECONDARY_MAIN: () => GISELLE_SECONDARY_MAIN,
@@ -1598,72 +1599,668 @@ function HeroSection({
   ] }) });
 }
 
-// src/utils/maturity/maturity-utils.ts
-function resolveMaturityColor(percent) {
-  const clamped = Math.max(0, Math.min(100, percent));
-  if (clamped >= 80) return "success";
-  if (clamped >= 60) return "primary";
-  if (clamped >= 40) return "info";
-  if (clamped >= 20) return "warning";
-  return "error";
-}
-function resolveMaturityLabel(percent) {
-  const clamped = Math.max(0, Math.min(100, percent));
-  if (clamped >= 80) return "Stable";
-  if (clamped >= 60) return "Nearly ready";
-  if (clamped >= 40) return "In progress";
-  if (clamped >= 20) return "Early stage";
-  return "Not started";
-}
+// src/components/section/feature-flow/feature-flow-section.tsx
+var import_react20 = __toESM(require("react"), 1);
+var import_framer_motion7 = require("framer-motion");
+var import_Box20 = __toESM(require("@mui/material/Box"), 1);
+var import_Grid4 = __toESM(require("@mui/material/Grid"), 1);
+var import_Stack6 = __toESM(require("@mui/material/Stack"), 1);
+var import_Container4 = __toESM(require("@mui/material/Container"), 1);
+var import_Typography11 = __toESM(require("@mui/material/Typography"), 1);
+var import_ButtonBase3 = __toESM(require("@mui/material/ButtonBase"), 1);
+var import_LinearProgress = __toESM(require("@mui/material/LinearProgress"), 1);
 
-// src/components/material/data-display/animated-gradient/animated-gradient-text.tsx
-var import_Box13 = __toESM(require("@mui/material/Box"), 1);
+// src/components/material/navigation/floating-sub-nav/floating-sub-nav.tsx
+var import_react15 = require("react");
+var import_framer_motion2 = require("framer-motion");
+var import_Box14 = __toESM(require("@mui/material/Box"), 1);
 
-// src/components/material/data-display/animated-gradient/animated-gradient-text.const.ts
-var ANIMATED_GRADIENT_DEFAULT_COLOR1 = "primary";
-var ANIMATED_GRADIENT_DEFAULT_COLOR2 = "secondary";
-var ANIMATED_GRADIENT_DEFAULT_DURATION = 3;
+// src/components/material/navigation/floating-sub-nav/floating-sub-nav.const.ts
+var SUB_NAV_BUTTON_SIZE = {
+  xs: 36,
+  sm: 38,
+  md: 42,
+  lg: 44
+};
+var PILL_BUTTON_ROW_SPACING = 0.5;
 
-// src/components/material/data-display/animated-gradient/animated-gradient-text.styles.ts
-var gradientTextSx = (color1, color2, duration) => ({
-  background: `linear-gradient(135deg, var(--mui-palette-${color1}-main), var(--mui-palette-${color2}-main), var(--mui-palette-${color1}-main))`,
-  backgroundSize: "200% 200%",
-  backgroundClip: "text",
-  WebkitBackgroundClip: "text",
-  WebkitTextFillColor: "transparent",
-  display: "inline-block",
-  animation: `animatedGradientText ${duration}s ease infinite`,
-  "@keyframes animatedGradientText": {
-    "0%": { backgroundPosition: "0% 50%" },
-    "50%": { backgroundPosition: "100% 50%" },
-    "100%": { backgroundPosition: "0% 50%" }
+// src/components/material/navigation/floating-sub-nav/floating-sub-nav.styles.ts
+var grey500Ch = (theme) => theme.vars.palette.grey["500Channel"];
+var blackCh = (theme) => theme.vars.palette.common["blackChannel"];
+var pillSx = (theme) => ({
+  display: "flex",
+  flexDirection: "column",
+  alignItems: "center",
+  p: 0.5,
+  borderRadius: 2,
+  bgcolor: "background.paper",
+  border: `1px solid ${channelAlpha(grey500Ch(theme), 0.14)}`,
+  boxShadow: [
+    `0 2px 8px 0 ${channelAlpha(grey500Ch(theme), 0.1)}`,
+    `0 8px 32px -4px ${channelAlpha(grey500Ch(theme), 0.18)}`
+  ].join(", "),
+  ...theme.applyStyles("dark", {
+    border: `1px solid ${channelAlpha(grey500Ch(theme), 0.08)}`,
+    boxShadow: `0 1px 4px 0 ${channelAlpha(blackCh(theme), 0.12)}`
+  })
+});
+var stickyWrapperSx = (theme) => ({
+  position: "sticky",
+  bottom: { xs: 32, sm: 32, md: 40 },
+  height: 0,
+  overflow: "visible",
+  display: "flex",
+  justifyContent: "center",
+  zIndex: theme.zIndex.speedDial,
+  pointerEvents: "none"
+});
+var stickyInnerSx = {
+  transform: "translateY(-100%)",
+  pointerEvents: "auto",
+  pb: { xs: "23px", md: "31px" }
+};
+var fixedWrapperSx = (theme) => ({
+  position: "fixed",
+  bottom: { xs: 16, md: 24 },
+  left: "50%",
+  transform: "translateX(-50%)",
+  zIndex: theme.zIndex.speedDial
+});
+var subNavButtonSx = (isActive) => (theme) => ({
+  display: "flex",
+  alignItems: "center",
+  justifyContent: "center",
+  flexShrink: 0,
+  width: SUB_NAV_BUTTON_SIZE,
+  height: SUB_NAV_BUTTON_SIZE,
+  p: 0,
+  borderRadius: 1.5,
+  border: `solid 1px transparent`,
+  color: "text.disabled",
+  outline: "none",
+  transition: theme.transitions.create(
+    ["background-color", "box-shadow", "border-color", "color", "opacity"],
+    { duration: theme.transitions.duration.shorter }
+  ),
+  "&:focus-visible": {
+    outline: `2px dashed ${theme.vars.palette.primary.main}`,
+    outlineOffset: 2
+  },
+  "&:hover": {
+    opacity: 0.72,
+    color: "text.primary",
+    bgcolor: channelAlpha(grey500Ch(theme), 0.08)
+  },
+  "&:active": {
+    opacity: 0.56,
+    bgcolor: channelAlpha(grey500Ch(theme), 0.12)
+  },
+  ...isActive && {
+    color: "primary.main",
+    bgcolor: channelAlpha(theme.vars.palette.primary.mainChannel, 0.08),
+    borderColor: channelAlpha(theme.vars.palette.primary.mainChannel, 0.24),
+    "&:hover": {
+      opacity: 1,
+      bgcolor: channelAlpha(theme.vars.palette.primary.mainChannel, 0.12)
+    },
+    "&:active": {
+      opacity: 1,
+      bgcolor: channelAlpha(theme.vars.palette.primary.mainChannel, 0.16)
+    }
   }
 });
 
-// src/components/material/data-display/animated-gradient/animated-gradient-text.tsx
+// src/components/material/navigation/floating-sub-nav/nav-pill.tsx
+var import_framer_motion = require("framer-motion");
+var import_Box13 = __toESM(require("@mui/material/Box"), 1);
+var import_Stack3 = __toESM(require("@mui/material/Stack"), 1);
+
+// src/components/material/navigation/floating-sub-nav/floating-sub-nav.animations.ts
+var PILL_EASING = [0.4, 0, 0.2, 1];
+var PILL_TRANSITION_DURATION = 0.28;
+var pillTransition = {
+  duration: PILL_TRANSITION_DURATION,
+  ease: PILL_EASING
+};
+var pillVariants = {
+  initial: { opacity: 0, y: 20 },
+  animate: { opacity: 1, y: 0 },
+  exit: { opacity: 0, y: 10 }
+};
+
+// src/components/material/navigation/floating-sub-nav/sub-nav-button.tsx
+var import_react14 = require("react");
+var import_Tooltip2 = __toESM(require("@mui/material/Tooltip"), 1);
+var import_ButtonBase2 = __toESM(require("@mui/material/ButtonBase"), 1);
 var import_jsx_runtime25 = require("react/jsx-runtime");
-function AnimatedGradientText({
+function SubNavButton({ item, isActive, onPress }) {
+  const handleClick = (0, import_react14.useCallback)(() => onPress(item.id), [onPress, item.id]);
+  return /* @__PURE__ */ (0, import_jsx_runtime25.jsx)(import_Tooltip2.default, { title: item.label, placement: "top", arrow: true, children: /* @__PURE__ */ (0, import_jsx_runtime25.jsx)(
+    import_ButtonBase2.default,
+    {
+      disableRipple: true,
+      component: "button",
+      type: "button",
+      "aria-label": item.label,
+      "aria-pressed": isActive,
+      onClick: handleClick,
+      sx: subNavButtonSx(isActive),
+      children: item.icon
+    }
+  ) });
+}
+
+// src/components/material/navigation/floating-sub-nav/nav-pill.tsx
+var import_jsx_runtime26 = require("react/jsx-runtime");
+function NavPill({ items, activeId, onPress }) {
+  return /* @__PURE__ */ (0, import_jsx_runtime26.jsx)(
+    import_framer_motion.m.div,
+    {
+      variants: pillVariants,
+      initial: "initial",
+      animate: "animate",
+      exit: "exit",
+      transition: pillTransition,
+      children: /* @__PURE__ */ (0, import_jsx_runtime26.jsx)(import_Box13.default, { component: "nav", "aria-label": "Section navigation", sx: pillSx, children: /* @__PURE__ */ (0, import_jsx_runtime26.jsx)(import_Stack3.default, { direction: "row", spacing: PILL_BUTTON_ROW_SPACING, children: items.map((item) => /* @__PURE__ */ (0, import_jsx_runtime26.jsx)(
+        SubNavButton,
+        {
+          item,
+          isActive: activeId === item.id,
+          onPress
+        },
+        item.id
+      )) }) })
+    }
+  );
+}
+
+// src/components/material/navigation/floating-sub-nav/floating-sub-nav.tsx
+var import_jsx_runtime27 = require("react/jsx-runtime");
+function FloatingSubNav({ items, activeId, onSelect, sticky = false }) {
+  const handlePress = (0, import_react15.useCallback)((id) => onSelect(id), [onSelect]);
+  if (sticky) {
+    return /* @__PURE__ */ (0, import_jsx_runtime27.jsx)(import_Box14.default, { sx: stickyWrapperSx, children: /* @__PURE__ */ (0, import_jsx_runtime27.jsx)(import_Box14.default, { sx: stickyInnerSx, children: /* @__PURE__ */ (0, import_jsx_runtime27.jsx)(import_framer_motion2.AnimatePresence, { children: activeId !== null && /* @__PURE__ */ (0, import_jsx_runtime27.jsx)(NavPill, { items, activeId, onPress: handlePress }) }) }) });
+  }
+  return /* @__PURE__ */ (0, import_jsx_runtime27.jsx)(import_framer_motion2.AnimatePresence, { children: activeId !== null && /* @__PURE__ */ (0, import_jsx_runtime27.jsx)(import_Box14.default, { sx: fixedWrapperSx, children: /* @__PURE__ */ (0, import_jsx_runtime27.jsx)(NavPill, { items, activeId, onPress: handlePress }) }) });
+}
+
+// src/components/motion/variants/transition/transition.const.ts
+var TRANSITION_ENTER_DURATION = 0.64;
+var TRANSITION_EXIT_DURATION = 0.48;
+var TRANSITION_EASE = [0.43, 0.13, 0.23, 0.96];
+
+// src/components/motion/variants/transition/transition.ts
+var transitionEnter = (opts) => ({
+  duration: TRANSITION_ENTER_DURATION,
+  ease: TRANSITION_EASE,
+  ...opts
+});
+var transitionExit = (opts) => ({
+  duration: TRANSITION_EXIT_DURATION,
+  ease: TRANSITION_EASE,
+  ...opts
+});
+
+// src/components/motion/variants/fade/fade.const.ts
+var FADE_DEFAULT_DISTANCE = 120;
+
+// src/components/motion/variants/fade/fade.ts
+var fade = (direction, options) => {
+  const distance = options?.distance ?? FADE_DEFAULT_DISTANCE;
+  const tIn = options?.transitionIn;
+  const tOut = options?.transitionOut;
+  const map = {
+    in: {
+      initial: { opacity: 0 },
+      animate: { opacity: 1, transition: transitionEnter(tIn) },
+      exit: { opacity: 0, transition: transitionExit(tOut) }
+    },
+    inUp: {
+      initial: { y: distance, opacity: 0 },
+      animate: { y: 0, opacity: 1, transition: transitionEnter(tIn) },
+      exit: { y: distance, opacity: 0, transition: transitionExit(tOut) }
+    },
+    inDown: {
+      initial: { y: -distance, opacity: 0 },
+      animate: { y: 0, opacity: 1, transition: transitionEnter(tIn) },
+      exit: { y: -distance, opacity: 0, transition: transitionExit(tOut) }
+    },
+    inLeft: {
+      initial: { x: -distance, opacity: 0 },
+      animate: { x: 0, opacity: 1, transition: transitionEnter(tIn) },
+      exit: { x: -distance, opacity: 0, transition: transitionExit(tOut) }
+    },
+    inRight: {
+      initial: { x: distance, opacity: 0 },
+      animate: { x: 0, opacity: 1, transition: transitionEnter(tIn) },
+      exit: { x: distance, opacity: 0, transition: transitionExit(tOut) }
+    },
+    out: {
+      initial: { opacity: 1 },
+      animate: { opacity: 0, transition: transitionEnter(tIn) },
+      exit: { opacity: 1, transition: transitionExit(tOut) }
+    },
+    outUp: {
+      initial: { y: 0, opacity: 1 },
+      animate: { y: -distance, opacity: 0, transition: transitionEnter(tIn) },
+      exit: { y: 0, opacity: 1, transition: transitionExit(tOut) }
+    },
+    outDown: {
+      initial: { y: 0, opacity: 1 },
+      animate: { y: distance, opacity: 0, transition: transitionEnter(tIn) },
+      exit: { y: 0, opacity: 1, transition: transitionExit(tOut) }
+    },
+    outLeft: {
+      initial: { x: 0, opacity: 1 },
+      animate: { x: -distance, opacity: 0, transition: transitionEnter(tIn) },
+      exit: { x: 0, opacity: 1, transition: transitionExit(tOut) }
+    },
+    outRight: {
+      initial: { x: 0, opacity: 1 },
+      animate: { x: distance, opacity: 0, transition: transitionEnter(tIn) },
+      exit: { x: 0, opacity: 1, transition: transitionExit(tOut) }
+    }
+  };
+  return map[direction];
+};
+
+// src/components/motion/viewport/motion-viewport.tsx
+var import_framer_motion3 = require("framer-motion");
+var import_Box15 = __toESM(require("@mui/material/Box"), 1);
+var import_useMediaQuery = __toESM(require("@mui/material/useMediaQuery"), 1);
+
+// src/components/motion/variants/container/container.const.ts
+var CONTAINER_STAGGER_CHILDREN = 0.05;
+var CONTAINER_DELAY_CHILDREN = 0.05;
+var CONTAINER_EXIT_STAGGER_DIRECTION = -1;
+
+// src/components/motion/variants/container/container.ts
+var container = (options) => ({
+  animate: {
+    transition: {
+      staggerChildren: CONTAINER_STAGGER_CHILDREN,
+      delayChildren: CONTAINER_DELAY_CHILDREN,
+      ...options?.transitionIn
+    }
+  },
+  exit: {
+    transition: {
+      staggerChildren: CONTAINER_STAGGER_CHILDREN,
+      staggerDirection: CONTAINER_EXIT_STAGGER_DIRECTION,
+      ...options?.transitionOut
+    }
+  }
+});
+
+// src/components/motion/viewport/motion-viewport.tsx
+var import_jsx_runtime28 = require("react/jsx-runtime");
+function MotionViewport({
   children,
-  color1 = ANIMATED_GRADIENT_DEFAULT_COLOR1,
-  color2 = ANIMATED_GRADIENT_DEFAULT_COLOR2,
-  duration = ANIMATED_GRADIENT_DEFAULT_DURATION,
-  component = "span",
+  viewport,
   sx,
+  disableAnimateOnMobile = true,
   ...other
 }) {
-  return /* @__PURE__ */ (0, import_jsx_runtime25.jsx)(
-    import_Box13.default,
+  const smDown = (0, import_useMediaQuery.default)((theme) => theme.breakpoints.down("sm"));
+  if (smDown && disableAnimateOnMobile) {
+    return /* @__PURE__ */ (0, import_jsx_runtime28.jsx)(import_Box15.default, { sx, ...other, children });
+  }
+  return /* @__PURE__ */ (0, import_jsx_runtime28.jsx)(
+    import_Box15.default,
     {
-      component,
-      sx: [gradientTextSx(color1, color2, duration), ...Array.isArray(sx) ? sx : [sx]],
+      component: import_framer_motion3.m.div,
+      initial: "initial",
+      whileInView: "animate",
+      variants: container(),
+      viewport: { once: true, amount: 0.3, ...viewport },
+      sx,
       ...other,
       children
     }
   );
 }
 
+// src/components/section/feature-flow/feature-flow-section.const.ts
+var HOVER_STEP_DELAY_MS = 180;
+var SCROLL_IDLE_TIMEOUT_MS = 1e3;
+var IMAGE_REVEAL_SCROLL_OFFSET = ["start 90%", "start 40%"];
+var IMAGE_REVEAL_OPACITY_FROM = 0;
+var IMAGE_REVEAL_Y_FROM_PX = 32;
+var IMAGE_REVEAL_SCALE_FROM = 0.94;
+var IMAGE_REVEAL_BLUR_FROM_PX = 12;
+var DETAIL_PANEL_LAYOUT_TRANSITION = {
+  layout: { duration: 0.3, ease: [0.4, 0, 0.2, 1] }
+};
+
+// src/components/section/feature-flow/feature-flow-section.styles.ts
+var GREY_500_CHANNEL = "var(--mui-palette-grey-500Channel)";
+var COMMON_BLACK_CHANNEL = "var(--mui-palette-common-blackChannel)";
+var COMMON_WHITE_CHANNEL = "var(--mui-palette-common-whiteChannel)";
+var HIGHLIGHT_CAROUSEL_HEIGHT = 570;
+var selectedHoverShadow = (channel, innerAlpha, outerAlpha) => `0 0 2px 0 ${channelAlpha(channel, innerAlpha)}, -8px 20px 40px -4px ${channelAlpha(channel, outerAlpha)}`;
+var selectedActiveShadow = (channel, innerAlpha, outerAlpha) => `0 0 1px 0 ${channelAlpha(channel, innerAlpha)}, -1px 2px 4px -1px ${channelAlpha(channel, outerAlpha)}`;
+var featureFlowRootSx = {
+  overflowX: "clip",
+  position: "relative",
+  py: { xs: 10, md: 20 }
+};
+var imageColumnCardSx = (theme) => ({
+  top: 0,
+  left: "50%",
+  width: 720,
+  maxWidth: "100%",
+  borderRadius: 2,
+  overflow: "hidden",
+  position: "absolute",
+  transform: "translateX(-50%)",
+  bgcolor: "background.default",
+  boxShadow: `-40px 40px 80px 0px ${channelAlpha(GREY_500_CHANNEL, 0.16)}`,
+  ...theme.applyStyles("dark", {
+    boxShadow: `-40px 40px 80px 0px ${channelAlpha(COMMON_BLACK_CHANNEL, 0.16)}`
+  })
+});
+var detailPanelSx = {
+  py: { xs: 6, md: 10 },
+  overflow: "hidden",
+  position: "relative",
+  bgcolor: channelAlpha("var(--mui-palette-primary-mainChannel)", 0.04),
+  borderTop: `1px solid ${channelAlpha("var(--mui-palette-primary-mainChannel)", 0.12)}`
+};
+var featureFlowItemSx = ({ isSelected, isActive, isExpanded, interactive }) => (theme) => ({
+  gap: 2,
+  display: "flex",
+  alignItems: "flex-start",
+  textAlign: "left",
+  width: "100%",
+  cursor: interactive ? "pointer" : "default",
+  borderRadius: 1.5,
+  py: 3,
+  px: 2.5,
+  border: "solid 1px transparent",
+  color: "text.disabled",
+  outline: "none",
+  transition: theme.transitions.create(
+    ["background-color", "box-shadow", "border-color", "opacity"],
+    { duration: theme.transitions.duration.shorter }
+  ),
+  "&:focus-visible": {
+    outline: `2px dashed ${theme.vars.palette.primary.main}`,
+    outlineOffset: 2
+  },
+  ...interactive && !isSelected && {
+    "&:hover": {
+      opacity: 0.72,
+      bgcolor: channelAlpha(GREY_500_CHANNEL, 0.08)
+    },
+    "&:active": {
+      opacity: 0.56,
+      bgcolor: channelAlpha(GREY_500_CHANNEL, 0.12)
+    }
+  },
+  ...interactive && !isSelected && isActive && {
+    opacity: 1
+  },
+  ...interactive && isSelected && {
+    color: "text.primary",
+    bgcolor: "background.paper",
+    boxShadow: `-8px 8px 20px -4px ${channelAlpha(GREY_500_CHANNEL, 0.12)}`,
+    "&:hover": {
+      opacity: 1,
+      boxShadow: selectedHoverShadow(GREY_500_CHANNEL, 0.08, 0.24)
+    },
+    "&:active": {
+      opacity: 1,
+      boxShadow: selectedActiveShadow(GREY_500_CHANNEL, 0.04, 0.06)
+    },
+    ...theme.applyStyles("dark", {
+      boxShadow: `-8px 8px 20px -4px ${channelAlpha(COMMON_BLACK_CHANNEL, 0.12)}`,
+      "&:hover": {
+        boxShadow: selectedHoverShadow(COMMON_BLACK_CHANNEL, 0.12, 0.32)
+      },
+      "&:active": {
+        boxShadow: selectedActiveShadow(COMMON_BLACK_CHANNEL, 0.04, 0.08)
+      }
+    })
+  },
+  ...interactive && isExpanded && {
+    borderColor: channelAlpha("var(--mui-palette-primary-mainChannel)", 0.24),
+    boxShadow: isSelected ? `inset 3px 0 0 ${theme.vars.palette.primary.main}, -8px 8px 20px -4px ${channelAlpha(GREY_500_CHANNEL, 0.12)}` : `inset 3px 0 0 ${theme.vars.palette.primary.main}`
+  }
+});
+var imageColumnStickyStackSx = {
+  position: { xs: "relative", md: "sticky" },
+  top: { md: 80 },
+  width: 1,
+  alignItems: "center",
+  justifyContent: "center"
+};
+var imageColumnOuterGhostSx = {
+  width: 720,
+  maxWidth: "100%",
+  display: "block",
+  visibility: "hidden",
+  pointerEvents: "none",
+  userSelect: "none"
+};
+var imageColumnInnerGhostSx = {
+  width: "100%",
+  display: "block",
+  visibility: "hidden",
+  pointerEvents: "none",
+  userSelect: "none"
+};
+var crossfadeOpacitySx = (isActive, durationSeconds) => ({
+  opacity: isActive ? 1 : 0,
+  transition: `opacity ${durationSeconds}s ease`
+});
+var imageColumnFrameSx = (isActive) => ({
+  width: "100%",
+  display: "block",
+  pointerEvents: "none",
+  userSelect: "none",
+  position: "absolute",
+  top: 0,
+  left: 0,
+  ...crossfadeOpacitySx(isActive, 0.4)
+});
+var highlightCarouselRootSx = {
+  position: "relative",
+  height: HIGHLIGHT_CAROUSEL_HEIGHT,
+  borderRadius: 2,
+  overflow: "hidden"
+};
+var highlightSlideImageSx = (isActive) => ({
+  position: "absolute",
+  inset: 0,
+  width: 1,
+  height: 1,
+  objectFit: "cover",
+  objectPosition: "center top",
+  ...crossfadeOpacitySx(isActive, 0.5)
+});
+var highlightScrimSx = {
+  position: "absolute",
+  inset: 0,
+  pointerEvents: "none",
+  background: `linear-gradient(to top, ${channelAlpha(COMMON_BLACK_CHANNEL, 1)} 0%, ${channelAlpha(COMMON_BLACK_CHANNEL, 0.5)} 40%, transparent 69%)`
+};
+var highlightTextSlotSx = {
+  position: "relative",
+  height: 1,
+  display: "flex",
+  flexDirection: "column",
+  justifyContent: "flex-end",
+  px: { xs: 3, md: 4 },
+  pb: { xs: 3, md: 4 },
+  color: "common.white"
+};
+var highlightControlsRowSx = {
+  position: "absolute",
+  top: 16,
+  right: 16,
+  display: "flex",
+  alignItems: "center",
+  gap: 1
+};
+var highlightDetailTextSx = {
+  color: channelAlpha(COMMON_WHITE_CHANNEL, 0.9),
+  lineHeight: 1.7
+};
+var highlightIndexLabelSx = {
+  color: "common.white",
+  minWidth: 32,
+  textAlign: "center"
+};
+var highlightArrowButtonSx = {
+  color: "common.white",
+  bgcolor: channelAlpha(COMMON_WHITE_CHANNEL, 0.12)
+};
+
+// src/components/section/feature-flow/feature-flow-section.utils.ts
+var import_react16 = require("react");
+var import_react_dom = require("react-dom");
+var import_framer_motion4 = require("framer-motion");
+function hasExpansionData(item) {
+  return !!(item.longDescription || item.technologies?.length || item.metrics?.length || item.highlightCards?.length);
+}
+function isRichLongDescription(item) {
+  return typeof item.longDescription !== "string" && item.longDescription != null;
+}
+function useImagePreloader(srcs, highPrioritySrc) {
+  srcs.forEach((src) => {
+    if (src) {
+      (0, import_react_dom.preload)(src, {
+        as: "image",
+        fetchPriority: src === highPrioritySrc ? "high" : "auto"
+      });
+    }
+  });
+}
+var scheduleIdle = typeof requestIdleCallback !== "undefined" ? (cb) => requestIdleCallback(cb) : (cb) => globalThis.setTimeout(cb, 0);
+var cancelIdle = typeof cancelIdleCallback !== "undefined" ? (id) => cancelIdleCallback(id) : (id) => globalThis.clearTimeout(id);
+function useClientImagePrewarm(srcs) {
+  (0, import_react16.useEffect)(() => {
+    if (!srcs.length) return void 0;
+    let cancelled = false;
+    const handle = scheduleIdle(() => {
+      if (cancelled) return;
+      srcs.forEach((src) => {
+        if (!src) return;
+        const img = new Image();
+        img.src = src;
+      });
+    });
+    return () => {
+      cancelled = true;
+      cancelIdle(handle);
+    };
+  }, [srcs]);
+}
+function useScrollDirection() {
+  const [state, setState] = (0, import_react16.useState)({
+    direction: "down",
+    isScrolling: false
+  });
+  const prevYRef = (0, import_react16.useRef)(0);
+  const idleTimerRef = (0, import_react16.useRef)(null);
+  (0, import_react16.useEffect)(() => {
+    prevYRef.current = globalThis.scrollY ?? 0;
+    const handleScroll = () => {
+      const latest = globalThis.scrollY ?? 0;
+      const direction = latest > prevYRef.current ? "down" : "up";
+      prevYRef.current = latest;
+      setState({ direction, isScrolling: true });
+      if (idleTimerRef.current) globalThis.clearTimeout(idleTimerRef.current);
+      idleTimerRef.current = globalThis.setTimeout(() => {
+        setState((prev) => ({ ...prev, isScrolling: false }));
+        idleTimerRef.current = null;
+      }, SCROLL_IDLE_TIMEOUT_MS);
+    };
+    globalThis.addEventListener("scroll", handleScroll, { passive: true });
+    return () => {
+      globalThis.removeEventListener("scroll", handleScroll);
+      if (idleTimerRef.current) globalThis.clearTimeout(idleTimerRef.current);
+    };
+  }, []);
+  return state;
+}
+function useImageRevealTransform() {
+  const ref = (0, import_react16.useRef)(null);
+  const reducedMotion = (0, import_framer_motion4.useReducedMotion)();
+  const { scrollYProgress } = (0, import_framer_motion4.useScroll)({
+    target: ref,
+    offset: IMAGE_REVEAL_SCROLL_OFFSET
+  });
+  const opacity = (0, import_framer_motion4.useTransform)(
+    scrollYProgress,
+    [0, 1],
+    reducedMotion ? [1, 1] : [IMAGE_REVEAL_OPACITY_FROM, 1]
+  );
+  const y = (0, import_framer_motion4.useTransform)(
+    scrollYProgress,
+    [0, 1],
+    reducedMotion ? [0, 0] : [IMAGE_REVEAL_Y_FROM_PX, 0]
+  );
+  const scale = (0, import_framer_motion4.useTransform)(
+    scrollYProgress,
+    [0, 1],
+    reducedMotion ? [1, 1] : [IMAGE_REVEAL_SCALE_FROM, 1]
+  );
+  const blurPx = (0, import_framer_motion4.useTransform)(
+    scrollYProgress,
+    [0, 1],
+    reducedMotion ? [0, 0] : [IMAGE_REVEAL_BLUR_FROM_PX, 0]
+  );
+  const filter = import_framer_motion4.useMotionTemplate`blur(${blurPx}px)`;
+  return { ref, style: { opacity, y, scale, filter } };
+}
+
+// src/components/section/feature-flow/image-column/feature-flow-image-column.tsx
+var import_react17 = __toESM(require("react"), 1);
+var import_framer_motion5 = require("framer-motion");
+var import_Box16 = __toESM(require("@mui/material/Box"), 1);
+var import_Stack4 = __toESM(require("@mui/material/Stack"), 1);
+var import_jsx_runtime29 = require("react/jsx-runtime");
+var RESTING_REVEAL_STYLE = {
+  opacity: 1,
+  y: 0,
+  scale: 1,
+  filter: "none"
+};
+var FeatureFlowImageColumn = import_react17.default.forwardRef(
+  function FeatureFlowImageColumn2({ activeSrc, ghostSrc, allSrcs, alt, revealStyle = RESTING_REVEAL_STYLE, sx, ...other }, ref) {
+    return /* @__PURE__ */ (0, import_jsx_runtime29.jsxs)(import_Stack4.default, { ref, sx: imageColumnStickyStackSx, ...other, children: [
+      /* @__PURE__ */ (0, import_jsx_runtime29.jsx)(import_Box16.default, { component: "img", alt: "", "aria-hidden": true, src: ghostSrc, sx: imageColumnOuterGhostSx }),
+      /* @__PURE__ */ (0, import_jsx_runtime29.jsx)(import_Box16.default, { sx: [imageColumnCardSx, ...Array.isArray(sx) ? sx : [sx]], children: /* @__PURE__ */ (0, import_jsx_runtime29.jsxs)(import_Box16.default, { component: import_framer_motion5.m.div, style: revealStyle, sx: { width: 1, position: "relative" }, children: [
+        /* @__PURE__ */ (0, import_jsx_runtime29.jsx)(import_Box16.default, { component: "img", alt: "", "aria-hidden": true, src: ghostSrc, sx: imageColumnInnerGhostSx }),
+        allSrcs.map((src) => /* @__PURE__ */ (0, import_jsx_runtime29.jsx)(
+          import_Box16.default,
+          {
+            component: "img",
+            alt: src === activeSrc ? alt : "",
+            "aria-hidden": src === activeSrc ? void 0 : true,
+            src,
+            fetchPriority: src === ghostSrc ? "high" : "auto",
+            sx: imageColumnFrameSx(src === activeSrc)
+          },
+          src
+        ))
+      ] }) })
+    ] });
+  }
+);
+FeatureFlowImageColumn.displayName = "FeatureFlowImageColumn";
+
+// src/components/section/feature-flow/item-detail/feature-flow-item-detail.tsx
+var import_react19 = __toESM(require("react"), 1);
+var import_Box19 = __toESM(require("@mui/material/Box"), 1);
+var import_Grid3 = __toESM(require("@mui/material/Grid"), 1);
+var import_Stack5 = __toESM(require("@mui/material/Stack"), 1);
+var import_Container3 = __toESM(require("@mui/material/Container"), 1);
+var import_Typography10 = __toESM(require("@mui/material/Typography"), 1);
+
 // src/components/material/data-display/icon/tech-strip/tech-icon-strip.tsx
-var import_Box14 = __toESM(require("@mui/material/Box"), 1);
+var import_Box17 = __toESM(require("@mui/material/Box"), 1);
 var import_Typography8 = __toESM(require("@mui/material/Typography"), 1);
 
 // src/components/material/data-display/icon/tech-strip/tech-icon-strip.const.ts
@@ -1707,7 +2304,7 @@ var iconSlotSx = {
 };
 
 // src/components/material/data-display/icon/tech-strip/tech-icon-strip.tsx
-var import_jsx_runtime26 = require("react/jsx-runtime");
+var import_jsx_runtime30 = require("react/jsx-runtime");
 function TechIconStrip({
   items,
   heading,
@@ -1715,13 +2312,550 @@ function TechIconStrip({
   sx,
   ...other
 }) {
-  return /* @__PURE__ */ (0, import_jsx_runtime26.jsxs)(import_Box14.default, { sx: [stripRootSx, ...Array.isArray(sx) ? sx : [sx]], ...other, children: [
-    heading && /* @__PURE__ */ (0, import_jsx_runtime26.jsx)(import_Typography8.default, { component: "span", sx: titleSx, variant: "overline", children: heading }),
-    /* @__PURE__ */ (0, import_jsx_runtime26.jsx)(import_Box14.default, { sx: stripWrapperSx(centeredWrap), children: items.map((item) => /* @__PURE__ */ (0, import_jsx_runtime26.jsxs)(import_Box14.default, { sx: itemSx, children: [
-      /* @__PURE__ */ (0, import_jsx_runtime26.jsx)(import_Box14.default, { "aria-hidden": true, sx: iconSlotSx, children: item.icon }),
-      /* @__PURE__ */ (0, import_jsx_runtime26.jsx)(import_Typography8.default, { sx: { fontSize: TECH_ICON_STRIP_LABEL_FONT_SIZE }, variant: "caption", children: item.label })
+  return /* @__PURE__ */ (0, import_jsx_runtime30.jsxs)(import_Box17.default, { sx: [stripRootSx, ...Array.isArray(sx) ? sx : [sx]], ...other, children: [
+    heading && /* @__PURE__ */ (0, import_jsx_runtime30.jsx)(import_Typography8.default, { component: "span", sx: titleSx, variant: "overline", children: heading }),
+    /* @__PURE__ */ (0, import_jsx_runtime30.jsx)(import_Box17.default, { sx: stripWrapperSx(centeredWrap), children: items.map((item) => /* @__PURE__ */ (0, import_jsx_runtime30.jsxs)(import_Box17.default, { sx: itemSx, children: [
+      /* @__PURE__ */ (0, import_jsx_runtime30.jsx)(import_Box17.default, { "aria-hidden": true, sx: iconSlotSx, children: item.icon }),
+      /* @__PURE__ */ (0, import_jsx_runtime30.jsx)(import_Typography8.default, { sx: { fontSize: TECH_ICON_STRIP_LABEL_FONT_SIZE }, variant: "caption", children: item.label })
     ] }, item.label)) })
   ] });
+}
+
+// src/components/section/feature-flow/highlight-carousel/feature-flow-highlight-carousel.tsx
+var import_react18 = __toESM(require("react"), 1);
+var import_framer_motion6 = require("framer-motion");
+var import_Box18 = __toESM(require("@mui/material/Box"), 1);
+var import_IconButton3 = __toESM(require("@mui/material/IconButton"), 1);
+var import_Typography9 = __toESM(require("@mui/material/Typography"), 1);
+
+// src/components/section/feature-flow/highlight-carousel/feature-flow-highlight-carousel.animations.ts
+var HIGHLIGHT_TEXT_SLIDE_DISTANCE = 24;
+var highlightTextVariants = (distance) => ({
+  enter: (step) => ({
+    opacity: 0,
+    x: step >= 0 ? distance : -distance
+  }),
+  center: { opacity: 1, x: 0 },
+  exit: (step) => ({
+    opacity: 0,
+    x: step >= 0 ? -distance : distance
+  })
+});
+
+// src/components/section/feature-flow/highlight-carousel/feature-flow-highlight-carousel.tsx
+var import_jsx_runtime31 = require("react/jsx-runtime");
+var FeatureFlowHighlightCarousel = import_react18.default.forwardRef(function FeatureFlowHighlightCarousel2({ cards, sx, ...other }, ref) {
+  const [selectedIndex, setSelectedIndex] = (0, import_react18.useState)(0);
+  const [step, setStep] = (0, import_react18.useState)(1);
+  const reducedMotion = (0, import_framer_motion6.useReducedMotion)();
+  if (!cards.length) return null;
+  const goTo = (index, direction) => {
+    setStep(direction);
+    setSelectedIndex((index + cards.length) % cards.length);
+  };
+  const selectedCard = cards[selectedIndex];
+  const textVariants = highlightTextVariants(reducedMotion ? 0 : HIGHLIGHT_TEXT_SLIDE_DISTANCE);
+  return /* @__PURE__ */ (0, import_jsx_runtime31.jsxs)(import_Box18.default, { ref, sx: [highlightCarouselRootSx, ...Array.isArray(sx) ? sx : [sx]], ...other, children: [
+    cards.map((card, index) => /* @__PURE__ */ (0, import_jsx_runtime31.jsx)(
+      import_Box18.default,
+      {
+        component: "img",
+        alt: "",
+        "aria-hidden": "true",
+        src: card.src ?? "",
+        loading: index === selectedIndex ? "eager" : "lazy",
+        sx: highlightSlideImageSx(index === selectedIndex)
+      },
+      card.headline
+    )),
+    /* @__PURE__ */ (0, import_jsx_runtime31.jsx)(import_Box18.default, { "aria-hidden": true, sx: highlightScrimSx }),
+    /* @__PURE__ */ (0, import_jsx_runtime31.jsx)(import_Box18.default, { sx: highlightTextSlotSx, children: /* @__PURE__ */ (0, import_jsx_runtime31.jsx)(import_framer_motion6.AnimatePresence, { mode: "wait", custom: step, children: /* @__PURE__ */ (0, import_jsx_runtime31.jsxs)(
+      import_framer_motion6.m.div,
+      {
+        custom: step,
+        variants: textVariants,
+        initial: "enter",
+        animate: "center",
+        exit: "exit",
+        transition: { duration: 0.28, ease: "easeOut" },
+        children: [
+          /* @__PURE__ */ (0, import_jsx_runtime31.jsx)(import_Typography9.default, { variant: "h4", sx: { mb: 1 }, children: selectedCard?.headline }),
+          /* @__PURE__ */ (0, import_jsx_runtime31.jsx)(import_Typography9.default, { variant: "body1", sx: highlightDetailTextSx, children: selectedCard?.detail })
+        ]
+      },
+      selectedIndex
+    ) }) }),
+    cards.length > 1 && /* @__PURE__ */ (0, import_jsx_runtime31.jsxs)(import_Box18.default, { sx: highlightControlsRowSx, children: [
+      /* @__PURE__ */ (0, import_jsx_runtime31.jsxs)(import_Typography9.default, { variant: "caption", sx: highlightIndexLabelSx, children: [
+        selectedIndex + 1,
+        "/",
+        cards.length
+      ] }),
+      /* @__PURE__ */ (0, import_jsx_runtime31.jsx)(
+        import_IconButton3.default,
+        {
+          "aria-label": "Previous highlight",
+          size: "small",
+          onClick: () => goTo(selectedIndex - 1, -1),
+          sx: highlightArrowButtonSx,
+          children: /* @__PURE__ */ (0, import_jsx_runtime31.jsx)(GiselleIcon, { icon: "solar:alt-arrow-left-bold", width: 18, "aria-hidden": "true" })
+        }
+      ),
+      /* @__PURE__ */ (0, import_jsx_runtime31.jsx)(
+        import_IconButton3.default,
+        {
+          "aria-label": "Next highlight",
+          size: "small",
+          onClick: () => goTo(selectedIndex + 1, 1),
+          sx: highlightArrowButtonSx,
+          children: /* @__PURE__ */ (0, import_jsx_runtime31.jsx)(GiselleIcon, { icon: "solar:alt-arrow-right-bold", width: 18, "aria-hidden": "true" })
+        }
+      )
+    ] })
+  ] });
+});
+FeatureFlowHighlightCarousel.displayName = "FeatureFlowHighlightCarousel";
+
+// src/components/section/feature-flow/item-detail/feature-flow-item-detail.tsx
+var import_jsx_runtime32 = require("react/jsx-runtime");
+var FeatureFlowItemDetail = import_react19.default.forwardRef(
+  function FeatureFlowItemDetail2({ item, sx, ...other }, ref) {
+    const cards = item.highlightCards ?? [];
+    return /* @__PURE__ */ (0, import_jsx_runtime32.jsx)(import_Box19.default, { ref, sx: [detailPanelSx, ...Array.isArray(sx) ? sx : [sx]], ...other, children: /* @__PURE__ */ (0, import_jsx_runtime32.jsx)(import_Container3.default, { children: /* @__PURE__ */ (0, import_jsx_runtime32.jsxs)(import_Grid3.default, { container: true, spacing: { xs: 4, md: 8 }, children: [
+      /* @__PURE__ */ (0, import_jsx_runtime32.jsx)(import_Grid3.default, { size: { xs: 12, md: 6 }, children: /* @__PURE__ */ (0, import_jsx_runtime32.jsxs)(import_Stack5.default, { spacing: 4, children: [
+        /* @__PURE__ */ (0, import_jsx_runtime32.jsxs)(import_Stack5.default, { direction: "row", spacing: 2, sx: { alignItems: "center" }, children: [
+          /* @__PURE__ */ (0, import_jsx_runtime32.jsx)(
+            GiselleIcon,
+            {
+              icon: item.icon,
+              width: 44,
+              sx: { color: "primary.main" },
+              "aria-hidden": "true"
+            }
+          ),
+          /* @__PURE__ */ (0, import_jsx_runtime32.jsx)(import_Typography10.default, { variant: "h3", children: item.title })
+        ] }),
+        item.metrics?.length ? /* @__PURE__ */ (0, import_jsx_runtime32.jsx)(
+          import_Box19.default,
+          {
+            sx: {
+              display: "grid",
+              gap: 2,
+              gridTemplateColumns: {
+                xs: "repeat(1, 1fr)",
+                sm: `repeat(${Math.min(item.metrics.length, 3)}, 1fr)`
+              }
+            },
+            children: item.metrics.map(({ value, label, sublabel, icon }) => /* @__PURE__ */ (0, import_jsx_runtime32.jsx)(
+              MetricCard,
+              {
+                value,
+                label,
+                sublabel,
+                icon: icon ? /* @__PURE__ */ (0, import_jsx_runtime32.jsx)(GiselleIcon, { icon, width: 36, "aria-hidden": "true" }) : void 0,
+                color: "primary",
+                decoration: /* @__PURE__ */ (0, import_jsx_runtime32.jsx)(MetricCardDecoration, { color: "primary" })
+              },
+              label
+            ))
+          }
+        ) : null,
+        isRichLongDescription(item) ? item.longDescription : /* @__PURE__ */ (0, import_jsx_runtime32.jsx)(import_Typography10.default, { variant: "body1", sx: { color: "text.secondary", lineHeight: 1.8 }, children: item.longDescription ?? item.description }),
+        item.technologies?.length ? /* @__PURE__ */ (0, import_jsx_runtime32.jsx)(
+          TechIconStrip,
+          {
+            heading: "Technologies",
+            centeredWrap: false,
+            items: item.technologies.map((tech) => ({
+              label: tech.name,
+              icon: /* @__PURE__ */ (0, import_jsx_runtime32.jsx)(GiselleIcon, { icon: tech.icon, width: 32, "aria-hidden": "true" })
+            }))
+          }
+        ) : null
+      ] }) }),
+      cards.length > 0 && /* @__PURE__ */ (0, import_jsx_runtime32.jsx)(import_Grid3.default, { size: { xs: 12, md: 6 }, children: /* @__PURE__ */ (0, import_jsx_runtime32.jsx)(FeatureFlowHighlightCarousel, { cards }) })
+    ] }) }) });
+  }
+);
+FeatureFlowItemDetail.displayName = "FeatureFlowItemDetail";
+
+// src/components/section/feature-flow/feature-flow-section.tsx
+var import_jsx_runtime33 = require("react/jsx-runtime");
+var FeatureFlowSection = import_react20.default.forwardRef(
+  function FeatureFlowSection2({
+    caption,
+    title,
+    txtGradient,
+    description,
+    items,
+    image,
+    layoutDirection = "left",
+    columnSpacing = { xs: 0, md: 8 },
+    descriptionGridSize,
+    imageGridSize,
+    sx,
+    ...other
+  }, ref) {
+    const isLeft = layoutDirection === "left";
+    const resolvedDescriptionGridSize = descriptionGridSize ?? {
+      xs: 12,
+      md: 6,
+      lg: isLeft ? 7 : 5
+    };
+    const resolvedImageGridSize = imageGridSize ?? { xs: 12, md: 6, lg: isLeft ? 5 : 7 };
+    const [activeItemIndex, setActiveItemIndex] = (0, import_react20.useState)(0);
+    const [selectedItemIndex, setSelectedItemIndex] = (0, import_react20.useState)(0);
+    const [userHasSelected, setUserHasSelected] = (0, import_react20.useState)(false);
+    const [expandedItemId, setExpandedItemId] = (0, import_react20.useState)(null);
+    const [hoverImageIndex, setHoverImageIndex] = (0, import_react20.useState)(0);
+    const [pendingScrollItemId, setPendingScrollItemId] = (0, import_react20.useState)(null);
+    const hoverImageIndexRef = (0, import_react20.useRef)(0);
+    const detailPanelNodesRef = (0, import_react20.useRef)(/* @__PURE__ */ new Map());
+    const { direction: scrollDirection, isScrolling } = useScrollDirection();
+    const { ref: imageColumnRef, style: imageRevealStyle } = useImageRevealTransform();
+    const activeItem = items[activeItemIndex] ?? items[0];
+    const setHoverPhase = (0, import_react20.useCallback)((phase) => {
+      hoverImageIndexRef.current = phase;
+      setHoverImageIndex(phase);
+    }, []);
+    const scrollAwareSrc = (0, import_react20.useMemo)(() => {
+      if (image.scrollImages?.length === 2) {
+        return image.scrollImages[scrollDirection === "down" ? 0 : 1];
+      }
+      return image.src;
+    }, [image.scrollImages, image.src, scrollDirection]);
+    const hoverSequenceSources = (0, import_react20.useMemo)(() => {
+      if (image.scrollImages?.length === 2 && isScrolling && !userHasSelected) {
+        return [scrollAwareSrc];
+      }
+      if (activeItem?.imgUrl?.length) return [...activeItem.imgUrl];
+      if (image.stackSources?.length) return [...image.stackSources];
+      return image.src ? [image.src] : [];
+    }, [
+      activeItem,
+      image.scrollImages,
+      image.src,
+      image.stackSources,
+      isScrolling,
+      scrollAwareSrc,
+      userHasSelected
+    ]);
+    (0, import_react20.useEffect)(() => {
+      setHoverPhase(0);
+      if (hoverSequenceSources.length <= 1) return void 0;
+      const interval = globalThis.setInterval(() => {
+        const next = hoverImageIndexRef.current + 1;
+        if (next >= hoverSequenceSources.length) {
+          globalThis.clearInterval(interval);
+          return;
+        }
+        setHoverPhase(next);
+      }, HOVER_STEP_DELAY_MS);
+      return () => globalThis.clearInterval(interval);
+    }, [activeItemIndex, hoverSequenceSources, setHoverPhase]);
+    (0, import_react20.useEffect)(() => {
+      if (!isScrolling) {
+        setActiveItemIndex(selectedItemIndex);
+        setHoverPhase(0);
+      }
+    }, [isScrolling, selectedItemIndex, setHoverPhase]);
+    const activeSrc = hoverSequenceSources[hoverImageIndex] ?? hoverSequenceSources[0] ?? "";
+    const initiallyVisibleSrc = items[0]?.imgUrl?.[0] ?? image.scrollImages?.[0] ?? image.stackSources?.[0] ?? image.src;
+    const allItemImageSrcs = (0, import_react20.useMemo)(
+      () => Array.from(
+        new Set(
+          [
+            image.src,
+            ...image.scrollImages ?? [],
+            ...image.stackSources ?? [],
+            ...items.flatMap((item) => item.imgUrl ?? [])
+          ].filter((src) => !!src)
+        )
+      ),
+      [image.src, image.scrollImages, image.stackSources, items]
+    );
+    useImagePreloader(allItemImageSrcs, initiallyVisibleSrc);
+    useClientImagePrewarm(allItemImageSrcs);
+    const handleItemHover = (index) => {
+      setActiveItemIndex(index);
+      setHoverPhase(0);
+    };
+    const handleItemClick = (item, index) => {
+      if (!hasExpansionData(item)) return;
+      setActiveItemIndex(index);
+      setSelectedItemIndex(index);
+      setUserHasSelected(true);
+      setExpandedItemId((current) => current === item.id ? null : item.id);
+    };
+    const subNavItems = (0, import_react20.useMemo)(
+      () => items.filter(hasExpansionData).map((item) => ({
+        id: item.id,
+        label: item.title,
+        icon: /* @__PURE__ */ (0, import_jsx_runtime33.jsx)(GiselleIcon, { icon: item.icon, width: 22, "aria-hidden": "true" })
+      })),
+      [items]
+    );
+    const handleSubNavSelect = (0, import_react20.useCallback)(
+      (id) => {
+        const index = items.findIndex((item) => item.id === id);
+        if (index !== -1) {
+          setActiveItemIndex(index);
+          setSelectedItemIndex(index);
+          setUserHasSelected(true);
+        }
+        setExpandedItemId(id);
+      },
+      [items]
+    );
+    const expandedItem = items.find((item) => item.id === expandedItemId) ?? null;
+    (0, import_react20.useEffect)(() => {
+      if (!expandedItemId) {
+        setPendingScrollItemId(null);
+        return void 0;
+      }
+      let rafId;
+      let cancelled = false;
+      const attemptScroll = () => {
+        if (cancelled) return;
+        const node = detailPanelNodesRef.current.get(expandedItemId);
+        if (node) {
+          node.scrollIntoView?.({ behavior: "smooth", block: "start" });
+          setPendingScrollItemId((current) => current === expandedItemId ? null : current);
+          return;
+        }
+        rafId = globalThis.requestAnimationFrame(attemptScroll);
+      };
+      setPendingScrollItemId(expandedItemId);
+      attemptScroll();
+      return () => {
+        cancelled = true;
+        if (rafId !== void 0) globalThis.cancelAnimationFrame(rafId);
+      };
+    }, [expandedItemId]);
+    return /* @__PURE__ */ (0, import_jsx_runtime33.jsxs)(
+      import_Box20.default,
+      {
+        ref,
+        component: "section",
+        sx: [featureFlowRootSx, ...Array.isArray(sx) ? sx : [sx]],
+        ...other,
+        children: [
+          /* @__PURE__ */ (0, import_jsx_runtime33.jsx)(MotionViewport, { children: /* @__PURE__ */ (0, import_jsx_runtime33.jsx)(import_Container4.default, { sx: { position: "relative" }, children: /* @__PURE__ */ (0, import_jsx_runtime33.jsxs)(
+            import_Grid4.default,
+            {
+              container: true,
+              columnSpacing,
+              rowSpacing: { xs: 5, md: 0 },
+              sx: { position: "relative" },
+              children: [
+                /* @__PURE__ */ (0, import_jsx_runtime33.jsxs)(
+                  import_Grid4.default,
+                  {
+                    size: resolvedDescriptionGridSize,
+                    sx: { order: { xs: 1, md: isLeft ? 1 : 2 }, pl: { md: isLeft ? 0 : 4 } },
+                    children: [
+                      title && /* @__PURE__ */ (0, import_jsx_runtime33.jsx)(
+                        SectionTitle,
+                        {
+                          caption,
+                          title,
+                          txtGradient,
+                          description,
+                          sx: { mb: { xs: 5, md: 8 }, textAlign: { xs: "center", md: "left" } }
+                        }
+                      ),
+                      /* @__PURE__ */ (0, import_jsx_runtime33.jsx)(
+                        import_Stack6.default,
+                        {
+                          spacing: 1.5,
+                          sx: { maxWidth: { sm: 560, md: 400 }, mx: { xs: "auto", md: "unset" } },
+                          onMouseLeave: () => {
+                            setActiveItemIndex(selectedItemIndex);
+                            setHoverPhase(0);
+                          },
+                          children: items.map((item, index) => {
+                            const interactive = hasExpansionData(item);
+                            const isSelected = index === selectedItemIndex;
+                            const isActive = index === activeItemIndex;
+                            const isExpanded = item.id === expandedItemId;
+                            const rowContent = /* @__PURE__ */ (0, import_jsx_runtime33.jsxs)(import_jsx_runtime33.Fragment, { children: [
+                              /* @__PURE__ */ (0, import_jsx_runtime33.jsx)(GiselleIcon, { icon: item.icon, width: 48, "aria-hidden": "true" }),
+                              /* @__PURE__ */ (0, import_jsx_runtime33.jsxs)(import_Stack6.default, { spacing: 1, sx: { flex: 1, minWidth: 0 }, children: [
+                                /* @__PURE__ */ (0, import_jsx_runtime33.jsx)(import_Typography11.default, { variant: "h4", component: "h6", color: "inherit", children: item.title }),
+                                /* @__PURE__ */ (0, import_jsx_runtime33.jsx)(import_Typography11.default, { color: "inherit", children: item.description })
+                              ] })
+                            ] });
+                            if (!interactive) {
+                              return /* @__PURE__ */ (0, import_jsx_runtime33.jsx)(
+                                import_Box20.default,
+                                {
+                                  component: import_framer_motion7.m.div,
+                                  variants: fade("inUp", { distance: 24 }),
+                                  onMouseEnter: () => handleItemHover(index),
+                                  sx: featureFlowItemSx({
+                                    isSelected,
+                                    isActive,
+                                    isExpanded,
+                                    interactive: false
+                                  }),
+                                  children: rowContent
+                                },
+                                item.id
+                              );
+                            }
+                            return /* @__PURE__ */ (0, import_jsx_runtime33.jsx)(
+                              import_ButtonBase3.default,
+                              {
+                                disableRipple: true,
+                                type: "button",
+                                "aria-pressed": isSelected,
+                                component: import_framer_motion7.m.button,
+                                variants: fade("inUp", { distance: 24 }),
+                                onMouseEnter: () => handleItemHover(index),
+                                onFocus: () => handleItemHover(index),
+                                onClick: () => handleItemClick(item, index),
+                                sx: featureFlowItemSx({
+                                  isSelected,
+                                  isActive,
+                                  isExpanded,
+                                  interactive: true
+                                }),
+                                children: rowContent
+                              },
+                              item.id
+                            );
+                          })
+                        }
+                      )
+                    ]
+                  }
+                ),
+                /* @__PURE__ */ (0, import_jsx_runtime33.jsx)(import_Grid4.default, { size: resolvedImageGridSize, sx: { order: { xs: 2, md: isLeft ? 2 : 1 } }, children: /* @__PURE__ */ (0, import_jsx_runtime33.jsx)(
+                  FeatureFlowImageColumn,
+                  {
+                    ref: imageColumnRef,
+                    activeSrc,
+                    ghostSrc: initiallyVisibleSrc ?? image.src,
+                    allSrcs: allItemImageSrcs,
+                    alt: image.alt,
+                    revealStyle: imageRevealStyle,
+                    sx: image.sx
+                  }
+                ) })
+              ]
+            }
+          ) }) }),
+          pendingScrollItemId && /* @__PURE__ */ (0, import_jsx_runtime33.jsx)(
+            import_LinearProgress.default,
+            {
+              "aria-label": "Loading item detail panel",
+              "aria-live": "polite",
+              "aria-busy": "true"
+            }
+          ),
+          /* @__PURE__ */ (0, import_jsx_runtime33.jsxs)(import_framer_motion7.m.div, { layout: true, transition: DETAIL_PANEL_LAYOUT_TRANSITION, children: [
+            /* @__PURE__ */ (0, import_jsx_runtime33.jsx)(import_framer_motion7.AnimatePresence, { mode: "wait", children: expandedItem && /* @__PURE__ */ (0, import_jsx_runtime33.jsx)(
+              import_framer_motion7.m.div,
+              {
+                initial: { opacity: 0, y: 8 },
+                animate: { opacity: 1, y: 0 },
+                exit: { opacity: 0, y: -8 },
+                transition: { duration: 0.22, ease: "easeOut" },
+                children: /* @__PURE__ */ (0, import_jsx_runtime33.jsx)(
+                  FeatureFlowItemDetail,
+                  {
+                    item: expandedItem,
+                    ref: (node) => {
+                      if (node) {
+                        detailPanelNodesRef.current.set(expandedItem.id, node);
+                      } else {
+                        detailPanelNodesRef.current.delete(expandedItem.id);
+                      }
+                    }
+                  }
+                )
+              },
+              expandedItem.id
+            ) }),
+            /* @__PURE__ */ (0, import_jsx_runtime33.jsx)(
+              FloatingSubNav,
+              {
+                sticky: true,
+                items: subNavItems,
+                activeId: expandedItemId,
+                onSelect: handleSubNavSelect
+              }
+            )
+          ] })
+        ]
+      }
+    );
+  }
+);
+FeatureFlowSection.displayName = "FeatureFlowSection";
+
+// src/utils/maturity/maturity-utils.ts
+function resolveMaturityColor(percent) {
+  const clamped = Math.max(0, Math.min(100, percent));
+  if (clamped >= 80) return "success";
+  if (clamped >= 60) return "primary";
+  if (clamped >= 40) return "info";
+  if (clamped >= 20) return "warning";
+  return "error";
+}
+function resolveMaturityLabel(percent) {
+  const clamped = Math.max(0, Math.min(100, percent));
+  if (clamped >= 80) return "Stable";
+  if (clamped >= 60) return "Nearly ready";
+  if (clamped >= 40) return "In progress";
+  if (clamped >= 20) return "Early stage";
+  return "Not started";
+}
+
+// src/components/material/data-display/animated-gradient/animated-gradient-text.tsx
+var import_Box21 = __toESM(require("@mui/material/Box"), 1);
+
+// src/components/material/data-display/animated-gradient/animated-gradient-text.const.ts
+var ANIMATED_GRADIENT_DEFAULT_COLOR1 = "primary";
+var ANIMATED_GRADIENT_DEFAULT_COLOR2 = "secondary";
+var ANIMATED_GRADIENT_DEFAULT_DURATION = 3;
+
+// src/components/material/data-display/animated-gradient/animated-gradient-text.styles.ts
+var gradientTextSx = (color1, color2, duration) => ({
+  background: `linear-gradient(135deg, var(--mui-palette-${color1}-main), var(--mui-palette-${color2}-main), var(--mui-palette-${color1}-main))`,
+  backgroundSize: "200% 200%",
+  backgroundClip: "text",
+  WebkitBackgroundClip: "text",
+  WebkitTextFillColor: "transparent",
+  display: "inline-block",
+  animation: `animatedGradientText ${duration}s ease infinite`,
+  "@keyframes animatedGradientText": {
+    "0%": { backgroundPosition: "0% 50%" },
+    "50%": { backgroundPosition: "100% 50%" },
+    "100%": { backgroundPosition: "0% 50%" }
+  }
+});
+
+// src/components/material/data-display/animated-gradient/animated-gradient-text.tsx
+var import_jsx_runtime34 = require("react/jsx-runtime");
+function AnimatedGradientText({
+  children,
+  color1 = ANIMATED_GRADIENT_DEFAULT_COLOR1,
+  color2 = ANIMATED_GRADIENT_DEFAULT_COLOR2,
+  duration = ANIMATED_GRADIENT_DEFAULT_DURATION,
+  component = "span",
+  sx,
+  ...other
+}) {
+  return /* @__PURE__ */ (0, import_jsx_runtime34.jsx)(
+    import_Box21.default,
+    {
+      component,
+      sx: [gradientTextSx(color1, color2, duration), ...Array.isArray(sx) ? sx : [sx]],
+      ...other,
+      children
+    }
+  );
 }
 // Annotate the CommonJS export names for ESM import in node:
 0 && (module.exports = {
@@ -1731,6 +2865,7 @@ function TechIconStrip({
   Accordion,
   AnimatedGradientText,
   DEFAULT_ICON_ACTIONS,
+  FeatureFlowSection,
   GISELLE_PRIMARY_DARK_MAIN,
   GISELLE_PRIMARY_MAIN,
   GISELLE_SECONDARY_MAIN,

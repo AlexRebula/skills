@@ -277,14 +277,17 @@ type MotionViewportProps = Omit<BoxProps, 'animate' | 'children'> & {
  * `disableAnimateOnMobile` is `true` (default) — short mobile viewports
  * skip the stagger to avoid content appearing off-screen on first render.
  *
- * **Important:** uses `motion.div`, not `m.div`. The `m.*` API requires
- * `LazyMotion` in the consumer's tree — `motion.*` works without a provider.
+ * **Important:** uses `m.div`, not `motion.div`. This requires a `LazyMotion`
+ * ancestor in the consumer's tree providing the loaded features (e.g.
+ * `domAnimation`/`domMax`, sync or async) — required so this component (and
+ * anything composing it, like `FeatureFlowSection`) can render inside a
+ * consumer's `LazyMotion strict` tree, which forbids raw `motion.*`.
  *
  * @example
  * ```tsx
  * <MotionViewport>
- *   <motion.div variants={fade('inUp')}>Title</motion.div>
- *   <motion.div variants={fade('inUp')}>Body</motion.div>
+ *   <m.div variants={fade('inUp')}>Title</m.div>
+ *   <m.div variants={fade('inUp')}>Body</m.div>
  * </MotionViewport>
  * ```
  */

@@ -466,7 +466,7 @@ function MotionContainer({
 }
 
 // src/components/motion/viewport/motion-viewport.tsx
-import { motion as motion2 } from "framer-motion";
+import { m } from "framer-motion";
 import Box2 from "@mui/material/Box";
 import useMediaQuery from "@mui/material/useMediaQuery";
 import { jsx as jsx2 } from "react/jsx-runtime";
@@ -484,7 +484,7 @@ function MotionViewport({
   return /* @__PURE__ */ jsx2(
     Box2,
     {
-      component: motion2.div,
+      component: m.div,
       initial: "initial",
       whileInView: "animate",
       variants: container(),
@@ -534,7 +534,7 @@ function useScrollParallax() {
 // src/components/section/hero/interactive-logo/interactive-logo.tsx
 import { useRef as useRef3, useMemo, useState as useState2, useEffect as useEffect2, useCallback } from "react";
 import {
-  motion as motion6,
+  motion as motion5,
   useSpring as useSpring2,
   useTransform as useTransform2,
   useMotionValue,
@@ -554,7 +554,7 @@ function preloadImages(srcs) {
 }
 
 // src/components/section/hero/interactive-logo/portrait-layer.tsx
-import { motion as motion3 } from "framer-motion";
+import { motion as motion2 } from "framer-motion";
 import Box3 from "@mui/material/Box";
 
 // src/components/section/hero/interactive-logo/interactive-logo.styles.ts
@@ -630,7 +630,7 @@ function PortraitLayer({
   return /* @__PURE__ */ jsx3(Box3, { sx: portraitWrapperSx, children: /* @__PURE__ */ jsx3(
     Box3,
     {
-      component: motion3.img,
+      component: motion2.img,
       alt: portraitAlt,
       src: portraitSrc,
       initial: {
@@ -650,7 +650,7 @@ function PortraitLayer({
 }
 
 // src/components/section/hero/interactive-logo/original-logo-layer.tsx
-import { motion as motion4 } from "framer-motion";
+import { motion as motion3 } from "framer-motion";
 import Box4 from "@mui/material/Box";
 import { jsx as jsx4 } from "react/jsx-runtime";
 function OriginalLogoLayer({
@@ -668,7 +668,7 @@ function OriginalLogoLayer({
   return /* @__PURE__ */ jsx4(
     Box4,
     {
-      component: motion4.div,
+      component: motion3.div,
       initial: {
         opacity: 0,
         scale: 1,
@@ -695,7 +695,7 @@ function OriginalLogoLayer({
 }
 
 // src/components/section/hero/interactive-logo/artistic-logo-layer.tsx
-import { motion as motion5 } from "framer-motion";
+import { motion as motion4 } from "framer-motion";
 import Box5 from "@mui/material/Box";
 import { jsx as jsx5 } from "react/jsx-runtime";
 function ArtisticLogoLayer({
@@ -710,7 +710,7 @@ function ArtisticLogoLayer({
   return /* @__PURE__ */ jsx5(
     Box5,
     {
-      component: motion5.img,
+      component: motion4.img,
       alt: logoAlt ?? "Logo",
       src: artisticLogoSrc,
       initial: {
@@ -963,7 +963,7 @@ function InteractiveHeroLogo({
     {
       ...other,
       ref: rootRef,
-      component: motion6.div,
+      component: motion5.div,
       onPointerMove: handlePointerMove,
       onPointerLeave: handlePointerLeave,
       onPointerDown: handlePointerDown,
@@ -980,7 +980,7 @@ function InteractiveHeroLogo({
             /* @__PURE__ */ jsxs(
               Box6,
               {
-                component: motion6.div,
+                component: motion5.div,
                 style: reducedMotion ? void 0 : {
                   rotateX,
                   rotateY,
@@ -1030,7 +1030,7 @@ function InteractiveHeroLogo({
 }
 
 // src/components/section/hero/buttons-row/hero-buttons-row.tsx
-import { motion as motion7 } from "framer-motion";
+import { motion as motion6 } from "framer-motion";
 import Box7 from "@mui/material/Box";
 import Button from "@mui/material/Button";
 
@@ -1050,7 +1050,7 @@ var buttonSx = {
 // src/components/section/hero/buttons-row/hero-buttons-row.tsx
 import { jsx as jsx7 } from "react/jsx-runtime";
 function HeroButtonsRow({ items, motionProps, sx, ...other }) {
-  return /* @__PURE__ */ jsx7(Box7, { sx: [rowSx, ...Array.isArray(sx) ? sx : [sx]], ...other, children: items.map((item) => /* @__PURE__ */ jsx7(motion7.div, { ...motionProps, children: /* @__PURE__ */ jsx7(
+  return /* @__PURE__ */ jsx7(Box7, { sx: [rowSx, ...Array.isArray(sx) ? sx : [sx]], ...other, children: items.map((item) => /* @__PURE__ */ jsx7(motion6.div, { ...motionProps, children: /* @__PURE__ */ jsx7(
     Button,
     {
       href: item.href,
@@ -1169,7 +1169,7 @@ var subNavButtonSx = (isActive) => (theme) => ({
 });
 
 // src/components/material/navigation/floating-sub-nav/nav-pill.tsx
-import { motion as motion8 } from "framer-motion";
+import { m as m2 } from "framer-motion";
 import Box8 from "@mui/material/Box";
 import Stack from "@mui/material/Stack";
 
@@ -1212,7 +1212,7 @@ function SubNavButton({ item, isActive, onPress }) {
 import { jsx as jsx9 } from "react/jsx-runtime";
 function NavPill({ items, activeId, onPress }) {
   return /* @__PURE__ */ jsx9(
-    motion8.div,
+    m2.div,
     {
       variants: pillVariants,
       initial: "initial",
@@ -1244,7 +1244,7 @@ function FloatingSubNav({ items, activeId, onSelect, sticky = false }) {
 
 // src/components/section/hero/scroll-parallax/scroll-parallax-hero.tsx
 import { useEffect as useEffect3, useState as useState4 } from "react";
-import { motion as motion9, useTransform as useTransform4 } from "framer-motion";
+import { motion as motion7, useTransform as useTransform4 } from "framer-motion";
 import Box10 from "@mui/material/Box";
 import Container from "@mui/material/Container";
 import Stack2 from "@mui/material/Stack";
@@ -1418,15 +1418,15 @@ function ScrollParallaxHero({
       component: "section",
       sx: [heroRootSx, ...Array.isArray(sx) ? sx : [sx]],
       ...other,
-      children: /* @__PURE__ */ jsx11(motion9.div, { style: parallaxOpacityStyle(opacity), children: /* @__PURE__ */ jsxs2(Box10, { sx: heroInnerWrapSx, children: [
-        /* @__PURE__ */ jsx11(motion9.div, { initial: "initial", animate: "animate", children: /* @__PURE__ */ jsxs2(Container, { sx: heroContainerSx, children: [
-          logo && /* @__PURE__ */ jsx11(motion9.div, { style: parallaxYStyle(y1), children: /* @__PURE__ */ jsx11(Box10, { sx: heroLogoBoxSx, children: logo }) }),
+      children: /* @__PURE__ */ jsx11(motion7.div, { style: parallaxOpacityStyle(opacity), children: /* @__PURE__ */ jsxs2(Box10, { sx: heroInnerWrapSx, children: [
+        /* @__PURE__ */ jsx11(motion7.div, { initial: "initial", animate: "animate", children: /* @__PURE__ */ jsxs2(Container, { sx: heroContainerSx, children: [
+          logo && /* @__PURE__ */ jsx11(motion7.div, { style: parallaxYStyle(y1), children: /* @__PURE__ */ jsx11(Box10, { sx: heroLogoBoxSx, children: logo }) }),
           /* @__PURE__ */ jsxs2(Stack2, { spacing: 1, sx: heroStackSx, children: [
-            heading && /* @__PURE__ */ jsx11(motion9.div, { style: parallaxYStyle(y2), children: heading }),
-            text && /* @__PURE__ */ jsx11(motion9.div, { style: parallaxYStyle(y3), children: text })
+            heading && /* @__PURE__ */ jsx11(motion7.div, { style: parallaxYStyle(y2), children: heading }),
+            text && /* @__PURE__ */ jsx11(motion7.div, { style: parallaxYStyle(y3), children: text })
           ] }),
-          actions && /* @__PURE__ */ jsx11(motion9.div, { style: parallaxYStyle(y4), children: actions }),
-          icons && /* @__PURE__ */ jsx11(motion9.div, { style: parallaxYStyle(y5), children: icons })
+          actions && /* @__PURE__ */ jsx11(motion7.div, { style: parallaxYStyle(y4), children: actions }),
+          icons && /* @__PURE__ */ jsx11(motion7.div, { style: parallaxYStyle(y5), children: icons })
         ] }) }),
         background
       ] }) })
@@ -1435,7 +1435,7 @@ function ScrollParallaxHero({
 }
 
 // src/components/section/hero/scroll-parallax/animated-hero-heading.tsx
-import { motion as motion10 } from "framer-motion";
+import { motion as motion8 } from "framer-motion";
 import Box11 from "@mui/material/Box";
 
 // src/components/section/hero/scroll-parallax/scroll-parallax-hero.animations.ts
@@ -1459,13 +1459,13 @@ function AnimatedHeroHeading({
   sx
 }) {
   const resolvedMotionProps = motionProps ?? headingMotionProps;
-  return /* @__PURE__ */ jsx12(motion10.div, { ...resolvedMotionProps, children: /* @__PURE__ */ jsxs3(Box11, { component: "h1", sx: [headingH1Sx, ...Array.isArray(sx) ? sx : [sx]], children: [
+  return /* @__PURE__ */ jsx12(motion8.div, { ...resolvedMotionProps, children: /* @__PURE__ */ jsxs3(Box11, { component: "h1", sx: [headingH1Sx, ...Array.isArray(sx) ? sx : [sx]], children: [
     subheading,
     " ",
     /* @__PURE__ */ jsx12(
       Box11,
       {
-        component: motion10.span,
+        component: motion8.span,
         animate: gradientHighlightAnimate,
         transition: gradientHighlightTransition,
         sx: headingHighlightSx,
@@ -1477,7 +1477,7 @@ function AnimatedHeroHeading({
 
 // src/components/section/faq/accordion/faq-accordion.tsx
 import { useState as useState5 } from "react";
-import { motion as motion13 } from "framer-motion";
+import { motion as motion11 } from "framer-motion";
 import Box16 from "@mui/material/Box";
 import Stack4 from "@mui/material/Stack";
 import Button2 from "@mui/material/Button";
@@ -1619,8 +1619,6 @@ function SectionTitle({
 
 // src/components/section/faq/accordion/faq-accordion.const.ts
 var FAQ_CONTENT_MAX_WIDTH = 720;
-var FAQ_FLOAT_LINE_LEFT = 80;
-var FAQ_PLUS_ICON_LEFT = 72;
 
 // src/components/section/faq/accordion/faq-accordion.styles.ts
 var contentBoxSx = {
@@ -1653,19 +1651,45 @@ var contactSectionSx = {
   textAlign: "center",
   background: `linear-gradient(to left, ${channelAlpha("var(--mui-palette-grey-500Channel)", 0.08)}, transparent)`
 };
-var topTriangleStackSx = {
-  alignItems: "center",
-  top: 64,
-  left: FAQ_FLOAT_LINE_LEFT,
-  position: "absolute",
-  transform: "translateX(-50%)"
-};
-var smallTriangleSx = {
-  width: 30,
-  height: 15,
-  opacity: 0.24,
-  position: "static"
-};
+
+// src/components/section/faq/accordion/motion-viewport/faq-motion-viewport.tsx
+import React from "react";
+import { motion as motion9 } from "framer-motion";
+import Box15 from "@mui/material/Box";
+import useMediaQuery3 from "@mui/material/useMediaQuery";
+import { jsx as jsx16 } from "react/jsx-runtime";
+var MotionBox = motion9(Box15);
+var FaqMotionViewport = React.forwardRef(
+  function FaqMotionViewport2({ children, sx }, ref) {
+    const smDown = useMediaQuery3((theme) => theme.breakpoints.down("sm"));
+    if (smDown) {
+      return /* @__PURE__ */ jsx16(Box15, { ref, sx, children });
+    }
+    return /* @__PURE__ */ jsx16(
+      MotionBox,
+      {
+        ref,
+        initial: "initial",
+        whileInView: "animate",
+        variants: container(),
+        viewport: { once: true, amount: 0.3 },
+        sx,
+        children
+      }
+    );
+  }
+);
+FaqMotionViewport.displayName = "FaqMotionViewport";
+
+// src/components/section/faq/accordion/top-lines/faq-top-lines.tsx
+import Stack3 from "@mui/material/Stack";
+
+// src/components/section/faq/accordion/accordion-svg/faq-accordion-svg.tsx
+import React2 from "react";
+import { motion as motion10 } from "framer-motion";
+import { styled } from "@mui/material/styles";
+
+// src/components/section/faq/accordion/accordion-svg/faq-accordion-svg.styles.ts
 var floatDecorationBase = (theme) => ({
   zIndex: 2,
   display: "none",
@@ -1676,96 +1700,70 @@ var floatDecorationBase = (theme) => ({
   [theme.breakpoints.up(1440)]: { display: "block" }
 });
 
-// src/components/section/faq/accordion/faq-motion-viewport.tsx
-import { motion as motion11 } from "framer-motion";
-import Box15 from "@mui/material/Box";
-import useMediaQuery3 from "@mui/material/useMediaQuery";
-import { jsx as jsx16 } from "react/jsx-runtime";
-var MotionBox = motion11(Box15);
-function FaqMotionViewport({ children, sx }) {
-  const smDown = useMediaQuery3((theme) => theme.breakpoints.down("sm"));
-  if (smDown) {
-    return /* @__PURE__ */ jsx16(Box15, { sx, children });
-  }
-  return /* @__PURE__ */ jsx16(
-    MotionBox,
-    {
-      initial: "initial",
-      whileInView: "animate",
-      variants: container(),
-      viewport: { once: true, amount: 0.3 },
-      sx,
-      children
-    }
-  );
-}
-
-// src/components/section/faq/accordion/faq-top-lines.tsx
-import Stack3 from "@mui/material/Stack";
-
-// src/components/section/faq/accordion/faq-accordion-svg.tsx
-import { motion as motion12 } from "framer-motion";
-import { styled } from "@mui/material/styles";
-
-// src/components/section/faq/accordion/utils.ts
+// src/components/section/faq/accordion/accordion-svg/faq-accordion-svg.utils.ts
 var svgLineTransition = {
   duration: 0.64,
   ease: [0.43, 0.13, 0.23, 0.96]
 };
 
-// src/components/section/faq/accordion/faq-accordion-svg.tsx
+// src/components/section/faq/accordion/accordion-svg/faq-accordion-svg.tsx
 import { jsx as jsx17 } from "react/jsx-runtime";
-var MotionSvg = styled(motion12.svg, {
+var MotionSvg = styled(motion10.svg, {
   shouldForwardProp: (prop) => prop !== "vertical"
 })``;
-function FaqFloatLine({ sx, vertical, ...other }) {
+var FaqFloatLine = React2.forwardRef(
+  function FaqFloatLine2({ sx, vertical, ...other }, ref) {
+    return /* @__PURE__ */ jsx17(
+      MotionSvg,
+      {
+        ref,
+        sx: [
+          (theme) => ({
+            ...floatDecorationBase(theme),
+            width: 1,
+            zIndex: 1,
+            height: "1px",
+            opacity: 0.24
+          }),
+          vertical && { width: "1px", height: 1 },
+          ...Array.isArray(sx) ? sx : [sx]
+        ],
+        ...other,
+        children: vertical ? /* @__PURE__ */ jsx17(
+          motion10.line,
+          {
+            x1: "0.5",
+            x2: "0.5",
+            y1: "0",
+            y2: "100%",
+            variants: {
+              initial: { y2: "0%" },
+              animate: { y2: "100%", transition: svgLineTransition }
+            }
+          }
+        ) : /* @__PURE__ */ jsx17(
+          motion10.line,
+          {
+            x1: "0",
+            x2: "100%",
+            y1: "0.5",
+            y2: "0.5",
+            variants: {
+              initial: { x2: "0%" },
+              animate: { x2: "100%", transition: svgLineTransition }
+            }
+          }
+        )
+      }
+    );
+  }
+);
+FaqFloatLine.displayName = "FaqFloatLine";
+var FaqFloatPlusIcon = React2.forwardRef(function FaqFloatPlusIcon2({ sx, ...other }, ref) {
   return /* @__PURE__ */ jsx17(
     MotionSvg,
     {
-      sx: [
-        (theme) => ({
-          ...floatDecorationBase(theme),
-          width: 1,
-          zIndex: 1,
-          height: "1px",
-          opacity: 0.24
-        }),
-        vertical && { width: "1px", height: 1 },
-        ...Array.isArray(sx) ? sx : [sx]
-      ],
-      ...other,
-      children: vertical ? /* @__PURE__ */ jsx17(
-        motion12.line,
-        {
-          x1: "0.5",
-          x2: "0.5",
-          y1: "0",
-          y2: "100%",
-          variants: {
-            initial: { y2: "0%" },
-            animate: { y2: "100%", transition: svgLineTransition }
-          }
-        }
-      ) : /* @__PURE__ */ jsx17(
-        motion12.line,
-        {
-          x1: "0",
-          x2: "100%",
-          y1: "0.5",
-          y2: "0.5",
-          variants: {
-            initial: { x2: "0%" },
-            animate: { x2: "100%", transition: svgLineTransition }
-          }
-        }
-      )
-    }
-  );
-}
-function FaqFloatPlusIcon({ sx, ...other }) {
-  return /* @__PURE__ */ jsx17(
-    MotionSvg,
-    {
+      ref,
       variants: {
         initial: { scale: 0 },
         animate: { scale: 1, transition: svgLineTransition }
@@ -1787,35 +1785,58 @@ function FaqFloatPlusIcon({ sx, ...other }) {
       children: /* @__PURE__ */ jsx17("path", { d: "M8 0V16M16 8.08889H0" })
     }
   );
-}
-function FaqFloatTriangleDownIcon({ sx, ...other }) {
-  return /* @__PURE__ */ jsx17(
-    MotionSvg,
-    {
-      variants: {
-        initial: { scaleX: 0 },
-        animate: { scaleX: 1, transition: svgLineTransition }
-      },
-      width: "20",
-      height: "10",
-      viewBox: "0 0 20 10",
-      fill: "none",
-      xmlns: "http://www.w3.org/2000/svg",
-      sx: [
-        (theme) => ({
-          ...floatDecorationBase(theme),
-          width: 20,
-          height: 10
-        }),
-        ...Array.isArray(sx) ? sx : [sx]
-      ],
-      ...other,
-      children: /* @__PURE__ */ jsx17("path", { d: "M10 10L0 0H20L10 10Z" })
-    }
-  );
-}
+});
+FaqFloatPlusIcon.displayName = "FaqFloatPlusIcon";
+var FaqFloatTriangleDownIcon = React2.forwardRef(
+  function FaqFloatTriangleDownIcon2({ sx, ...other }, ref) {
+    return /* @__PURE__ */ jsx17(
+      MotionSvg,
+      {
+        ref,
+        variants: {
+          initial: { scaleX: 0 },
+          animate: { scaleX: 1, transition: svgLineTransition }
+        },
+        width: "20",
+        height: "10",
+        viewBox: "0 0 20 10",
+        fill: "none",
+        xmlns: "http://www.w3.org/2000/svg",
+        sx: [
+          (theme) => ({
+            ...floatDecorationBase(theme),
+            width: 20,
+            height: 10
+          }),
+          ...Array.isArray(sx) ? sx : [sx]
+        ],
+        ...other,
+        children: /* @__PURE__ */ jsx17("path", { d: "M10 10L0 0H20L10 10Z" })
+      }
+    );
+  }
+);
+FaqFloatTriangleDownIcon.displayName = "FaqFloatTriangleDownIcon";
 
-// src/components/section/faq/accordion/faq-top-lines.tsx
+// src/components/section/faq/accordion/top-lines/faq-top-lines.const.ts
+var FAQ_FLOAT_LINE_LEFT = 80;
+
+// src/components/section/faq/accordion/top-lines/faq-top-lines.styles.ts
+var topTriangleStackSx = {
+  alignItems: "center",
+  top: 64,
+  left: FAQ_FLOAT_LINE_LEFT,
+  position: "absolute",
+  transform: "translateX(-50%)"
+};
+var smallTriangleSx = {
+  width: 30,
+  height: 15,
+  opacity: 0.24,
+  position: "static"
+};
+
+// src/components/section/faq/accordion/top-lines/faq-top-lines.tsx
 import { Fragment, jsx as jsx18, jsxs as jsxs5 } from "react/jsx-runtime";
 function FaqTopLines() {
   return /* @__PURE__ */ jsxs5(Fragment, { children: [
@@ -1826,8 +1847,12 @@ function FaqTopLines() {
     /* @__PURE__ */ jsx18(FaqFloatLine, { vertical: true, sx: { top: 0, left: FAQ_FLOAT_LINE_LEFT } })
   ] });
 }
+FaqTopLines.displayName = "FaqTopLines";
 
-// src/components/section/faq/accordion/faq-bottom-lines.tsx
+// src/components/section/faq/accordion/bottom-lines/faq-bottom-lines.const.ts
+var FAQ_PLUS_ICON_LEFT = 72;
+
+// src/components/section/faq/accordion/bottom-lines/faq-bottom-lines.tsx
 import { Fragment as Fragment2, jsx as jsx19, jsxs as jsxs6 } from "react/jsx-runtime";
 function FaqBottomLines() {
   return /* @__PURE__ */ jsxs6(Fragment2, { children: [
@@ -1837,10 +1862,11 @@ function FaqBottomLines() {
     /* @__PURE__ */ jsx19(FaqFloatPlusIcon, { sx: { bottom: -8, left: FAQ_PLUS_ICON_LEFT } })
   ] });
 }
+FaqBottomLines.displayName = "FaqBottomLines";
 
 // src/components/section/faq/accordion/faq-accordion.tsx
 import { jsx as jsx20, jsxs as jsxs7 } from "react/jsx-runtime";
-var MotionAccordion = motion13(Accordion);
+var MotionAccordion = motion11(Accordion);
 function FaqSection({
   caption = "FAQs",
   title = "Frequently Asked",
@@ -1897,9 +1923,9 @@ function FaqSection({
     /* @__PURE__ */ jsxs7(Stack4, { sx: { position: "relative" }, children: [
       /* @__PURE__ */ jsx20(FaqBottomLines, {}),
       contactHref && /* @__PURE__ */ jsxs7(Box16, { sx: contactSectionSx, children: [
-        /* @__PURE__ */ jsx20(motion13.div, { variants: fade("in"), children: /* @__PURE__ */ jsx20(Typography2, { variant: "h4", children: contactTitle }) }),
-        /* @__PURE__ */ jsx20(motion13.div, { variants: fade("in"), children: /* @__PURE__ */ jsx20(Typography2, { sx: { mt: 2, mb: 3, color: "text.secondary" }, children: contactDescription }) }),
-        /* @__PURE__ */ jsx20(motion13.div, { variants: fade("in"), children: /* @__PURE__ */ jsx20(
+        /* @__PURE__ */ jsx20(motion11.div, { variants: fade("in"), children: /* @__PURE__ */ jsx20(Typography2, { variant: "h4", children: contactTitle }) }),
+        /* @__PURE__ */ jsx20(motion11.div, { variants: fade("in"), children: /* @__PURE__ */ jsx20(Typography2, { sx: { mt: 2, mb: 3, color: "text.secondary" }, children: contactDescription }) }),
+        /* @__PURE__ */ jsx20(motion11.div, { variants: fade("in"), children: /* @__PURE__ */ jsx20(
           Button2,
           {
             color: "inherit",

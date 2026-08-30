@@ -94,7 +94,7 @@
     "apexcharts": "^5.10.1",
     "framer-motion": "^11.0.0 || ^12.0.0",
     "react": "^18.0.0 || ^19.0.0",
-    "react-apexcharts": "^2.1.0",
+    "react-apexcharts": "^2.1.1",
     "react-dom": "^18.0.0 || ^19.0.0"
   },
   "peerDependenciesMeta": {
@@ -111,5 +111,5 @@
       "optional": true
     }
   },
-  "yalcSig": "dabae488f2ca7e469dd57c0c309a3234"
+  "yalcSig": "d5d5453cc3ae171a57d2d02ff2433b50"
 }

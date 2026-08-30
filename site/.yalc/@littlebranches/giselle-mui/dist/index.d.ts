@@ -1910,6 +1910,119 @@ interface HeroSectionProps extends Omit<BoxProps, 'color'>, HeroSlotProps {
  */
 declare function HeroSection({ heading, text, actions, icons, color, sx, ...other }: HeroSectionProps): react.JSX.Element;
 
+/** One high-impact stat block shown above an item's long description. */
+interface FeatureFlowMetric {
+    /** Large headline value, e.g. `'20+'`. */
+    value: string;
+    label: string;
+    sublabel?: string;
+    /** Iconify icon name, rendered via `GiselleIcon`. */
+    icon?: string;
+}
+/**
+ * One technology/tool entry for an item's tech chip list.
+ * The consumer owns icon resolution entirely: no app-specific lookup map or
+ * asset directory is involved. `icon` is an Iconify icon name, rendered via
+ * `GiselleIcon`.
+ */
+interface FeatureFlowTechnology {
+    name: string;
+    icon: string;
+}
+/** One slide in an item's highlight-card carousel. */
+interface FeatureFlowHighlightCard {
+    headline: string;
+    detail: string;
+    /** Slide background image. Falls back to a neutral placeholder when omitted. */
+    src?: string;
+}
+/** A single feature/expertise item rendered in the description column. */
+interface FeatureFlowItem {
+    id: string;
+    /** Iconify icon name, rendered via `GiselleIcon`. */
+    icon: string;
+    title: string;
+    description: string;
+    subtitle?: string;
+    /** Per-item image sequence shown in the sticky image column on hover. */
+    imgUrl?: readonly string[];
+    /** Rich prose shown in the expanded detail panel. Falls back to `description`. */
+    longDescription?: ReactNode;
+    technologies?: readonly FeatureFlowTechnology[];
+    highlightCards?: readonly FeatureFlowHighlightCard[];
+    /** 1–3 high-impact stat blocks shown above the long description. */
+    metrics?: readonly FeatureFlowMetric[];
+}
+/** The sticky image column's source(s). */
+interface FeatureFlowImage {
+    src: string;
+    alt: string;
+    sx?: SxProps<Theme>;
+    /** Fallback hover-stack image sequence, used when an item has no `imgUrl`. */
+    stackSources?: readonly string[];
+    /**
+     * Two image sources swapped based on page scroll direction.
+     * Index 0 = scrolling down, index 1 = scrolling up. Takes priority over
+     * `stackSources` while the page is actively scrolling.
+     */
+    scrollImages?: readonly [string, string];
+}
+type FeatureFlowGridSize = Readonly<{
+    xs?: number;
+    md?: number;
+    lg?: number;
+}>;
+interface FeatureFlowSectionProps extends Omit<BoxProps, 'children'> {
+    caption?: string;
+    title?: string;
+    /** Gradient-accent word appended after `title`, rendered on its own span. */
+    txtGradient?: string;
+    description?: ReactNode;
+    items: readonly FeatureFlowItem[];
+    image: FeatureFlowImage;
+    /** Which side the description column renders on. @default 'left' */
+    layoutDirection?: 'left' | 'right';
+    /** @default { xs: 0, md: 8 } */
+    columnSpacing?: Readonly<{
+        xs?: number;
+        md?: number;
+    }>;
+    /** @default derived from `layoutDirection` */
+    descriptionGridSize?: FeatureFlowGridSize;
+    /** @default derived from `layoutDirection` */
+    imageGridSize?: FeatureFlowGridSize;
+}
+
+/**
+ * `FeatureFlowSection` — a scrollable list of expandable feature items paired
+ * with a sticky image column that reacts to hover and scroll direction.
+ * Clicking an item with expansion data (metrics, technologies, highlight
+ * cards, or a long description) opens a detail panel below the grid; a
+ * floating sub-nav appears once any item is expanded and tracks which one
+ * is active.
+ *
+ * @example
+ * ```tsx
+ * <FeatureFlowSection
+ *   title="What I work on"
+ *   items={[
+ *     {
+ *       id: 'design-systems',
+ *       icon: 'solar:widget-bold-duotone',
+ *       title: 'Design systems',
+ *       description: 'Consistent, accessible UI at scale.',
+ *       technologies: [{ name: 'React', icon: 'logos:react' }],
+ *       metrics: [{ value: '20+', label: 'Components shipped' }],
+ *     },
+ *   ]}
+ *   image={{ src: '/images/design-systems.png', alt: 'Design systems preview' }}
+ * />
+ * ```
+ *
+ * **Quality status (28 Aug 2026):** DoD 19/20 · Best practices 10/13
+ */
+declare const FeatureFlowSection: react__default.ForwardRefExoticComponent<Omit<FeatureFlowSectionProps, "ref"> & react__default.RefAttributes<HTMLElement>>;
+
 /**
  * Maps a maturity/readiness percentage to a MUI palette key.
  *
@@ -2030,4 +2143,4 @@ interface TechIconStripProps extends Omit<BoxProps, 'children' | 'title'> {
  */
 declare function TechIconStrip({ items, heading, centeredWrap, sx, ...other }: TechIconStripProps): react.JSX.Element;
 
-export { TOGGLE_ICON_SIZE as ACCORDION_CHECK_ICON_SIZE, ACCORDION_DONE_MIN_TOUCH_TARGET, TOGGLE_MIN_TOUCH_TARGET as ACCORDION_ICON_BUTTON_MIN_SIZE, Accordion, type AccordionProps, AnimatedGradientText, type AnimatedGradientTextProps, type BaseSettingsState, DEFAULT_ICON_ACTIONS, GISELLE_PRIMARY_DARK_MAIN, GISELLE_PRIMARY_MAIN, GISELLE_SECONDARY_MAIN, GiselleIcon, type GiselleIconData, type GiselleIconMap, type GiselleIconProps, type GiselleSettingsContextValue, GiselleSettingsProvider, type GiselleSettingsProviderProps, GiselleThemeAndSettingsProvider, type GiselleThemeAndSettingsProviderProps, GiselleThemeProvider, type GiselleThemeProviderProps, type HeroColorKey, HeroSection, type HeroSectionProps, type HeroSlotProps, IconActionBar, type IconActionBarProps, type IconActionItem, MetricCard, type MetricCardColor, MetricCardDecoration, type MetricCardDecorationProps, type MetricCardProps, type NestedChecklistState, type PaletteColorKey, type ProfileStat, ProfileSummaryCard, type ProfileSummaryCardProps, QuoteCard, type QuoteCardProps, STAT_CARD_SPARKLINE_OPTIONS, SectionCaption, SectionContainer, type SectionContainerProps, SectionTitle, type SectionTitleProps, SelectableCard, type SelectableCardProps, SelectableLabel, type SelectableLabelProps, type SetCookieOptions, type ShowcaseRowOrientation, StatCard, type StatCardColor, type StatCardItem, type StatCardProps, StatCardRow, type StatCardRowProps, type StatusColorKey, StatusLabel, type StatusLabelProps, type StatusLabelStatus, type StorageAdapter, TOGGLE_ICON_SIZE, TOGGLE_MIN_TOUCH_TARGET, type TechIconItem, TechIconStrip, type TechIconStripProps, ToggleIconButton, type ToggleIconButtonProps, TwoColumnShowcaseRow, type TwoColumnShowcaseRowProps, type TwoColumnShowcaseRowText, type UseLocalStorageReturn, channelAlpha, createIconRegistrar, getCookieValue, giselleTheme, giselleThemeOptions, hexToChannel, isDeepEqual, pxToRem, remToPx, resolveMaturityColor, resolveMaturityLabel, setCookieValue, useGiselleSettings, useLocalStorage, useNestedChecklist };
+export { TOGGLE_ICON_SIZE as ACCORDION_CHECK_ICON_SIZE, ACCORDION_DONE_MIN_TOUCH_TARGET, TOGGLE_MIN_TOUCH_TARGET as ACCORDION_ICON_BUTTON_MIN_SIZE, Accordion, type AccordionProps, AnimatedGradientText, type AnimatedGradientTextProps, type BaseSettingsState, DEFAULT_ICON_ACTIONS, type FeatureFlowGridSize, type FeatureFlowHighlightCard, type FeatureFlowImage, type FeatureFlowItem, type FeatureFlowMetric, FeatureFlowSection, type FeatureFlowSectionProps, type FeatureFlowTechnology, GISELLE_PRIMARY_DARK_MAIN, GISELLE_PRIMARY_MAIN, GISELLE_SECONDARY_MAIN, GiselleIcon, type GiselleIconData, type GiselleIconMap, type GiselleIconProps, type GiselleSettingsContextValue, GiselleSettingsProvider, type GiselleSettingsProviderProps, GiselleThemeAndSettingsProvider, type GiselleThemeAndSettingsProviderProps, GiselleThemeProvider, type GiselleThemeProviderProps, type HeroColorKey, HeroSection, type HeroSectionProps, type HeroSlotProps, IconActionBar, type IconActionBarProps, type IconActionItem, MetricCard, type MetricCardColor, MetricCardDecoration, type MetricCardDecorationProps, type MetricCardProps, type NestedChecklistState, type PaletteColorKey, type ProfileStat, ProfileSummaryCard, type ProfileSummaryCardProps, QuoteCard, type QuoteCardProps, STAT_CARD_SPARKLINE_OPTIONS, SectionCaption, SectionContainer, type SectionContainerProps, SectionTitle, type SectionTitleProps, SelectableCard, type SelectableCardProps, SelectableLabel, type SelectableLabelProps, type SetCookieOptions, type ShowcaseRowOrientation, StatCard, type StatCardColor, type StatCardItem, type StatCardProps, StatCardRow, type StatCardRowProps, type StatusColorKey, StatusLabel, type StatusLabelProps, type StatusLabelStatus, type StorageAdapter, TOGGLE_ICON_SIZE, TOGGLE_MIN_TOUCH_TARGET, type TechIconItem, TechIconStrip, type TechIconStripProps, ToggleIconButton, type ToggleIconButtonProps, TwoColumnShowcaseRow, type TwoColumnShowcaseRowProps, type TwoColumnShowcaseRowText, type UseLocalStorageReturn, channelAlpha, createIconRegistrar, getCookieValue, giselleTheme, giselleThemeOptions, hexToChannel, isDeepEqual, pxToRem, remToPx, resolveMaturityColor, resolveMaturityLabel, setCookieValue, useGiselleSettings, useLocalStorage, useNestedChecklist };

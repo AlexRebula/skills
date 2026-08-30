@@ -544,7 +544,7 @@ function MotionViewport({
   return /* @__PURE__ */ (0, import_jsx_runtime2.jsx)(
     import_Box2.default,
     {
-      component: import_framer_motion2.motion.div,
+      component: import_framer_motion2.m.div,
       initial: "initial",
       whileInView: "animate",
       variants: container(),
@@ -1265,7 +1265,7 @@ function SubNavButton({ item, isActive, onPress }) {
 var import_jsx_runtime9 = require("react/jsx-runtime");
 function NavPill({ items, activeId, onPress }) {
   return /* @__PURE__ */ (0, import_jsx_runtime9.jsx)(
-    import_framer_motion9.motion.div,
+    import_framer_motion9.m.div,
     {
       variants: pillVariants,
       initial: "initial",
@@ -1529,7 +1529,7 @@ function AnimatedHeroHeading({
 }
 
 // src/components/section/faq/accordion/faq-accordion.tsx
-var import_react9 = require("react");
+var import_react11 = require("react");
 var import_framer_motion17 = require("framer-motion");
 var import_Box16 = __toESM(require("@mui/material/Box"), 1);
 var import_Stack4 = __toESM(require("@mui/material/Stack"), 1);
@@ -1672,8 +1672,6 @@ function SectionTitle({
 
 // src/components/section/faq/accordion/faq-accordion.const.ts
 var FAQ_CONTENT_MAX_WIDTH = 720;
-var FAQ_FLOAT_LINE_LEFT = 80;
-var FAQ_PLUS_ICON_LEFT = 72;
 
 // src/components/section/faq/accordion/faq-accordion.styles.ts
 var contentBoxSx = {
@@ -1706,19 +1704,45 @@ var contactSectionSx = {
   textAlign: "center",
   background: `linear-gradient(to left, ${channelAlpha("var(--mui-palette-grey-500Channel)", 0.08)}, transparent)`
 };
-var topTriangleStackSx = {
-  alignItems: "center",
-  top: 64,
-  left: FAQ_FLOAT_LINE_LEFT,
-  position: "absolute",
-  transform: "translateX(-50%)"
-};
-var smallTriangleSx = {
-  width: 30,
-  height: 15,
-  opacity: 0.24,
-  position: "static"
-};
+
+// src/components/section/faq/accordion/motion-viewport/faq-motion-viewport.tsx
+var import_react9 = __toESM(require("react"), 1);
+var import_framer_motion15 = require("framer-motion");
+var import_Box15 = __toESM(require("@mui/material/Box"), 1);
+var import_useMediaQuery3 = __toESM(require("@mui/material/useMediaQuery"), 1);
+var import_jsx_runtime16 = require("react/jsx-runtime");
+var MotionBox = (0, import_framer_motion15.motion)(import_Box15.default);
+var FaqMotionViewport = import_react9.default.forwardRef(
+  function FaqMotionViewport2({ children, sx }, ref) {
+    const smDown = (0, import_useMediaQuery3.default)((theme) => theme.breakpoints.down("sm"));
+    if (smDown) {
+      return /* @__PURE__ */ (0, import_jsx_runtime16.jsx)(import_Box15.default, { ref, sx, children });
+    }
+    return /* @__PURE__ */ (0, import_jsx_runtime16.jsx)(
+      MotionBox,
+      {
+        ref,
+        initial: "initial",
+        whileInView: "animate",
+        variants: container(),
+        viewport: { once: true, amount: 0.3 },
+        sx,
+        children
+      }
+    );
+  }
+);
+FaqMotionViewport.displayName = "FaqMotionViewport";
+
+// src/components/section/faq/accordion/top-lines/faq-top-lines.tsx
+var import_Stack3 = __toESM(require("@mui/material/Stack"), 1);
+
+// src/components/section/faq/accordion/accordion-svg/faq-accordion-svg.tsx
+var import_react10 = __toESM(require("react"), 1);
+var import_framer_motion16 = require("framer-motion");
+var import_styles = require("@mui/material/styles");
+
+// src/components/section/faq/accordion/accordion-svg/faq-accordion-svg.styles.ts
 var floatDecorationBase = (theme) => ({
   zIndex: 2,
   display: "none",
@@ -1729,96 +1753,70 @@ var floatDecorationBase = (theme) => ({
   [theme.breakpoints.up(1440)]: { display: "block" }
 });
 
-// src/components/section/faq/accordion/faq-motion-viewport.tsx
-var import_framer_motion15 = require("framer-motion");
-var import_Box15 = __toESM(require("@mui/material/Box"), 1);
-var import_useMediaQuery3 = __toESM(require("@mui/material/useMediaQuery"), 1);
-var import_jsx_runtime16 = require("react/jsx-runtime");
-var MotionBox = (0, import_framer_motion15.motion)(import_Box15.default);
-function FaqMotionViewport({ children, sx }) {
-  const smDown = (0, import_useMediaQuery3.default)((theme) => theme.breakpoints.down("sm"));
-  if (smDown) {
-    return /* @__PURE__ */ (0, import_jsx_runtime16.jsx)(import_Box15.default, { sx, children });
-  }
-  return /* @__PURE__ */ (0, import_jsx_runtime16.jsx)(
-    MotionBox,
-    {
-      initial: "initial",
-      whileInView: "animate",
-      variants: container(),
-      viewport: { once: true, amount: 0.3 },
-      sx,
-      children
-    }
-  );
-}
-
-// src/components/section/faq/accordion/faq-top-lines.tsx
-var import_Stack3 = __toESM(require("@mui/material/Stack"), 1);
-
-// src/components/section/faq/accordion/faq-accordion-svg.tsx
-var import_framer_motion16 = require("framer-motion");
-var import_styles = require("@mui/material/styles");
-
-// src/components/section/faq/accordion/utils.ts
+// src/components/section/faq/accordion/accordion-svg/faq-accordion-svg.utils.ts
 var svgLineTransition = {
   duration: 0.64,
   ease: [0.43, 0.13, 0.23, 0.96]
 };
 
-// src/components/section/faq/accordion/faq-accordion-svg.tsx
+// src/components/section/faq/accordion/accordion-svg/faq-accordion-svg.tsx
 var import_jsx_runtime17 = require("react/jsx-runtime");
 var MotionSvg = (0, import_styles.styled)(import_framer_motion16.motion.svg, {
   shouldForwardProp: (prop) => prop !== "vertical"
 })``;
-function FaqFloatLine({ sx, vertical, ...other }) {
+var FaqFloatLine = import_react10.default.forwardRef(
+  function FaqFloatLine2({ sx, vertical, ...other }, ref) {
+    return /* @__PURE__ */ (0, import_jsx_runtime17.jsx)(
+      MotionSvg,
+      {
+        ref,
+        sx: [
+          (theme) => ({
+            ...floatDecorationBase(theme),
+            width: 1,
+            zIndex: 1,
+            height: "1px",
+            opacity: 0.24
+          }),
+          vertical && { width: "1px", height: 1 },
+          ...Array.isArray(sx) ? sx : [sx]
+        ],
+        ...other,
+        children: vertical ? /* @__PURE__ */ (0, import_jsx_runtime17.jsx)(
+          import_framer_motion16.motion.line,
+          {
+            x1: "0.5",
+            x2: "0.5",
+            y1: "0",
+            y2: "100%",
+            variants: {
+              initial: { y2: "0%" },
+              animate: { y2: "100%", transition: svgLineTransition }
+            }
+          }
+        ) : /* @__PURE__ */ (0, import_jsx_runtime17.jsx)(
+          import_framer_motion16.motion.line,
+          {
+            x1: "0",
+            x2: "100%",
+            y1: "0.5",
+            y2: "0.5",
+            variants: {
+              initial: { x2: "0%" },
+              animate: { x2: "100%", transition: svgLineTransition }
+            }
+          }
+        )
+      }
+    );
+  }
+);
+FaqFloatLine.displayName = "FaqFloatLine";
+var FaqFloatPlusIcon = import_react10.default.forwardRef(function FaqFloatPlusIcon2({ sx, ...other }, ref) {
   return /* @__PURE__ */ (0, import_jsx_runtime17.jsx)(
     MotionSvg,
     {
-      sx: [
-        (theme) => ({
-          ...floatDecorationBase(theme),
-          width: 1,
-          zIndex: 1,
-          height: "1px",
-          opacity: 0.24
-        }),
-        vertical && { width: "1px", height: 1 },
-        ...Array.isArray(sx) ? sx : [sx]
-      ],
-      ...other,
-      children: vertical ? /* @__PURE__ */ (0, import_jsx_runtime17.jsx)(
-        import_framer_motion16.motion.line,
-        {
-          x1: "0.5",
-          x2: "0.5",
-          y1: "0",
-          y2: "100%",
-          variants: {
-            initial: { y2: "0%" },
-            animate: { y2: "100%", transition: svgLineTransition }
-          }
-        }
-      ) : /* @__PURE__ */ (0, import_jsx_runtime17.jsx)(
-        import_framer_motion16.motion.line,
-        {
-          x1: "0",
-          x2: "100%",
-          y1: "0.5",
-          y2: "0.5",
-          variants: {
-            initial: { x2: "0%" },
-            animate: { x2: "100%", transition: svgLineTransition }
-          }
-        }
-      )
-    }
-  );
-}
-function FaqFloatPlusIcon({ sx, ...other }) {
-  return /* @__PURE__ */ (0, import_jsx_runtime17.jsx)(
-    MotionSvg,
-    {
+      ref,
       variants: {
         initial: { scale: 0 },
         animate: { scale: 1, transition: svgLineTransition }
@@ -1840,35 +1838,58 @@ function FaqFloatPlusIcon({ sx, ...other }) {
       children: /* @__PURE__ */ (0, import_jsx_runtime17.jsx)("path", { d: "M8 0V16M16 8.08889H0" })
     }
   );
-}
-function FaqFloatTriangleDownIcon({ sx, ...other }) {
-  return /* @__PURE__ */ (0, import_jsx_runtime17.jsx)(
-    MotionSvg,
-    {
-      variants: {
-        initial: { scaleX: 0 },
-        animate: { scaleX: 1, transition: svgLineTransition }
-      },
-      width: "20",
-      height: "10",
-      viewBox: "0 0 20 10",
-      fill: "none",
-      xmlns: "http://www.w3.org/2000/svg",
-      sx: [
-        (theme) => ({
-          ...floatDecorationBase(theme),
-          width: 20,
-          height: 10
-        }),
-        ...Array.isArray(sx) ? sx : [sx]
-      ],
-      ...other,
-      children: /* @__PURE__ */ (0, import_jsx_runtime17.jsx)("path", { d: "M10 10L0 0H20L10 10Z" })
-    }
-  );
-}
+});
+FaqFloatPlusIcon.displayName = "FaqFloatPlusIcon";
+var FaqFloatTriangleDownIcon = import_react10.default.forwardRef(
+  function FaqFloatTriangleDownIcon2({ sx, ...other }, ref) {
+    return /* @__PURE__ */ (0, import_jsx_runtime17.jsx)(
+      MotionSvg,
+      {
+        ref,
+        variants: {
+          initial: { scaleX: 0 },
+          animate: { scaleX: 1, transition: svgLineTransition }
+        },
+        width: "20",
+        height: "10",
+        viewBox: "0 0 20 10",
+        fill: "none",
+        xmlns: "http://www.w3.org/2000/svg",
+        sx: [
+          (theme) => ({
+            ...floatDecorationBase(theme),
+            width: 20,
+            height: 10
+          }),
+          ...Array.isArray(sx) ? sx : [sx]
+        ],
+        ...other,
+        children: /* @__PURE__ */ (0, import_jsx_runtime17.jsx)("path", { d: "M10 10L0 0H20L10 10Z" })
+      }
+    );
+  }
+);
+FaqFloatTriangleDownIcon.displayName = "FaqFloatTriangleDownIcon";
 
-// src/components/section/faq/accordion/faq-top-lines.tsx
+// src/components/section/faq/accordion/top-lines/faq-top-lines.const.ts
+var FAQ_FLOAT_LINE_LEFT = 80;
+
+// src/components/section/faq/accordion/top-lines/faq-top-lines.styles.ts
+var topTriangleStackSx = {
+  alignItems: "center",
+  top: 64,
+  left: FAQ_FLOAT_LINE_LEFT,
+  position: "absolute",
+  transform: "translateX(-50%)"
+};
+var smallTriangleSx = {
+  width: 30,
+  height: 15,
+  opacity: 0.24,
+  position: "static"
+};
+
+// src/components/section/faq/accordion/top-lines/faq-top-lines.tsx
 var import_jsx_runtime18 = require("react/jsx-runtime");
 function FaqTopLines() {
   return /* @__PURE__ */ (0, import_jsx_runtime18.jsxs)(import_jsx_runtime18.Fragment, { children: [
@@ -1879,8 +1900,12 @@ function FaqTopLines() {
     /* @__PURE__ */ (0, import_jsx_runtime18.jsx)(FaqFloatLine, { vertical: true, sx: { top: 0, left: FAQ_FLOAT_LINE_LEFT } })
   ] });
 }
+FaqTopLines.displayName = "FaqTopLines";
 
-// src/components/section/faq/accordion/faq-bottom-lines.tsx
+// src/components/section/faq/accordion/bottom-lines/faq-bottom-lines.const.ts
+var FAQ_PLUS_ICON_LEFT = 72;
+
+// src/components/section/faq/accordion/bottom-lines/faq-bottom-lines.tsx
 var import_jsx_runtime19 = require("react/jsx-runtime");
 function FaqBottomLines() {
   return /* @__PURE__ */ (0, import_jsx_runtime19.jsxs)(import_jsx_runtime19.Fragment, { children: [
@@ -1890,6 +1915,7 @@ function FaqBottomLines() {
     /* @__PURE__ */ (0, import_jsx_runtime19.jsx)(FaqFloatPlusIcon, { sx: { bottom: -8, left: FAQ_PLUS_ICON_LEFT } })
   ] });
 }
+FaqBottomLines.displayName = "FaqBottomLines";
 
 // src/components/section/faq/accordion/faq-accordion.tsx
 var import_jsx_runtime20 = require("react/jsx-runtime");
@@ -1907,7 +1933,7 @@ function FaqSection({
   sx,
   ...other
 }) {
-  const [expanded, setExpanded] = (0, import_react9.useState)(faqs[0]?.question ?? false);
+  const [expanded, setExpanded] = (0, import_react11.useState)(faqs[0]?.question ?? false);
   const handleChange = (panel) => (_event, isExpanded) => {
     setExpanded(isExpanded ? panel : false);
   };
