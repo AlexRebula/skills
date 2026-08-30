@@ -107,10 +107,20 @@ function assignMilestoneSidesByDone(phases) {
 
 // src/utils/theme/preset/theme-preset.ts
 import { extendTheme } from "@mui/material/styles";
+import { grey } from "@mui/material/colors";
 var GISELLE_PRIMARY_MAIN = "#2E7D32";
 var GISELLE_PRIMARY_DARK_MAIN = "#76C442";
 var GISELLE_SECONDARY_MAIN = "#F5A623";
+var GREY_500_CHANNEL = hexToChannel(grey[500]);
 var giselleThemeOptions = {
+  // `extendTheme()` defaults an unset `colorSchemeSelector` to `'media'`, under
+  // which MUI's `useColorScheme().setMode` — what `GiselleThemeProvider`'s
+  // `defaultMode` prop drives — has no effect (MUI logs this explicitly: "The
+  // `setMode` function has no effect if `colorSchemeSelector` is `media`").
+  // A data attribute lets an explicit `defaultMode` override the OS
+  // preference; see docs/theming/nextjs.md's troubleshooting section, which
+  // already documents this exact attribute name (see issue #190).
+  colorSchemeSelector: "data-mui-color-scheme",
   colorSchemes: {
     light: {
       palette: {
@@ -119,7 +129,15 @@ var giselleThemeOptions = {
         info: { main: "#0288D1" },
         success: { main: "#388E3C" },
         warning: { main: "#ED6C02" },
-        error: { main: "#D32F2F" }
+        error: { main: "#D32F2F" },
+        // `grey` is shared between the light and dark schemes (MUI's default
+        // scale isn't overridden here), so the same channel value applies to
+        // both — see `GREY_500_CHANNEL` above for why this is needed at all.
+        // MUI's `ColorPartial` type only lists the numbered/A-prefixed grey
+        // shades, not custom channel tokens — cast, same as every existing
+        // *read* of `theme.vars.palette.grey['500Channel']` elsewhere in this
+        // codebase (e.g. `floating-sub-nav.styles.ts`).
+        grey: { "500Channel": GREY_500_CHANNEL }
       }
     },
     dark: {
@@ -129,7 +147,8 @@ var giselleThemeOptions = {
         info: { main: "#29B6F6" },
         success: { main: "#66BB6A" },
         warning: { main: "#FFA726" },
-        error: { main: "#F44336" }
+        error: { main: "#F44336" },
+        grey: { "500Channel": GREY_500_CHANNEL }
       }
     }
   }

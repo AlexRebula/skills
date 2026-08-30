@@ -164,10 +164,20 @@ function useLocalStorage(key, initialValue) {
 
 // src/utils/theme/preset/theme-preset.ts
 import { extendTheme } from "@mui/material/styles";
+import { grey } from "@mui/material/colors";
 var GISELLE_PRIMARY_MAIN = "#2E7D32";
 var GISELLE_PRIMARY_DARK_MAIN = "#76C442";
 var GISELLE_SECONDARY_MAIN = "#F5A623";
+var GREY_500_CHANNEL = hexToChannel(grey[500]);
 var giselleThemeOptions = {
+  // `extendTheme()` defaults an unset `colorSchemeSelector` to `'media'`, under
+  // which MUI's `useColorScheme().setMode` — what `GiselleThemeProvider`'s
+  // `defaultMode` prop drives — has no effect (MUI logs this explicitly: "The
+  // `setMode` function has no effect if `colorSchemeSelector` is `media`").
+  // A data attribute lets an explicit `defaultMode` override the OS
+  // preference; see docs/theming/nextjs.md's troubleshooting section, which
+  // already documents this exact attribute name (see issue #190).
+  colorSchemeSelector: "data-mui-color-scheme",
   colorSchemes: {
     light: {
       palette: {
@@ -176,7 +186,15 @@ var giselleThemeOptions = {
         info: { main: "#0288D1" },
         success: { main: "#388E3C" },
         warning: { main: "#ED6C02" },
-        error: { main: "#D32F2F" }
+        error: { main: "#D32F2F" },
+        // `grey` is shared between the light and dark schemes (MUI's default
+        // scale isn't overridden here), so the same channel value applies to
+        // both — see `GREY_500_CHANNEL` above for why this is needed at all.
+        // MUI's `ColorPartial` type only lists the numbered/A-prefixed grey
+        // shades, not custom channel tokens — cast, same as every existing
+        // *read* of `theme.vars.palette.grey['500Channel']` elsewhere in this
+        // codebase (e.g. `floating-sub-nav.styles.ts`).
+        grey: { "500Channel": GREY_500_CHANNEL }
       }
     },
     dark: {
@@ -186,7 +204,8 @@ var giselleThemeOptions = {
         info: { main: "#29B6F6" },
         success: { main: "#66BB6A" },
         warning: { main: "#FFA726" },
-        error: { main: "#F44336" }
+        error: { main: "#F44336" },
+        grey: { "500Channel": GREY_500_CHANNEL }
       }
     }
   }
@@ -1850,7 +1869,7 @@ var DETAIL_PANEL_LAYOUT_TRANSITION = {
 };
 
 // src/components/section/feature-flow/feature-flow-section.styles.ts
-var GREY_500_CHANNEL = "var(--mui-palette-grey-500Channel)";
+var GREY_500_CHANNEL2 = "var(--mui-palette-grey-500Channel)";
 var COMMON_BLACK_CHANNEL = "var(--mui-palette-common-blackChannel)";
 var COMMON_WHITE_CHANNEL = "var(--mui-palette-common-whiteChannel)";
 var HIGHLIGHT_CAROUSEL_HEIGHT = 570;
@@ -1871,7 +1890,7 @@ var imageColumnCardSx = (theme) => ({
   position: "absolute",
   transform: "translateX(-50%)",
   bgcolor: "background.default",
-  boxShadow: `-40px 40px 80px 0px ${channelAlpha(GREY_500_CHANNEL, 0.16)}`,
+  boxShadow: `-40px 40px 80px 0px ${channelAlpha(GREY_500_CHANNEL2, 0.16)}`,
   ...theme.applyStyles("dark", {
     boxShadow: `-40px 40px 80px 0px ${channelAlpha(COMMON_BLACK_CHANNEL, 0.16)}`
   })
@@ -1905,13 +1924,19 @@ var featureFlowItemSx = ({ isSelected, isActive, isExpanded, interactive }) => (
     outlineOffset: 2
   },
   ...interactive && !isSelected && {
+    // `!important` is required here: this row renders as `component={m.button}`
+    // with `variants={fade('inUp', …)}` for its entrance animation, and once
+    // that animation settles framer-motion leaves a permanent inline
+    // `style="opacity: 1"` on the element. Inline styles beat any class-based
+    // rule regardless of specificity — without `!important`, `:hover`/`:active`
+    // can change the background but can never actually dim the row (see #185).
     "&:hover": {
-      opacity: 0.72,
-      bgcolor: channelAlpha(GREY_500_CHANNEL, 0.08)
+      opacity: "0.72 !important",
+      bgcolor: channelAlpha(GREY_500_CHANNEL2, 0.08)
     },
     "&:active": {
-      opacity: 0.56,
-      bgcolor: channelAlpha(GREY_500_CHANNEL, 0.12)
+      opacity: "0.56 !important",
+      bgcolor: channelAlpha(GREY_500_CHANNEL2, 0.12)
     }
   },
   ...interactive && !isSelected && isActive && {
@@ -1920,14 +1945,14 @@ var featureFlowItemSx = ({ isSelected, isActive, isExpanded, interactive }) => (
   ...interactive && isSelected && {
     color: "text.primary",
     bgcolor: "background.paper",
-    boxShadow: `-8px 8px 20px -4px ${channelAlpha(GREY_500_CHANNEL, 0.12)}`,
+    boxShadow: `-8px 8px 20px -4px ${channelAlpha(GREY_500_CHANNEL2, 0.12)}`,
     "&:hover": {
       opacity: 1,
-      boxShadow: selectedHoverShadow(GREY_500_CHANNEL, 0.08, 0.24)
+      boxShadow: selectedHoverShadow(GREY_500_CHANNEL2, 0.08, 0.24)
     },
     "&:active": {
       opacity: 1,
-      boxShadow: selectedActiveShadow(GREY_500_CHANNEL, 0.04, 0.06)
+      boxShadow: selectedActiveShadow(GREY_500_CHANNEL2, 0.04, 0.06)
     },
     ...theme.applyStyles("dark", {
       boxShadow: `-8px 8px 20px -4px ${channelAlpha(COMMON_BLACK_CHANNEL, 0.12)}`,
@@ -1941,7 +1966,7 @@ var featureFlowItemSx = ({ isSelected, isActive, isExpanded, interactive }) => (
   },
   ...interactive && isExpanded && {
     borderColor: channelAlpha("var(--mui-palette-primary-mainChannel)", 0.24),
-    boxShadow: isSelected ? `inset 3px 0 0 ${theme.vars.palette.primary.main}, -8px 8px 20px -4px ${channelAlpha(GREY_500_CHANNEL, 0.12)}` : `inset 3px 0 0 ${theme.vars.palette.primary.main}`
+    boxShadow: isSelected ? `inset 3px 0 0 ${theme.vars.palette.primary.main}, -8px 8px 20px -4px ${channelAlpha(GREY_500_CHANNEL2, 0.12)}` : `inset 3px 0 0 ${theme.vars.palette.primary.main}`
   }
 });
 var imageColumnStickyStackSx = {
