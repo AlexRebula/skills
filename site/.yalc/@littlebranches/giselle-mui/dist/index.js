@@ -1536,14 +1536,12 @@ function HeroSection({
 }
 
 // src/components/section/feature-flow/feature-flow-section.tsx
-import React5, { useCallback as useCallback8, useEffect as useEffect5, useMemo as useMemo4, useRef as useRef3, useState as useState6 } from "react";
-import { m as m5, AnimatePresence as AnimatePresence3 } from "framer-motion";
-import Box20 from "@mui/material/Box";
+import React6, { useCallback as useCallback8, useEffect as useEffect5, useMemo as useMemo4, useRef as useRef3, useState as useState6 } from "react";
+import { m as m6, AnimatePresence as AnimatePresence3 } from "framer-motion";
+import Box21 from "@mui/material/Box";
 import Grid4 from "@mui/material/Grid";
-import Stack6 from "@mui/material/Stack";
+import Stack7 from "@mui/material/Stack";
 import Container4 from "@mui/material/Container";
-import Typography11 from "@mui/material/Typography";
-import ButtonBase3 from "@mui/material/ButtonBase";
 import LinearProgress from "@mui/material/LinearProgress";
 
 // src/components/material/navigation/floating-sub-nav/floating-sub-nav.tsx
@@ -1720,86 +1718,6 @@ function FloatingSubNav({ items, activeId, onSelect, sticky = false }) {
   return /* @__PURE__ */ jsx27(AnimatePresence, { children: activeId !== null && /* @__PURE__ */ jsx27(Box14, { sx: fixedWrapperSx, children: /* @__PURE__ */ jsx27(NavPill, { items, activeId, onPress: handlePress }) }) });
 }
 
-// src/components/motion/variants/transition/transition.const.ts
-var TRANSITION_ENTER_DURATION = 0.64;
-var TRANSITION_EXIT_DURATION = 0.48;
-var TRANSITION_EASE = [0.43, 0.13, 0.23, 0.96];
-
-// src/components/motion/variants/transition/transition.ts
-var transitionEnter = (opts) => ({
-  duration: TRANSITION_ENTER_DURATION,
-  ease: TRANSITION_EASE,
-  ...opts
-});
-var transitionExit = (opts) => ({
-  duration: TRANSITION_EXIT_DURATION,
-  ease: TRANSITION_EASE,
-  ...opts
-});
-
-// src/components/motion/variants/fade/fade.const.ts
-var FADE_DEFAULT_DISTANCE = 120;
-
-// src/components/motion/variants/fade/fade.ts
-var fade = (direction, options) => {
-  const distance = options?.distance ?? FADE_DEFAULT_DISTANCE;
-  const tIn = options?.transitionIn;
-  const tOut = options?.transitionOut;
-  const map = {
-    in: {
-      initial: { opacity: 0 },
-      animate: { opacity: 1, transition: transitionEnter(tIn) },
-      exit: { opacity: 0, transition: transitionExit(tOut) }
-    },
-    inUp: {
-      initial: { y: distance, opacity: 0 },
-      animate: { y: 0, opacity: 1, transition: transitionEnter(tIn) },
-      exit: { y: distance, opacity: 0, transition: transitionExit(tOut) }
-    },
-    inDown: {
-      initial: { y: -distance, opacity: 0 },
-      animate: { y: 0, opacity: 1, transition: transitionEnter(tIn) },
-      exit: { y: -distance, opacity: 0, transition: transitionExit(tOut) }
-    },
-    inLeft: {
-      initial: { x: -distance, opacity: 0 },
-      animate: { x: 0, opacity: 1, transition: transitionEnter(tIn) },
-      exit: { x: -distance, opacity: 0, transition: transitionExit(tOut) }
-    },
-    inRight: {
-      initial: { x: distance, opacity: 0 },
-      animate: { x: 0, opacity: 1, transition: transitionEnter(tIn) },
-      exit: { x: distance, opacity: 0, transition: transitionExit(tOut) }
-    },
-    out: {
-      initial: { opacity: 1 },
-      animate: { opacity: 0, transition: transitionEnter(tIn) },
-      exit: { opacity: 1, transition: transitionExit(tOut) }
-    },
-    outUp: {
-      initial: { y: 0, opacity: 1 },
-      animate: { y: -distance, opacity: 0, transition: transitionEnter(tIn) },
-      exit: { y: 0, opacity: 1, transition: transitionExit(tOut) }
-    },
-    outDown: {
-      initial: { y: 0, opacity: 1 },
-      animate: { y: distance, opacity: 0, transition: transitionEnter(tIn) },
-      exit: { y: 0, opacity: 1, transition: transitionExit(tOut) }
-    },
-    outLeft: {
-      initial: { x: 0, opacity: 1 },
-      animate: { x: -distance, opacity: 0, transition: transitionEnter(tIn) },
-      exit: { x: 0, opacity: 1, transition: transitionExit(tOut) }
-    },
-    outRight: {
-      initial: { x: 0, opacity: 1 },
-      animate: { x: distance, opacity: 0, transition: transitionEnter(tIn) },
-      exit: { x: 0, opacity: 1, transition: transitionExit(tOut) }
-    }
-  };
-  return map[direction];
-};
-
 // src/components/motion/viewport/motion-viewport.tsx
 import { m as m2 } from "framer-motion";
 import Box15 from "@mui/material/Box";
@@ -1974,7 +1892,8 @@ var imageColumnStickyStackSx = {
   top: { md: 80 },
   width: 1,
   alignItems: "center",
-  justifyContent: "center"
+  justifyContent: "center",
+  zIndex: 1
 };
 var imageColumnOuterGhostSx = {
   width: 720,
@@ -2421,9 +2340,155 @@ var FeatureFlowItemDetail = React4.forwardRef(
 );
 FeatureFlowItemDetail.displayName = "FeatureFlowItemDetail";
 
-// src/components/section/feature-flow/feature-flow-section.tsx
+// src/components/section/feature-flow/item-row/feature-flow-item-row.tsx
+import React5 from "react";
+import { m as m5 } from "framer-motion";
+import Box20 from "@mui/material/Box";
+import Stack6 from "@mui/material/Stack";
+import Typography11 from "@mui/material/Typography";
+import ButtonBase3 from "@mui/material/ButtonBase";
+
+// src/components/motion/variants/transition/transition.const.ts
+var TRANSITION_ENTER_DURATION = 0.64;
+var TRANSITION_EXIT_DURATION = 0.48;
+var TRANSITION_EASE = [0.43, 0.13, 0.23, 0.96];
+
+// src/components/motion/variants/transition/transition.ts
+var transitionEnter = (opts) => ({
+  duration: TRANSITION_ENTER_DURATION,
+  ease: TRANSITION_EASE,
+  ...opts
+});
+var transitionExit = (opts) => ({
+  duration: TRANSITION_EXIT_DURATION,
+  ease: TRANSITION_EASE,
+  ...opts
+});
+
+// src/components/motion/variants/fade/fade.const.ts
+var FADE_DEFAULT_DISTANCE = 120;
+
+// src/components/motion/variants/fade/fade.ts
+var fade = (direction, options) => {
+  const distance = options?.distance ?? FADE_DEFAULT_DISTANCE;
+  const tIn = options?.transitionIn;
+  const tOut = options?.transitionOut;
+  const map = {
+    in: {
+      initial: { opacity: 0 },
+      animate: { opacity: 1, transition: transitionEnter(tIn) },
+      exit: { opacity: 0, transition: transitionExit(tOut) }
+    },
+    inUp: {
+      initial: { y: distance, opacity: 0 },
+      animate: { y: 0, opacity: 1, transition: transitionEnter(tIn) },
+      exit: { y: distance, opacity: 0, transition: transitionExit(tOut) }
+    },
+    inDown: {
+      initial: { y: -distance, opacity: 0 },
+      animate: { y: 0, opacity: 1, transition: transitionEnter(tIn) },
+      exit: { y: -distance, opacity: 0, transition: transitionExit(tOut) }
+    },
+    inLeft: {
+      initial: { x: -distance, opacity: 0 },
+      animate: { x: 0, opacity: 1, transition: transitionEnter(tIn) },
+      exit: { x: -distance, opacity: 0, transition: transitionExit(tOut) }
+    },
+    inRight: {
+      initial: { x: distance, opacity: 0 },
+      animate: { x: 0, opacity: 1, transition: transitionEnter(tIn) },
+      exit: { x: distance, opacity: 0, transition: transitionExit(tOut) }
+    },
+    out: {
+      initial: { opacity: 1 },
+      animate: { opacity: 0, transition: transitionEnter(tIn) },
+      exit: { opacity: 1, transition: transitionExit(tOut) }
+    },
+    outUp: {
+      initial: { y: 0, opacity: 1 },
+      animate: { y: -distance, opacity: 0, transition: transitionEnter(tIn) },
+      exit: { y: 0, opacity: 1, transition: transitionExit(tOut) }
+    },
+    outDown: {
+      initial: { y: 0, opacity: 1 },
+      animate: { y: distance, opacity: 0, transition: transitionEnter(tIn) },
+      exit: { y: 0, opacity: 1, transition: transitionExit(tOut) }
+    },
+    outLeft: {
+      initial: { x: 0, opacity: 1 },
+      animate: { x: -distance, opacity: 0, transition: transitionEnter(tIn) },
+      exit: { x: 0, opacity: 1, transition: transitionExit(tOut) }
+    },
+    outRight: {
+      initial: { x: 0, opacity: 1 },
+      animate: { x: distance, opacity: 0, transition: transitionEnter(tIn) },
+      exit: { x: 0, opacity: 1, transition: transitionExit(tOut) }
+    }
+  };
+  return map[direction];
+};
+
+// src/components/section/feature-flow/item-row/feature-flow-item-row.tsx
 import { Fragment as Fragment2, jsx as jsx33, jsxs as jsxs16 } from "react/jsx-runtime";
-var FeatureFlowSection = React5.forwardRef(
+var FeatureFlowItemRow = React5.forwardRef(
+  function FeatureFlowItemRow2({
+    icon,
+    title,
+    description,
+    interactive,
+    isSelected,
+    isActive,
+    isExpanded,
+    onHover,
+    onFocus,
+    onSelect
+  }, ref) {
+    const rowContent = /* @__PURE__ */ jsxs16(Fragment2, { children: [
+      /* @__PURE__ */ jsx33(GiselleIcon, { icon, width: 48, "aria-hidden": "true" }),
+      /* @__PURE__ */ jsxs16(Stack6, { spacing: 1, sx: { flex: 1, minWidth: 0 }, children: [
+        /* @__PURE__ */ jsx33(Typography11, { variant: "h4", component: "h6", color: "inherit", children: title }),
+        /* @__PURE__ */ jsx33(Typography11, { color: "inherit", children: description })
+      ] })
+    ] });
+    const sx = featureFlowItemSx({ isSelected, isActive, isExpanded, interactive });
+    if (!interactive) {
+      return /* @__PURE__ */ jsx33(
+        Box20,
+        {
+          ref,
+          component: m5.div,
+          variants: fade("inUp", { distance: 24 }),
+          tabIndex: 0,
+          onMouseEnter: onHover,
+          onFocus,
+          sx,
+          children: rowContent
+        }
+      );
+    }
+    return /* @__PURE__ */ jsx33(
+      ButtonBase3,
+      {
+        ref,
+        disableRipple: true,
+        type: "button",
+        "aria-pressed": isSelected,
+        component: m5.button,
+        variants: fade("inUp", { distance: 24 }),
+        onMouseEnter: onHover,
+        onFocus,
+        onClick: onSelect,
+        sx,
+        children: rowContent
+      }
+    );
+  }
+);
+FeatureFlowItemRow.displayName = "FeatureFlowItemRow";
+
+// src/components/section/feature-flow/feature-flow-section.tsx
+import { jsx as jsx34, jsxs as jsxs17 } from "react/jsx-runtime";
+var FeatureFlowSection = React6.forwardRef(
   function FeatureFlowSection2({
     caption,
     title,
@@ -2533,7 +2598,7 @@ var FeatureFlowSection = React5.forwardRef(
       () => items.filter(hasExpansionData).map((item) => ({
         id: item.id,
         label: item.title,
-        icon: /* @__PURE__ */ jsx33(GiselleIcon, { icon: item.icon, width: 22, "aria-hidden": "true" })
+        icon: /* @__PURE__ */ jsx34(GiselleIcon, { icon: item.icon, width: 22, "aria-hidden": "true" })
       })),
       [items]
     );
@@ -2574,15 +2639,15 @@ var FeatureFlowSection = React5.forwardRef(
         if (rafId !== void 0) globalThis.cancelAnimationFrame(rafId);
       };
     }, [expandedItemId]);
-    return /* @__PURE__ */ jsxs16(
-      Box20,
+    return /* @__PURE__ */ jsxs17(
+      Box21,
       {
         ref,
         component: "section",
         sx: [featureFlowRootSx, ...Array.isArray(sx) ? sx : [sx]],
         ...other,
         children: [
-          /* @__PURE__ */ jsx33(MotionViewport, { children: /* @__PURE__ */ jsx33(Container4, { sx: { position: "relative" }, children: /* @__PURE__ */ jsxs16(
+          /* @__PURE__ */ jsx34(MotionViewport, { children: /* @__PURE__ */ jsx34(Container4, { sx: { position: "relative" }, children: /* @__PURE__ */ jsxs17(
             Grid4,
             {
               container: true,
@@ -2590,13 +2655,13 @@ var FeatureFlowSection = React5.forwardRef(
               rowSpacing: { xs: 5, md: 0 },
               sx: { position: "relative" },
               children: [
-                /* @__PURE__ */ jsxs16(
+                /* @__PURE__ */ jsxs17(
                   Grid4,
                   {
                     size: resolvedDescriptionGridSize,
                     sx: { order: { xs: 1, md: isLeft ? 1 : 2 }, pl: { md: isLeft ? 0 : 4 } },
                     children: [
-                      title && /* @__PURE__ */ jsx33(
+                      title && /* @__PURE__ */ jsx34(
                         SectionTitle,
                         {
                           caption,
@@ -2606,12 +2671,19 @@ var FeatureFlowSection = React5.forwardRef(
                           sx: { mb: { xs: 5, md: 8 }, textAlign: { xs: "center", md: "left" } }
                         }
                       ),
-                      /* @__PURE__ */ jsx33(
-                        Stack6,
+                      /* @__PURE__ */ jsx34(
+                        Stack7,
                         {
                           spacing: 1.5,
                           sx: { maxWidth: { sm: 560, md: 400 }, mx: { xs: "auto", md: "unset" } },
                           onMouseLeave: () => {
+                            setActiveItemIndex(selectedItemIndex);
+                            setHoverPhase(0);
+                          },
+                          onBlur: (event) => {
+                            if (event.relatedTarget instanceof Node && event.currentTarget.contains(event.relatedTarget)) {
+                              return;
+                            }
                             setActiveItemIndex(selectedItemIndex);
                             setHoverPhase(0);
                           },
@@ -2620,49 +2692,19 @@ var FeatureFlowSection = React5.forwardRef(
                             const isSelected = index === selectedItemIndex;
                             const isActive = index === activeItemIndex;
                             const isExpanded = item.id === expandedItemId;
-                            const rowContent = /* @__PURE__ */ jsxs16(Fragment2, { children: [
-                              /* @__PURE__ */ jsx33(GiselleIcon, { icon: item.icon, width: 48, "aria-hidden": "true" }),
-                              /* @__PURE__ */ jsxs16(Stack6, { spacing: 1, sx: { flex: 1, minWidth: 0 }, children: [
-                                /* @__PURE__ */ jsx33(Typography11, { variant: "h4", component: "h6", color: "inherit", children: item.title }),
-                                /* @__PURE__ */ jsx33(Typography11, { color: "inherit", children: item.description })
-                              ] })
-                            ] });
-                            if (!interactive) {
-                              return /* @__PURE__ */ jsx33(
-                                Box20,
-                                {
-                                  component: m5.div,
-                                  variants: fade("inUp", { distance: 24 }),
-                                  onMouseEnter: () => handleItemHover(index),
-                                  sx: featureFlowItemSx({
-                                    isSelected,
-                                    isActive,
-                                    isExpanded,
-                                    interactive: false
-                                  }),
-                                  children: rowContent
-                                },
-                                item.id
-                              );
-                            }
-                            return /* @__PURE__ */ jsx33(
-                              ButtonBase3,
+                            return /* @__PURE__ */ jsx34(
+                              FeatureFlowItemRow,
                               {
-                                disableRipple: true,
-                                type: "button",
-                                "aria-pressed": isSelected,
-                                component: m5.button,
-                                variants: fade("inUp", { distance: 24 }),
-                                onMouseEnter: () => handleItemHover(index),
+                                icon: item.icon,
+                                title: item.title,
+                                description: item.description,
+                                interactive,
+                                isSelected,
+                                isActive,
+                                isExpanded,
+                                onHover: () => handleItemHover(index),
                                 onFocus: () => handleItemHover(index),
-                                onClick: () => handleItemClick(item, index),
-                                sx: featureFlowItemSx({
-                                  isSelected,
-                                  isActive,
-                                  isExpanded,
-                                  interactive: true
-                                }),
-                                children: rowContent
+                                onSelect: () => handleItemClick(item, index)
                               },
                               item.id
                             );
@@ -2672,7 +2714,7 @@ var FeatureFlowSection = React5.forwardRef(
                     ]
                   }
                 ),
-                /* @__PURE__ */ jsx33(Grid4, { size: resolvedImageGridSize, sx: { order: { xs: 2, md: isLeft ? 2 : 1 } }, children: /* @__PURE__ */ jsx33(
+                /* @__PURE__ */ jsx34(Grid4, { size: resolvedImageGridSize, sx: { order: { xs: 2, md: isLeft ? 2 : 1 } }, children: /* @__PURE__ */ jsx34(
                   FeatureFlowImageColumn,
                   {
                     ref: imageColumnRef,
@@ -2687,7 +2729,7 @@ var FeatureFlowSection = React5.forwardRef(
               ]
             }
           ) }) }),
-          pendingScrollItemId && /* @__PURE__ */ jsx33(
+          pendingScrollItemId && /* @__PURE__ */ jsx34(
             LinearProgress,
             {
               "aria-label": "Loading item detail panel",
@@ -2695,40 +2737,38 @@ var FeatureFlowSection = React5.forwardRef(
               "aria-busy": "true"
             }
           ),
-          /* @__PURE__ */ jsxs16(m5.div, { layout: true, transition: DETAIL_PANEL_LAYOUT_TRANSITION, children: [
-            /* @__PURE__ */ jsx33(AnimatePresence3, { mode: "wait", children: expandedItem && /* @__PURE__ */ jsx33(
-              m5.div,
-              {
-                initial: { opacity: 0, y: 8 },
-                animate: { opacity: 1, y: 0 },
-                exit: { opacity: 0, y: -8 },
-                transition: { duration: 0.22, ease: "easeOut" },
-                children: /* @__PURE__ */ jsx33(
-                  FeatureFlowItemDetail,
-                  {
-                    item: expandedItem,
-                    ref: (node) => {
-                      if (node) {
-                        detailPanelNodesRef.current.set(expandedItem.id, node);
-                      } else {
-                        detailPanelNodesRef.current.delete(expandedItem.id);
-                      }
+          /* @__PURE__ */ jsx34(m6.div, { layout: true, transition: DETAIL_PANEL_LAYOUT_TRANSITION, children: /* @__PURE__ */ jsx34(AnimatePresence3, { mode: "wait", children: expandedItem && /* @__PURE__ */ jsx34(
+            m6.div,
+            {
+              initial: { opacity: 0, y: 8 },
+              animate: { opacity: 1, y: 0 },
+              exit: { opacity: 0, y: -8 },
+              transition: { duration: 0.22, ease: "easeOut" },
+              children: /* @__PURE__ */ jsx34(
+                FeatureFlowItemDetail,
+                {
+                  item: expandedItem,
+                  ref: (node) => {
+                    if (node) {
+                      detailPanelNodesRef.current.set(expandedItem.id, node);
+                    } else {
+                      detailPanelNodesRef.current.delete(expandedItem.id);
                     }
                   }
-                )
-              },
-              expandedItem.id
-            ) }),
-            /* @__PURE__ */ jsx33(
-              FloatingSubNav,
-              {
-                sticky: true,
-                items: subNavItems,
-                activeId: expandedItemId,
-                onSelect: handleSubNavSelect
-              }
-            )
-          ] })
+                }
+              )
+            },
+            expandedItem.id
+          ) }) }),
+          /* @__PURE__ */ jsx34(
+            FloatingSubNav,
+            {
+              sticky: true,
+              items: subNavItems,
+              activeId: expandedItemId,
+              onSelect: handleSubNavSelect
+            }
+          )
         ]
       }
     );
@@ -2755,7 +2795,7 @@ function resolveMaturityLabel(percent) {
 }
 
 // src/components/material/data-display/animated-gradient/animated-gradient-text.tsx
-import Box21 from "@mui/material/Box";
+import Box22 from "@mui/material/Box";
 
 // src/components/material/data-display/animated-gradient/animated-gradient-text.const.ts
 var ANIMATED_GRADIENT_DEFAULT_COLOR1 = "primary";
@@ -2779,7 +2819,7 @@ var gradientTextSx = (color1, color2, duration) => ({
 });
 
 // src/components/material/data-display/animated-gradient/animated-gradient-text.tsx
-import { jsx as jsx34 } from "react/jsx-runtime";
+import { jsx as jsx35 } from "react/jsx-runtime";
 function AnimatedGradientText({
   children,
   color1 = ANIMATED_GRADIENT_DEFAULT_COLOR1,
@@ -2789,8 +2829,8 @@ function AnimatedGradientText({
   sx,
   ...other
 }) {
-  return /* @__PURE__ */ jsx34(
-    Box21,
+  return /* @__PURE__ */ jsx35(
+    Box22,
     {
       component,
       sx: [gradientTextSx(color1, color2, duration), ...Array.isArray(sx) ? sx : [sx]],
