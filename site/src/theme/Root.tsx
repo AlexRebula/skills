@@ -53,17 +53,25 @@ function GiselleColorModeBridge(): null {
 // visually reads as two different design systems glued together. Matching
 // both font stacks here is a one-line fix at the theme level, rather than
 // re-applying font-family as a one-off override on every MUI heading.
-const HEADING_FONT_FAMILY = 'var(--ifm-heading-font-family)';
+// MUI's own default typography weights (h1/h2: 300, h3/h4: 400, h6: 500) are
+// what actually made "This fork, at a glance" (SectionTitle's h2) read as a
+// different, lighter typeface from the page's own bold Docusaurus headings
+// even after the font-family fix above - Infima's headings are uniformly
+// bold (--ifm-heading-font-weight, 700 by default) regardless of level.
+const headingOverride = {
+  fontFamily: 'var(--ifm-heading-font-family)',
+  fontWeight: 'var(--ifm-heading-font-weight)',
+};
 const themeOverrides = {
   colorSchemeSelector: 'data-mui-mode',
   typography: {
     fontFamily: 'var(--ifm-font-family-base)',
-    h1: { fontFamily: HEADING_FONT_FAMILY },
-    h2: { fontFamily: HEADING_FONT_FAMILY },
-    h3: { fontFamily: HEADING_FONT_FAMILY },
-    h4: { fontFamily: HEADING_FONT_FAMILY },
-    h5: { fontFamily: HEADING_FONT_FAMILY },
-    h6: { fontFamily: HEADING_FONT_FAMILY },
+    h1: headingOverride,
+    h2: headingOverride,
+    h3: headingOverride,
+    h4: headingOverride,
+    h5: headingOverride,
+    h6: headingOverride,
   },
 };
 

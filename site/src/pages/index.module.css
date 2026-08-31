@@ -1,13 +1,3 @@
-.page {
-  padding: 3rem 0 4rem;
-}
-
-.column {
-  max-width: 900px;
-  margin: 0 auto;
-  padding: 0 1.5rem;
-}
-
 .heroGrid {
   display: grid;
   grid-template-columns: 1fr;

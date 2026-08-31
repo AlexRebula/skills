@@ -3,7 +3,7 @@ import Layout from '@theme/Layout';
 import Heading from '@theme/Heading';
 import Link from '@docusaurus/Link';
 import useBaseUrl from '@docusaurus/useBaseUrl';
-import { FeatureFlowSection } from '@littlebranches/giselle-mui';
+import { FeatureFlowSection, SectionContainer } from '@littlebranches/giselle-mui';
 
 import { CopyableCommand } from '../components/copyable-command';
 import { GitHubStars } from '../components/github-stars';
@@ -65,7 +65,7 @@ export default function Home(): ReactNode {
   };
   const filteredFlowSections = useMemo(
     () => filterFlowSections(flowSections, activePersonas),
-    [flowSections, activePersonas],
+    [flowSections, activePersonas]
   );
   // A plain dark backdrop for every highlight-card slide - see
   // feature-flow-sections.ts's toHighlightCard doc comment for why this is
@@ -73,7 +73,7 @@ export default function Home(): ReactNode {
   const skillCardMediaSrc = useBaseUrl('/img/flow-skill-card-backdrop.svg');
   const featureFlowItems = useMemo(
     () => buildFeatureFlowItems(filteredFlowSections, skillCardMediaSrc),
-    [filteredFlowSections, skillCardMediaSrc],
+    [filteredFlowSections, skillCardMediaSrc]
   );
   // FeatureFlowSectionProps.image is required even with renderRightPanel
   // supplying the visible content (giselle-mui#188's known limitation: the
@@ -86,8 +86,19 @@ export default function Home(): ReactNode {
       title="Skills"
       description="A practical skill system for engineers who want to use AI without giving up their standards. Install the ones you use, then type a slash command."
     >
-      <div className={styles.page}>
-        <div className={styles.column}>
+      <div>
+        {/*
+          SectionContainer (giselle-mui) - full-width <section>, content
+          capped at maxWidth="lg" (1200px, responsive at every breakpoint
+          below that too) - the same container FeatureFlowSection and
+          LandingStatsSection already use internally, for genuine width
+          parity instead of a hand-rolled CSS max-width that has to be kept
+          in sync by hand. LandingStatsSection and FeatureFlowSection below
+          are deliberately NOT wrapped in one of these themselves - they
+          already provide their own internally; doing it again here would
+          just double-nest containers.
+        */}
+        <SectionContainer>
           <div className={styles.heroGrid}>
             <div className={styles.heroTextColumn}>
               <p className={styles.kicker}>
@@ -121,17 +132,10 @@ export default function Home(): ReactNode {
               </div>
             </div>
           </div>
+        </SectionContainer>
 
-          <LandingStatsSection items={landingStats} />
-        </div>
+        <LandingStatsSection items={landingStats} />
 
-        {/*
-          FeatureFlowSection renders outside .column's own max-width rule
-          (it's a Grid, not this module's CSS) - matched to the same 900px
-          cap directly via sx so every section on the page shares one
-          consistent content width, rather than nesting it inside .column
-          on top of its own internal SectionContainer width logic.
-        */}
         <FeatureFlowSection
           title="The Flow"
           items={featureFlowItems}
@@ -147,14 +151,20 @@ export default function Home(): ReactNode {
           descriptionGridSize={{ xs: 12, md: 6, lg: 5 }}
           imageGridSize={{ xs: 12, md: 6, lg: 7 }}
           columnSpacing={{ xs: 0, md: 4 }}
-          sx={{ maxWidth: 900, mx: 'auto' }}
+          // Overrides detailPanelSx's default tinted background: it read as
+          // an "always-grey" backdrop indistinguishable from
+          // FlowSkillAccordionList's own hover/expanded tint, which relies
+          // on contrast against a plain background to read as a state
+          // change at all.
+          itemDetailSx={{ bgcolor: 'transparent', borderTop: 'none' }}
         />
 
-        <div className={styles.column}>
+        <SectionContainer>
           <p className={styles.overviewLink}>
-            {OVERVIEW_LINK_PREFIX} <Link to="/overview">{OVERVIEW_LINK_TEXT}</Link> {OVERVIEW_LINK_DESCRIPTION}
+            {OVERVIEW_LINK_PREFIX} <Link to="/overview">{OVERVIEW_LINK_TEXT}</Link>{' '}
+            {OVERVIEW_LINK_DESCRIPTION}
           </p>
-        </div>
+        </SectionContainer>
       </div>
     </Layout>
   );

@@ -1,5 +1,5 @@
 import React, { type ReactNode } from 'react';
-import { GiselleThemeProvider, SectionContainer, SectionTitle, StatCardRow } from '@littlebranches/giselle-mui';
+import { SectionContainer, SectionTitle, StatCardRow } from '@littlebranches/giselle-mui';
 import type { LandingStatsSectionProps } from './types';
 
 /**
@@ -9,27 +9,23 @@ import type { LandingStatsSectionProps } from './types';
  * of the landing page already reads (see `computeLandingStats`), so this
  * row can't drift from what the category sections below it show.
  *
- * Scoped in its own `GiselleThemeProvider` rather than depending on a
- * site-wide theme: Docusaurus's navbar dark/light toggle isn't wired to
- * `GiselleThemeProvider` yet (tracked separately as `AlexRebula/skills#149`).
- * `defaultMode="system"` follows the OS colour-scheme preference in the
- * meantime, which keeps this one section legible in both Docusaurus colour
- * modes without introducing a second, competing toggle. Once #149 lands and
- * a shared provider wraps the app, this local one can be removed in favour
- * of that.
+ * Relies on the site-wide `GiselleThemeProvider` mounted in `theme/Root.tsx`
+ * rather than its own nested one: a nested provider with no `themeOverrides`
+ * resets back to giselle-mui's stock theme for everything inside it (stock
+ * Roboto/300 headings, ignoring Root.tsx's Infima font-family/weight
+ * overrides) and stops the outer navbar dark/light bridge from reaching this
+ * section, since it's a separate MUI theme context.
  */
 export function LandingStatsSection({ items }: LandingStatsSectionProps): ReactNode {
   return (
-    <GiselleThemeProvider defaultMode="system">
-      <SectionContainer maxWidth="lg" py={{ xs: 4, md: 6 }}>
-        <SectionTitle
-          caption="By the numbers"
-          title="This fork, at a glance"
-          description="Pulled from the same skill and provenance data the sections below render — not a separate, hand-maintained count."
-          sx={{ mb: { xs: 3, md: 4 } }}
-        />
-        <StatCardRow items={items} />
-      </SectionContainer>
-    </GiselleThemeProvider>
+    <SectionContainer maxWidth="lg" py={{ xs: 4, md: 6 }}>
+      <SectionTitle
+        caption="By the numbers"
+        title="This fork, at a glance"
+        description="Pulled from the same skill and provenance data the sections below render — not a separate, hand-maintained count."
+        sx={{ mb: { xs: 3, md: 4 } }}
+      />
+      <StatCardRow items={items} />
+    </SectionContainer>
   );
 }
