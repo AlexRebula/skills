@@ -28,3 +28,8 @@ export const OVERVIEW_LINK_PREFIX = 'You just saw the shape.';
 export const OVERVIEW_LINK_TEXT = 'Read the Flow in detail';
 export const OVERVIEW_LINK_DESCRIPTION = 'for why these stages actually fit together.';
 export const OVERVIEW_LINK_HREF = '/overview';
+
+export const PERSONA_PICKER_CAPTION = 'Choose your category';
+export const PERSONA_PICKER_TITLE = 'Flows tailored to you';
+export const PERSONA_PICKER_DESCRIPTION =
+  "Choose which persona category best fits you and we'll suggest the workflows and skills for you.";
