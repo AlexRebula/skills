@@ -1487,8 +1487,170 @@ function SectionContainer({
   return /* @__PURE__ */ jsx23(Container, { maxWidth, sx: [{ py }, ...Array.isArray(sx) ? sx : [sx]], ...other, children });
 }
 
-// src/components/section/hero/section/hero-section.tsx
+// src/components/material/layout/basic-section/basic-section.tsx
+import React2 from "react";
 import Box12 from "@mui/material/Box";
+
+// src/components/material/layout/basic-section/basic-section.styles.ts
+var DECORATION_MIN_WIDTH = 1440;
+var CORNER_MARK_INSET = 72;
+var HORIZONTAL_LINE_INSET = 80;
+var VERTICAL_LINE_INSET = 80;
+var CANONICAL_FRAME = [
+  { kind: "corner-plus", sx: { top: CORNER_MARK_INSET, left: CORNER_MARK_INSET } },
+  { kind: "corner-plus", sx: { bottom: CORNER_MARK_INSET, left: CORNER_MARK_INSET } },
+  { kind: "border-line", sx: { top: HORIZONTAL_LINE_INSET, left: 0 } },
+  { kind: "border-line", sx: { bottom: HORIZONTAL_LINE_INSET, left: 0 } },
+  { kind: "border-line", vertical: true, sx: { top: 0, left: VERTICAL_LINE_INSET } }
+];
+var basicSectionRootSx = {
+  position: "relative",
+  overflowX: "clip"
+};
+var decorationBaseSx = (theme) => ({
+  position: "absolute",
+  display: "none",
+  color: "grey.500",
+  pointerEvents: "none",
+  [theme.breakpoints.up(DECORATION_MIN_WIDTH)]: { display: "block" }
+});
+var cornerPlusSx = (theme) => ({
+  ...decorationBaseSx(theme),
+  width: 16,
+  height: 16
+});
+var cornerXSx = (theme) => ({
+  ...decorationBaseSx(theme),
+  width: 16,
+  height: 16
+});
+var borderLineSx = (vertical = false) => (theme) => ({
+  ...decorationBaseSx(theme),
+  opacity: 0.24,
+  borderColor: "currentColor",
+  ...vertical ? { width: 0, height: 1, borderLeft: "1px dashed" } : { width: 1, height: 0, borderTop: "1px dashed" }
+});
+var triangleLeftSx = (theme) => ({
+  ...decorationBaseSx(theme),
+  width: 10,
+  height: 20
+});
+var triangleDownSx = (theme) => ({
+  ...decorationBaseSx(theme),
+  width: 20,
+  height: 10
+});
+var dotSx = (theme) => ({
+  ...decorationBaseSx(theme),
+  width: 12,
+  height: 12,
+  borderRadius: "50%",
+  bgcolor: "currentColor"
+});
+
+// src/components/material/layout/basic-section/basic-section.tsx
+import { jsx as jsx24, jsxs as jsxs11 } from "react/jsx-runtime";
+function Decoration({ kind, vertical, sx }) {
+  switch (kind) {
+    case "corner-plus":
+      return /* @__PURE__ */ jsx24(
+        Box12,
+        {
+          "aria-hidden": "true",
+          sx: [cornerPlusSx, ...Array.isArray(sx) ? sx : [sx]],
+          component: "svg",
+          viewBox: "0 0 16 16",
+          fill: "none",
+          xmlns: "http://www.w3.org/2000/svg",
+          children: /* @__PURE__ */ jsx24("path", { d: "M8 0V16M16 8H0", stroke: "currentColor" })
+        }
+      );
+    case "corner-x":
+      return /* @__PURE__ */ jsx24(
+        Box12,
+        {
+          "aria-hidden": "true",
+          sx: [cornerXSx, ...Array.isArray(sx) ? sx : [sx]],
+          component: "svg",
+          viewBox: "0 0 16 16",
+          fill: "none",
+          xmlns: "http://www.w3.org/2000/svg",
+          children: /* @__PURE__ */ jsx24(
+            "path",
+            {
+              d: "M14 2L7.96685 8.03315M7.96685 8.03315L2.0663 13.9337M7.96685 8.03315L13.9337 14M7.96685 8.03315L2 2.0663",
+              stroke: "currentColor"
+            }
+          )
+        }
+      );
+    case "border-line":
+      return /* @__PURE__ */ jsx24(Box12, { "aria-hidden": "true", sx: [borderLineSx(vertical), ...Array.isArray(sx) ? sx : [sx]] });
+    case "triangle-left":
+      return /* @__PURE__ */ jsx24(
+        Box12,
+        {
+          "aria-hidden": "true",
+          sx: [triangleLeftSx, ...Array.isArray(sx) ? sx : [sx]],
+          component: "svg",
+          viewBox: "0 0 10 20",
+          fill: "none",
+          xmlns: "http://www.w3.org/2000/svg",
+          children: /* @__PURE__ */ jsx24("path", { d: "M10 10L8.74228e-07 20L0 0L10 10Z", fill: "currentColor" })
+        }
+      );
+    case "triangle-down":
+      return /* @__PURE__ */ jsx24(
+        Box12,
+        {
+          "aria-hidden": "true",
+          sx: [triangleDownSx, ...Array.isArray(sx) ? sx : [sx]],
+          component: "svg",
+          viewBox: "0 0 20 10",
+          fill: "none",
+          xmlns: "http://www.w3.org/2000/svg",
+          children: /* @__PURE__ */ jsx24("path", { d: "M10 10L0 0H20L10 10Z", fill: "currentColor" })
+        }
+      );
+    case "dot":
+      return /* @__PURE__ */ jsx24(Box12, { "aria-hidden": "true", sx: [dotSx, ...Array.isArray(sx) ? sx : [sx]] });
+  }
+}
+function resolveDecoration(decoration) {
+  if (decoration === true) return CANONICAL_FRAME;
+  if (decoration === false) return [];
+  return decoration;
+}
+var BasicSection = React2.forwardRef(function BasicSection2({
+  children,
+  decoration = true,
+  containerMaxWidth,
+  containerPy,
+  containerSx,
+  unconstrainedChildren,
+  sx,
+  ...other
+}, ref) {
+  const elements = resolveDecoration(decoration);
+  return /* @__PURE__ */ jsxs11(
+    Box12,
+    {
+      ref,
+      component: "section",
+      sx: [basicSectionRootSx, ...Array.isArray(sx) ? sx : [sx]],
+      ...other,
+      children: [
+        elements.map((element, index) => /* @__PURE__ */ jsx24(Decoration, { ...element }, index)),
+        /* @__PURE__ */ jsx24(SectionContainer, { maxWidth: containerMaxWidth, py: containerPy, sx: containerSx, children }),
+        unconstrainedChildren
+      ]
+    }
+  );
+});
+BasicSection.displayName = "BasicSection";
+
+// src/components/section/hero/section/hero-section.tsx
+import Box13 from "@mui/material/Box";
 import Container2 from "@mui/material/Container";
 
 // src/components/section/hero/section/hero-section.styles.ts
@@ -1517,7 +1679,7 @@ var heroIconsSlotSx = {
 };
 
 // src/components/section/hero/section/hero-section.tsx
-import { jsx as jsx24, jsxs as jsxs11 } from "react/jsx-runtime";
+import { jsx as jsx25, jsxs as jsxs12 } from "react/jsx-runtime";
 function HeroSection({
   heading,
   text,
@@ -1527,27 +1689,23 @@ function HeroSection({
   sx,
   ...other
 }) {
-  return /* @__PURE__ */ jsx24(Box12, { sx: [heroRootSx(color), ...Array.isArray(sx) ? sx : [sx]], ...other, children: /* @__PURE__ */ jsxs11(Container2, { maxWidth: "lg", sx: heroInnerSx, children: [
+  return /* @__PURE__ */ jsx25(Box13, { sx: [heroRootSx(color), ...Array.isArray(sx) ? sx : [sx]], ...other, children: /* @__PURE__ */ jsxs12(Container2, { maxWidth: "lg", sx: heroInnerSx, children: [
     heading,
     text,
-    actions && /* @__PURE__ */ jsx24(Box12, { sx: heroActionsRowSx, children: actions }),
-    icons && /* @__PURE__ */ jsx24(Box12, { sx: heroIconsSlotSx, children: icons })
+    actions && /* @__PURE__ */ jsx25(Box13, { sx: heroActionsRowSx, children: actions }),
+    icons && /* @__PURE__ */ jsx25(Box13, { sx: heroIconsSlotSx, children: icons })
   ] }) });
 }
 
 // src/components/section/feature-flow/feature-flow-section.tsx
-import React6, { useCallback as useCallback8, useEffect as useEffect5, useMemo as useMemo4, useRef as useRef3, useState as useState6 } from "react";
-import { m as m6, AnimatePresence as AnimatePresence3 } from "framer-motion";
-import Box21 from "@mui/material/Box";
+import React7, { useCallback as useCallback8, useEffect as useEffect5, useMemo as useMemo4, useRef as useRef3, useState as useState6 } from "react";
 import Grid4 from "@mui/material/Grid";
-import Stack7 from "@mui/material/Stack";
-import Container4 from "@mui/material/Container";
 import LinearProgress from "@mui/material/LinearProgress";
 
 // src/components/material/navigation/floating-sub-nav/floating-sub-nav.tsx
 import { useCallback as useCallback7 } from "react";
 import { AnimatePresence } from "framer-motion";
-import Box14 from "@mui/material/Box";
+import Box15 from "@mui/material/Box";
 
 // src/components/material/navigation/floating-sub-nav/floating-sub-nav.const.ts
 var SUB_NAV_BUTTON_SIZE = {
@@ -1646,7 +1804,7 @@ var subNavButtonSx = (isActive) => (theme) => ({
 
 // src/components/material/navigation/floating-sub-nav/nav-pill.tsx
 import { m } from "framer-motion";
-import Box13 from "@mui/material/Box";
+import Box14 from "@mui/material/Box";
 import Stack3 from "@mui/material/Stack";
 
 // src/components/material/navigation/floating-sub-nav/floating-sub-nav.animations.ts
@@ -1666,10 +1824,10 @@ var pillVariants = {
 import { useCallback as useCallback6 } from "react";
 import Tooltip2 from "@mui/material/Tooltip";
 import ButtonBase2 from "@mui/material/ButtonBase";
-import { jsx as jsx25 } from "react/jsx-runtime";
+import { jsx as jsx26 } from "react/jsx-runtime";
 function SubNavButton({ item, isActive, onPress }) {
   const handleClick = useCallback6(() => onPress(item.id), [onPress, item.id]);
-  return /* @__PURE__ */ jsx25(Tooltip2, { title: item.label, placement: "top", arrow: true, children: /* @__PURE__ */ jsx25(
+  return /* @__PURE__ */ jsx26(Tooltip2, { title: item.label, placement: "top", arrow: true, children: /* @__PURE__ */ jsx26(
     ButtonBase2,
     {
       disableRipple: true,
@@ -1685,9 +1843,9 @@ function SubNavButton({ item, isActive, onPress }) {
 }
 
 // src/components/material/navigation/floating-sub-nav/nav-pill.tsx
-import { jsx as jsx26 } from "react/jsx-runtime";
+import { jsx as jsx27 } from "react/jsx-runtime";
 function NavPill({ items, activeId, onPress }) {
-  return /* @__PURE__ */ jsx26(
+  return /* @__PURE__ */ jsx27(
     m.div,
     {
       variants: pillVariants,
@@ -1695,7 +1853,7 @@ function NavPill({ items, activeId, onPress }) {
       animate: "animate",
       exit: "exit",
       transition: pillTransition,
-      children: /* @__PURE__ */ jsx26(Box13, { component: "nav", "aria-label": "Section navigation", sx: pillSx, children: /* @__PURE__ */ jsx26(Stack3, { direction: "row", spacing: PILL_BUTTON_ROW_SPACING, children: items.map((item) => /* @__PURE__ */ jsx26(
+      children: /* @__PURE__ */ jsx27(Box14, { component: "nav", "aria-label": "Section navigation", sx: pillSx, children: /* @__PURE__ */ jsx27(Stack3, { direction: "row", spacing: PILL_BUTTON_ROW_SPACING, children: items.map((item) => /* @__PURE__ */ jsx27(
         SubNavButton,
         {
           item,
@@ -1709,18 +1867,18 @@ function NavPill({ items, activeId, onPress }) {
 }
 
 // src/components/material/navigation/floating-sub-nav/floating-sub-nav.tsx
-import { jsx as jsx27 } from "react/jsx-runtime";
+import { jsx as jsx28 } from "react/jsx-runtime";
 function FloatingSubNav({ items, activeId, onSelect, sticky = false }) {
   const handlePress = useCallback7((id) => onSelect(id), [onSelect]);
   if (sticky) {
-    return /* @__PURE__ */ jsx27(Box14, { sx: stickyWrapperSx, children: /* @__PURE__ */ jsx27(Box14, { sx: stickyInnerSx, children: /* @__PURE__ */ jsx27(AnimatePresence, { children: activeId !== null && /* @__PURE__ */ jsx27(NavPill, { items, activeId, onPress: handlePress }) }) }) });
+    return /* @__PURE__ */ jsx28(Box15, { sx: stickyWrapperSx, children: /* @__PURE__ */ jsx28(Box15, { sx: stickyInnerSx, children: /* @__PURE__ */ jsx28(AnimatePresence, { children: activeId !== null && /* @__PURE__ */ jsx28(NavPill, { items, activeId, onPress: handlePress }) }) }) });
   }
-  return /* @__PURE__ */ jsx27(AnimatePresence, { children: activeId !== null && /* @__PURE__ */ jsx27(Box14, { sx: fixedWrapperSx, children: /* @__PURE__ */ jsx27(NavPill, { items, activeId, onPress: handlePress }) }) });
+  return /* @__PURE__ */ jsx28(AnimatePresence, { children: activeId !== null && /* @__PURE__ */ jsx28(Box15, { sx: fixedWrapperSx, children: /* @__PURE__ */ jsx28(NavPill, { items, activeId, onPress: handlePress }) }) });
 }
 
 // src/components/motion/viewport/motion-viewport.tsx
 import { m as m2 } from "framer-motion";
-import Box15 from "@mui/material/Box";
+import Box16 from "@mui/material/Box";
 import useMediaQuery from "@mui/material/useMediaQuery";
 
 // src/components/motion/variants/container/container.const.ts
@@ -1747,7 +1905,7 @@ var container = (options) => ({
 });
 
 // src/components/motion/viewport/motion-viewport.tsx
-import { jsx as jsx28 } from "react/jsx-runtime";
+import { jsx as jsx29 } from "react/jsx-runtime";
 function MotionViewport({
   children,
   viewport,
@@ -1757,10 +1915,10 @@ function MotionViewport({
 }) {
   const smDown = useMediaQuery((theme) => theme.breakpoints.down("sm"));
   if (smDown && disableAnimateOnMobile) {
-    return /* @__PURE__ */ jsx28(Box15, { sx, ...other, children });
+    return /* @__PURE__ */ jsx29(Box16, { sx, ...other, children });
   }
-  return /* @__PURE__ */ jsx28(
-    Box15,
+  return /* @__PURE__ */ jsx29(
+    Box16,
     {
       component: m2.div,
       initial: "initial",
@@ -1793,11 +1951,10 @@ var COMMON_WHITE_CHANNEL = "var(--mui-palette-common-whiteChannel)";
 var HIGHLIGHT_CAROUSEL_HEIGHT = 570;
 var selectedHoverShadow = (channel, innerAlpha, outerAlpha) => `0 0 2px 0 ${channelAlpha(channel, innerAlpha)}, -8px 20px 40px -4px ${channelAlpha(channel, outerAlpha)}`;
 var selectedActiveShadow = (channel, innerAlpha, outerAlpha) => `0 0 1px 0 ${channelAlpha(channel, innerAlpha)}, -1px 2px 4px -1px ${channelAlpha(channel, outerAlpha)}`;
-var featureFlowRootSx = {
-  overflowX: "clip",
-  position: "relative",
-  py: { xs: 10, md: 20 }
-};
+var featureFlowRootSx = (isExpanded) => ({
+  pt: { xs: 10, md: 20 },
+  pb: isExpanded ? 10 : { xs: 10, md: 20 }
+});
 var imageColumnCardSx = (theme) => ({
   top: 0,
   left: "50%",
@@ -1820,13 +1977,13 @@ var detailPanelSx = {
   bgcolor: channelAlpha("var(--mui-palette-primary-mainChannel)", 0.04),
   borderTop: `1px solid ${channelAlpha("var(--mui-palette-primary-mainChannel)", 0.12)}`
 };
-var featureFlowItemSx = ({ isSelected, isActive, isExpanded, interactive }) => (theme) => ({
+var featureFlowItemSx = ({ isSelected, isActive, isExpanded, expandable }) => (theme) => ({
   gap: 2,
   display: "flex",
   alignItems: "flex-start",
   textAlign: "left",
   width: "100%",
-  cursor: interactive ? "pointer" : "default",
+  cursor: expandable ? "pointer" : "default",
   borderRadius: 1.5,
   py: 3,
   px: 2.5,
@@ -1841,7 +1998,7 @@ var featureFlowItemSx = ({ isSelected, isActive, isExpanded, interactive }) => (
     outline: `2px dashed ${theme.vars.palette.primary.main}`,
     outlineOffset: 2
   },
-  ...interactive && !isSelected && {
+  ...expandable && !isSelected && {
     // `!important` is required here: this row renders as `component={m.button}`
     // with `variants={fade('inUp', …)}` for its entrance animation, and once
     // that animation settles framer-motion leaves a permanent inline
@@ -1857,10 +2014,10 @@ var featureFlowItemSx = ({ isSelected, isActive, isExpanded, interactive }) => (
       bgcolor: channelAlpha(GREY_500_CHANNEL2, 0.12)
     }
   },
-  ...interactive && !isSelected && isActive && {
+  ...expandable && !isSelected && isActive && {
     opacity: 1
   },
-  ...interactive && isSelected && {
+  ...expandable && isSelected && {
     color: "text.primary",
     bgcolor: "background.paper",
     boxShadow: `-8px 8px 20px -4px ${channelAlpha(GREY_500_CHANNEL2, 0.12)}`,
@@ -1882,7 +2039,7 @@ var featureFlowItemSx = ({ isSelected, isActive, isExpanded, interactive }) => (
       }
     })
   },
-  ...interactive && isExpanded && {
+  ...expandable && isExpanded && {
     borderColor: channelAlpha("var(--mui-palette-primary-mainChannel)", 0.24),
     boxShadow: isSelected ? `inset 3px 0 0 ${theme.vars.palette.primary.main}, -8px 8px 20px -4px ${channelAlpha(GREY_500_CHANNEL2, 0.12)}` : `inset 3px 0 0 ${theme.vars.palette.primary.main}`
   }
@@ -2076,276 +2233,14 @@ function useImageRevealTransform() {
   return { ref, style: { opacity, y, scale, filter } };
 }
 
-// src/components/section/feature-flow/image-column/feature-flow-image-column.tsx
-import React2 from "react";
-import { m as m3 } from "framer-motion";
-import Box16 from "@mui/material/Box";
-import Stack4 from "@mui/material/Stack";
-import { jsx as jsx29, jsxs as jsxs12 } from "react/jsx-runtime";
-var RESTING_REVEAL_STYLE = {
-  opacity: 1,
-  y: 0,
-  scale: 1,
-  filter: "none"
-};
-var FeatureFlowImageColumn = React2.forwardRef(
-  function FeatureFlowImageColumn2({ activeSrc, ghostSrc, allSrcs, alt, revealStyle = RESTING_REVEAL_STYLE, sx, ...other }, ref) {
-    return /* @__PURE__ */ jsxs12(Stack4, { ref, sx: imageColumnStickyStackSx, ...other, children: [
-      /* @__PURE__ */ jsx29(Box16, { component: "img", alt: "", "aria-hidden": true, src: ghostSrc, sx: imageColumnOuterGhostSx }),
-      /* @__PURE__ */ jsx29(Box16, { sx: [imageColumnCardSx, ...Array.isArray(sx) ? sx : [sx]], children: /* @__PURE__ */ jsxs12(Box16, { component: m3.div, style: revealStyle, sx: { width: 1, position: "relative" }, children: [
-        /* @__PURE__ */ jsx29(Box16, { component: "img", alt: "", "aria-hidden": true, src: ghostSrc, sx: imageColumnInnerGhostSx }),
-        allSrcs.map((src) => /* @__PURE__ */ jsx29(
-          Box16,
-          {
-            component: "img",
-            alt: src === activeSrc ? alt : "",
-            "aria-hidden": src === activeSrc ? void 0 : true,
-            src,
-            fetchPriority: src === ghostSrc ? "high" : "auto",
-            sx: imageColumnFrameSx(src === activeSrc)
-          },
-          src
-        ))
-      ] }) })
-    ] });
-  }
-);
-FeatureFlowImageColumn.displayName = "FeatureFlowImageColumn";
-
-// src/components/section/feature-flow/item-detail/feature-flow-item-detail.tsx
-import React4 from "react";
-import Box19 from "@mui/material/Box";
-import Grid3 from "@mui/material/Grid";
+// src/components/section/feature-flow/description-column/feature-flow-description-column.tsx
 import Stack5 from "@mui/material/Stack";
-import Container3 from "@mui/material/Container";
-import Typography10 from "@mui/material/Typography";
-
-// src/components/material/data-display/icon/tech-strip/tech-icon-strip.tsx
-import Box17 from "@mui/material/Box";
-import Typography8 from "@mui/material/Typography";
-
-// src/components/material/data-display/icon/tech-strip/tech-icon-strip.const.ts
-var TECH_ICON_STRIP_ICON_SIZE = 32;
-var TECH_ICON_STRIP_LABEL_FONT_SIZE = "0.75rem";
-
-// src/components/material/data-display/icon/tech-strip/tech-icon-strip.styles.ts
-var stripRootSx = {
-  display: "flex",
-  flexDirection: "column"
-};
-var titleSx = {
-  display: "block",
-  mb: 2,
-  color: "text.secondary",
-  letterSpacing: "0.08em",
-  textTransform: "uppercase"
-};
-var stripWrapperSx = (centered) => ({
-  display: "flex",
-  flexWrap: "wrap",
-  gap: 3,
-  justifyContent: centered ? "center" : "flex-start",
-  alignItems: "flex-start"
-});
-var itemSx = {
-  display: "flex",
-  flexDirection: "column",
-  alignItems: "center",
-  gap: 0.5,
-  minWidth: 56
-};
-var iconSlotSx = {
-  display: "flex",
-  alignItems: "center",
-  justifyContent: "center",
-  "& svg, & img": {
-    width: TECH_ICON_STRIP_ICON_SIZE,
-    height: TECH_ICON_STRIP_ICON_SIZE
-  }
-};
-
-// src/components/material/data-display/icon/tech-strip/tech-icon-strip.tsx
-import { jsx as jsx30, jsxs as jsxs13 } from "react/jsx-runtime";
-function TechIconStrip({
-  items,
-  heading,
-  centeredWrap = false,
-  sx,
-  ...other
-}) {
-  return /* @__PURE__ */ jsxs13(Box17, { sx: [stripRootSx, ...Array.isArray(sx) ? sx : [sx]], ...other, children: [
-    heading && /* @__PURE__ */ jsx30(Typography8, { component: "span", sx: titleSx, variant: "overline", children: heading }),
-    /* @__PURE__ */ jsx30(Box17, { sx: stripWrapperSx(centeredWrap), children: items.map((item) => /* @__PURE__ */ jsxs13(Box17, { sx: itemSx, children: [
-      /* @__PURE__ */ jsx30(Box17, { "aria-hidden": true, sx: iconSlotSx, children: item.icon }),
-      /* @__PURE__ */ jsx30(Typography8, { sx: { fontSize: TECH_ICON_STRIP_LABEL_FONT_SIZE }, variant: "caption", children: item.label })
-    ] }, item.label)) })
-  ] });
-}
-
-// src/components/section/feature-flow/highlight-carousel/feature-flow-highlight-carousel.tsx
-import React3, { useState as useState5 } from "react";
-import { m as m4, AnimatePresence as AnimatePresence2, useReducedMotion as useReducedMotion2 } from "framer-motion";
-import Box18 from "@mui/material/Box";
-import IconButton3 from "@mui/material/IconButton";
-import Typography9 from "@mui/material/Typography";
-
-// src/components/section/feature-flow/highlight-carousel/feature-flow-highlight-carousel.animations.ts
-var HIGHLIGHT_TEXT_SLIDE_DISTANCE = 24;
-var highlightTextVariants = (distance) => ({
-  enter: (step) => ({
-    opacity: 0,
-    x: step >= 0 ? distance : -distance
-  }),
-  center: { opacity: 1, x: 0 },
-  exit: (step) => ({
-    opacity: 0,
-    x: step >= 0 ? -distance : distance
-  })
-});
-
-// src/components/section/feature-flow/highlight-carousel/feature-flow-highlight-carousel.tsx
-import { jsx as jsx31, jsxs as jsxs14 } from "react/jsx-runtime";
-var FeatureFlowHighlightCarousel = React3.forwardRef(function FeatureFlowHighlightCarousel2({ cards, sx, ...other }, ref) {
-  const [selectedIndex, setSelectedIndex] = useState5(0);
-  const [step, setStep] = useState5(1);
-  const reducedMotion = useReducedMotion2();
-  if (!cards.length) return null;
-  const goTo = (index, direction) => {
-    setStep(direction);
-    setSelectedIndex((index + cards.length) % cards.length);
-  };
-  const selectedCard = cards[selectedIndex];
-  const textVariants = highlightTextVariants(reducedMotion ? 0 : HIGHLIGHT_TEXT_SLIDE_DISTANCE);
-  return /* @__PURE__ */ jsxs14(Box18, { ref, sx: [highlightCarouselRootSx, ...Array.isArray(sx) ? sx : [sx]], ...other, children: [
-    cards.map((card, index) => /* @__PURE__ */ jsx31(
-      Box18,
-      {
-        component: "img",
-        alt: "",
-        "aria-hidden": "true",
-        src: card.src ?? "",
-        loading: index === selectedIndex ? "eager" : "lazy",
-        sx: highlightSlideImageSx(index === selectedIndex)
-      },
-      card.headline
-    )),
-    /* @__PURE__ */ jsx31(Box18, { "aria-hidden": true, sx: highlightScrimSx }),
-    /* @__PURE__ */ jsx31(Box18, { sx: highlightTextSlotSx, children: /* @__PURE__ */ jsx31(AnimatePresence2, { mode: "wait", custom: step, children: /* @__PURE__ */ jsxs14(
-      m4.div,
-      {
-        custom: step,
-        variants: textVariants,
-        initial: "enter",
-        animate: "center",
-        exit: "exit",
-        transition: { duration: 0.28, ease: "easeOut" },
-        children: [
-          /* @__PURE__ */ jsx31(Typography9, { variant: "h4", sx: { mb: 1 }, children: selectedCard?.headline }),
-          /* @__PURE__ */ jsx31(Typography9, { variant: "body1", sx: highlightDetailTextSx, children: selectedCard?.detail })
-        ]
-      },
-      selectedIndex
-    ) }) }),
-    cards.length > 1 && /* @__PURE__ */ jsxs14(Box18, { sx: highlightControlsRowSx, children: [
-      /* @__PURE__ */ jsxs14(Typography9, { variant: "caption", sx: highlightIndexLabelSx, children: [
-        selectedIndex + 1,
-        "/",
-        cards.length
-      ] }),
-      /* @__PURE__ */ jsx31(
-        IconButton3,
-        {
-          "aria-label": "Previous highlight",
-          size: "small",
-          onClick: () => goTo(selectedIndex - 1, -1),
-          sx: highlightArrowButtonSx,
-          children: /* @__PURE__ */ jsx31(GiselleIcon, { icon: "solar:alt-arrow-left-bold", width: 18, "aria-hidden": "true" })
-        }
-      ),
-      /* @__PURE__ */ jsx31(
-        IconButton3,
-        {
-          "aria-label": "Next highlight",
-          size: "small",
-          onClick: () => goTo(selectedIndex + 1, 1),
-          sx: highlightArrowButtonSx,
-          children: /* @__PURE__ */ jsx31(GiselleIcon, { icon: "solar:alt-arrow-right-bold", width: 18, "aria-hidden": "true" })
-        }
-      )
-    ] })
-  ] });
-});
-FeatureFlowHighlightCarousel.displayName = "FeatureFlowHighlightCarousel";
-
-// src/components/section/feature-flow/item-detail/feature-flow-item-detail.tsx
-import { jsx as jsx32, jsxs as jsxs15 } from "react/jsx-runtime";
-var FeatureFlowItemDetail = React4.forwardRef(
-  function FeatureFlowItemDetail2({ item, sx, ...other }, ref) {
-    const cards = item.highlightCards ?? [];
-    return /* @__PURE__ */ jsx32(Box19, { ref, sx: [detailPanelSx, ...Array.isArray(sx) ? sx : [sx]], ...other, children: /* @__PURE__ */ jsx32(Container3, { children: /* @__PURE__ */ jsxs15(Grid3, { container: true, spacing: { xs: 4, md: 8 }, children: [
-      /* @__PURE__ */ jsx32(Grid3, { size: { xs: 12, md: 6 }, children: /* @__PURE__ */ jsxs15(Stack5, { spacing: 4, children: [
-        /* @__PURE__ */ jsxs15(Stack5, { direction: "row", spacing: 2, sx: { alignItems: "center" }, children: [
-          /* @__PURE__ */ jsx32(
-            GiselleIcon,
-            {
-              icon: item.icon,
-              width: 44,
-              sx: { color: "primary.main" },
-              "aria-hidden": "true"
-            }
-          ),
-          /* @__PURE__ */ jsx32(Typography10, { variant: "h3", children: item.title })
-        ] }),
-        item.metrics?.length ? /* @__PURE__ */ jsx32(
-          Box19,
-          {
-            sx: {
-              display: "grid",
-              gap: 2,
-              gridTemplateColumns: {
-                xs: "repeat(1, 1fr)",
-                sm: `repeat(${Math.min(item.metrics.length, 3)}, 1fr)`
-              }
-            },
-            children: item.metrics.map(({ value, label, sublabel, icon }) => /* @__PURE__ */ jsx32(
-              MetricCard,
-              {
-                value,
-                label,
-                sublabel,
-                icon: icon ? /* @__PURE__ */ jsx32(GiselleIcon, { icon, width: 36, "aria-hidden": "true" }) : void 0,
-                color: "primary",
-                decoration: /* @__PURE__ */ jsx32(MetricCardDecoration, { color: "primary" })
-              },
-              label
-            ))
-          }
-        ) : null,
-        isRichLongDescription(item) ? item.longDescription : /* @__PURE__ */ jsx32(Typography10, { variant: "body1", sx: { color: "text.secondary", lineHeight: 1.8 }, children: item.longDescription ?? item.description }),
-        item.technologies?.length ? /* @__PURE__ */ jsx32(
-          TechIconStrip,
-          {
-            heading: "Technologies",
-            centeredWrap: false,
-            items: item.technologies.map((tech) => ({
-              label: tech.name,
-              icon: /* @__PURE__ */ jsx32(GiselleIcon, { icon: tech.icon, width: 32, "aria-hidden": "true" })
-            }))
-          }
-        ) : null
-      ] }) }),
-      cards.length > 0 && /* @__PURE__ */ jsx32(Grid3, { size: { xs: 12, md: 6 }, children: /* @__PURE__ */ jsx32(FeatureFlowHighlightCarousel, { cards }) })
-    ] }) }) });
-  }
-);
-FeatureFlowItemDetail.displayName = "FeatureFlowItemDetail";
 
 // src/components/section/feature-flow/item-row/feature-flow-item-row.tsx
-import React5 from "react";
-import { m as m5 } from "framer-motion";
-import Box20 from "@mui/material/Box";
-import Stack6 from "@mui/material/Stack";
-import Typography11 from "@mui/material/Typography";
+import React3 from "react";
+import { m as m3, useReducedMotion as useReducedMotion2 } from "framer-motion";
+import Stack4 from "@mui/material/Stack";
+import Typography8 from "@mui/material/Typography";
 import ButtonBase3 from "@mui/material/ButtonBase";
 
 // src/components/motion/variants/transition/transition.const.ts
@@ -2428,67 +2323,429 @@ var fade = (direction, options) => {
   return map[direction];
 };
 
+// src/components/section/feature-flow/item-row/feature-flow-item-row.styles.ts
+var itemRowTextSlotSx = {
+  flex: 1,
+  minWidth: 0
+};
+
 // src/components/section/feature-flow/item-row/feature-flow-item-row.tsx
-import { Fragment as Fragment2, jsx as jsx33, jsxs as jsxs16 } from "react/jsx-runtime";
-var FeatureFlowItemRow = React5.forwardRef(
+import { jsx as jsx30, jsxs as jsxs13 } from "react/jsx-runtime";
+var FeatureFlowItemRow = React3.forwardRef(
   function FeatureFlowItemRow2({
     icon,
     title,
     description,
-    interactive,
+    expandable,
     isSelected,
     isActive,
     isExpanded,
     onHover,
     onFocus,
-    onSelect
+    onSelect,
+    sx,
+    ...other
   }, ref) {
-    const rowContent = /* @__PURE__ */ jsxs16(Fragment2, { children: [
-      /* @__PURE__ */ jsx33(GiselleIcon, { icon, width: 48, "aria-hidden": "true" }),
-      /* @__PURE__ */ jsxs16(Stack6, { spacing: 1, sx: { flex: 1, minWidth: 0 }, children: [
-        /* @__PURE__ */ jsx33(Typography11, { variant: "h4", component: "h6", color: "inherit", children: title }),
-        /* @__PURE__ */ jsx33(Typography11, { color: "inherit", children: description })
-      ] })
-    ] });
-    const sx = featureFlowItemSx({ isSelected, isActive, isExpanded, interactive });
-    if (!interactive) {
-      return /* @__PURE__ */ jsx33(
-        Box20,
-        {
-          ref,
-          component: m5.div,
-          variants: fade("inUp", { distance: 24 }),
-          tabIndex: 0,
-          onMouseEnter: onHover,
-          onFocus,
-          sx,
-          children: rowContent
-        }
-      );
-    }
-    return /* @__PURE__ */ jsx33(
+    const reducedMotion = useReducedMotion2();
+    return /* @__PURE__ */ jsxs13(
       ButtonBase3,
       {
+        ...other,
         ref,
         disableRipple: true,
         type: "button",
-        "aria-pressed": isSelected,
-        component: m5.button,
-        variants: fade("inUp", { distance: 24 }),
+        "aria-pressed": expandable ? isSelected : void 0,
+        component: m3.button,
+        variants: fade("inUp", { distance: reducedMotion ? 0 : 24 }),
         onMouseEnter: onHover,
         onFocus,
-        onClick: onSelect,
-        sx,
-        children: rowContent
+        onClick: expandable ? onSelect : void 0,
+        sx: [
+          featureFlowItemSx({ isSelected, isActive, isExpanded, expandable }),
+          ...Array.isArray(sx) ? sx : [sx]
+        ],
+        children: [
+          /* @__PURE__ */ jsx30(GiselleIcon, { icon, width: 48, "aria-hidden": "true" }),
+          /* @__PURE__ */ jsxs13(Stack4, { spacing: 1, sx: itemRowTextSlotSx, children: [
+            /* @__PURE__ */ jsx30(Typography8, { variant: "h4", component: "h6", color: "inherit", children: title }),
+            /* @__PURE__ */ jsx30(Typography8, { color: "inherit", children: description })
+          ] })
+        ]
       }
     );
   }
 );
 FeatureFlowItemRow.displayName = "FeatureFlowItemRow";
 
-// src/components/section/feature-flow/feature-flow-section.tsx
+// src/components/section/feature-flow/description-column/feature-flow-description-column.tsx
+import { Fragment as Fragment2, jsx as jsx31, jsxs as jsxs14 } from "react/jsx-runtime";
+function FeatureFlowDescriptionColumn({
+  caption,
+  title,
+  txtGradient,
+  description,
+  items,
+  selectedItemIndex,
+  activeItemIndex,
+  expandedItemId,
+  onItemHover,
+  onItemSelect,
+  onLeave
+}) {
+  return /* @__PURE__ */ jsxs14(Fragment2, { children: [
+    title && /* @__PURE__ */ jsx31(
+      SectionTitle,
+      {
+        caption,
+        title,
+        txtGradient,
+        description,
+        sx: { mb: { xs: 5, md: 8 }, textAlign: { xs: "center", md: "left" } }
+      }
+    ),
+    /* @__PURE__ */ jsx31(
+      Stack5,
+      {
+        spacing: 1.5,
+        sx: { maxWidth: { sm: 560, md: 400 }, mx: { xs: "auto", md: "unset" } },
+        onMouseLeave: onLeave,
+        onBlur: (event) => {
+          if (event.relatedTarget instanceof Node && event.currentTarget.contains(event.relatedTarget)) {
+            return;
+          }
+          onLeave();
+        },
+        children: items.map((item, index) => {
+          const expandable = hasExpansionData(item);
+          const isSelected = index === selectedItemIndex;
+          const isActive = index === activeItemIndex;
+          const isExpanded = item.id === expandedItemId;
+          return /* @__PURE__ */ jsx31(
+            FeatureFlowItemRow,
+            {
+              icon: item.icon,
+              title: item.title,
+              description: item.description,
+              expandable,
+              isSelected,
+              isActive,
+              isExpanded,
+              onHover: () => onItemHover(index),
+              onFocus: () => onItemHover(index),
+              onSelect: () => onItemSelect(item, index)
+            },
+            item.id
+          );
+        })
+      }
+    )
+  ] });
+}
+
+// src/components/section/feature-flow/image-column/feature-flow-image-column.tsx
+import React4 from "react";
+import { m as m4 } from "framer-motion";
+import Box17 from "@mui/material/Box";
+import Stack6 from "@mui/material/Stack";
+import { jsx as jsx32, jsxs as jsxs15 } from "react/jsx-runtime";
+var RESTING_REVEAL_STYLE = {
+  opacity: 1,
+  y: 0,
+  scale: 1,
+  filter: "none"
+};
+var FeatureFlowImageColumn = React4.forwardRef(
+  function FeatureFlowImageColumn2({ activeSrc, ghostSrc, allSrcs, alt, revealStyle = RESTING_REVEAL_STYLE, sx, ...other }, ref) {
+    return /* @__PURE__ */ jsxs15(Stack6, { ref, sx: imageColumnStickyStackSx, ...other, children: [
+      /* @__PURE__ */ jsx32(Box17, { component: "img", alt: "", "aria-hidden": true, src: ghostSrc, sx: imageColumnOuterGhostSx }),
+      /* @__PURE__ */ jsx32(Box17, { sx: [imageColumnCardSx, ...Array.isArray(sx) ? sx : [sx]], children: /* @__PURE__ */ jsxs15(Box17, { component: m4.div, style: revealStyle, sx: { width: 1, position: "relative" }, children: [
+        /* @__PURE__ */ jsx32(Box17, { component: "img", alt: "", "aria-hidden": true, src: ghostSrc, sx: imageColumnInnerGhostSx }),
+        allSrcs.map((src) => /* @__PURE__ */ jsx32(
+          Box17,
+          {
+            component: "img",
+            alt: src === activeSrc ? alt : "",
+            "aria-hidden": src === activeSrc ? void 0 : true,
+            src,
+            fetchPriority: src === ghostSrc ? "high" : "auto",
+            sx: imageColumnFrameSx(src === activeSrc)
+          },
+          src
+        ))
+      ] }) })
+    ] });
+  }
+);
+FeatureFlowImageColumn.displayName = "FeatureFlowImageColumn";
+
+// src/components/section/feature-flow/item-detail/feature-flow-item-detail.tsx
+import React6 from "react";
+import { m as m6, AnimatePresence as AnimatePresence3, useReducedMotion as useReducedMotion4 } from "framer-motion";
+import Box20 from "@mui/material/Box";
+import Grid3 from "@mui/material/Grid";
+import Stack7 from "@mui/material/Stack";
+import Container3 from "@mui/material/Container";
+import Typography11 from "@mui/material/Typography";
+
+// src/components/material/data-display/icon/tech-strip/tech-icon-strip.tsx
+import Box18 from "@mui/material/Box";
+import Typography9 from "@mui/material/Typography";
+
+// src/components/material/data-display/icon/tech-strip/tech-icon-strip.const.ts
+var TECH_ICON_STRIP_ICON_SIZE = 32;
+var TECH_ICON_STRIP_LABEL_FONT_SIZE = "0.75rem";
+
+// src/components/material/data-display/icon/tech-strip/tech-icon-strip.styles.ts
+var stripRootSx = {
+  display: "flex",
+  flexDirection: "column"
+};
+var titleSx = {
+  display: "block",
+  mb: 2,
+  color: "text.secondary",
+  letterSpacing: "0.08em",
+  textTransform: "uppercase"
+};
+var stripWrapperSx = (centered) => ({
+  display: "flex",
+  flexWrap: "wrap",
+  gap: 3,
+  justifyContent: centered ? "center" : "flex-start",
+  alignItems: "flex-start"
+});
+var itemSx = {
+  display: "flex",
+  flexDirection: "column",
+  alignItems: "center",
+  gap: 0.5,
+  minWidth: 56
+};
+var iconSlotSx = {
+  display: "flex",
+  alignItems: "center",
+  justifyContent: "center",
+  "& svg, & img": {
+    width: TECH_ICON_STRIP_ICON_SIZE,
+    height: TECH_ICON_STRIP_ICON_SIZE
+  }
+};
+
+// src/components/material/data-display/icon/tech-strip/tech-icon-strip.tsx
+import { jsx as jsx33, jsxs as jsxs16 } from "react/jsx-runtime";
+function TechIconStrip({
+  items,
+  heading,
+  centeredWrap = false,
+  sx,
+  ...other
+}) {
+  return /* @__PURE__ */ jsxs16(Box18, { sx: [stripRootSx, ...Array.isArray(sx) ? sx : [sx]], ...other, children: [
+    heading && /* @__PURE__ */ jsx33(Typography9, { component: "span", sx: titleSx, variant: "overline", children: heading }),
+    /* @__PURE__ */ jsx33(Box18, { sx: stripWrapperSx(centeredWrap), children: items.map((item) => /* @__PURE__ */ jsxs16(Box18, { sx: itemSx, children: [
+      /* @__PURE__ */ jsx33(Box18, { "aria-hidden": true, sx: iconSlotSx, children: item.icon }),
+      /* @__PURE__ */ jsx33(Typography9, { sx: { fontSize: TECH_ICON_STRIP_LABEL_FONT_SIZE }, variant: "caption", children: item.label })
+    ] }, item.label)) })
+  ] });
+}
+
+// src/components/section/feature-flow/highlight-carousel/feature-flow-highlight-carousel.tsx
+import React5, { useState as useState5 } from "react";
+import { m as m5, AnimatePresence as AnimatePresence2, useReducedMotion as useReducedMotion3 } from "framer-motion";
+import Box19 from "@mui/material/Box";
+import Link from "@mui/material/Link";
+import IconButton3 from "@mui/material/IconButton";
+import Typography10 from "@mui/material/Typography";
+
+// src/components/section/feature-flow/highlight-carousel/feature-flow-highlight-carousel.animations.ts
+var HIGHLIGHT_TEXT_SLIDE_DISTANCE = 24;
+var highlightTextVariants = (distance) => ({
+  enter: (step) => ({
+    opacity: 0,
+    x: step >= 0 ? distance : -distance
+  }),
+  center: { opacity: 1, x: 0 },
+  exit: (step) => ({
+    opacity: 0,
+    x: step >= 0 ? -distance : distance
+  })
+});
+
+// src/components/section/feature-flow/highlight-carousel/feature-flow-highlight-carousel.tsx
 import { jsx as jsx34, jsxs as jsxs17 } from "react/jsx-runtime";
-var FeatureFlowSection = React6.forwardRef(
+var FeatureFlowHighlightCarousel = React5.forwardRef(function FeatureFlowHighlightCarousel2({ cards, sx, ...other }, ref) {
+  const [selectedIndex, setSelectedIndex] = useState5(0);
+  const [step, setStep] = useState5(1);
+  const reducedMotion = useReducedMotion3();
+  if (!cards.length) return null;
+  const goTo = (index, direction) => {
+    setStep(direction);
+    setSelectedIndex((index + cards.length) % cards.length);
+  };
+  const selectedCard = cards[selectedIndex];
+  const textVariants = highlightTextVariants(reducedMotion ? 0 : HIGHLIGHT_TEXT_SLIDE_DISTANCE);
+  return /* @__PURE__ */ jsxs17(Box19, { ref, sx: [highlightCarouselRootSx, ...Array.isArray(sx) ? sx : [sx]], ...other, children: [
+    cards.map((card, index) => /* @__PURE__ */ jsx34(
+      Box19,
+      {
+        component: "img",
+        alt: "",
+        "aria-hidden": "true",
+        src: card.media ?? "",
+        loading: index === selectedIndex ? "eager" : "lazy",
+        sx: highlightSlideImageSx(index === selectedIndex)
+      },
+      card.title
+    )),
+    /* @__PURE__ */ jsx34(Box19, { "aria-hidden": true, sx: highlightScrimSx }),
+    /* @__PURE__ */ jsx34(Box19, { sx: highlightTextSlotSx, children: /* @__PURE__ */ jsx34(AnimatePresence2, { mode: "wait", custom: step, children: /* @__PURE__ */ jsxs17(
+      m5.div,
+      {
+        custom: step,
+        variants: textVariants,
+        initial: "enter",
+        animate: "center",
+        exit: "exit",
+        transition: { duration: 0.28, ease: "easeOut" },
+        children: [
+          /* @__PURE__ */ jsx34(Typography10, { variant: "h4", sx: { mb: 1 }, children: selectedCard?.title }),
+          /* @__PURE__ */ jsx34(Typography10, { variant: "body1", sx: highlightDetailTextSx, children: selectedCard?.description }),
+          selectedCard?.href && /* @__PURE__ */ jsx34(
+            Link,
+            {
+              href: selectedCard.href,
+              variant: "body2",
+              sx: { mt: 1, display: "inline-block", color: "inherit" },
+              children: "Learn more"
+            }
+          )
+        ]
+      },
+      selectedIndex
+    ) }) }),
+    cards.length > 1 && /* @__PURE__ */ jsxs17(Box19, { sx: highlightControlsRowSx, children: [
+      /* @__PURE__ */ jsxs17(Typography10, { variant: "caption", sx: highlightIndexLabelSx, children: [
+        selectedIndex + 1,
+        "/",
+        cards.length
+      ] }),
+      /* @__PURE__ */ jsx34(
+        IconButton3,
+        {
+          "aria-label": "Previous highlight",
+          size: "small",
+          onClick: () => goTo(selectedIndex - 1, -1),
+          sx: highlightArrowButtonSx,
+          children: /* @__PURE__ */ jsx34(GiselleIcon, { icon: "solar:alt-arrow-left-bold", width: 18, "aria-hidden": "true" })
+        }
+      ),
+      /* @__PURE__ */ jsx34(
+        IconButton3,
+        {
+          "aria-label": "Next highlight",
+          size: "small",
+          onClick: () => goTo(selectedIndex + 1, 1),
+          sx: highlightArrowButtonSx,
+          children: /* @__PURE__ */ jsx34(GiselleIcon, { icon: "solar:alt-arrow-right-bold", width: 18, "aria-hidden": "true" })
+        }
+      )
+    ] })
+  ] });
+});
+FeatureFlowHighlightCarousel.displayName = "FeatureFlowHighlightCarousel";
+
+// src/components/section/feature-flow/item-detail/feature-flow-item-detail.styles.ts
+var itemDetailHeaderSlotSx = {
+  alignItems: "center"
+};
+var itemDetailHeaderIconSx = {
+  color: "primary.main"
+};
+var itemDetailMetricsGridSx = (metricsCount) => ({
+  display: "grid",
+  gap: 2,
+  gridTemplateColumns: {
+    xs: "repeat(1, 1fr)",
+    sm: `repeat(${Math.min(metricsCount, 3)}, 1fr)`
+  }
+});
+var itemDetailLongDescriptionSx = {
+  color: "text.secondary",
+  lineHeight: 1.8
+};
+
+// src/components/section/feature-flow/item-detail/feature-flow-item-detail.tsx
+import { jsx as jsx35, jsxs as jsxs18 } from "react/jsx-runtime";
+var FeatureFlowItemDetail = React6.forwardRef(
+  function FeatureFlowItemDetail2({ item, onNodeRef, sx, ...other }, ref) {
+    const reducedMotion = useReducedMotion4();
+    const slideDistance = reducedMotion ? 0 : 8;
+    return /* @__PURE__ */ jsx35(m6.div, { ref, layout: true, transition: DETAIL_PANEL_LAYOUT_TRANSITION, children: /* @__PURE__ */ jsx35(AnimatePresence3, { mode: "wait", children: item && /* @__PURE__ */ jsx35(
+      m6.div,
+      {
+        initial: { opacity: 0, y: slideDistance },
+        animate: { opacity: 1, y: 0 },
+        exit: { opacity: 0, y: -slideDistance },
+        transition: { duration: 0.22, ease: "easeOut" },
+        children: /* @__PURE__ */ jsx35(
+          Box20,
+          {
+            ref: (node) => onNodeRef?.(item.id, node),
+            sx: [detailPanelSx, ...Array.isArray(sx) ? sx : [sx]],
+            ...other,
+            children: /* @__PURE__ */ jsx35(Container3, { children: /* @__PURE__ */ jsxs18(Grid3, { container: true, spacing: { xs: 4, md: 8 }, children: [
+              /* @__PURE__ */ jsx35(Grid3, { size: { xs: 12, md: 6 }, children: /* @__PURE__ */ jsxs18(Stack7, { spacing: 4, children: [
+                /* @__PURE__ */ jsxs18(Stack7, { direction: "row", spacing: 2, sx: itemDetailHeaderSlotSx, children: [
+                  /* @__PURE__ */ jsx35(
+                    GiselleIcon,
+                    {
+                      icon: item.icon,
+                      width: 44,
+                      sx: itemDetailHeaderIconSx,
+                      "aria-hidden": "true"
+                    }
+                  ),
+                  /* @__PURE__ */ jsx35(Typography11, { variant: "h3", children: item.title })
+                ] }),
+                item.metrics?.length ? /* @__PURE__ */ jsx35(Box20, { sx: itemDetailMetricsGridSx(item.metrics.length), children: item.metrics.map(({ value, label, sublabel, icon }) => /* @__PURE__ */ jsx35(
+                  MetricCard,
+                  {
+                    value,
+                    label,
+                    sublabel,
+                    icon: icon ? /* @__PURE__ */ jsx35(GiselleIcon, { icon, width: 36, "aria-hidden": "true" }) : void 0,
+                    color: "primary",
+                    decoration: /* @__PURE__ */ jsx35(MetricCardDecoration, { color: "primary" })
+                  },
+                  label
+                )) }) : null,
+                isRichLongDescription(item) ? item.longDescription : /* @__PURE__ */ jsx35(Typography11, { variant: "body1", sx: itemDetailLongDescriptionSx, children: item.longDescription ?? item.description }),
+                item.technologies?.length ? /* @__PURE__ */ jsx35(
+                  TechIconStrip,
+                  {
+                    heading: "Technologies",
+                    centeredWrap: false,
+                    items: item.technologies.map((tech) => ({
+                      label: tech.name,
+                      icon: /* @__PURE__ */ jsx35(GiselleIcon, { icon: tech.icon, width: 32, "aria-hidden": "true" })
+                    }))
+                  }
+                ) : null
+              ] }) }),
+              (item.highlightCards ?? []).length > 0 && /* @__PURE__ */ jsx35(Grid3, { size: { xs: 12, md: 6 }, children: /* @__PURE__ */ jsx35(FeatureFlowHighlightCarousel, { cards: item.highlightCards ?? [] }) })
+            ] }) })
+          }
+        )
+      },
+      item.id
+    ) }) });
+  }
+);
+FeatureFlowItemDetail.displayName = "FeatureFlowItemDetail";
+
+// src/components/section/feature-flow/feature-flow-section.tsx
+import { Fragment as Fragment3, jsx as jsx36, jsxs as jsxs19 } from "react/jsx-runtime";
+var FeatureFlowSection = React7.forwardRef(
   function FeatureFlowSection2({
     caption,
     title,
@@ -2500,6 +2757,8 @@ var FeatureFlowSection = React6.forwardRef(
     columnSpacing = { xs: 0, md: 8 },
     descriptionGridSize,
     imageGridSize,
+    decoration = true,
+    renderRightPanel,
     sx,
     ...other
   }, ref) {
@@ -2587,6 +2846,10 @@ var FeatureFlowSection = React6.forwardRef(
       setActiveItemIndex(index);
       setHoverPhase(0);
     };
+    const handleLeave = () => {
+      setActiveItemIndex(selectedItemIndex);
+      setHoverPhase(0);
+    };
     const handleItemClick = (item, index) => {
       if (!hasExpansionData(item)) return;
       setActiveItemIndex(index);
@@ -2598,7 +2861,7 @@ var FeatureFlowSection = React6.forwardRef(
       () => items.filter(hasExpansionData).map((item) => ({
         id: item.id,
         label: item.title,
-        icon: /* @__PURE__ */ jsx34(GiselleIcon, { icon: item.icon, width: 22, "aria-hidden": "true" })
+        icon: /* @__PURE__ */ jsx36(GiselleIcon, { icon: item.icon, width: 22, "aria-hidden": "true" })
       })),
       [items]
     );
@@ -2639,97 +2902,32 @@ var FeatureFlowSection = React6.forwardRef(
         if (rafId !== void 0) globalThis.cancelAnimationFrame(rafId);
       };
     }, [expandedItemId]);
-    return /* @__PURE__ */ jsxs17(
-      Box21,
+    let rightPanel;
+    if (renderRightPanel) {
+      rightPanel = activeItem ? renderRightPanel(activeItem, activeItem.id === expandedItemId) : null;
+    } else {
+      rightPanel = /* @__PURE__ */ jsx36(
+        FeatureFlowImageColumn,
+        {
+          ref: imageColumnRef,
+          activeSrc,
+          ghostSrc: initiallyVisibleSrc ?? image.src,
+          allSrcs: allItemImageSrcs,
+          alt: image.alt,
+          revealStyle: imageRevealStyle,
+          sx: image.sx
+        }
+      );
+    }
+    return /* @__PURE__ */ jsx36(
+      BasicSection,
       {
         ref,
-        component: "section",
-        sx: [featureFlowRootSx, ...Array.isArray(sx) ? sx : [sx]],
-        ...other,
-        children: [
-          /* @__PURE__ */ jsx34(MotionViewport, { children: /* @__PURE__ */ jsx34(Container4, { sx: { position: "relative" }, children: /* @__PURE__ */ jsxs17(
-            Grid4,
-            {
-              container: true,
-              columnSpacing,
-              rowSpacing: { xs: 5, md: 0 },
-              sx: { position: "relative" },
-              children: [
-                /* @__PURE__ */ jsxs17(
-                  Grid4,
-                  {
-                    size: resolvedDescriptionGridSize,
-                    sx: { order: { xs: 1, md: isLeft ? 1 : 2 }, pl: { md: isLeft ? 0 : 4 } },
-                    children: [
-                      title && /* @__PURE__ */ jsx34(
-                        SectionTitle,
-                        {
-                          caption,
-                          title,
-                          txtGradient,
-                          description,
-                          sx: { mb: { xs: 5, md: 8 }, textAlign: { xs: "center", md: "left" } }
-                        }
-                      ),
-                      /* @__PURE__ */ jsx34(
-                        Stack7,
-                        {
-                          spacing: 1.5,
-                          sx: { maxWidth: { sm: 560, md: 400 }, mx: { xs: "auto", md: "unset" } },
-                          onMouseLeave: () => {
-                            setActiveItemIndex(selectedItemIndex);
-                            setHoverPhase(0);
-                          },
-                          onBlur: (event) => {
-                            if (event.relatedTarget instanceof Node && event.currentTarget.contains(event.relatedTarget)) {
-                              return;
-                            }
-                            setActiveItemIndex(selectedItemIndex);
-                            setHoverPhase(0);
-                          },
-                          children: items.map((item, index) => {
-                            const interactive = hasExpansionData(item);
-                            const isSelected = index === selectedItemIndex;
-                            const isActive = index === activeItemIndex;
-                            const isExpanded = item.id === expandedItemId;
-                            return /* @__PURE__ */ jsx34(
-                              FeatureFlowItemRow,
-                              {
-                                icon: item.icon,
-                                title: item.title,
-                                description: item.description,
-                                interactive,
-                                isSelected,
-                                isActive,
-                                isExpanded,
-                                onHover: () => handleItemHover(index),
-                                onFocus: () => handleItemHover(index),
-                                onSelect: () => handleItemClick(item, index)
-                              },
-                              item.id
-                            );
-                          })
-                        }
-                      )
-                    ]
-                  }
-                ),
-                /* @__PURE__ */ jsx34(Grid4, { size: resolvedImageGridSize, sx: { order: { xs: 2, md: isLeft ? 2 : 1 } }, children: /* @__PURE__ */ jsx34(
-                  FeatureFlowImageColumn,
-                  {
-                    ref: imageColumnRef,
-                    activeSrc,
-                    ghostSrc: initiallyVisibleSrc ?? image.src,
-                    allSrcs: allItemImageSrcs,
-                    alt: image.alt,
-                    revealStyle: imageRevealStyle,
-                    sx: image.sx
-                  }
-                ) })
-              ]
-            }
-          ) }) }),
-          pendingScrollItemId && /* @__PURE__ */ jsx34(
+        decoration,
+        containerSx: { position: "relative" },
+        containerPy: 0,
+        unconstrainedChildren: /* @__PURE__ */ jsxs19(Fragment3, { children: [
+          pendingScrollItemId && /* @__PURE__ */ jsx36(
             LinearProgress,
             {
               "aria-label": "Loading item detail panel",
@@ -2737,30 +2935,20 @@ var FeatureFlowSection = React6.forwardRef(
               "aria-busy": "true"
             }
           ),
-          /* @__PURE__ */ jsx34(m6.div, { layout: true, transition: DETAIL_PANEL_LAYOUT_TRANSITION, children: /* @__PURE__ */ jsx34(AnimatePresence3, { mode: "wait", children: expandedItem && /* @__PURE__ */ jsx34(
-            m6.div,
+          /* @__PURE__ */ jsx36(
+            FeatureFlowItemDetail,
             {
-              initial: { opacity: 0, y: 8 },
-              animate: { opacity: 1, y: 0 },
-              exit: { opacity: 0, y: -8 },
-              transition: { duration: 0.22, ease: "easeOut" },
-              children: /* @__PURE__ */ jsx34(
-                FeatureFlowItemDetail,
-                {
-                  item: expandedItem,
-                  ref: (node) => {
-                    if (node) {
-                      detailPanelNodesRef.current.set(expandedItem.id, node);
-                    } else {
-                      detailPanelNodesRef.current.delete(expandedItem.id);
-                    }
-                  }
+              item: expandedItem,
+              onNodeRef: (itemId, node) => {
+                if (node) {
+                  detailPanelNodesRef.current.set(itemId, node);
+                } else {
+                  detailPanelNodesRef.current.delete(itemId);
                 }
-              )
-            },
-            expandedItem.id
-          ) }) }),
-          /* @__PURE__ */ jsx34(
+              }
+            }
+          ),
+          /* @__PURE__ */ jsx36(
             FloatingSubNav,
             {
               sticky: true,
@@ -2769,7 +2957,54 @@ var FeatureFlowSection = React6.forwardRef(
               onSelect: handleSubNavSelect
             }
           )
-        ]
+        ] }),
+        sx: [featureFlowRootSx(Boolean(expandedItemId)), ...Array.isArray(sx) ? sx : [sx]],
+        ...other,
+        children: /* @__PURE__ */ jsx36(MotionViewport, { children: /* @__PURE__ */ jsxs19(
+          Grid4,
+          {
+            container: true,
+            columnSpacing,
+            rowSpacing: { xs: 5, md: 0 },
+            sx: (theme) => ({
+              position: "relative",
+              // Only when a detail panel is showing: without this, the last
+              // row's card sits flush against the detail panel's border —
+              // detailPanelSx's own py pushes its *content* down from that
+              // border, not the border away from what's above it.
+              pb: expandedItemId ? { xs: 5, md: 8 } : 0,
+              transition: theme.transitions.create("padding-bottom", {
+                duration: theme.transitions.duration.short
+              })
+            }),
+            children: [
+              /* @__PURE__ */ jsx36(
+                Grid4,
+                {
+                  size: resolvedDescriptionGridSize,
+                  sx: { order: { xs: 1, md: isLeft ? 1 : 2 }, pl: { md: isLeft ? 0 : 4 } },
+                  children: /* @__PURE__ */ jsx36(
+                    FeatureFlowDescriptionColumn,
+                    {
+                      caption,
+                      title,
+                      txtGradient,
+                      description,
+                      items,
+                      selectedItemIndex,
+                      activeItemIndex,
+                      expandedItemId,
+                      onItemHover: handleItemHover,
+                      onItemSelect: handleItemClick,
+                      onLeave: handleLeave
+                    }
+                  )
+                }
+              ),
+              /* @__PURE__ */ jsx36(Grid4, { size: resolvedImageGridSize, sx: { order: { xs: 2, md: isLeft ? 2 : 1 } }, children: rightPanel })
+            ]
+          }
+        ) })
       }
     );
   }
@@ -2795,7 +3030,7 @@ function resolveMaturityLabel(percent) {
 }
 
 // src/components/material/data-display/animated-gradient/animated-gradient-text.tsx
-import Box22 from "@mui/material/Box";
+import Box21 from "@mui/material/Box";
 
 // src/components/material/data-display/animated-gradient/animated-gradient-text.const.ts
 var ANIMATED_GRADIENT_DEFAULT_COLOR1 = "primary";
@@ -2819,7 +3054,7 @@ var gradientTextSx = (color1, color2, duration) => ({
 });
 
 // src/components/material/data-display/animated-gradient/animated-gradient-text.tsx
-import { jsx as jsx35 } from "react/jsx-runtime";
+import { jsx as jsx37 } from "react/jsx-runtime";
 function AnimatedGradientText({
   children,
   color1 = ANIMATED_GRADIENT_DEFAULT_COLOR1,
@@ -2829,8 +3064,8 @@ function AnimatedGradientText({
   sx,
   ...other
 }) {
-  return /* @__PURE__ */ jsx35(
-    Box22,
+  return /* @__PURE__ */ jsx37(
+    Box21,
     {
       component,
       sx: [gradientTextSx(color1, color2, duration), ...Array.isArray(sx) ? sx : [sx]],
@@ -2845,6 +3080,7 @@ export {
   TOGGLE_MIN_TOUCH_TARGET as ACCORDION_ICON_BUTTON_MIN_SIZE,
   Accordion,
   AnimatedGradientText,
+  BasicSection,
   DEFAULT_ICON_ACTIONS,
   FeatureFlowSection,
   GISELLE_PRIMARY_DARK_MAIN,

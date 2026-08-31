@@ -1847,6 +1847,88 @@ interface SectionContainerProps extends Omit<ContainerProps, 'maxWidth'> {
  */
 declare function SectionContainer({ children, maxWidth, py, sx, ...other }: SectionContainerProps): react.JSX.Element;
 
+/** Every decorative piece `BasicSection` knows how to render. */
+type DecorationKind = 'corner-plus' | 'corner-x' | 'border-line' | 'triangle-left' | 'triangle-down' | 'dot';
+/**
+ * One decorative element, positioned entirely via `sx` — real usage across
+ * the sections that inspired this component never shares fixed offsets (an
+ * inset corner mark here, a flush-to-the-edge one there), so a closed enum
+ * of preset positions can't cover it. `border-line` additionally takes
+ * `vertical` to pick its orientation, mirroring the original `FloatLine`'s
+ * own prop shape.
+ */
+type DecorationElement = {
+    kind: DecorationKind;
+    /** Only meaningful for `kind: 'border-line'`. @default false */
+    vertical?: boolean;
+    /** Positions and sizes this element. Required for anything beyond the default placement. */
+    sx?: SxProps<Theme>;
+};
+/**
+ * Props for `<BasicSection>`.
+ */
+interface BasicSectionProps extends Omit<BoxProps<'section'>, 'component'> {
+    /** Section content. */
+    children: React.ReactNode;
+    /**
+     * `true` renders the canonical frame (2 corner plus-marks, 3 border
+     * lines — the treatment every section used before this component
+     * existed). `false` renders none. Pass an array to render a fully custom
+     * set of decorative elements instead.
+     * @default true
+     */
+    decoration?: boolean | DecorationElement[];
+    /**
+     * `children` is always wrapped in a `SectionContainer` — that's the whole
+     * point: every section built on `BasicSection` gets the same content
+     * width and vertical rhythm for free, instead of each one hand-rolling
+     * its own `Container` (as every section did before this existed; see
+     * `SectionContainer`'s own README). These three props forward to it.
+     */
+    containerMaxWidth?: ContainerProps['maxWidth'];
+    /** @default SectionContainer's own default, `{ xs: 8, md: 12 }` */
+    containerPy?: SectionContainerProps['py'];
+    containerSx?: SxProps<Theme>;
+    /**
+     * Rendered as an additional sibling of the `SectionContainer`, inside
+     * `<section>` but outside the width-constrained container — for content
+     * that must not be nested inside another container (like a detail panel
+     * with its own internal `Container`, which would otherwise double up on
+     * horizontal padding) or that intentionally needs the full section width
+     * (like a sticky sub-nav).
+     */
+    unconstrainedChildren?: React.ReactNode;
+    /** MUI sx prop: forwarded to the root `<section>` element. */
+    sx?: SxProps<Theme>;
+}
+
+/**
+ * `BasicSection` — the canonical section wrapper: a consistent decorative
+ * frame (corner marks, border lines, and other subtle accents, configurable
+ * via `decoration`) around a `SectionContainer`, giving every section built
+ * on it the same content width and vertical rhythm for free. `decoration`:
+ * `true` (the default) renders the canonical frame every section used
+ * before this component existed; `false` renders none; an array of
+ * `DecorationElement`s renders a fully custom set — real usage across the
+ * sections this was extracted from never shares fixed offsets, so each
+ * element positions itself via its own `sx`.
+ *
+ * `SectionContainer` is not optional here — every section previously
+ * hand-rolled its own `Container` + padding (see `SectionContainer`'s own
+ * README), which is precisely the inconsistency this component exists to
+ * remove. Use `containerMaxWidth`/`containerPy`/`containerSx` for the rare
+ * section that needs different container behaviour, rather than reaching
+ * around `BasicSection` to add a second `Container` inside it.
+ *
+ * @example
+ * ```tsx
+ * <BasicSection>
+ *   <Typography variant="h2">Section heading</Typography>
+ * </BasicSection>
+ * ```
+ */
+declare const BasicSection: react__default.ForwardRefExoticComponent<Omit<BasicSectionProps, "ref"> & react__default.RefAttributes<HTMLElement>>;
+
 type HeroSlotProps = {
     heading?: ReactNode;
     text?: ReactNode;
@@ -1929,12 +2011,20 @@ interface FeatureFlowTechnology {
     name: string;
     icon: string;
 }
-/** One slide in an item's highlight-card carousel. */
+/**
+ * One slide in an item's highlight-card carousel. Deliberately generic
+ * (`title`/`description`, not e.g. `headline`/`detail`) — this shape is
+ * reused for any kind of documentation content, not just marketing
+ * highlights (see #200): a skill-flow's individual skills, for instance,
+ * are exactly a list of these.
+ */
 interface FeatureFlowHighlightCard {
-    headline: string;
-    detail: string;
+    title: string;
+    description: string;
     /** Slide background image. Falls back to a neutral placeholder when omitted. */
-    src?: string;
+    media?: string;
+    /** Optional link — e.g. to a full docs page for this card's subject. */
+    href?: string;
 }
 /** A single feature/expertise item rendered in the description column. */
 interface FeatureFlowItem {
@@ -1991,6 +2081,22 @@ interface FeatureFlowSectionProps extends Omit<BoxProps, 'children'> {
     descriptionGridSize?: FeatureFlowGridSize;
     /** @default derived from `layoutDirection` */
     imageGridSize?: FeatureFlowGridSize;
+    /**
+     * Renders the standard `BasicSection` decorative frame (corner marks,
+     * border lines) around the whole section.
+     * @default true
+     */
+    decoration?: boolean;
+    /**
+     * Overrides what renders in the image column: called with the currently
+     * previewed item (hover, focus, or last-selected) and whether that
+     * item's own detail panel is expanded. Defaults to the built-in
+     * `FeatureFlowImageColumn` (driven by `image`) when omitted — for
+     * example, a skills-documentation consumer could render a heading and
+     * short description here instead of an image, swapping to a fuller
+     * carousel-style view once expanded.
+     */
+    renderRightPanel?: (activeItem: FeatureFlowItem, isActiveExpanded: boolean) => ReactNode;
 }
 
 /**
@@ -2143,4 +2249,4 @@ interface TechIconStripProps extends Omit<BoxProps, 'children' | 'title'> {
  */
 declare function TechIconStrip({ items, heading, centeredWrap, sx, ...other }: TechIconStripProps): react.JSX.Element;
 
-export { TOGGLE_ICON_SIZE as ACCORDION_CHECK_ICON_SIZE, ACCORDION_DONE_MIN_TOUCH_TARGET, TOGGLE_MIN_TOUCH_TARGET as ACCORDION_ICON_BUTTON_MIN_SIZE, Accordion, type AccordionProps, AnimatedGradientText, type AnimatedGradientTextProps, type BaseSettingsState, DEFAULT_ICON_ACTIONS, type FeatureFlowGridSize, type FeatureFlowHighlightCard, type FeatureFlowImage, type FeatureFlowItem, type FeatureFlowMetric, FeatureFlowSection, type FeatureFlowSectionProps, type FeatureFlowTechnology, GISELLE_PRIMARY_DARK_MAIN, GISELLE_PRIMARY_MAIN, GISELLE_SECONDARY_MAIN, GiselleIcon, type GiselleIconData, type GiselleIconMap, type GiselleIconProps, type GiselleSettingsContextValue, GiselleSettingsProvider, type GiselleSettingsProviderProps, GiselleThemeAndSettingsProvider, type GiselleThemeAndSettingsProviderProps, GiselleThemeProvider, type GiselleThemeProviderProps, type HeroColorKey, HeroSection, type HeroSectionProps, type HeroSlotProps, IconActionBar, type IconActionBarProps, type IconActionItem, MetricCard, type MetricCardColor, MetricCardDecoration, type MetricCardDecorationProps, type MetricCardProps, type NestedChecklistState, type PaletteColorKey, type ProfileStat, ProfileSummaryCard, type ProfileSummaryCardProps, QuoteCard, type QuoteCardProps, STAT_CARD_SPARKLINE_OPTIONS, SectionCaption, SectionContainer, type SectionContainerProps, SectionTitle, type SectionTitleProps, SelectableCard, type SelectableCardProps, SelectableLabel, type SelectableLabelProps, type SetCookieOptions, type ShowcaseRowOrientation, StatCard, type StatCardColor, type StatCardItem, type StatCardProps, StatCardRow, type StatCardRowProps, type StatusColorKey, StatusLabel, type StatusLabelProps, type StatusLabelStatus, type StorageAdapter, TOGGLE_ICON_SIZE, TOGGLE_MIN_TOUCH_TARGET, type TechIconItem, TechIconStrip, type TechIconStripProps, ToggleIconButton, type ToggleIconButtonProps, TwoColumnShowcaseRow, type TwoColumnShowcaseRowProps, type TwoColumnShowcaseRowText, type UseLocalStorageReturn, channelAlpha, createIconRegistrar, getCookieValue, giselleTheme, giselleThemeOptions, hexToChannel, isDeepEqual, pxToRem, remToPx, resolveMaturityColor, resolveMaturityLabel, setCookieValue, useGiselleSettings, useLocalStorage, useNestedChecklist };
+export { TOGGLE_ICON_SIZE as ACCORDION_CHECK_ICON_SIZE, ACCORDION_DONE_MIN_TOUCH_TARGET, TOGGLE_MIN_TOUCH_TARGET as ACCORDION_ICON_BUTTON_MIN_SIZE, Accordion, type AccordionProps, AnimatedGradientText, type AnimatedGradientTextProps, type BaseSettingsState, BasicSection, type BasicSectionProps, DEFAULT_ICON_ACTIONS, type DecorationElement, type DecorationKind, type FeatureFlowGridSize, type FeatureFlowHighlightCard, type FeatureFlowImage, type FeatureFlowItem, type FeatureFlowMetric, FeatureFlowSection, type FeatureFlowSectionProps, type FeatureFlowTechnology, GISELLE_PRIMARY_DARK_MAIN, GISELLE_PRIMARY_MAIN, GISELLE_SECONDARY_MAIN, GiselleIcon, type GiselleIconData, type GiselleIconMap, type GiselleIconProps, type GiselleSettingsContextValue, GiselleSettingsProvider, type GiselleSettingsProviderProps, GiselleThemeAndSettingsProvider, type GiselleThemeAndSettingsProviderProps, GiselleThemeProvider, type GiselleThemeProviderProps, type HeroColorKey, HeroSection, type HeroSectionProps, type HeroSlotProps, IconActionBar, type IconActionBarProps, type IconActionItem, MetricCard, type MetricCardColor, MetricCardDecoration, type MetricCardDecorationProps, type MetricCardProps, type NestedChecklistState, type PaletteColorKey, type ProfileStat, ProfileSummaryCard, type ProfileSummaryCardProps, QuoteCard, type QuoteCardProps, STAT_CARD_SPARKLINE_OPTIONS, SectionCaption, SectionContainer, type SectionContainerProps, SectionTitle, type SectionTitleProps, SelectableCard, type SelectableCardProps, SelectableLabel, type SelectableLabelProps, type SetCookieOptions, type ShowcaseRowOrientation, StatCard, type StatCardColor, type StatCardItem, type StatCardProps, StatCardRow, type StatCardRowProps, type StatusColorKey, StatusLabel, type StatusLabelProps, type StatusLabelStatus, type StorageAdapter, TOGGLE_ICON_SIZE, TOGGLE_MIN_TOUCH_TARGET, type TechIconItem, TechIconStrip, type TechIconStripProps, ToggleIconButton, type ToggleIconButtonProps, TwoColumnShowcaseRow, type TwoColumnShowcaseRowProps, type TwoColumnShowcaseRowText, type UseLocalStorageReturn, channelAlpha, createIconRegistrar, getCookieValue, giselleTheme, giselleThemeOptions, hexToChannel, isDeepEqual, pxToRem, remToPx, resolveMaturityColor, resolveMaturityLabel, setCookieValue, useGiselleSettings, useLocalStorage, useNestedChecklist };
