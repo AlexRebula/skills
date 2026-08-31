@@ -1,0 +1,19 @@
+.list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.accordion {
+  background: transparent;
+}
+
+.description {
+  margin: 0;
+  color: var(--ifm-color-emphasis-700);
+}
+
+.learnMore {
+  display: inline-block;
+  margin-top: 0.5rem;
+}

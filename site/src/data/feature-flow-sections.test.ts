@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { buildFeatureFlowItems, FLOW_STAGE_DESCRIPTIONS } from './feature-flow-sections';
+import { buildFeatureFlowItems, FLOW_STAGE_DESCRIPTIONS, FLOW_STAGE_LONG_DESCRIPTIONS } from './feature-flow-sections';
 import { FLOW_STAGES } from '../../sidebars';
 import type { FlowSkill, FlowStageSection } from './flow-sections.types';
 
@@ -37,6 +37,12 @@ describe('buildFeatureFlowItems', () => {
     expect(item.description).toBe(FLOW_STAGE_DESCRIPTIONS['Shape it']);
   });
 
+  it("uses the stage's drafted longDescription, distinct from the short description", () => {
+    const [item] = buildFeatureFlowItems(SECTIONS, MEDIA_SRC);
+    expect(item.longDescription).toBe(FLOW_STAGE_LONG_DESCRIPTIONS['Shape it']);
+    expect(item.longDescription).not.toBe(item.description);
+  });
+
   it('flattens original then lineage skills into highlightCards, in that order, no group divider', () => {
     const [item] = buildFeatureFlowItems(SECTIONS, MEDIA_SRC);
     expect(item.highlightCards).toEqual([
@@ -70,6 +76,10 @@ describe('buildFeatureFlowItems', () => {
     }));
     for (const item of buildFeatureFlowItems(realSections, MEDIA_SRC)) {
       expect(item.description, `missing FLOW_STAGE_DESCRIPTIONS entry for "${item.title}"`).not.toBe('');
+      expect(
+        item.longDescription,
+        `missing FLOW_STAGE_LONG_DESCRIPTIONS entry for "${item.title}"`,
+      ).toBeTruthy();
       expect(item.icon, `missing FLOW_STAGE_ICON_NAMES entry for "${item.title}"`).not.toContain('undefined');
     }
   });

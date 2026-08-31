@@ -9,6 +9,7 @@ import { CopyableCommand } from '../components/copyable-command';
 import { GitHubStars } from '../components/github-stars';
 import { LandingStatsSection } from '../components/landing-stats-section';
 import { FlowStageHoverPanel } from '../components/flow-stage-hover-panel';
+import { FlowSkillAccordionList } from '../components/flow-skill-accordion-list';
 import { PersonaFilterRow } from '../components/persona-filter-row';
 import { computeLandingStats } from '../data/landing-stats';
 import { buildFlowSections, filterFlowSections } from '../data/flow-sections';
@@ -133,6 +134,7 @@ export default function Home(): ReactNode {
           renderRightPanel={(activeItem, isActiveExpanded) => (
             <FlowStageHoverPanel item={activeItem} isExpanded={isActiveExpanded} />
           )}
+          renderHighlightPanel={(item) => <FlowSkillAccordionList item={item} />}
           // The right panel carries real, variable-length content here (a
           // per-skill list), not a single image - it needs more room than
           // the default 7/5 split gives an image column, and less of a gap
