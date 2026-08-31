@@ -25,13 +25,13 @@ const ITEM: FeatureFlowItem = {
 
 describe('FlowSkillAccordionList', () => {
   it('renders one accordion per highlight card, titled with a leading "/"', () => {
-    render(<FlowSkillAccordionList item={ITEM} />);
+    render(<FlowSkillAccordionList item={ITEM} skillSummaries={{}} />);
     expect(screen.getByText('/grilling')).toBeInTheDocument();
     expect(screen.getByText('/to-spec')).toBeInTheDocument();
   });
 
-  it("gives each accordion its skill's description and a link to its own doc page (the expand/collapse transition itself is giselle-mui Accordion's own tested concern, not re-tested here)", () => {
-    const { container } = render(<FlowSkillAccordionList item={ITEM} />);
+  it("falls back to the skill's own short description and links to its doc page when it has no doc-page summary (the expand/collapse transition itself is giselle-mui Accordion's own tested concern, not re-tested here)", () => {
+    const { container } = render(<FlowSkillAccordionList item={ITEM} skillSummaries={{}} />);
     expect(screen.getByText('Grill a plan or decision relentlessly.')).toBeInTheDocument();
     expect(container.querySelector('a[href="/thinking-tools/grilling"]')).toHaveTextContent(
       'Learn more'
@@ -40,13 +40,13 @@ describe('FlowSkillAccordionList', () => {
 
   it('renders nothing when the item has no highlightCards', () => {
     const { container } = render(
-      <FlowSkillAccordionList item={{ ...ITEM, highlightCards: undefined }} />
+      <FlowSkillAccordionList item={{ ...ITEM, highlightCards: undefined }} skillSummaries={{}} />
     );
     expect(container.querySelectorAll('[class*="accordion"]')).toHaveLength(0);
   });
 
   it('only expands one accordion at a time - opening a second closes the first', () => {
-    render(<FlowSkillAccordionList item={ITEM} />);
+    render(<FlowSkillAccordionList item={ITEM} skillSummaries={{}} />);
     const grillingButton = screen.getByRole('button', { name: '/grilling' });
     const toSpecButton = screen.getByRole('button', { name: '/to-spec' });
 
@@ -59,20 +59,25 @@ describe('FlowSkillAccordionList', () => {
     expect(toSpecButton).toHaveAttribute('aria-expanded', 'true');
   });
 
-  it('renders a multi-paragraph description as separate paragraphs, each through InlineMarkdown', () => {
+  it("uses the skill's own doc-page summary as separate paragraphs, each through InlineMarkdown, when one is provided", () => {
     const item: FeatureFlowItem = {
       ...ITEM,
       highlightCards: [
         {
           title: 'grilling',
-          description: 'First **bold** paragraph.\n\nSecond paragraph with `code`.',
+          description: 'Grill a plan or decision relentlessly.',
           href: '/thinking-tools/grilling',
         },
       ],
     };
-    render(<FlowSkillAccordionList item={item} />);
+    const skillSummaries = {
+      'thinking-tools/grilling': ['First **bold** paragraph.', 'Second paragraph with `code`.'],
+    };
+    render(<FlowSkillAccordionList item={item} skillSummaries={skillSummaries} />);
 
     expect(screen.getByText('bold', { selector: 'strong' })).toBeInTheDocument();
     expect(screen.getByText('code', { selector: 'code' })).toBeInTheDocument();
+    // the short description never renders once a doc-page summary exists
+    expect(screen.queryByText('Grill a plan or decision relentlessly.')).not.toBeInTheDocument();
   });
 });

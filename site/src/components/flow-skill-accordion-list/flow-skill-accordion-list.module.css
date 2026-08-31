@@ -24,6 +24,12 @@
 .description {
   margin: 0;
   color: var(--ifm-color-emphasis-700);
+  line-height: 1.6;
+}
+
+/* Gap between paragraphs only - margin: 0 above keeps the first flush with the accordion top and the last flush with "Learn more" below. */
+.description + .description {
+  margin-top: 0.75rem;
 }
 
 .learnMore {

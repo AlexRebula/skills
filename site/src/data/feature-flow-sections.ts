@@ -1,10 +1,6 @@
 import '../data/register-solar-icons';
 import type { FeatureFlowHighlightCard, FeatureFlowItem } from '@littlebranches/giselle-mui';
 import type { FlowSkill, FlowStageSection } from './flow-sections.types';
-import realSkillSummaries from './skill-summaries.json';
-
-/** "category/name" -> that skill's own "## What it does" paragraphs (scripts/generate-skill-summaries.ts). */
-type SkillSummaries = Record<string, readonly string[]>;
 
 /**
  * One-line blurb per flow stage, shown in the hovered row's right-panel
@@ -102,24 +98,18 @@ function slugify(label: string): string {
  * real (if generic) dark image behind the text restores contrast
  * independently of that scrim bug.
  *
- * `description` is the skill's own "## What it does" paragraphs (joined by
- * blank lines - `FlowSkillAccordionList` splits back on those to render
- * each through `InlineMarkdown`), not the one-line landing-page blurb -
- * this field is only ever read by this site's own `renderHighlightPanel`,
- * never by giselle-mui's default carousel, so repurposing it for something
- * longer doesn't affect any other consumer. Falls back to the one-liner if
- * a skill's docs page has no matching entry (should not happen for a real
- * skill - `scripts/generate-skill-summaries.ts` fails the build otherwise).
+ * `description` stays the skill's short one-line landing-page blurb -
+ * this is also what `FlowStageHoverPanel` (`renderRightPanel`) shows next
+ * to each skill as soon as its stage is active, so it has to stay short.
+ * `FlowSkillAccordionList` (`renderHighlightPanel`) sources its own, longer
+ * per-skill deep-dive independently (`scripts/generate-skill-summaries.ts`,
+ * looked up there by this card's own `href`), rather than overloading this
+ * field with two different lengths for two different consumers.
  */
-function toHighlightCard(
-  skill: FlowSkill,
-  skillCardMediaSrc: string,
-  skillSummaries: SkillSummaries
-): FeatureFlowHighlightCard {
-  const summary = skillSummaries[`${skill.category}/${skill.name}`];
+function toHighlightCard(skill: FlowSkill, skillCardMediaSrc: string): FeatureFlowHighlightCard {
   return {
     title: skill.name,
-    description: summary?.length ? summary.join('\n\n') : skill.description,
+    description: skill.description,
     href: `/${skill.category}/${skill.name}`,
     media: skillCardMediaSrc,
   };
@@ -145,14 +135,11 @@ const FALLBACK_ICON_NAME = 'widget-4';
  * card's `href` already links to. `skillCardMediaSrc` is the base-url-
  * resolved backdrop image (`useBaseUrl` is a hook, so the caller resolves it
  * and passes the plain string in - this module has no component to call it
- * from). `skillSummaries` defaults to the real generated data; tests pass
- * their own small fixture instead, so they aren't coupled to real skills'
- * doc-page wording.
+ * from).
  */
 export function buildFeatureFlowItems(
   flowSections: readonly FlowStageSection[],
-  skillCardMediaSrc: string,
-  skillSummaries: SkillSummaries = realSkillSummaries
+  skillCardMediaSrc: string
 ): FeatureFlowItem[] {
   return flowSections.map((section) => ({
     id: slugify(section.label),
@@ -161,7 +148,7 @@ export function buildFeatureFlowItems(
     description: FLOW_STAGE_DESCRIPTIONS[section.label] ?? '',
     longDescription: FLOW_STAGE_LONG_DESCRIPTIONS[section.label],
     highlightCards: [...section.original, ...section.lineage].map((skill) =>
-      toHighlightCard(skill, skillCardMediaSrc, skillSummaries)
+      toHighlightCard(skill, skillCardMediaSrc)
     ),
   }));
 }
