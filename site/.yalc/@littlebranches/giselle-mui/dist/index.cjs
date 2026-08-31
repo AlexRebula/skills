@@ -253,8 +253,6 @@ var GISELLE_PRIMARY_MAIN = "#2E7D32";
 var GISELLE_PRIMARY_DARK_MAIN = "#76C442";
 var GISELLE_SECONDARY_MAIN = "#F5A623";
 var GREY_500_CHANNEL = hexToChannel(import_colors.grey[500]);
-var COMMON_BLACK_CHANNEL = hexToChannel("#000000");
-var COMMON_WHITE_CHANNEL = hexToChannel("#ffffff");
 var giselleThemeOptions = {
   // `extendTheme()` defaults an unset `colorSchemeSelector` to `'media'`, under
   // which MUI's `useColorScheme().setMode` — what `GiselleThemeProvider`'s
@@ -280,13 +278,7 @@ var giselleThemeOptions = {
         // shades, not custom channel tokens — cast, same as every existing
         // *read* of `theme.vars.palette.grey['500Channel']` elsewhere in this
         // codebase (e.g. `floating-sub-nav.styles.ts`).
-        grey: { "500Channel": GREY_500_CHANNEL },
-        // `common.black`/`white` are mode-independent (same value in both
-        // schemes) — see `COMMON_BLACK_CHANNEL`/`COMMON_WHITE_CHANNEL` above.
-        common: {
-          blackChannel: COMMON_BLACK_CHANNEL,
-          whiteChannel: COMMON_WHITE_CHANNEL
-        }
+        grey: { "500Channel": GREY_500_CHANNEL }
       }
     },
     dark: {
@@ -297,11 +289,7 @@ var giselleThemeOptions = {
         success: { main: "#66BB6A" },
         warning: { main: "#FFA726" },
         error: { main: "#F44336" },
-        grey: { "500Channel": GREY_500_CHANNEL },
-        common: {
-          blackChannel: COMMON_BLACK_CHANNEL,
-          whiteChannel: COMMON_WHITE_CHANNEL
-        }
+        grey: { "500Channel": GREY_500_CHANNEL }
       }
     }
   }
@@ -2042,8 +2030,8 @@ var DETAIL_PANEL_LAYOUT_TRANSITION = {
 
 // src/components/section/feature-flow/feature-flow-section.styles.ts
 var GREY_500_CHANNEL2 = "var(--mui-palette-grey-500Channel)";
-var COMMON_BLACK_CHANNEL2 = "var(--mui-palette-common-blackChannel)";
-var COMMON_WHITE_CHANNEL2 = "var(--mui-palette-common-whiteChannel)";
+var COMMON_BLACK_CHANNEL = "var(--mui-palette-common-blackChannel)";
+var COMMON_WHITE_CHANNEL = "var(--mui-palette-common-whiteChannel)";
 var HIGHLIGHT_CAROUSEL_HEIGHT = 570;
 var selectedHoverShadow = (channel, innerAlpha, outerAlpha) => `0 0 2px 0 ${channelAlpha(channel, innerAlpha)}, -8px 20px 40px -4px ${channelAlpha(channel, outerAlpha)}`;
 var selectedActiveShadow = (channel, innerAlpha, outerAlpha) => `0 0 1px 0 ${channelAlpha(channel, innerAlpha)}, -1px 2px 4px -1px ${channelAlpha(channel, outerAlpha)}`;
@@ -2063,7 +2051,7 @@ var imageColumnCardSx = (theme) => ({
   bgcolor: "background.default",
   boxShadow: `-40px 40px 80px 0px ${channelAlpha(GREY_500_CHANNEL2, 0.16)}`,
   ...theme.applyStyles("dark", {
-    boxShadow: `-40px 40px 80px 0px ${channelAlpha(COMMON_BLACK_CHANNEL2, 0.16)}`
+    boxShadow: `-40px 40px 80px 0px ${channelAlpha(COMMON_BLACK_CHANNEL, 0.16)}`
   })
 });
 var detailPanelSx = {
@@ -2126,12 +2114,12 @@ var featureFlowItemSx = ({ isSelected, isActive, isExpanded, expandable }) => (t
       boxShadow: selectedActiveShadow(GREY_500_CHANNEL2, 0.04, 0.06)
     },
     ...theme.applyStyles("dark", {
-      boxShadow: `-8px 8px 20px -4px ${channelAlpha(COMMON_BLACK_CHANNEL2, 0.12)}`,
+      boxShadow: `-8px 8px 20px -4px ${channelAlpha(COMMON_BLACK_CHANNEL, 0.12)}`,
       "&:hover": {
-        boxShadow: selectedHoverShadow(COMMON_BLACK_CHANNEL2, 0.12, 0.32)
+        boxShadow: selectedHoverShadow(COMMON_BLACK_CHANNEL, 0.12, 0.32)
       },
       "&:active": {
-        boxShadow: selectedActiveShadow(COMMON_BLACK_CHANNEL2, 0.04, 0.08)
+        boxShadow: selectedActiveShadow(COMMON_BLACK_CHANNEL, 0.04, 0.08)
       }
     })
   },
@@ -2196,7 +2184,7 @@ var highlightScrimSx = {
   position: "absolute",
   inset: 0,
   pointerEvents: "none",
-  background: `linear-gradient(to top, ${channelAlpha(COMMON_BLACK_CHANNEL2, 1)} 0%, ${channelAlpha(COMMON_BLACK_CHANNEL2, 0.5)} 40%, transparent 69%)`
+  background: `linear-gradient(to top, ${channelAlpha(COMMON_BLACK_CHANNEL, 1)} 0%, ${channelAlpha(COMMON_BLACK_CHANNEL, 0.5)} 40%, transparent 69%)`
 };
 var highlightTextSlotSx = {
   position: "relative",
@@ -2217,7 +2205,7 @@ var highlightControlsRowSx = {
   gap: 1
 };
 var highlightDetailTextSx = {
-  color: channelAlpha(COMMON_WHITE_CHANNEL2, 0.9),
+  color: channelAlpha(COMMON_WHITE_CHANNEL, 0.9),
   lineHeight: 1.7
 };
 var highlightIndexLabelSx = {
@@ -2227,7 +2215,7 @@ var highlightIndexLabelSx = {
 };
 var highlightArrowButtonSx = {
   color: "common.white",
-  bgcolor: channelAlpha(COMMON_WHITE_CHANNEL2, 0.12)
+  bgcolor: channelAlpha(COMMON_WHITE_CHANNEL, 0.12)
 };
 
 // src/components/section/feature-flow/feature-flow-section.utils.ts
@@ -2773,7 +2761,7 @@ var itemDetailLongDescriptionSx = {
 // src/components/section/feature-flow/item-detail/feature-flow-item-detail.tsx
 var import_jsx_runtime35 = require("react/jsx-runtime");
 var FeatureFlowItemDetail = import_react21.default.forwardRef(
-  function FeatureFlowItemDetail2({ item, onNodeRef, sx, ...other }, ref) {
+  function FeatureFlowItemDetail2({ item, onNodeRef, renderHighlightPanel, sx, ...other }, ref) {
     const reducedMotion = (0, import_framer_motion8.useReducedMotion)();
     const slideDistance = reducedMotion ? 0 : 8;
     return /* @__PURE__ */ (0, import_jsx_runtime35.jsx)(import_framer_motion8.m.div, { ref, layout: true, transition: DETAIL_PANEL_LAYOUT_TRANSITION, children: /* @__PURE__ */ (0, import_jsx_runtime35.jsx)(import_framer_motion8.AnimatePresence, { mode: "wait", children: item && /* @__PURE__ */ (0, import_jsx_runtime35.jsx)(
@@ -2828,7 +2816,7 @@ var FeatureFlowItemDetail = import_react21.default.forwardRef(
                   }
                 ) : null
               ] }) }),
-              (item.highlightCards ?? []).length > 0 && /* @__PURE__ */ (0, import_jsx_runtime35.jsx)(import_Grid3.default, { size: { xs: 12, md: 6 }, children: /* @__PURE__ */ (0, import_jsx_runtime35.jsx)(FeatureFlowHighlightCarousel, { cards: item.highlightCards ?? [] }) })
+              renderHighlightPanel ? /* @__PURE__ */ (0, import_jsx_runtime35.jsx)(import_Grid3.default, { size: { xs: 12, md: 6 }, children: renderHighlightPanel(item) }) : (item.highlightCards ?? []).length > 0 && /* @__PURE__ */ (0, import_jsx_runtime35.jsx)(import_Grid3.default, { size: { xs: 12, md: 6 }, children: /* @__PURE__ */ (0, import_jsx_runtime35.jsx)(FeatureFlowHighlightCarousel, { cards: item.highlightCards ?? [] }) })
             ] }) })
           }
         )
@@ -2855,6 +2843,7 @@ var FeatureFlowSection = import_react22.default.forwardRef(
     imageGridSize,
     decoration = true,
     renderRightPanel,
+    renderHighlightPanel,
     sx,
     ...other
   }, ref) {
@@ -3041,7 +3030,8 @@ var FeatureFlowSection = import_react22.default.forwardRef(
                 } else {
                   detailPanelNodesRef.current.delete(itemId);
                 }
-              }
+              },
+              renderHighlightPanel
             }
           ),
           /* @__PURE__ */ (0, import_jsx_runtime36.jsx)(

@@ -2097,6 +2097,16 @@ interface FeatureFlowSectionProps extends Omit<BoxProps, 'children'> {
      * carousel-style view once expanded.
      */
     renderRightPanel?: (activeItem: FeatureFlowItem, isActiveExpanded: boolean) => ReactNode;
+    /**
+     * Overrides what renders in the expanded detail panel's right column:
+     * called with the currently expanded item. Defaults to the built-in
+     * `FeatureFlowHighlightCarousel` (gated on `item.highlightCards` being
+     * non-empty) when omitted — e.g. a documentation consumer could render an
+     * `Accordion` per highlight card instead of a one-at-a-time carousel.
+     * Always called when provided, regardless of `item.highlightCards` — the
+     * consumer decides what "no data" looks like, same as `renderRightPanel`.
+     */
+    renderHighlightPanel?: (item: FeatureFlowItem) => ReactNode;
 }
 
 /**
