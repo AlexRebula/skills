@@ -14,10 +14,9 @@ import styles from './persona-filter-row.module.css';
  *
  * Scoped in its own `GiselleThemeProvider` rather than depending on the
  * site-wide one mounted in `src/theme/Root.tsx`, matching the pattern
- * `LandingStatsSection` and `SkillTimeline` already established for a
- * giselle-mui-consuming leaf component: it keeps this component mountable
- * (and testable) on its own, without requiring every consumer to know it
- * needs a theme ancestor.
+ * `LandingStatsSection` already established for a giselle-mui-consuming leaf
+ * component: it keeps this component mountable (and testable) on its own,
+ * without requiring every consumer to know it needs a theme ancestor.
  */
 export function PersonaFilterRow({ activePersonas, onTogglePersona }: PersonaFilterRowProps): ReactNode {
   return (

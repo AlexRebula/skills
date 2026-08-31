@@ -1,0 +1,20 @@
+.panel {
+  padding: 2rem;
+}
+
+.title {
+  margin: 0 0 0.75rem;
+}
+
+.description {
+  color: var(--ifm-color-emphasis-700);
+  margin: 0;
+}
+
+.hint {
+  margin: 1.5rem 0 0;
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--ifm-color-emphasis-500);
+}

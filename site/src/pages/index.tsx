@@ -2,14 +2,17 @@ import React, { useMemo, useState, type ReactNode } from 'react';
 import Layout from '@theme/Layout';
 import Heading from '@theme/Heading';
 import Link from '@docusaurus/Link';
+import useBaseUrl from '@docusaurus/useBaseUrl';
+import { FeatureFlowSection } from '@littlebranches/giselle-mui';
 
 import { CopyableCommand } from '../components/copyable-command';
 import { GitHubStars } from '../components/github-stars';
 import { LandingStatsSection } from '../components/landing-stats-section';
-import { FlowStageSectionView } from '../components/flow-stage-section';
+import { FlowStageHoverPanel } from '../components/flow-stage-hover-panel';
 import { PersonaFilterRow } from '../components/persona-filter-row';
 import { computeLandingStats } from '../data/landing-stats';
 import { buildFlowSections, filterFlowSections } from '../data/flow-sections';
+import { buildFeatureFlowItems } from '../data/feature-flow-sections';
 import skillsData from '../data/skills-landing.json';
 import provenanceData from '../data/provenance.json';
 import type { ProvenanceMap } from '../data/provenance.types';
@@ -63,6 +66,15 @@ export default function Home(): ReactNode {
     () => filterFlowSections(flowSections, activePersonas),
     [flowSections, activePersonas],
   );
+  const featureFlowItems = useMemo(
+    () => buildFeatureFlowItems(filteredFlowSections),
+    [filteredFlowSections],
+  );
+  // FeatureFlowSectionProps.image is required even with renderRightPanel
+  // supplying the visible content (giselle-mui#188's known limitation: the
+  // internal image-preload/prewarm hooks aren't undefined-safe yet) - this
+  // placeholder is never rendered, just needs to resolve.
+  const featureFlowImageSrc = useBaseUrl('/img/shape-square.svg');
 
   return (
     <Layout
@@ -101,9 +113,14 @@ export default function Home(): ReactNode {
 
           <LandingStatsSection items={landingStats} />
 
-          {filteredFlowSections.map((section, i) => (
-            <FlowStageSectionView key={section.label} section={section} index={i} />
-          ))}
+          <FeatureFlowSection
+            title="The Flow"
+            items={featureFlowItems}
+            image={{ src: featureFlowImageSrc, alt: '' }}
+            renderRightPanel={(activeItem, isActiveExpanded) => (
+              <FlowStageHoverPanel item={activeItem} isExpanded={isActiveExpanded} />
+            )}
+          />
 
           <p className={styles.overviewLink}>
             {OVERVIEW_LINK_PREFIX} <Link to="/overview">{OVERVIEW_LINK_TEXT}</Link> {OVERVIEW_LINK_DESCRIPTION}
