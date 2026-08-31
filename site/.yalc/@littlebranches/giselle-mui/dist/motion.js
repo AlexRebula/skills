@@ -1581,6 +1581,7 @@ function SectionTitle({
   slotProps,
   txtGradient,
   description,
+  titleComponent = "h2",
   ...other
 }) {
   return /* @__PURE__ */ jsxs4(
@@ -1597,7 +1598,7 @@ function SectionTitle({
       ...other,
       children: [
         caption && /* @__PURE__ */ jsx15(SectionCaption, { title: caption, sx: slotProps?.caption?.sx }),
-        /* @__PURE__ */ jsxs4(Typography, { component: "h2", variant: "h2", sx: slotProps?.title?.sx, children: [
+        /* @__PURE__ */ jsxs4(Typography, { component: titleComponent, variant: "h2", sx: slotProps?.title?.sx, children: [
           title,
           " ",
           txtGradient && /* @__PURE__ */ jsx15(Box14, { component: "span", sx: txtGradientSpanSx, children: txtGradient })

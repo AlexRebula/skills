@@ -1749,8 +1749,16 @@ type SectionTitleProps = Omit<BoxProps, 'title'> & {
      * `text.primary` to a 20% alpha of the same channel.
      */
     txtGradient?: string;
-    /** Main heading text. Rendered as an `h2`. */
+    /** Main heading text. */
     title: ReactNode;
+    /**
+     * Rendered tag for the heading. `h1` keeps this component's own `h2`
+     * visual sizing/weight - only the semantic tag changes, so a page's one
+     * real `<h1>` (e.g. its own hero) can still look identical to every other
+     * `SectionTitle` on the page.
+     * @default 'h2'
+     */
+    titleComponent?: 'h1' | 'h2';
     /**
      * Short overline label rendered above the heading.
      * Styled as `overline` typography in `text.disabled` colour.
@@ -1785,8 +1793,9 @@ declare function SectionCaption({ title, sx, ...other }: SectionCaptionProps): r
 
 /**
  * `SectionTitle` renders a stacked heading group: optional overline caption,
- * an `h2` heading with an optional gradient accent word, and an optional
- * description paragraph.
+ * a heading (`h2` by default, an `h1`-tagged option for a page's one real
+ * H1) with an optional gradient accent word, and an optional description
+ * paragraph.
  *
  * ## Usage
  *
@@ -1804,9 +1813,15 @@ declare function SectionCaption({ title, sx, ...other }: SectionCaptionProps): r
  * `text.primary → text.primary @20%` left-to-right gradient. In dark mode
  * `text.primary` resolves to near-white, giving a natural fade-out.
  *
+ * ## Page H1
+ * Pass `titleComponent="h1"` for the one section that should carry the
+ * page's actual `<h1>` (e.g. a homepage's hero) - the rendered tag changes,
+ * `variant="h2"` sizing does not, so it still looks identical to every
+ * other `SectionTitle` on the page.
+ *
  * **Quality status (13 May 2026):** DoD 20/20 · Best practices 13/13
  */
-declare function SectionTitle({ sx, title, caption, slotProps, txtGradient, description, ...other }: SectionTitleProps): react.JSX.Element;
+declare function SectionTitle({ sx, title, caption, slotProps, txtGradient, description, titleComponent, ...other }: SectionTitleProps): react.JSX.Element;
 
 interface SectionContainerProps extends Omit<ContainerProps, 'maxWidth'> {
     /**
