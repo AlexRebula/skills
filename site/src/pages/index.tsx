@@ -88,44 +88,49 @@ export default function Home(): ReactNode {
     >
       <div className={styles.page}>
         <div className={styles.column}>
-          <p className={styles.kicker}>
-            {totalSkills} skills · {categories.length} categories · MIT
-          </p>
-          <Heading as="h1" className={styles.heroTitle}>
-            {HERO_TITLE}
-          </Heading>
-          <p className={styles.heroSubtitle}>
-            {HERO_SUBTITLE_PREFIX}{' '}
-            <a href={UPSTREAM_REPO_URL} target="_blank" rel="noreferrer">
-              {UPSTREAM_REPO_LABEL}
-            </a>{' '}
-            {HERO_SUBTITLE_SUFFIX}
-          </p>
+          <div className={styles.heroGrid}>
+            <div className={styles.heroTextColumn}>
+              <p className={styles.kicker}>
+                {totalSkills} skills · {categories.length} categories · MIT
+              </p>
+              <Heading as="h1" className={styles.heroTitle}>
+                {HERO_TITLE}
+              </Heading>
+              <p className={styles.heroSubtitle}>
+                {HERO_SUBTITLE_PREFIX}{' '}
+                <a href={UPSTREAM_REPO_URL} target="_blank" rel="noreferrer">
+                  {UPSTREAM_REPO_LABEL}
+                </a>{' '}
+                {HERO_SUBTITLE_SUFFIX}
+              </p>
 
-          <PersonaFilterRow activePersonas={activePersonas} onTogglePersona={togglePersona} />
+              <PersonaFilterRow activePersonas={activePersonas} onTogglePersona={togglePersona} />
+            </div>
 
-          <div className={styles.callout}>
-            <span className={styles.calloutLabel}>{INSTALL_LABEL}</span>
-            <CopyableCommand command={`npx skills@latest add ${REPO}`} />
-            <p className={styles.calloutNote}>
-              {INSTALL_NOTE_PREFIX} <code>/plugin marketplace add {REPO}</code>
-            </p>
-          </div>
+            <div className={styles.heroInstallColumn}>
+              <div className={styles.callout}>
+                <span className={styles.calloutLabel}>{INSTALL_LABEL}</span>
+                <CopyableCommand command={`npx skills@latest add ${REPO}`} />
+                <p className={styles.calloutNote}>
+                  {INSTALL_NOTE_PREFIX} <code>/plugin marketplace add {REPO}</code>
+                </p>
+              </div>
 
-          <div className={styles.metaRow}>
-            <GitHubStars repo={REPO} />
+              <div className={styles.metaRow}>
+                <GitHubStars repo={REPO} />
+              </div>
+            </div>
           </div>
 
           <LandingStatsSection items={landingStats} />
         </div>
 
         {/*
-          FeatureFlowSection renders full-width, outside .column's narrow
-          (46rem) reading-width constraint - it manages its own real width
-          internally via SectionContainer, the same way it's a direct,
-          unconstrained child on giselle-mui's other real consumer's home
-          page. Nesting it inside .column (as LandingStatsSection above is)
-          would just re-narrow it on top of its own width logic.
+          FeatureFlowSection renders outside .column's own max-width rule
+          (it's a Grid, not this module's CSS) - matched to the same 900px
+          cap directly via sx so every section on the page shares one
+          consistent content width, rather than nesting it inside .column
+          on top of its own internal SectionContainer width logic.
         */}
         <FeatureFlowSection
           title="The Flow"
@@ -142,6 +147,7 @@ export default function Home(): ReactNode {
           descriptionGridSize={{ xs: 12, md: 6, lg: 5 }}
           imageGridSize={{ xs: 12, md: 6, lg: 7 }}
           columnSpacing={{ xs: 0, md: 4 }}
+          sx={{ maxWidth: 900, mx: 'auto' }}
         />
 
         <div className={styles.column}>

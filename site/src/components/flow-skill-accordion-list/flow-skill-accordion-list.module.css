@@ -4,8 +4,21 @@
   gap: 0.5rem;
 }
 
-.accordion {
-  background: transparent;
+/*
+ * The accordion root's own visual recipe (mirroring alexrebula's own FAQ
+ * accordion, src/sections/home/ar-home-faqs.tsx: no divider border, rounded
+ * corners, subtle hover/expanded tint instead of a hard box-shadow card)
+ * lives as `sx` on the <Accordion> element itself, not here - a plain
+ * CSS-module class loses a specificity fight against MUI's own
+ * emotion-injected Paper/Accordion styles (box-shadow, per-corner
+ * border-radius), while `sx` resolves through MUI's own styling pipeline
+ * and reliably wins.
+ */
+
+.title {
+  font-family: var(--ifm-heading-font-family);
+  font-weight: 600;
+  font-size: 1.05rem;
 }
 
 .description {

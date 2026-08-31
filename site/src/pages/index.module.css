@@ -3,9 +3,34 @@
 }
 
 .column {
-  max-width: 46rem;
+  max-width: 900px;
   margin: 0 auto;
   padding: 0 1.5rem;
+}
+
+.heroGrid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 2rem;
+  margin-bottom: 2rem;
+}
+
+@media (width >= 900px) {
+  .heroGrid {
+    /* Same 7:5 ratio as the Flow section's own two-column split
+       (descriptionGridSize/imageGridSize in pages/index.tsx), text column
+       wider since it carries more content than the compact install block. */
+    grid-template-columns: 7fr 5fr;
+    gap: 2.5rem;
+  }
+}
+
+.heroTextColumn {
+  min-width: 0;
+}
+
+.heroInstallColumn {
+  min-width: 0;
 }
 
 .kicker {
@@ -34,7 +59,7 @@
   background: var(--ifm-color-primary-lightest);
   padding: 1rem 1.25rem;
   border-radius: 0 6px 6px 0;
-  margin: 1.5rem 0;
+  margin: 0 0 1.5rem;
 }
 
 .calloutLabel {

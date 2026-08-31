@@ -46,7 +46,26 @@ function GiselleColorModeBridge(): null {
 // wipes any class MUI adds. It never touches unrelated `data-*` attributes,
 // and this uses its own name (`data-mui-mode`, not Docusaurus's own
 // `data-theme`) so the two never fight over one attribute's value.
-const themeOverrides = { colorSchemeSelector: 'data-mui-mode' };
+// Without this, MUI-rendered headings (SectionTitle's h2, used by both
+// LandingStatsSection and FeatureFlowSection) fall back to giselle-mui's
+// default typeface, which doesn't match this site's own Docusaurus-rendered
+// headings (the page's own <h1>, docs headings, etc.) - the same content
+// visually reads as two different design systems glued together. Matching
+// both font stacks here is a one-line fix at the theme level, rather than
+// re-applying font-family as a one-off override on every MUI heading.
+const HEADING_FONT_FAMILY = 'var(--ifm-heading-font-family)';
+const themeOverrides = {
+  colorSchemeSelector: 'data-mui-mode',
+  typography: {
+    fontFamily: 'var(--ifm-font-family-base)',
+    h1: { fontFamily: HEADING_FONT_FAMILY },
+    h2: { fontFamily: HEADING_FONT_FAMILY },
+    h3: { fontFamily: HEADING_FONT_FAMILY },
+    h4: { fontFamily: HEADING_FONT_FAMILY },
+    h5: { fontFamily: HEADING_FONT_FAMILY },
+    h6: { fontFamily: HEADING_FONT_FAMILY },
+  },
+};
 
 // Swizzled Root: mounts GiselleThemeProvider around the whole site so any
 // giselle-mui component rendered in custom content (landing page, section
