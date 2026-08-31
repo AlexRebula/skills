@@ -2844,6 +2844,7 @@ var FeatureFlowSection = import_react22.default.forwardRef(
     decoration = true,
     renderRightPanel,
     renderHighlightPanel,
+    itemDetailSx,
     sx,
     ...other
   }, ref) {
@@ -3031,7 +3032,8 @@ var FeatureFlowSection = import_react22.default.forwardRef(
                   detailPanelNodesRef.current.delete(itemId);
                 }
               },
-              renderHighlightPanel
+              renderHighlightPanel,
+              sx: itemDetailSx
             }
           ),
           /* @__PURE__ */ (0, import_jsx_runtime36.jsx)(

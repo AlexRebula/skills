@@ -2760,6 +2760,7 @@ var FeatureFlowSection = React7.forwardRef(
     decoration = true,
     renderRightPanel,
     renderHighlightPanel,
+    itemDetailSx,
     sx,
     ...other
   }, ref) {
@@ -2947,7 +2948,8 @@ var FeatureFlowSection = React7.forwardRef(
                   detailPanelNodesRef.current.delete(itemId);
                 }
               },
-              renderHighlightPanel
+              renderHighlightPanel,
+              sx: itemDetailSx
             }
           ),
           /* @__PURE__ */ jsx36(

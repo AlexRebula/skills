@@ -2107,6 +2107,13 @@ interface FeatureFlowSectionProps extends Omit<BoxProps, 'children'> {
      * consumer decides what "no data" looks like, same as `renderRightPanel`.
      */
     renderHighlightPanel?: (item: FeatureFlowItem) => ReactNode;
+    /**
+     * `sx` merged onto the expanded detail panel's own root (after
+     * `detailPanelSx`, so it can override the built-in tinted background/
+     * border-top) — distinct from this component's own root `sx`, which
+     * targets the outer `<section>`, not the detail panel specifically.
+     */
+    itemDetailSx?: SxProps<Theme>;
 }
 
 /**
