@@ -66,9 +66,13 @@ export default function Home(): ReactNode {
     () => filterFlowSections(flowSections, activePersonas),
     [flowSections, activePersonas],
   );
+  // A plain dark backdrop for every highlight-card slide - see
+  // feature-flow-sections.ts's toHighlightCard doc comment for why this is
+  // needed regardless of the giselle-mui scrim bug filed upstream.
+  const skillCardMediaSrc = useBaseUrl('/img/flow-skill-card-backdrop.svg');
   const featureFlowItems = useMemo(
-    () => buildFeatureFlowItems(filteredFlowSections),
-    [filteredFlowSections],
+    () => buildFeatureFlowItems(filteredFlowSections, skillCardMediaSrc),
+    [filteredFlowSections, skillCardMediaSrc],
   );
   // FeatureFlowSectionProps.image is required even with renderRightPanel
   // supplying the visible content (giselle-mui#188's known limitation: the

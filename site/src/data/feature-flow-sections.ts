@@ -50,24 +50,25 @@ function slugify(label: string): string {
   return label.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
 }
 
-function toHighlightCard(skill: FlowSkill): FeatureFlowHighlightCard {
+/**
+ * `media` is set to a plain dark placeholder image for every card, rather
+ * than left unset: `FeatureFlowHighlightCarousel`'s scrim/text color
+ * (`channelAlpha(COMMON_BLACK_CHANNEL/WHITE_CHANNEL, ...)`) depends on MUI
+ * CSS-var channel tokens `GiselleThemeProvider`'s theme preset doesn't
+ * currently emit (giselle-mui bug, same class as #185 - filed upstream), so
+ * the scrim itself renders fully transparent under this site's theme. A
+ * real (if generic) dark image behind the text restores contrast
+ * independently of that scrim bug.
+ */
+function toHighlightCard(skill: FlowSkill, skillCardMediaSrc: string): FeatureFlowHighlightCard {
   return {
     title: skill.name,
     description: skill.description,
     href: `/${skill.category}/${skill.name}`,
+    media: skillCardMediaSrc,
   };
 }
 
-/**
- * Maps `FlowStageSection[]` (already persona-filtered - see
- * `filterFlowSections`) into `FeatureFlowItem[]` for `FeatureFlowSection`:
- * one item per stage. Original and lineage skills flatten into a single
- * `highlightCards` carousel, original-then-lineage order, no visual divider
- * - the diff-viewing affordance those skills lose from the old
- * `SkillTimeline` footer isn't actually lost, just relocated to each
- * skill's own doc page (`ProvenanceButton` in `DocItem/Content`), which the
- * card's `href` already links to.
- */
 /**
  * Falls back to a generic icon rather than a literal "undefined" glyph name
  * if a stage is ever added here without one. Reuses `widget-4`
@@ -77,12 +78,30 @@ function toHighlightCard(skill: FlowSkill): FeatureFlowHighlightCard {
  */
 const FALLBACK_ICON_NAME = 'widget-4';
 
-export function buildFeatureFlowItems(flowSections: readonly FlowStageSection[]): FeatureFlowItem[] {
+/**
+ * Maps `FlowStageSection[]` (already persona-filtered - see
+ * `filterFlowSections`) into `FeatureFlowItem[]` for `FeatureFlowSection`:
+ * one item per stage. Original and lineage skills flatten into a single
+ * `highlightCards` carousel, original-then-lineage order, no visual divider
+ * - the diff-viewing affordance those skills lose from the old
+ * `SkillTimeline` footer isn't actually lost, just relocated to each
+ * skill's own doc page (`ProvenanceButton` in `DocItem/Content`), which the
+ * card's `href` already links to. `skillCardMediaSrc` is the base-url-
+ * resolved backdrop image (`useBaseUrl` is a hook, so the caller resolves it
+ * and passes the plain string in - this module has no component to call it
+ * from).
+ */
+export function buildFeatureFlowItems(
+  flowSections: readonly FlowStageSection[],
+  skillCardMediaSrc: string,
+): FeatureFlowItem[] {
   return flowSections.map((section) => ({
     id: slugify(section.label),
     icon: `solar:${FLOW_STAGE_ICON_NAMES[section.label] ?? FALLBACK_ICON_NAME}-bold-duotone`,
     title: section.label,
     description: FLOW_STAGE_DESCRIPTIONS[section.label] ?? '',
-    highlightCards: [...section.original, ...section.lineage].map(toHighlightCard),
+    highlightCards: [...section.original, ...section.lineage].map((skill) =>
+      toHighlightCard(skill, skillCardMediaSrc),
+    ),
   }));
 }

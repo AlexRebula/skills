@@ -23,28 +23,40 @@ const SECTIONS: FlowStageSection[] = [
   { label: 'Shape it', original: [ORIGINAL_SKILL], lineage: [LINEAGE_SKILL] },
 ];
 
+const MEDIA_SRC = '/img/flow-skill-card-backdrop.svg';
+
 describe('buildFeatureFlowItems', () => {
   it('maps one FeatureFlowItem per stage, with the stage label as title', () => {
-    const [item] = buildFeatureFlowItems(SECTIONS);
+    const [item] = buildFeatureFlowItems(SECTIONS, MEDIA_SRC);
     expect(item.title).toBe('Shape it');
     expect(item.id).toBe('shape-it');
   });
 
   it("uses the stage's drafted description", () => {
-    const [item] = buildFeatureFlowItems(SECTIONS);
+    const [item] = buildFeatureFlowItems(SECTIONS, MEDIA_SRC);
     expect(item.description).toBe(FLOW_STAGE_DESCRIPTIONS['Shape it']);
   });
 
   it('flattens original then lineage skills into highlightCards, in that order, no group divider', () => {
-    const [item] = buildFeatureFlowItems(SECTIONS);
+    const [item] = buildFeatureFlowItems(SECTIONS, MEDIA_SRC);
     expect(item.highlightCards).toEqual([
-      { title: 'grilling', description: 'Grill a plan or decision relentlessly.', href: '/thinking-tools/grilling' },
-      { title: 'to-spec', description: 'Turn a rough idea into a written spec.', href: '/engineering/to-spec' },
+      {
+        title: 'grilling',
+        description: 'Grill a plan or decision relentlessly.',
+        href: '/thinking-tools/grilling',
+        media: MEDIA_SRC,
+      },
+      {
+        title: 'to-spec',
+        description: 'Turn a rough idea into a written spec.',
+        href: '/engineering/to-spec',
+        media: MEDIA_SRC,
+      },
     ]);
   });
 
   it('assigns a resolvable solar icon to every stage', () => {
-    for (const item of buildFeatureFlowItems(SECTIONS)) {
+    for (const item of buildFeatureFlowItems(SECTIONS, MEDIA_SRC)) {
       expect(item.icon).toMatch(/^solar:[a-z0-9-]+-bold-duotone$/);
     }
   });
@@ -56,7 +68,7 @@ describe('buildFeatureFlowItems', () => {
       original: [],
       lineage: [],
     }));
-    for (const item of buildFeatureFlowItems(realSections)) {
+    for (const item of buildFeatureFlowItems(realSections, MEDIA_SRC)) {
       expect(item.description, `missing FLOW_STAGE_DESCRIPTIONS entry for "${item.title}"`).not.toBe('');
       expect(item.icon, `missing FLOW_STAGE_ICON_NAMES entry for "${item.title}"`).not.toContain('undefined');
     }
