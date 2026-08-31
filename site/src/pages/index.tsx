@@ -1,9 +1,17 @@
 import React, { useMemo, useState, type ReactNode } from 'react';
 import Layout from '@theme/Layout';
-import Heading from '@theme/Heading';
 import Link from '@docusaurus/Link';
 import useBaseUrl from '@docusaurus/useBaseUrl';
-import { FeatureFlowSection, SectionContainer } from '@littlebranches/giselle-mui';
+import Grid from '@mui/material/Grid';
+import Stack from '@mui/material/Stack';
+import Box from '@mui/material/Box';
+import Typography from '@mui/material/Typography';
+import {
+  FeatureFlowSection,
+  SectionCaption,
+  SectionContainer,
+  channelAlpha,
+} from '@littlebranches/giselle-mui';
 
 import { CopyableCommand } from '../components/copyable-command';
 import { GitHubStars } from '../components/github-stars';
@@ -99,39 +107,60 @@ export default function Home(): ReactNode {
           just double-nest containers.
         */}
         <SectionContainer>
-          <div className={styles.heroGrid}>
-            <div className={styles.heroTextColumn}>
-              <p className={styles.kicker}>
-                {totalSkills} skills · {categories.length} categories · MIT
-              </p>
-              <Heading as="h1" className={styles.heroTitle}>
-                {HERO_TITLE}
-              </Heading>
-              <p className={styles.heroSubtitle}>
-                {HERO_SUBTITLE_PREFIX}{' '}
-                <a href={UPSTREAM_REPO_URL} target="_blank" rel="noreferrer">
-                  {UPSTREAM_REPO_LABEL}
-                </a>{' '}
-                {HERO_SUBTITLE_SUFFIX}
-              </p>
+          <Grid container spacing={{ xs: 5, md: 4 }} sx={{ alignItems: 'center' }}>
+            <Grid size={{ xs: 12, md: 7 }}>
+              <Stack spacing={3}>
+                <Box>
+                  <SectionCaption
+                    title={`${totalSkills} skills · ${categories.length} categories · MIT`}
+                    sx={{ display: 'block', mb: 1.5 }}
+                  />
+                  <Typography component="h1" variant="h2">
+                    {HERO_TITLE}
+                  </Typography>
+                </Box>
+                <Typography variant="h5" color="text.secondary" sx={{ fontWeight: 400 }}>
+                  {HERO_SUBTITLE_PREFIX}{' '}
+                  <a href={UPSTREAM_REPO_URL} target="_blank" rel="noreferrer">
+                    {UPSTREAM_REPO_LABEL}
+                  </a>{' '}
+                  {HERO_SUBTITLE_SUFFIX}
+                </Typography>
 
-              <PersonaFilterRow activePersonas={activePersonas} onTogglePersona={togglePersona} />
-            </div>
+                <PersonaFilterRow activePersonas={activePersonas} onTogglePersona={togglePersona} />
+              </Stack>
+            </Grid>
 
-            <div className={styles.heroInstallColumn}>
-              <div className={styles.callout}>
-                <span className={styles.calloutLabel}>{INSTALL_LABEL}</span>
-                <CopyableCommand command={`npx skills@latest add ${REPO}`} />
-                <p className={styles.calloutNote}>
-                  {INSTALL_NOTE_PREFIX} <code>/plugin marketplace add {REPO}</code>
-                </p>
-              </div>
+            <Grid size={{ xs: 12, md: 5 }}>
+              <Stack spacing={3}>
+                <Box
+                  sx={{
+                    borderLeft: '3px solid',
+                    borderColor: 'primary.main',
+                    bgcolor: channelAlpha('var(--mui-palette-primary-mainChannel)', 0.08),
+                    borderRadius: '0 6px 6px 0',
+                    p: { xs: 2, md: 2.5 },
+                  }}
+                >
+                  <Typography
+                    variant="overline"
+                    color="primary.dark"
+                    sx={{ display: 'block', mb: 1 }}
+                  >
+                    {INSTALL_LABEL}
+                  </Typography>
+                  <CopyableCommand command={`npx skills@latest add ${REPO}`} />
+                  <Typography variant="body2" color="text.secondary" sx={{ mt: 1 }}>
+                    {INSTALL_NOTE_PREFIX} <code>/plugin marketplace add {REPO}</code>
+                  </Typography>
+                </Box>
 
-              <div className={styles.metaRow}>
-                <GitHubStars repo={REPO} />
-              </div>
-            </div>
-          </div>
+                <Box>
+                  <GitHubStars repo={REPO} />
+                </Box>
+              </Stack>
+            </Grid>
+          </Grid>
         </SectionContainer>
 
         <LandingStatsSection items={landingStats} />
@@ -151,12 +180,12 @@ export default function Home(): ReactNode {
           descriptionGridSize={{ xs: 12, md: 6, lg: 5 }}
           imageGridSize={{ xs: 12, md: 6, lg: 7 }}
           columnSpacing={{ xs: 0, md: 4 }}
-          // Overrides detailPanelSx's default tinted background: it read as
-          // an "always-grey" backdrop indistinguishable from
-          // FlowSkillAccordionList's own hover/expanded tint, which relies
-          // on contrast against a plain background to read as a state
-          // change at all.
-          itemDetailSx={{ bgcolor: 'transparent', borderTop: 'none' }}
+          // A neutral grey tint (giselle-mui#feature/render-highlight-panel's
+          // detailPanelColor, not a primary-tinted background) - the accordion
+          // (FlowSkillAccordionList) is themed to sit on top of it, with its
+          // own collapsed/expanded states inverted to read against grey
+          // instead of a plain page background.
+          detailPanelColor="grey"
         />
 
         <SectionContainer>

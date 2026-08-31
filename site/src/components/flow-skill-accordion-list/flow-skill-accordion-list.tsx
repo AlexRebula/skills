@@ -71,6 +71,12 @@ export function FlowSkillAccordionList({
             // MUI's own emotion-injected Paper/Accordion styles (box-shadow,
             // per-corner border-radius) - sx resolves through the same
             // styling pipeline MUI itself uses, so it reliably wins instead.
+            //
+            // This list sits on FeatureFlowSection's detailPanelColor="grey"
+            // backdrop (pages/index.tsx), not a plain page background - so a
+            // collapsed item stays fully transparent (the container's own
+            // grey is its only background) while the expanded one inverts to
+            // solid white/paper, standing out from it instead of blending in.
             sx={{
               background: 'transparent',
               boxShadow: 'none',
@@ -83,7 +89,9 @@ export function FlowSkillAccordionList({
               transition: 'background-color 0.15s ease',
               '&::before': { display: 'none' },
               '&:hover': { backgroundColor: 'var(--ifm-color-emphasis-100) !important' },
-              '&.Mui-expanded': { backgroundColor: 'var(--ifm-color-emphasis-100) !important' },
+              '&.Mui-expanded': {
+                backgroundColor: 'var(--mui-palette-background-paper) !important',
+              },
             }}
           >
             {paragraphs.map((paragraph) => (
