@@ -7,7 +7,6 @@ import { SectionContainer, SectionTitle } from '@littlebranches/giselle-mui';
 
 import { CopyableCommand } from '../copyable-command';
 import { GitHubStars } from '../github-stars';
-import { PersonaFilterRow } from '../persona-filter-row';
 import {
   REPO,
   HERO_TITLE,
@@ -43,16 +42,12 @@ import type { HomeHeroSectionProps } from './types';
  *
  * Left column: stats caption, title, subtitle (kept as its own sibling
  * `Typography` rather than `SectionTitle`'s `description` slot, which renders
- * at `body1` — smaller than this hero's `h5` subtitle), and the persona
- * filter row (#176). Right column: the install callout and GitHub star count,
- * unchanged from the page's previous inline markup.
+ * at `body1` — smaller than this hero's `h5` subtitle). Right column: the
+ * install callout and GitHub star count, unchanged from the page's previous
+ * inline markup. The persona filter row (#176) lives in its own
+ * `PersonaPickerSection` further down the page, not here.
  */
-export function HomeHeroSection({
-  totalSkills,
-  categoriesCount,
-  activePersonas,
-  onTogglePersona,
-}: HomeHeroSectionProps): ReactNode {
+export function HomeHeroSection({ totalSkills, categoriesCount }: HomeHeroSectionProps): ReactNode {
   return (
     <SectionContainer>
       <Grid container spacing={HERO_GRID_SPACING} sx={HERO_GRID_SX}>
@@ -70,8 +65,6 @@ export function HomeHeroSection({
               </a>{' '}
               {HERO_SUBTITLE_SUFFIX}
             </Typography>
-
-            <PersonaFilterRow activePersonas={activePersonas} onTogglePersona={onTogglePersona} />
           </Stack>
         </Grid>
 

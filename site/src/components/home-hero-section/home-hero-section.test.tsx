@@ -1,11 +1,8 @@
 import React from 'react';
 import { describe, expect, it, vi, afterEach } from 'vitest';
 import { render, screen } from '@testing-library/react';
-import userEvent from '@testing-library/user-event';
 import { GiselleThemeProvider } from '@littlebranches/giselle-mui';
 import { HomeHeroSection } from './home-hero-section';
-import { PERSONA_INFO } from '../../data/personas';
-import type { PersonaKey } from '../../data/personas.types';
 import {
   REPO,
   HERO_TITLE,
@@ -26,8 +23,6 @@ function renderWithTheme(ui: React.ReactElement) {
   return render(<GiselleThemeProvider>{ui}</GiselleThemeProvider>);
 }
 
-const NOOP: (persona: PersonaKey) => void = () => {};
-
 describe('HomeHeroSection', () => {
   afterEach(() => {
     vi.unstubAllGlobals();
@@ -40,14 +35,7 @@ describe('HomeHeroSection', () => {
       'fetch',
       vi.fn(() => new Promise(() => {}))
     );
-    renderWithTheme(
-      <HomeHeroSection
-        totalSkills={76}
-        categoriesCount={10}
-        activePersonas={new Set<PersonaKey>()}
-        onTogglePersona={NOOP}
-      />
-    );
+    renderWithTheme(<HomeHeroSection totalSkills={76} categoriesCount={10} />);
 
     expect(screen.getByText(formatHeroStatsCaption(76, 10))).toBeInTheDocument();
     expect(screen.getByText(HERO_TITLE)).toBeInTheDocument();
@@ -64,38 +52,9 @@ describe('HomeHeroSection', () => {
       'fetch',
       vi.fn(() => new Promise(() => {}))
     );
-    renderWithTheme(
-      <HomeHeroSection
-        totalSkills={76}
-        categoriesCount={10}
-        activePersonas={new Set<PersonaKey>()}
-        onTogglePersona={NOOP}
-      />
-    );
+    renderWithTheme(<HomeHeroSection totalSkills={76} categoriesCount={10} />);
 
     expect(screen.getByRole('heading', { level: 1, name: HERO_TITLE })).toBeInTheDocument();
-  });
-
-  it('renders one persona filter chip per declared persona and toggles on click', async () => {
-    vi.stubGlobal(
-      'fetch',
-      vi.fn(() => new Promise(() => {}))
-    );
-    const user = userEvent.setup();
-    const onTogglePersona = vi.fn();
-    renderWithTheme(
-      <HomeHeroSection
-        totalSkills={76}
-        categoriesCount={10}
-        activePersonas={new Set<PersonaKey>()}
-        onTogglePersona={onTogglePersona}
-      />
-    );
-
-    const chipLabel = PERSONA_INFO['teaching-mentoring'].label;
-    expect(screen.getByText(chipLabel)).toBeInTheDocument();
-    await user.click(screen.getByText(chipLabel));
-    expect(onTogglePersona).toHaveBeenCalledWith('teaching-mentoring');
   });
 
   it('renders the install command and the GitHub link', () => {
@@ -103,14 +62,7 @@ describe('HomeHeroSection', () => {
       'fetch',
       vi.fn(() => new Promise(() => {}))
     );
-    renderWithTheme(
-      <HomeHeroSection
-        totalSkills={76}
-        categoriesCount={10}
-        activePersonas={new Set<PersonaKey>()}
-        onTogglePersona={NOOP}
-      />
-    );
+    renderWithTheme(<HomeHeroSection totalSkills={76} categoriesCount={10} />);
 
     expect(screen.getByText(INSTALL_LABEL)).toBeInTheDocument();
     expect(screen.getByText(`npx skills@latest add ${REPO}`)).toBeInTheDocument();

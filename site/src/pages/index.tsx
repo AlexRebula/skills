@@ -4,6 +4,7 @@ import useBaseUrl from '@docusaurus/useBaseUrl';
 
 import { HomeHeroSection } from '../components/home-hero-section';
 import { LandingStatsSection } from '../components/landing-stats-section';
+import { PersonaPickerSection } from '../components/persona-picker-section';
 import { FlowSection } from '../components/flow-section';
 import { OverviewLinkSection } from '../components/overview-link-section';
 import { computeLandingStats } from '../data/landing-stats';
@@ -68,14 +69,11 @@ export default function Home(): ReactNode {
       description="A practical skill system for engineers who want to use AI without giving up their standards. Install the ones you use, then type a slash command."
     >
       <div>
-        <HomeHeroSection
-          totalSkills={totalSkills}
-          categoriesCount={categories.length}
-          activePersonas={activePersonas}
-          onTogglePersona={togglePersona}
-        />
+        <HomeHeroSection totalSkills={totalSkills} categoriesCount={categories.length} />
 
         <LandingStatsSection items={landingStats} />
+
+        <PersonaPickerSection activePersonas={activePersonas} onTogglePersona={togglePersona} />
 
         <FlowSection items={featureFlowItems} imageSrc={featureFlowImageSrc} />
 
