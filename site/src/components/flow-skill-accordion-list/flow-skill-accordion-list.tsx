@@ -1,24 +1,58 @@
-import React, { type ReactNode } from 'react';
+import React, { useState, type ReactNode } from 'react';
 import { Accordion } from '@littlebranches/giselle-mui';
 import Link from '@docusaurus/Link';
+import { InlineMarkdown } from '../inline-markdown';
 import type { FlowSkillAccordionListProps } from './types';
 import styles from './flow-skill-accordion-list.module.css';
+
+/**
+ * Plain inline SVG, not a `GiselleIcon`/Iconify name: this is a one-off UI
+ * chevron, not a skill icon, so it doesn't belong in
+ * `scripts/generate-skill-icons.ts`'s bundled-icon extraction. MUI's own
+ * `AccordionSummary` already rotates `expandIconWrapper` 180deg on
+ * `.Mui-expanded` - no extra rotation CSS needed here.
+ */
+function ChevronDownIcon(): ReactNode {
+  return (
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+      <path
+        d="M6 9l6 6 6-6"
+        stroke="currentColor"
+        strokeWidth="2"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </svg>
+  );
+}
 
 /**
  * `FeatureFlowSection`'s `renderHighlightPanel` content for the expanded
  * flow-stage detail panel (giselle-mui#feature/render-highlight-panel):
  * every skill in the stage as its own `Accordion`, all titles visible at
- * once and independently expandable, instead of giselle-mui's default
- * one-at-a-time `FeatureFlowHighlightCarousel` - a better fit for browsing
- * a list of skills than paging through a marketing-style carousel.
+ * once, only one expanded at a time (a real accordion, not an independent
+ * toggle group), instead of giselle-mui's default one-at-a-time
+ * `FeatureFlowHighlightCarousel` - a better fit for browsing a list of
+ * skills than paging through a marketing-style carousel.
+ *
+ * Each card's `description` is that skill's own "## What it does" section,
+ * straight from its docs page (`scripts/generate-skill-summaries.ts`), as
+ * one or more `\n\n`-separated paragraphs - a real deeper dive, not the
+ * one-line landing-page blurb `card.description` holds everywhere else
+ * `FeatureFlowHighlightCard` is used.
  */
 export function FlowSkillAccordionList({ item }: FlowSkillAccordionListProps): ReactNode {
+  const [expandedTitle, setExpandedTitle] = useState<string | null>(null);
+
   return (
     <div className={styles.list}>
       {(item.highlightCards ?? []).map((card) => (
         <Accordion
           key={card.title}
           disableGutters
+          expanded={expandedTitle === card.title}
+          onChange={(_event, isExpanded) => setExpandedTitle(isExpanded ? card.title : null)}
+          expandIcon={<ChevronDownIcon />}
           title={<span className={styles.title}>/{card.title}</span>}
           // A plain CSS-module class loses a specificity fight against
           // MUI's own emotion-injected Paper/Accordion styles (box-shadow,
@@ -39,7 +73,11 @@ export function FlowSkillAccordionList({ item }: FlowSkillAccordionListProps): R
             '&.Mui-expanded': { backgroundColor: 'var(--ifm-color-emphasis-100) !important' },
           }}
         >
-          <p className={styles.description}>{card.description}</p>
+          {card.description.split('\n\n').map((paragraph) => (
+            <p key={paragraph.slice(0, 40)} className={styles.description}>
+              <InlineMarkdown text={paragraph} />
+            </p>
+          ))}
           {card.href && (
             <Link to={card.href} className={styles.learnMore}>
               Learn more

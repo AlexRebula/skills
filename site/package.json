@@ -4,9 +4,9 @@
   "private": true,
   "scripts": {
     "docusaurus": "docusaurus",
-    "prestart": "tsx ../scripts/generate-landing-data.ts && tsx ../scripts/generate-provenance.ts && tsx ../scripts/generate-skill-icons.ts",
+    "prestart": "tsx ../scripts/generate-landing-data.ts && tsx ../scripts/generate-provenance.ts && tsx ../scripts/generate-skill-icons.ts && tsx ../scripts/generate-skill-summaries.ts",
     "start": "docusaurus start",
-    "prebuild": "tsx ../scripts/generate-landing-data.ts && tsx ../scripts/generate-provenance.ts && tsx ../scripts/generate-skill-icons.ts && tsx ../scripts/check-docs-completeness.ts",
+    "prebuild": "tsx ../scripts/generate-landing-data.ts && tsx ../scripts/generate-provenance.ts && tsx ../scripts/generate-skill-icons.ts && tsx ../scripts/generate-skill-summaries.ts && tsx ../scripts/check-docs-completeness.ts",
     "build": "docusaurus build",
     "swizzle": "docusaurus swizzle",
     "clear": "docusaurus clear",
@@ -21,7 +21,7 @@
     "test": "vitest run",
     "test:watch": "vitest",
     "test:coverage": "vitest run --coverage",
-    "precheck": "tsx ../scripts/generate-landing-data.ts && tsx ../scripts/generate-provenance.ts && tsx ../scripts/generate-skill-icons.ts",
+    "precheck": "tsx ../scripts/generate-landing-data.ts && tsx ../scripts/generate-provenance.ts && tsx ../scripts/generate-skill-icons.ts && tsx ../scripts/generate-skill-summaries.ts",
     "check": "npm run typecheck && npm run lint && npm run stylelint && npm run test"
   },
   "dependencies": {

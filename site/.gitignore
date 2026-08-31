@@ -10,6 +10,7 @@
 src/data/skills-landing.json
 src/data/provenance.json
 src/data/solar-icons.json
+src/data/skill-summaries.json
 
 # yalc local package registry — commit .yalc so Vercel can install from it
 !.yalc/

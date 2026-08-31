@@ -1,6 +1,10 @@
 import '../data/register-solar-icons';
 import type { FeatureFlowHighlightCard, FeatureFlowItem } from '@littlebranches/giselle-mui';
 import type { FlowSkill, FlowStageSection } from './flow-sections.types';
+import realSkillSummaries from './skill-summaries.json';
+
+/** "category/name" -> that skill's own "## What it does" paragraphs (scripts/generate-skill-summaries.ts). */
+type SkillSummaries = Record<string, readonly string[]>;
 
 /**
  * One-line blurb per flow stage, shown in the hovered row's right-panel
@@ -20,7 +24,8 @@ export const FLOW_STAGE_DESCRIPTIONS: Record<string, string> = {
   'Close the session': 'Wrap up cleanly and hand off context to whoever picks this up next.',
   'Grow a contributor': "Turn a junior engineer's work into real, lasting skill.",
   'LittleBranches specifics': "The house rules and workflows specific to this org's own repos.",
-  'Reach for on their own': 'Everything else worth having on hand, used less often but still useful.',
+  'Reach for on their own':
+    'Everything else worth having on hand, used less often but still useful.',
 };
 
 /**
@@ -36,17 +41,17 @@ export const FLOW_STAGE_LONG_DESCRIPTIONS: Record<string, string> = {
   'Shape it':
     "Before code gets written, the idea itself gets pressure-tested. This stage covers interview-style skills that surface assumptions, force a decision tree into the open, and turn a rough plan into a written spec or a set of tickets ready for implementation. The goal isn't speed here - it's catching the wrong assumption while it's still cheap to fix.",
   'Build it':
-    "The actual implementation work: scaffolding a new component, building a feature test-first, or prototyping a design question before committing to an approach. `/start-issue` bootstraps a session directly from a tracked issue; `/tdd` and the framework-specific `/create-*` skills carry the red-green-refactor discipline through to the end.",
+    'The actual implementation work: scaffolding a new component, building a feature test-first, or prototyping a design question before committing to an approach. `/start-issue` bootstraps a session directly from a tracked issue; `/tdd` and the framework-specific `/create-*` skills carry the red-green-refactor discipline through to the end.',
   'Words for the codebase':
     'Code communicates as much through its names and structure as through what it executes. This stage is about the vocabulary of a codebase: designing deep modules with the right seams, building and sharpening a shared domain model, and writing documentation an AI agent, not just a human, can actually act on.',
   'Land it':
     "Getting finished work merged: committing cleanly, opening a well-formed PR, and working through review feedback until it's mergeable. `/wip-sweep` catches uncommitted work across every repo before it's lost; `/review-pr` and `/respond-pr-review` cover both sides of the review cycle.",
   'When it breaks':
-    'Something is broken and you need to find out why before you can fix it. This stage covers triaging an incoming report, the actual diagnosis loop for a hard bug or performance regression, and resolving an in-progress merge or rebase conflict without losing anyone\'s work.',
+    "Something is broken and you need to find out why before you can fix it. This stage covers triaging an incoming report, the actual diagnosis loop for a hard bug or performance regression, and resolving an in-progress merge or rebase conflict without losing anyone's work.",
   'Sweep for debt':
     "The maintenance work that a fast-moving codebase leaves behind: stale PRs waiting on review, dirty repos nobody's swept, prose that reads like it was never edited by a human, and architecture that's drifted from what the codebase actually needs. These skills are meant to run on a cadence, not just when something's on fire.",
   'Run the wiki':
-    'Keeping a personal knowledge base current and honest: ingesting a new source, querying what\'s already been captured, health-checking the wiki for contradictions and stale claims, and logging behavioral incidents so the same mistake doesn\'t get repeated by the next session.',
+    "Keeping a personal knowledge base current and honest: ingesting a new source, querying what's already been captured, health-checking the wiki for contradictions and stale claims, and logging behavioral incidents so the same mistake doesn't get repeated by the next session.",
   'Close the session':
     "Ending a session in a state the next one, yours or someone else's, can actually pick up from: a written wrap-up, a clean handoff document, uncommitted work captured before it's lost, and any task-tracker sync kept current rather than left to drift.",
   'Grow a contributor':
@@ -81,7 +86,10 @@ const FLOW_STAGE_ICON_NAMES: Record<string, string> = {
 };
 
 function slugify(label: string): string {
-  return label.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
+  return label
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/(^-|-$)/g, '');
 }
 
 /**
@@ -93,11 +101,25 @@ function slugify(label: string): string {
  * the scrim itself renders fully transparent under this site's theme. A
  * real (if generic) dark image behind the text restores contrast
  * independently of that scrim bug.
+ *
+ * `description` is the skill's own "## What it does" paragraphs (joined by
+ * blank lines - `FlowSkillAccordionList` splits back on those to render
+ * each through `InlineMarkdown`), not the one-line landing-page blurb -
+ * this field is only ever read by this site's own `renderHighlightPanel`,
+ * never by giselle-mui's default carousel, so repurposing it for something
+ * longer doesn't affect any other consumer. Falls back to the one-liner if
+ * a skill's docs page has no matching entry (should not happen for a real
+ * skill - `scripts/generate-skill-summaries.ts` fails the build otherwise).
  */
-function toHighlightCard(skill: FlowSkill, skillCardMediaSrc: string): FeatureFlowHighlightCard {
+function toHighlightCard(
+  skill: FlowSkill,
+  skillCardMediaSrc: string,
+  skillSummaries: SkillSummaries
+): FeatureFlowHighlightCard {
+  const summary = skillSummaries[`${skill.category}/${skill.name}`];
   return {
     title: skill.name,
-    description: skill.description,
+    description: summary?.length ? summary.join('\n\n') : skill.description,
     href: `/${skill.category}/${skill.name}`,
     media: skillCardMediaSrc,
   };
@@ -123,11 +145,14 @@ const FALLBACK_ICON_NAME = 'widget-4';
  * card's `href` already links to. `skillCardMediaSrc` is the base-url-
  * resolved backdrop image (`useBaseUrl` is a hook, so the caller resolves it
  * and passes the plain string in - this module has no component to call it
- * from).
+ * from). `skillSummaries` defaults to the real generated data; tests pass
+ * their own small fixture instead, so they aren't coupled to real skills'
+ * doc-page wording.
  */
 export function buildFeatureFlowItems(
   flowSections: readonly FlowStageSection[],
   skillCardMediaSrc: string,
+  skillSummaries: SkillSummaries = realSkillSummaries
 ): FeatureFlowItem[] {
   return flowSections.map((section) => ({
     id: slugify(section.label),
@@ -136,7 +161,7 @@ export function buildFeatureFlowItems(
     description: FLOW_STAGE_DESCRIPTIONS[section.label] ?? '',
     longDescription: FLOW_STAGE_LONG_DESCRIPTIONS[section.label],
     highlightCards: [...section.original, ...section.lineage].map((skill) =>
-      toHighlightCard(skill, skillCardMediaSrc),
+      toHighlightCard(skill, skillCardMediaSrc, skillSummaries)
     ),
   }));
 }

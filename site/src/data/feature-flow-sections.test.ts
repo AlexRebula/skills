@@ -1,5 +1,9 @@
 import { describe, expect, it } from 'vitest';
-import { buildFeatureFlowItems, FLOW_STAGE_DESCRIPTIONS, FLOW_STAGE_LONG_DESCRIPTIONS } from './feature-flow-sections';
+import {
+  buildFeatureFlowItems,
+  FLOW_STAGE_DESCRIPTIONS,
+  FLOW_STAGE_LONG_DESCRIPTIONS,
+} from './feature-flow-sections';
 import { FLOW_STAGES } from '../../sidebars';
 import type { FlowSkill, FlowStageSection } from './flow-sections.types';
 
@@ -27,24 +31,24 @@ const MEDIA_SRC = '/img/flow-skill-card-backdrop.svg';
 
 describe('buildFeatureFlowItems', () => {
   it('maps one FeatureFlowItem per stage, with the stage label as title', () => {
-    const [item] = buildFeatureFlowItems(SECTIONS, MEDIA_SRC);
+    const [item] = buildFeatureFlowItems(SECTIONS, MEDIA_SRC, {});
     expect(item.title).toBe('Shape it');
     expect(item.id).toBe('shape-it');
   });
 
   it("uses the stage's drafted description", () => {
-    const [item] = buildFeatureFlowItems(SECTIONS, MEDIA_SRC);
+    const [item] = buildFeatureFlowItems(SECTIONS, MEDIA_SRC, {});
     expect(item.description).toBe(FLOW_STAGE_DESCRIPTIONS['Shape it']);
   });
 
   it("uses the stage's drafted longDescription, distinct from the short description", () => {
-    const [item] = buildFeatureFlowItems(SECTIONS, MEDIA_SRC);
+    const [item] = buildFeatureFlowItems(SECTIONS, MEDIA_SRC, {});
     expect(item.longDescription).toBe(FLOW_STAGE_LONG_DESCRIPTIONS['Shape it']);
     expect(item.longDescription).not.toBe(item.description);
   });
 
   it('flattens original then lineage skills into highlightCards, in that order, no group divider', () => {
-    const [item] = buildFeatureFlowItems(SECTIONS, MEDIA_SRC);
+    const [item] = buildFeatureFlowItems(SECTIONS, MEDIA_SRC, {});
     expect(item.highlightCards).toEqual([
       {
         title: 'grilling',
@@ -61,8 +65,23 @@ describe('buildFeatureFlowItems', () => {
     ]);
   });
 
+  it("uses the skill's own doc-page summary as the highlight card's description when one is provided", () => {
+    const summaries = {
+      'thinking-tools/grilling': ['A deeper first paragraph.', 'A deeper second paragraph.'],
+    };
+    const [item] = buildFeatureFlowItems(SECTIONS, MEDIA_SRC, summaries);
+    const card = item.highlightCards?.find((c) => c.title === 'grilling');
+    expect(card?.description).toBe('A deeper first paragraph.\n\nA deeper second paragraph.');
+  });
+
+  it("falls back to the skill's short one-liner when it has no doc-page summary entry", () => {
+    const [item] = buildFeatureFlowItems(SECTIONS, MEDIA_SRC, {});
+    const card = item.highlightCards?.find((c) => c.title === 'grilling');
+    expect(card?.description).toBe('Grill a plan or decision relentlessly.');
+  });
+
   it('assigns a resolvable solar icon to every stage', () => {
-    for (const item of buildFeatureFlowItems(SECTIONS, MEDIA_SRC)) {
+    for (const item of buildFeatureFlowItems(SECTIONS, MEDIA_SRC, {})) {
       expect(item.icon).toMatch(/^solar:[a-z0-9-]+-bold-duotone$/);
     }
   });
@@ -75,12 +94,17 @@ describe('buildFeatureFlowItems', () => {
       lineage: [],
     }));
     for (const item of buildFeatureFlowItems(realSections, MEDIA_SRC)) {
-      expect(item.description, `missing FLOW_STAGE_DESCRIPTIONS entry for "${item.title}"`).not.toBe('');
+      expect(
+        item.description,
+        `missing FLOW_STAGE_DESCRIPTIONS entry for "${item.title}"`
+      ).not.toBe('');
       expect(
         item.longDescription,
-        `missing FLOW_STAGE_LONG_DESCRIPTIONS entry for "${item.title}"`,
+        `missing FLOW_STAGE_LONG_DESCRIPTIONS entry for "${item.title}"`
       ).toBeTruthy();
-      expect(item.icon, `missing FLOW_STAGE_ICON_NAMES entry for "${item.title}"`).not.toContain('undefined');
+      expect(item.icon, `missing FLOW_STAGE_ICON_NAMES entry for "${item.title}"`).not.toContain(
+        'undefined'
+      );
     }
   });
 });
