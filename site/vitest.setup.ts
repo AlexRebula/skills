@@ -1,4 +1,4 @@
-import { afterEach } from 'vitest';
+import { afterEach, beforeAll, vi } from 'vitest';
 import { cleanup } from '@testing-library/react';
 import '@testing-library/jest-dom/vitest';
 
@@ -6,4 +6,36 @@ import '@testing-library/jest-dom/vitest';
 // without it, each test's rendered DOM leaks into the next test in the file.
 afterEach(() => {
   cleanup();
+});
+
+// giselle-mui's MotionViewport (whileInView) and scroll-linked hooks need
+// browser APIs jsdom doesn't implement - without these, any test that
+// mounts a real FeatureFlowSection (not just its own sub-components) throws.
+// Mirrors giselle-mui's own test suite setup for the identical code path.
+beforeAll(() => {
+  Object.defineProperty(window, 'matchMedia', {
+    writable: true,
+    value: (query: string) => ({
+      matches: false,
+      media: query,
+      onchange: null,
+      addListener: () => {},
+      removeListener: () => {},
+      addEventListener: () => {},
+      removeEventListener: () => {},
+      dispatchEvent: () => false,
+    }),
+  });
+
+  Element.prototype.scrollIntoView = vi.fn();
+
+  class NoopIntersectionObserver {
+    observe() {}
+    unobserve() {}
+    disconnect() {}
+    takeRecords() {
+      return [];
+    }
+  }
+  vi.stubGlobal('IntersectionObserver', NoopIntersectionObserver);
 });

@@ -1,5 +1,7 @@
 import React, { type ReactNode } from 'react';
 import { SectionContainer, SectionTitle, StatCardRow } from '@littlebranches/giselle-mui';
+import { STATS_CAPTION, STATS_TITLE, STATS_DESCRIPTION } from '../../data/index-page-copy';
+import { STATS_CONTAINER_PY, STATS_TITLE_SX } from './landing-stats-section.const';
 import type { LandingStatsSectionProps } from './types';
 
 /**
@@ -18,12 +20,12 @@ import type { LandingStatsSectionProps } from './types';
  */
 export function LandingStatsSection({ items }: LandingStatsSectionProps): ReactNode {
   return (
-    <SectionContainer maxWidth="lg" py={{ xs: 4, md: 6 }}>
+    <SectionContainer maxWidth="lg" py={STATS_CONTAINER_PY}>
       <SectionTitle
-        caption="By the numbers"
-        title="This fork, at a glance"
-        description="Pulled from the same skill and provenance data the sections below render — not a separate, hand-maintained count."
-        sx={{ mb: { xs: 3, md: 4 } }}
+        caption={STATS_CAPTION}
+        title={STATS_TITLE}
+        description={STATS_DESCRIPTION}
+        sx={STATS_TITLE_SX}
       />
       <StatCardRow items={items} />
     </SectionContainer>
