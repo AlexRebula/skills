@@ -112,16 +112,26 @@ export default function Home(): ReactNode {
           </div>
 
           <LandingStatsSection items={landingStats} />
+        </div>
 
-          <FeatureFlowSection
-            title="The Flow"
-            items={featureFlowItems}
-            image={{ src: featureFlowImageSrc, alt: '' }}
-            renderRightPanel={(activeItem, isActiveExpanded) => (
-              <FlowStageHoverPanel item={activeItem} isExpanded={isActiveExpanded} />
-            )}
-          />
+        {/*
+          FeatureFlowSection renders full-width, outside .column's narrow
+          (46rem) reading-width constraint - it manages its own real width
+          internally via SectionContainer, the same way it's a direct,
+          unconstrained child on giselle-mui's other real consumer's home
+          page. Nesting it inside .column (as LandingStatsSection above is)
+          would just re-narrow it on top of its own width logic.
+        */}
+        <FeatureFlowSection
+          title="The Flow"
+          items={featureFlowItems}
+          image={{ src: featureFlowImageSrc, alt: '' }}
+          renderRightPanel={(activeItem, isActiveExpanded) => (
+            <FlowStageHoverPanel item={activeItem} isExpanded={isActiveExpanded} />
+          )}
+        />
 
+        <div className={styles.column}>
           <p className={styles.overviewLink}>
             {OVERVIEW_LINK_PREFIX} <Link to="/overview">{OVERVIEW_LINK_TEXT}</Link> {OVERVIEW_LINK_DESCRIPTION}
           </p>

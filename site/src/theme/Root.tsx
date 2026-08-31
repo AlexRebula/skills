@@ -1,6 +1,7 @@
 import React, { type ReactNode, useEffect } from 'react';
 import { GiselleThemeProvider } from '@littlebranches/giselle-mui';
 import { useColorScheme } from '@mui/material/styles';
+import { MotionLazy } from '../components/motion-lazy';
 
 function readDocusaurusColorMode(): 'light' | 'dark' {
   return document.documentElement.getAttribute('data-theme') === 'dark' ? 'dark' : 'light';
@@ -52,11 +53,16 @@ const themeOverrides = { colorSchemeSelector: 'data-mui-mode' };
 // components) gets the Giselle theme, then bridges Docusaurus's existing
 // dark/light toggle into it. Docusaurus's own chrome (sidebar, navbar shell,
 // search, code blocks, pagination) stays on Infima — untouched here.
+//
+// Also mounts MotionLazy: FeatureFlowSection's row entrance/hover animations
+// use framer-motion's `m.*` elements, which need a LazyMotion ancestor to
+// load animation features at all - without one they stay frozen at their
+// `initial` variant (invisible, `opacity: 0`), not just unanimated.
 export default function Root({ children }: { children: ReactNode }): ReactNode {
   return (
     <GiselleThemeProvider themeOverrides={themeOverrides}>
       <GiselleColorModeBridge />
-      {children}
+      <MotionLazy>{children}</MotionLazy>
     </GiselleThemeProvider>
   );
 }
