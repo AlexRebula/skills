@@ -4,9 +4,9 @@ import type { FlowSkill, FlowStageSection } from './flow-sections.types';
 
 /**
  * One-line blurb per flow stage, shown in the hovered row's right-panel
- * heading (see `feature-flow-sections.tsx`'s `renderRightPanel`). No
- * stage-level copy existed anywhere in the data model before this - only
- * `FLOW_STAGES`' bare `label` (`site/sidebars.ts`).
+ * heading (see `pages/index.tsx`'s `renderRightPanel` prop). No stage-level
+ * copy existed anywhere in the data model before this - only `FLOW_STAGES`'
+ * bare `label` (`site/sidebars.ts`).
  */
 export const FLOW_STAGE_DESCRIPTIONS: Record<string, string> = {
   'Start the day': 'Pick up where the last session left off before writing anything new.',
@@ -68,10 +68,19 @@ function toHighlightCard(skill: FlowSkill): FeatureFlowHighlightCard {
  * skill's own doc page (`ProvenanceButton` in `DocItem/Content`), which the
  * card's `href` already links to.
  */
+/**
+ * Falls back to a generic icon rather than a literal "undefined" glyph name
+ * if a stage is ever added here without one. Reuses `widget-4`
+ * (`framework/create-vue-component` in `SKILL_ICON_NAMES`) since it's
+ * already bundled into `solar-icons.json` - no icon base name should be
+ * introduced here that isn't already extracted by `generate-skill-icons.ts`.
+ */
+const FALLBACK_ICON_NAME = 'widget-4';
+
 export function buildFeatureFlowItems(flowSections: readonly FlowStageSection[]): FeatureFlowItem[] {
   return flowSections.map((section) => ({
     id: slugify(section.label),
-    icon: `solar:${FLOW_STAGE_ICON_NAMES[section.label]}-bold-duotone`,
+    icon: `solar:${FLOW_STAGE_ICON_NAMES[section.label] ?? FALLBACK_ICON_NAME}-bold-duotone`,
     title: section.label,
     description: FLOW_STAGE_DESCRIPTIONS[section.label] ?? '',
     highlightCards: [...section.original, ...section.lineage].map(toHighlightCard),
