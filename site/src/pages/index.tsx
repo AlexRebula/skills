@@ -133,6 +133,13 @@ export default function Home(): ReactNode {
           renderRightPanel={(activeItem, isActiveExpanded) => (
             <FlowStageHoverPanel item={activeItem} isExpanded={isActiveExpanded} />
           )}
+          // The right panel carries real, variable-length content here (a
+          // per-skill list), not a single image - it needs more room than
+          // the default 7/5 split gives an image column, and less of a gap
+          // than the default (image-column) spacing assumes.
+          descriptionGridSize={{ xs: 12, md: 6, lg: 5 }}
+          imageGridSize={{ xs: 12, md: 6, lg: 7 }}
+          columnSpacing={{ xs: 0, md: 4 }}
         />
 
         <div className={styles.column}>

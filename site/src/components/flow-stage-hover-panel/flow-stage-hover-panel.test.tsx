@@ -24,17 +24,17 @@ describe('FlowStageHoverPanel', () => {
     ).toBeInTheDocument();
   });
 
-  it('lists every skill with its own description, whether or not the stage is expanded', () => {
+  it('lists every skill, prefixed with "/", with its own description, whether or not the stage is expanded', () => {
     render(<FlowStageHoverPanel item={ITEM} isExpanded={false} />);
-    expect(screen.getByText('grilling')).toBeInTheDocument();
+    expect(screen.getByText('/grilling')).toBeInTheDocument();
     expect(screen.getByText('Grill a plan or decision relentlessly.')).toBeInTheDocument();
-    expect(screen.getByText('to-spec')).toBeInTheDocument();
+    expect(screen.getByText('/to-spec')).toBeInTheDocument();
     expect(screen.getByText('Turn a rough idea into a written spec.')).toBeInTheDocument();
   });
 
   it("links each skill to its own doc page via the card's href", () => {
     render(<FlowStageHoverPanel item={ITEM} isExpanded={false} />);
-    expect(screen.getByRole('link', { name: 'grilling' })).toHaveAttribute('href', '/thinking-tools/grilling');
+    expect(screen.getByRole('link', { name: '/grilling' })).toHaveAttribute('href', '/thinking-tools/grilling');
   });
 
   it('renders nothing extra when a stage has no highlightCards', () => {

@@ -4,6 +4,7 @@
 
 .title {
   margin: 0 0 0.75rem;
+  font-size: 2.25rem;
 }
 
 .description {
@@ -15,8 +16,6 @@
   list-style: none;
   margin: 1.25rem 0 0;
   padding: 0;
-  max-height: 26rem;
-  overflow-y: auto;
 }
 
 .skillItem {
@@ -30,7 +29,9 @@
 }
 
 .skillName {
-  font-weight: 600;
+  font-family: var(--ifm-heading-font-family);
+  font-weight: 700;
+  font-size: 1.15rem;
 }
 
 .skillDescription {

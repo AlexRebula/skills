@@ -28,10 +28,10 @@ export function FlowStageHoverPanel({ item, isExpanded }: FlowStageHoverPanelPro
           <li key={card.title} className={styles.skillItem}>
             {card.href ? (
               <Link to={card.href} className={styles.skillName}>
-                {card.title}
+                /{card.title}
               </Link>
             ) : (
-              <span className={styles.skillName}>{card.title}</span>
+              <span className={styles.skillName}>/{card.title}</span>
             )}
             <p className={styles.skillDescription}>{card.description}</p>
           </li>
