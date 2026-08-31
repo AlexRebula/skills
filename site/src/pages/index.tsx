@@ -10,6 +10,7 @@ import {
   FeatureFlowSection,
   SectionCaption,
   SectionContainer,
+  SectionTitle,
   channelAlpha,
 } from '@littlebranches/giselle-mui';
 
@@ -40,6 +41,9 @@ import {
   OVERVIEW_LINK_PREFIX,
   OVERVIEW_LINK_TEXT,
   OVERVIEW_LINK_DESCRIPTION,
+  PERSONA_HERO_TITLE,
+  PERSONA_HERO_DESCRIPTION,
+  PERSONA_HERO_CAPTION
 } from '../data/index-page-copy';
 import styles from './index.module.css';
 
@@ -108,9 +112,8 @@ export default function Home(): ReactNode {
         */}
         <SectionContainer>
           <Grid container spacing={{ xs: 5, md: 4 }} sx={{ alignItems: 'center' }}>
-            <Grid size={{ xs: 12, md: 7 }}>
-              <Stack spacing={3}>
-                <Box>
+
+            <Box>
                   <SectionCaption
                     title={`${totalSkills} skills · ${categories.length} categories · MIT`}
                     sx={{ display: 'block', mb: 1.5 }}
@@ -119,6 +122,10 @@ export default function Home(): ReactNode {
                     {HERO_TITLE}
                   </Typography>
                 </Box>
+            <Grid size={{ xs: 12, md: 6 }}>
+              
+              <Stack spacing={3}>
+              
                 <Typography variant="h5" color="text.secondary" sx={{ fontWeight: 400 }}>
                   {HERO_SUBTITLE_PREFIX}{' '}
                   <a href={UPSTREAM_REPO_URL} target="_blank" rel="noreferrer">
@@ -127,11 +134,10 @@ export default function Home(): ReactNode {
                   {HERO_SUBTITLE_SUFFIX}
                 </Typography>
 
-                <PersonaFilterRow activePersonas={activePersonas} onTogglePersona={togglePersona} />
               </Stack>
             </Grid>
 
-            <Grid size={{ xs: 12, md: 5 }}>
+            <Grid size={{ xs: 12, md: 6 }}>
               <Stack spacing={3}>
                 <Box
                   sx={{
@@ -164,6 +170,19 @@ export default function Home(): ReactNode {
         </SectionContainer>
 
         <LandingStatsSection items={landingStats} />
+
+        <SectionContainer>
+
+           <SectionTitle
+            caption={PERSONA_HERO_CAPTION}
+            title={PERSONA_HERO_TITLE}
+            description={PERSONA_HERO_DESCRIPTION}
+            sx={{ mb: { xs: 3, md: 4 } }}
+          />
+
+          <PersonaFilterRow activePersonas={activePersonas} onTogglePersona={togglePersona} />
+
+        </SectionContainer>
 
         <FeatureFlowSection
           title="The Flow"

@@ -15,3 +15,8 @@ export const INSTALL_NOTE_PREFIX = 'Or as a read-only Claude Code plugin:';
 export const OVERVIEW_LINK_PREFIX = 'You just saw the shape.';
 export const OVERVIEW_LINK_TEXT = 'Read the Flow in detail';
 export const OVERVIEW_LINK_DESCRIPTION = 'for why these stages actually fit together.';
+
+
+export const PERSONA_HERO_CAPTION = "Choose your category";
+export const PERSONA_HERO_TITLE = "Flows tailored to you";
+export const PERSONA_HERO_DESCRIPTION = "Chose which persona category best fits you and we's suggest the workflows and skills for you.";
