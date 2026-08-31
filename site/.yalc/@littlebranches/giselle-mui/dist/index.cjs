@@ -2054,12 +2054,16 @@ var imageColumnCardSx = (theme) => ({
     boxShadow: `-40px 40px 80px 0px ${channelAlpha(COMMON_BLACK_CHANNEL, 0.16)}`
   })
 });
-var detailPanelSx = {
-  py: { xs: 6, md: 10 },
-  overflow: "hidden",
-  position: "relative",
-  bgcolor: channelAlpha("var(--mui-palette-primary-mainChannel)", 0.04),
-  borderTop: `1px solid ${channelAlpha("var(--mui-palette-primary-mainChannel)", 0.12)}`
+var detailPanelChannel = (color) => color === "grey" ? GREY_500_CHANNEL2 : `var(--mui-palette-${color}-mainChannel)`;
+var detailPanelSx = (color = "primary") => {
+  const channel = detailPanelChannel(color);
+  return {
+    py: { xs: 6, md: 10 },
+    overflow: "hidden",
+    position: "relative",
+    bgcolor: channelAlpha(channel, 0.04),
+    borderTop: `1px solid ${channelAlpha(channel, 0.12)}`
+  };
 };
 var featureFlowItemSx = ({ isSelected, isActive, isExpanded, expandable }) => (theme) => ({
   gap: 2,
@@ -2761,7 +2765,7 @@ var itemDetailLongDescriptionSx = {
 // src/components/section/feature-flow/item-detail/feature-flow-item-detail.tsx
 var import_jsx_runtime35 = require("react/jsx-runtime");
 var FeatureFlowItemDetail = import_react21.default.forwardRef(
-  function FeatureFlowItemDetail2({ item, onNodeRef, renderHighlightPanel, sx, ...other }, ref) {
+  function FeatureFlowItemDetail2({ item, onNodeRef, renderHighlightPanel, detailPanelColor = "primary", sx, ...other }, ref) {
     const reducedMotion = (0, import_framer_motion8.useReducedMotion)();
     const slideDistance = reducedMotion ? 0 : 8;
     return /* @__PURE__ */ (0, import_jsx_runtime35.jsx)(import_framer_motion8.m.div, { ref, layout: true, transition: DETAIL_PANEL_LAYOUT_TRANSITION, children: /* @__PURE__ */ (0, import_jsx_runtime35.jsx)(import_framer_motion8.AnimatePresence, { mode: "wait", children: item && /* @__PURE__ */ (0, import_jsx_runtime35.jsx)(
@@ -2775,7 +2779,7 @@ var FeatureFlowItemDetail = import_react21.default.forwardRef(
           import_Box20.default,
           {
             ref: (node) => onNodeRef?.(item.id, node),
-            sx: [detailPanelSx, ...Array.isArray(sx) ? sx : [sx]],
+            sx: [detailPanelSx(detailPanelColor), ...Array.isArray(sx) ? sx : [sx]],
             ...other,
             children: /* @__PURE__ */ (0, import_jsx_runtime35.jsx)(import_Container3.default, { children: /* @__PURE__ */ (0, import_jsx_runtime35.jsxs)(import_Grid3.default, { container: true, spacing: { xs: 4, md: 8 }, children: [
               /* @__PURE__ */ (0, import_jsx_runtime35.jsx)(import_Grid3.default, { size: { xs: 12, md: 6 }, children: /* @__PURE__ */ (0, import_jsx_runtime35.jsxs)(import_Stack7.default, { spacing: 4, children: [
@@ -2844,6 +2848,7 @@ var FeatureFlowSection = import_react22.default.forwardRef(
     decoration = true,
     renderRightPanel,
     renderHighlightPanel,
+    detailPanelColor,
     itemDetailSx,
     sx,
     ...other
@@ -3033,6 +3038,7 @@ var FeatureFlowSection = import_react22.default.forwardRef(
                 }
               },
               renderHighlightPanel,
+              detailPanelColor,
               sx: itemDetailSx
             }
           ),

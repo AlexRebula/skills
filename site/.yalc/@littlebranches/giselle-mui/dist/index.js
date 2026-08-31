@@ -1970,12 +1970,16 @@ var imageColumnCardSx = (theme) => ({
     boxShadow: `-40px 40px 80px 0px ${channelAlpha(COMMON_BLACK_CHANNEL, 0.16)}`
   })
 });
-var detailPanelSx = {
-  py: { xs: 6, md: 10 },
-  overflow: "hidden",
-  position: "relative",
-  bgcolor: channelAlpha("var(--mui-palette-primary-mainChannel)", 0.04),
-  borderTop: `1px solid ${channelAlpha("var(--mui-palette-primary-mainChannel)", 0.12)}`
+var detailPanelChannel = (color) => color === "grey" ? GREY_500_CHANNEL2 : `var(--mui-palette-${color}-mainChannel)`;
+var detailPanelSx = (color = "primary") => {
+  const channel = detailPanelChannel(color);
+  return {
+    py: { xs: 6, md: 10 },
+    overflow: "hidden",
+    position: "relative",
+    bgcolor: channelAlpha(channel, 0.04),
+    borderTop: `1px solid ${channelAlpha(channel, 0.12)}`
+  };
 };
 var featureFlowItemSx = ({ isSelected, isActive, isExpanded, expandable }) => (theme) => ({
   gap: 2,
@@ -2677,7 +2681,7 @@ var itemDetailLongDescriptionSx = {
 // src/components/section/feature-flow/item-detail/feature-flow-item-detail.tsx
 import { jsx as jsx35, jsxs as jsxs18 } from "react/jsx-runtime";
 var FeatureFlowItemDetail = React6.forwardRef(
-  function FeatureFlowItemDetail2({ item, onNodeRef, renderHighlightPanel, sx, ...other }, ref) {
+  function FeatureFlowItemDetail2({ item, onNodeRef, renderHighlightPanel, detailPanelColor = "primary", sx, ...other }, ref) {
     const reducedMotion = useReducedMotion4();
     const slideDistance = reducedMotion ? 0 : 8;
     return /* @__PURE__ */ jsx35(m6.div, { ref, layout: true, transition: DETAIL_PANEL_LAYOUT_TRANSITION, children: /* @__PURE__ */ jsx35(AnimatePresence3, { mode: "wait", children: item && /* @__PURE__ */ jsx35(
@@ -2691,7 +2695,7 @@ var FeatureFlowItemDetail = React6.forwardRef(
           Box20,
           {
             ref: (node) => onNodeRef?.(item.id, node),
-            sx: [detailPanelSx, ...Array.isArray(sx) ? sx : [sx]],
+            sx: [detailPanelSx(detailPanelColor), ...Array.isArray(sx) ? sx : [sx]],
             ...other,
             children: /* @__PURE__ */ jsx35(Container3, { children: /* @__PURE__ */ jsxs18(Grid3, { container: true, spacing: { xs: 4, md: 8 }, children: [
               /* @__PURE__ */ jsx35(Grid3, { size: { xs: 12, md: 6 }, children: /* @__PURE__ */ jsxs18(Stack7, { spacing: 4, children: [
@@ -2760,6 +2764,7 @@ var FeatureFlowSection = React7.forwardRef(
     decoration = true,
     renderRightPanel,
     renderHighlightPanel,
+    detailPanelColor,
     itemDetailSx,
     sx,
     ...other
@@ -2949,6 +2954,7 @@ var FeatureFlowSection = React7.forwardRef(
                 }
               },
               renderHighlightPanel,
+              detailPanelColor,
               sx: itemDetailSx
             }
           ),
