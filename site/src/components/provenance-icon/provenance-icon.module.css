@@ -16,9 +16,20 @@
   cursor: pointer;
 }
 
-.trigger:hover,
-.trigger:focus-visible {
+.trigger:hover {
   background-color: var(--ifm-color-emphasis-200);
+}
+
+/* :focus, not :focus-visible: a click focuses this button the same as Tab
+   does (it's the only way to open the popover on a touch device), and the
+   two input methods must show the same visible state here - most browsers
+   suppress :focus-visible specifically for a mouse-clicked button, which
+   would otherwise make a click-opened popover look like it belongs to
+   nothing once the pointer moves away. */
+.trigger:focus {
+  background-color: var(--ifm-color-emphasis-200);
+  outline: 2px solid var(--ifm-color-emphasis-400);
+  outline-offset: 1px;
 }
 
 .icon {
@@ -89,8 +100,14 @@
   cursor: pointer;
 }
 
-.diffTrigger:hover,
-.diffTrigger:focus-visible {
+.diffTrigger:hover {
   border-color: var(--portfolio-color-secondary);
   background-color: rgb(142 51 255 / 8%);
+}
+
+.diffTrigger:focus {
+  border-color: var(--portfolio-color-secondary);
+  background-color: rgb(142 51 255 / 8%);
+  outline: 2px solid var(--portfolio-color-secondary);
+  outline-offset: 1px;
 }

@@ -1,4 +1,4 @@
-import React, { useRef, useState, type ReactNode } from 'react';
+import React, { useId, useRef, useState, type KeyboardEvent, type ReactNode } from 'react';
 import clsx from 'clsx';
 import defaultProvenance from '../../data/provenance.json';
 import { getProvenanceEntry } from '../../data/provenance.utils';
@@ -66,6 +66,9 @@ export function ProvenanceIcon({ slug, provenanceMap = defaultProvenance as Prov
   const [open, setOpen] = useState(false);
   const [diffOpen, setDiffOpen] = useState(false);
   const wrapperRef = useRef<HTMLSpanElement>(null);
+  const triggerRef = useRef<HTMLButtonElement>(null);
+  const closeTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const popoverId = useId();
 
   const entry = getProvenanceEntry(slug, provenanceMap);
   if (!entry) return null;
@@ -74,6 +77,28 @@ export function ProvenanceIcon({ slug, provenanceMap = defaultProvenance as Prov
   const hasDiff = !!files && files.length > 0;
   const Icon = ICON[entry.status];
   const copy = COPY[entry.status];
+
+  function cancelScheduledClose() {
+    if (closeTimeoutRef.current !== null) {
+      clearTimeout(closeTimeoutRef.current);
+      closeTimeoutRef.current = null;
+    }
+  }
+
+  // Every re-entry (mouse or focus) cancels any close still pending from an
+  // earlier exit - without this, moving the mouse from the trigger toward
+  // the popover (crossing the few pixels of gap between them, which is not
+  // itself part of either element) fires a real mouseleave, then mouseenter
+  // again once the pointer lands on the popover. The mouseenter reopens it
+  // synchronously, but the *first* mouseleave's own deferred close (below)
+  // was never told that happened, and closes the just-reopened popover out
+  // from under the pointer moments later - reported directly, and
+  // reproducible on every attempt to reach a button inside the popover by
+  // mouse.
+  function openPopover() {
+    cancelScheduledClose();
+    setOpen(true);
+  }
 
   // Closing is deferred and re-checked against document.activeElement,
   // rather than closing synchronously the instant the mouse leaves or focus
@@ -88,42 +113,85 @@ export function ProvenanceIcon({ slug, provenanceMap = defaultProvenance as Prov
   // it, which would otherwise close on every blur regardless of where focus
   // actually landed.
   function scheduleClose() {
-    setTimeout(() => {
+    cancelScheduledClose();
+    closeTimeoutRef.current = setTimeout(() => {
+      closeTimeoutRef.current = null;
       if (wrapperRef.current && !wrapperRef.current.contains(document.activeElement)) {
         setOpen(false);
       }
     }, 0);
   }
 
+  // Escape is the standard way to dismiss any open popover/disclosure
+  // without tabbing away from it - and closing must hand focus back to the
+  // trigger explicitly: once the popover unmounts, whatever inside it had
+  // focus (the "See what changed" button, if that's where the user was)
+  // disappears from the DOM, and focus would otherwise silently fall back
+  // to <body> instead of staying somewhere meaningful.
+  function handleKeyDown(e: KeyboardEvent<HTMLButtonElement>) {
+    if (e.key === 'Escape' && open) {
+      e.stopPropagation();
+      cancelScheduledClose();
+      // Focusing the trigger fires this component's own onFocus handler
+      // synchronously (openPopover, since the trigger is inside wrapperRef),
+      // queuing a setOpen(true) - called first so the setOpen(false) right
+      // after it is the *last* call in this same batch, which is the one
+      // that wins. Reversing this order would silently reopen what Escape
+      // just closed.
+      triggerRef.current?.focus();
+      setOpen(false);
+    }
+  }
+
   return (
     <span
       ref={wrapperRef}
       className={clsx(styles.wrapper, className)}
-      onMouseEnter={() => setOpen(true)}
+      onMouseEnter={openPopover}
       onMouseLeave={scheduleClose}
-      onFocus={() => setOpen(true)}
+      onFocus={openPopover}
       onBlur={scheduleClose}
     >
       <button
+        ref={triggerRef}
         type="button"
         className={styles.trigger}
         aria-expanded={open}
+        aria-controls={popoverId}
         aria-label={copy.title}
         // Not a toggle: a click always fires its own focus first (setting
-        // open=true via onFocus below), so toggling here would immediately
-        // flip it back closed on the very click meant to open it. Hover and
+        // open via onFocus above), so toggling here would immediately flip
+        // it back closed on the very click meant to open it. Hover and
         // focus already open it; this only has to handle the touch case,
         // where the click is the only signal at all.
-        onClick={() => setOpen(true)}
+        onClick={openPopover}
+        // Escape lives on the two real buttons, not the wrapper span: a
+        // span with a key handler but no interactive role/tabIndex fails
+        // jsx-a11y/no-static-element-interactions, and rightly so - a
+        // listener has to sit on something a keyboard user can actually be
+        // focused on when they press the key, and that's always one of
+        // these two buttons, never the wrapper itself.
+        onKeyDown={handleKeyDown}
       >
         <Icon className={clsx(styles.icon, styles[entry.status])} />
       </button>
       {open && (
-        <div className={styles.popover} role="tooltip">
+        // No role="tooltip" here: per the WAI-ARIA authoring practices, a
+        // tooltip must never contain focusable content, and this one holds
+        // a real button for "modified" skills. Left with no special role,
+        // this is a plain disclosure region - aria-controls/aria-expanded
+        // on the trigger above is what makes the relationship accessible,
+        // not a role on this element.
+        <div id={popoverId} className={styles.popover}>
           <p className={styles.popoverTitle}>{copy.title}</p>
           <p className={styles.popoverBody}>{copy.body}</p>
           {hasDiff && (
-            <button type="button" className={styles.diffTrigger} onClick={() => setDiffOpen(true)}>
+            <button
+              type="button"
+              className={styles.diffTrigger}
+              onClick={() => setDiffOpen(true)}
+              onKeyDown={handleKeyDown}
+            >
               See what changed
             </button>
           )}
