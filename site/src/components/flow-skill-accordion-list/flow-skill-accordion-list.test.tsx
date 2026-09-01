@@ -90,7 +90,7 @@ describe('FlowSkillAccordionList', () => {
   it("renders each card's provenance badge already, before it's expanded", () => {
     render(<FlowSkillAccordionList item={ITEM} skillSummaries={{}} provenanceMap={PROVENANCE_FIXTURE} />);
     expect(screen.getByRole('button', { name: 'Originally written by Matt Pocock' })).toBeInTheDocument();
-    expect(screen.getByRole('button', { name: 'Your own addition' })).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: 'AlexRebula original' })).toBeInTheDocument();
   });
 
   it('clicking a provenance badge does not also toggle the accordion it sits in', () => {

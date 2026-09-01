@@ -24,9 +24,13 @@ interface Copy {
 // that context. Mirrors UpstreamCredit's existing wording where a skill
 // shares that status, rather than inventing a second, divergent phrasing.
 const COPY: Record<ProvenanceStatus, Copy> = {
+  // Third-person throughout, naming the fork by name rather than "your"/
+  // "you" - this reads on the public site to a visitor deciding whether to
+  // install a skill, not to the maintainer writing it. Matches the title
+  // PROVENANCE_BADGE_LABEL already uses for this exact status elsewhere.
   original: {
-    title: 'Your own addition',
-    body: "Not from Matt Pocock's skills repo (mattpocock/skills) - built for this fork.",
+    title: 'AlexRebula original',
+    body: "Built specifically for this fork, not from Matt Pocock's skills repo (mattpocock/skills).",
   },
   upstream: {
     title: 'Originally written by Matt Pocock',

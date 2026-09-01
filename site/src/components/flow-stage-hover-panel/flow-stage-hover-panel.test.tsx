@@ -64,7 +64,7 @@ describe('FlowStageHoverPanel', () => {
     expect(grillingItem).not.toBeNull();
     const icon = screen.getByRole('button', { name: 'Originally written by Matt Pocock' });
     expect(grillingItem).toContainElement(icon);
-    expect(screen.getByRole('button', { name: 'Your own addition' })).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: 'AlexRebula original' })).toBeInTheDocument();
   });
 
   it('renders no badge for a skill missing from the provenance map, rather than a broken button', () => {

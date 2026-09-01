@@ -79,7 +79,7 @@ describe('ProvenanceIcon', () => {
   });
 
   it.each([
-    ['/org/create-giselle-component', 'Your own addition'],
+    ['/org/create-giselle-component', 'AlexRebula original'],
     ['/productivity/teach', 'Originally written by Matt Pocock'],
     ['/personal/caveman', 'Originally written by Matt Pocock'],
   ])('labels the icon at %s as %s', async (slug, label) => {
