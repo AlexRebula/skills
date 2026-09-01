@@ -16,10 +16,6 @@ export const FLOW_COLUMN_SPACING: NonNullable<FeatureFlowSectionProps['columnSpa
   md: 4,
 };
 
-// A neutral grey tint (giselle-mui#feature/render-highlight-panel's
-// detailPanelColor, not a primary-tinted background) - the accordion
-// (FlowSkillAccordionList) is themed to sit on top of it, with its own
-// collapsed/expanded states inverted to read against grey instead of a plain
-// page background.
+// giselle-mui#feature/render-highlight-panel's detailPanelColor.
 export const FLOW_DETAIL_PANEL_COLOR: NonNullable<FeatureFlowSectionProps['detailPanelColor']> =
-  'grey';
+  'info';
