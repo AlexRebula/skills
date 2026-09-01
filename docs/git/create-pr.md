@@ -47,4 +47,4 @@ Only by passing `request-review`, and only if a review bot is already configured
 commit-wip / wip-sweep -> create-pr -> respond-pr-review / review-pr
 ```
 
-[wip-sweep](./wip-sweep.md) calls it with `skip-hygiene` in its T4 tier and with an `update` flag from T3. Once the PR exists, [respond-pr-review](./respond-pr-review.md) and [review-pr](./review-pr.md) pick up from here; this skill stops the moment the PR is created and does not touch review threads itself.
+[wip-sweep](./wip-sweep.md) calls it with `skip-hygiene` in its T4 tier and with an `update` flag from T3. Once the PR exists, [respond-pr-review](./respond-pr-review.md) and [review-pr](./review-pr.md) pick up from here; this skill stops the moment the PR is created and does not touch review threads itself. Once the PR merges, [pr-merged](./pr-merged.md) handles the local cleanup — `create-pr` doesn't run that itself, but points to it.
