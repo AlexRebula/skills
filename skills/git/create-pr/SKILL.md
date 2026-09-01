@@ -250,22 +250,7 @@ There is no reliable CLI or API path for requesting a bot review. The GitHub UI 
 
 Stop here. Do not respond to review threads in this skill. Use `/respond-pr-review <PR-number>` when you are ready to address the review.
 
----
-
-### Step 8: Post-merge cleanup (required, do this whenever a PR created by this flow is confirmed merged)
-
-Do not treat this as optional follow-up labor that depends on someone remembering to ask for it. Whenever the user reports (or you independently confirm) that a PR opened via this skill has merged, run the cleanup in the same turn:
-
-```sh
-gh pr view <PR-number> --repo <owner>/<repo> --json state,mergedAt,headRefName -q '"\(.state) merged=\(.mergedAt)"'
-```
-
-1. **Verify** the PR actually shows `MERGED` before doing anything below — do not act on an unconfirmed claim.
-2. **Close the linked issue(s) with a summary comment.** If the PR title/body referenced an issue (`Closes #N`, `Fixes #N`, or a "Parent"/ticket link), close it with `gh issue close <N> --comment "<what shipped, PR link>"`. If GitHub's `Closes #N` syntax already auto-closed it on merge, still verify the closing comment exists and is substantive — add one if merge auto-closed it silently with no summary.
-3. **Clean up the branch/worktree**: delete the local branch (`git branch -d <branch>`), and if it lived in a dedicated worktree, remove the worktree (`git worktree remove <path>`). Prune the remote-tracking ref (`git fetch origin --prune` or `git remote prune origin`).
-4. **Fast-forward the base branch** locally if you have it checked out, so the next piece of work starts from current state.
-
-This mirrors the "Parent issue lifecycle" convention in `/to-tickets` — a merge alone is not the same as a documented close, and cleanup left to memory is exactly the gap this step exists to close.
+Once the PR merges, run `/pr-merged <PR-number> <owner>/<repo>` to verify the merge, close any linked issue, and clean up the local branch. This skill does not do that cleanup itself — see `/pr-merged`'s own SKILL.md.
 
 ---
 
