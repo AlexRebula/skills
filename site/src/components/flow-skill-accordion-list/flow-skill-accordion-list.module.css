@@ -1,7 +1,24 @@
 .list {
   display: flex;
   flex-direction: column;
+  gap: 1rem;
+}
+
+.group {
+  display: flex;
+  flex-direction: column;
   gap: 0.5rem;
+}
+
+/* Only rendered when a stage has both Original and Matt-lineage skills (AlexRebula/skills#146) - the boundary a lone group doesn't need. */
+.groupHeading {
+  margin: 0 0 0.125rem 0.75rem;
+  font-family: var(--ifm-heading-font-family);
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--ifm-color-emphasis-600);
 }
 
 /*
