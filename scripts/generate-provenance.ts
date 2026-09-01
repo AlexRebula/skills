@@ -29,6 +29,7 @@ import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { diffLines, type Change } from 'diff';
 import { TARGET_CATEGORIES } from '../site/src/data/categories.ts';
+import { SKILL_RENAMES } from '../site/src/data/skill-renames.ts';
 import type {
   DiffRow,
   DiffStatEntry,
@@ -115,15 +116,30 @@ export function parseHistoryLog(output: string): HistoricalOccurrence[] {
   return occurrences;
 }
 
+/** Pure: the git pathspec matching a SKILL.md under any category, for each given name. */
+export function buildHistoryPathspecs(names: string[]): string[] {
+  return names.map((name) => `skills/*/${name}/SKILL.md`);
+}
+
+/**
+ * Pure: a skill's own name plus the single name it was renamed from, if any
+ * (see site/src/data/skill-renames.ts): without this, a rename silently
+ * breaks upstream matching, since it's otherwise done by name alone.
+ */
+export function namesToSearch(name: string, renames: Record<string, string> = SKILL_RENAMES): string[] {
+  const renamedFrom = renames[name];
+  return renamedFrom ? [name, renamedFrom] : [name];
+}
+
 /**
  * IO: every commit reachable from upstreamSha that ever touched a
- * SKILL.md at this name under any category (a category move upstream
- * before deletion still matches), most recent first.
+ * SKILL.md at any of these names under any category (a category move
+ * upstream before deletion still matches), most recent first.
  */
-function historyOccurrences(name: string, upstreamSha: string): HistoricalOccurrence[] {
+function historyOccurrences(names: string[], upstreamSha: string): HistoricalOccurrence[] {
   const log = execFileSync(
     'git',
-    ['log', upstreamSha, '--name-only', '--pretty=format:%H', '--', `skills/*/${name}/SKILL.md`],
+    ['log', upstreamSha, '--name-only', '--pretty=format:%H', '--', ...buildHistoryPathspecs(names)],
     { cwd: REPO_ROOT, encoding: 'utf-8' },
   );
   return parseHistoryLog(log);
@@ -138,7 +154,7 @@ function historyOccurrences(name: string, upstreamSha: string): HistoricalOccurr
  * if the name never appeared anywhere in upstream's history.
  */
 function findLastUpstreamOccurrence(name: string, upstreamSha: string): HistoricalOccurrence | null {
-  for (const occurrence of historyOccurrences(name, upstreamSha)) {
+  for (const occurrence of historyOccurrences(namesToSearch(name), upstreamSha)) {
     if (pathExistsInUpstream(occurrence.path, occurrence.sha)) return occurrence;
   }
   return null;
@@ -169,7 +185,7 @@ export function pickCurrentUpstreamPath(candidatePaths: string[], existsNow: (pa
  * exact local path.
  */
 function findCurrentUpstreamPath(name: string, upstreamSha: string): string | null {
-  const candidates = [...new Set(historyOccurrences(name, upstreamSha).map((o) => toSkillFolderPath(o.path)))];
+  const candidates = [...new Set(historyOccurrences(namesToSearch(name), upstreamSha).map((o) => toSkillFolderPath(o.path)))];
   return pickCurrentUpstreamPath(candidates, (path) => pathExistsInUpstream(path, upstreamSha));
 }
 
@@ -419,22 +435,26 @@ function classify(category: string, name: string, upstreamSha: string): Provenan
     existedUpstreamHistorically: historical !== null,
   });
 
-  if (status === 'original') return { status };
-
-  if (status === 'inherited') {
+  let entry: ProvenanceEntry;
+  if (status === 'original') {
+    entry = { status };
+  } else if (status === 'inherited') {
     // Non-null: `historical` only feeds `deriveStatus` as true when it's set.
-    return {
+    entry = {
       status,
       upstreamSha: historical!.sha,
       upstreamUrl: buildUpstreamUrl(toSkillFolderPath(historical!.path), historical!.sha),
     };
+  } else {
+    // Non-null: `existsUpstream` (⇐ paths !== null) only feeds `deriveStatus` as true when it's set.
+    entry = { status, upstreamSha, upstreamUrl: buildUpstreamUrl(paths!.upstreamPath, upstreamSha) };
+    if (status === 'modified') {
+      entry.diffs = computeFileDiffs(paths!, upstreamSha, computeDiffStat(paths!, upstreamSha));
+    }
   }
 
-  // Non-null: `existsUpstream` (⇐ paths !== null) only feeds `deriveStatus` as true when it's set.
-  const entry: ProvenanceEntry = { status, upstreamSha, upstreamUrl: buildUpstreamUrl(paths!.upstreamPath, upstreamSha) };
-  if (status === 'modified') {
-    entry.diffs = computeFileDiffs(paths!, upstreamSha, computeDiffStat(paths!, upstreamSha));
-  }
+  const renamedFrom = SKILL_RENAMES[name];
+  if (renamedFrom) entry.renamedFrom = renamedFrom;
   return entry;
 }
 

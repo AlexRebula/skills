@@ -18,6 +18,15 @@ const FIXTURE: ProvenanceMap = {
     upstreamUrl: 'https://github.com/mattpocock/skills/tree/221ffca/skills/productivity/caveman',
   },
   'org/create-giselle-component': { status: 'original' },
+  'engineering/ask-alex': {
+    status: 'modified',
+    upstreamUrl: 'https://github.com/mattpocock/skills/tree/5b15a47/skills/engineering/ask-matt',
+    renamedFrom: 'ask-matt',
+  },
+  'engineering/renamed-but-unresolved': {
+    status: 'original',
+    renamedFrom: 'some-old-name',
+  },
 };
 
 describe('UpstreamCredit', () => {
@@ -47,5 +56,20 @@ describe('UpstreamCredit', () => {
   it('renders nothing for an unknown slug', () => {
     const { container } = render(<UpstreamCredit slug="/unknown/skill" provenanceMap={FIXTURE} />);
     expect(container).toBeEmptyDOMElement();
+  });
+
+  it('renders a "renamed from" line alongside the usual status wording for a renamed, modified skill', () => {
+    render(<UpstreamCredit slug="/engineering/ask-alex" provenanceMap={FIXTURE} />);
+    expect(screen.getByText(/renamed from matt pocock's/i)).toBeInTheDocument();
+    expect(screen.getByText('ask-matt')).toBeInTheDocument();
+    const link = screen.getByRole('link', { name: /based on matt pocock's original, modified here/i });
+    expect(link).toHaveAttribute('href', FIXTURE['engineering/ask-alex'].upstreamUrl);
+  });
+
+  it('renders the "renamed from" line even when the status itself has nothing creditable (defensive: should not happen once matching is fixed)', () => {
+    render(<UpstreamCredit slug="/engineering/renamed-but-unresolved" provenanceMap={FIXTURE} />);
+    expect(screen.getByText(/renamed from matt pocock's/i)).toBeInTheDocument();
+    expect(screen.getByText('some-old-name')).toBeInTheDocument();
+    expect(screen.queryByRole('link')).not.toBeInTheDocument();
   });
 });

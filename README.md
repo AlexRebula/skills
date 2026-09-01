@@ -167,7 +167,7 @@ Skills I use daily for code work.
 
 **User-invoked**
 
-- **[ask-matt](./skills/engineering/ask-matt/SKILL.md)**: Ask which skill or flow fits your situation. A router over the whole skill set in this repo.
+- **[ask-alex](./skills/engineering/ask-alex/SKILL.md)**: Ask which skill or flow fits your situation. A router over the whole skill set in this repo.
 - **[grill-with-docs](./skills/engineering/grill-with-docs/SKILL.md)**: Grilling session that also builds your project's domain model, sharpening terminology and updating `CONTEXT.md` and ADRs inline — the stateful front door onto the same `grilling` primitive `grill-me` uses, plus `domain-modeling`.
 - **[triage](./skills/engineering/triage/SKILL.md)**: Move issues (and, where configured, external PRs) through a state machine of triage roles: categorise, verify, grill if needed, write agent-ready briefs.
 - **[improve-codebase-architecture](./skills/engineering/improve-codebase-architecture/SKILL.md)**: Scan a codebase for deepening opportunities, present them as a visual HTML report, then grill through whichever one you pick.

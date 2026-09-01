@@ -8,7 +8,7 @@ import { DiffModal } from '../diff-modal';
 import type { ProvenanceIconProps } from './types';
 import styles from './provenance-icon.module.css';
 
-/** The doc slug's last path segment, e.g. "/engineering/ask-matt" -> "ask-matt". */
+/** The doc slug's last path segment, e.g. "/engineering/ask-alex" -> "ask-alex". */
 function skillNameFromSlug(slug: string): string {
   return slug.replace(/\/$/, '').split('/').pop() ?? slug;
 }
