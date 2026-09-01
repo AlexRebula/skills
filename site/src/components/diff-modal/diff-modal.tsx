@@ -1,4 +1,5 @@
 import React, { useEffect, useRef, useState, type KeyboardEvent as ReactKeyboardEvent, type ReactNode } from 'react';
+import { createPortal } from 'react-dom';
 import clsx from 'clsx';
 import type { DiffRow } from '../../data/provenance.types';
 import type { DiffModalProps } from './types';
@@ -39,7 +40,27 @@ function newSideClass(row: DiffRow): string | undefined {
   return row.type === 'add' || row.type === 'change' ? styles.addedSide : undefined;
 }
 
+/**
+ * A "context" row's old and new content are always identical (nothing
+ * changed on that line) - rendering both sides anyway just duplicates the
+ * same text twice, which is most of a typical diff's rows and was the real
+ * cause of a table wide enough to make comparing the lines that actually
+ * differ feel like scrolling through noise to find them (reported directly,
+ * even after the sticky column / scroll hint fix below already shipped -
+ * that fixed discoverability, not the underlying width). One row, one line
+ * number, content spanning the full row instead.
+ */
 function DiffRowView({ row }: { row: DiffRow }): ReactNode {
+  if (row.type === 'context') {
+    return (
+      <tr>
+        <td className={styles.lineNumber}>{row.oldLineNumber ?? ''}</td>
+        <td className={styles.lineContent} colSpan={3}>
+          {row.oldContent}
+        </td>
+      </tr>
+    );
+  }
   return (
     <tr>
       <td className={clsx(styles.lineNumber, oldSideClass(row))}>{row.oldLineNumber ?? ''}</td>
@@ -80,6 +101,28 @@ export function DiffModal({ skillName, upstreamSha, files, onClose }: DiffModalP
   const closeButtonRef = useRef<HTMLButtonElement>(null);
   const tabRefs = useRef<Record<string, HTMLButtonElement | null>>({});
   const previouslyFocused = useRef<Element | null>(null);
+  const bodyRef = useRef<HTMLDivElement>(null);
+  const [hasOverflow, setHasOverflow] = useState(false);
+
+  // The side-by-side table can run far wider than any real viewport (a long
+  // code line easily produces a several-thousand-pixel-wide row) - `.body`'s
+  // own `overflow: auto` already lets it scroll, but a plain scrollbar alone
+  // is easy to miss, which reads as "the table is cropped" rather than
+  // "scroll right for more" (reported repeatedly). ResizeObserver instead of
+  // a one-off check on mount: switching tabs (a different file's table, a
+  // different natural width) must re-evaluate, not just the initial file.
+  useEffect(() => {
+    const body = bodyRef.current;
+    if (!body) return;
+    function checkOverflow() {
+      if (!body) return;
+      setHasOverflow(body.scrollWidth > body.clientWidth);
+    }
+    checkOverflow();
+    const observer = new ResizeObserver(checkOverflow);
+    observer.observe(body);
+    return () => observer.disconnect();
+  }, [activeFile]);
 
   // Move focus in on mount, restore it to whatever had it before (the
   // trigger button, in practice) on unmount, rather than letting it fall
@@ -140,7 +183,16 @@ export function DiffModal({ skillName, upstreamSha, files, onClose }: DiffModalP
   const hasTabs = files.length > 1;
   const activeDiff = files.find((f) => f.file === activeFile) ?? files[0];
 
-  return (
+  // Portaled straight to <body>, not rendered inline where the trigger
+  // happens to sit: `position: sticky` (used by FlowStageHoverPanel's own
+  // .panel, and by giselle-mui's internal FloatingSubNav) establishes a new
+  // stacking context regardless of z-index, so a modal nested inside one
+  // has its own z-index evaluated relative to that ancestor's rank in the
+  // page - not at the true page root - no matter how high the number is.
+  // Confirmed live: z-index: 2000 here still lost to a sticky ancestor's
+  // effectively-zero rank when rendered inline. A portal is the actual fix
+  // for "must render above literally everything," not a bigger number.
+  return createPortal(
     <div className={styles.overlay}>
       <div ref={panelRef} className={styles.panel} role="dialog" aria-modal="true" aria-label={`What's different in ${skillName}`}>
         <div className={styles.header}>
@@ -182,6 +234,7 @@ export function DiffModal({ skillName, upstreamSha, files, onClose }: DiffModalP
         )}
 
         <div
+          ref={bodyRef}
           className={styles.body}
           role={hasTabs ? 'tabpanel' : undefined}
           id={hasTabs ? panelId(activeDiff.file) : undefined}
@@ -198,7 +251,9 @@ export function DiffModal({ skillName, upstreamSha, files, onClose }: DiffModalP
             </tbody>
           </table>
         </div>
+        {hasOverflow && <p className={styles.scrollHint}>Scroll to see more →</p>}
       </div>
-    </div>
+    </div>,
+    document.body,
   );
 }

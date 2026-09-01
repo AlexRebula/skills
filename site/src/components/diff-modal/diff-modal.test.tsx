@@ -91,6 +91,14 @@ describe('DiffModal', () => {
     expect(screen.getByText('bar')).toBeInTheDocument();
   });
 
+  it('renders an unchanged (context) row once, spanning the row, rather than duplicating identical content on both sides', () => {
+    render(<DiffModal skillName="ask-matt" upstreamSha="abc1234" files={[SKILL_MD_DIFF]} onClose={() => {}} />);
+    expect(screen.getAllByText('a')).toHaveLength(1);
+    const cell = screen.getByText('a');
+    expect(cell.tagName).toBe('TD');
+    expect(cell).toHaveAttribute('colspan', '3');
+  });
+
   it('links each tab to its panel by id, per the WAI-ARIA tabs pattern', () => {
     render(<DiffModal skillName="ask-matt" upstreamSha="abc1234" files={[REFERENCE_DIFF, SKILL_MD_DIFF]} onClose={() => {}} />);
     const activeTab = screen.getByRole('tab', { name: /SKILL\.md/ });
@@ -147,5 +155,26 @@ describe('DiffModal', () => {
     await user.tab({ shift: true });
 
     expect(document.activeElement).toBe(skillTab);
+  });
+
+  it("shows no scroll hint when the diff table fits within the panel (jsdom's default 0/0 layout)", () => {
+    render(<DiffModal skillName="ask-matt" upstreamSha="abc1234" files={[SKILL_MD_DIFF]} onClose={() => {}} />);
+    expect(screen.queryByText('Scroll to see more →')).not.toBeInTheDocument();
+  });
+
+  it('shows a scroll hint once the diff table overflows the panel horizontally', async () => {
+    const user = userEvent.setup();
+    render(<DiffModal skillName="ask-matt" upstreamSha="abc1234" files={[REFERENCE_DIFF, SKILL_MD_DIFF]} onClose={() => {}} />);
+    const body = screen.getByRole('tabpanel');
+    Object.defineProperty(body, 'scrollWidth', { configurable: true, value: 4000 });
+    Object.defineProperty(body, 'clientWidth', { configurable: true, value: 1200 });
+
+    // ResizeObserver is stubbed as a no-op in jsdom (vitest.setup.ts), so its
+    // callback never fires here - but the overflow check also re-runs on
+    // every activeFile change (a different file's table, a different natural
+    // width), which switching tabs triggers against the values just set above.
+    await user.click(screen.getByRole('tab', { name: /reference\.md/ }));
+
+    expect(screen.getByText('Scroll to see more →')).toBeInTheDocument();
   });
 });

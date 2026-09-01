@@ -4,6 +4,7 @@ import defaultProvenance from '../../data/provenance.json';
 import { getProvenanceEntry } from '../../data/provenance.utils';
 import type { ProvenanceMap, ProvenanceStatus } from '../../data/provenance.types';
 import { PROVENANCE_BADGE_LABEL } from '../../data/provenance-display';
+import { ForkIcon, SparkleIcon, HistoryIcon } from '../provenance-glyphs';
 import { DiffModal } from '../diff-modal';
 import type { ProvenanceButtonProps } from './types';
 import styles from './provenance-button.module.css';
@@ -23,54 +24,14 @@ const LABEL: Record<keyof typeof PROVENANCE_BADGE_LABEL, string> = {
   modified: "See what's different",
 };
 
-/** Two small nodes forking down into one: upstream/modified both have a real relationship to a single upstream source. */
-function ForkIcon(): ReactNode {
-  return (
-    <svg
-      className={styles.icon}
-      viewBox="0 0 16 16"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="1.5"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      aria-hidden="true"
-    >
-      <circle cx="4" cy="3" r="1.4" />
-      <circle cx="12" cy="3" r="1.4" />
-      <circle cx="8" cy="13" r="1.4" />
-      <path d="M4 4.4V6a2 2 0 0 0 2 2h4a2 2 0 0 0 2-2V4.4" />
-      <path d="M8 8v3.2" />
-    </svg>
-  );
-}
-
-/** A plus in a circle: original has nothing to fork from, it's a new addition, not a relationship to upstream. */
-function NewIcon(): ReactNode {
-  return (
-    <svg
-      className={styles.icon}
-      viewBox="0 0 16 16"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="1.5"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      aria-hidden="true"
-    >
-      <circle cx="8" cy="8" r="6.25" />
-      <path d="M8 5.3v5.4M5.3 8h5.4" />
-    </svg>
-  );
-}
-
-const ICON: Record<ProvenanceStatus, () => ReactNode> = {
+const ICON: Record<ProvenanceStatus, (props: { className?: string }) => ReactNode> = {
   upstream: ForkIcon,
   modified: ForkIcon,
-  original: NewIcon,
-  // Inherited has a real (historical) upstream relationship too, just not a
-  // current one, so it gets the fork icon rather than the "new" one.
-  inherited: ForkIcon,
+  original: SparkleIcon,
+  // Inherited had a real relationship to upstream once, just not a current
+  // one - the history icon (also used by ProvenanceIcon) reads "past tense"
+  // rather than reusing the fork shape for a no-longer-active relationship.
+  inherited: HistoryIcon,
 };
 
 interface Ripple {
@@ -159,7 +120,7 @@ export function ProvenanceButton({
             ))}
           </span>
         )}
-        <Icon />
+        <Icon className={styles.icon} />
         {LABEL[entry.status]}
       </button>
       {open && hasDiff && (

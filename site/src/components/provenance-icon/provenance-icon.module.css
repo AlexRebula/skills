@@ -1,0 +1,113 @@
+.wrapper {
+  position: relative;
+  display: inline-flex;
+}
+
+.trigger {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  padding: 0;
+  border: none;
+  border-radius: 6px;
+  background: transparent;
+  cursor: pointer;
+}
+
+.trigger:hover {
+  background-color: var(--ifm-color-emphasis-200);
+}
+
+/* :focus, not :focus-visible: a click focuses this button the same as Tab
+   does (it's the only way to open the popover on a touch device), and the
+   two input methods must show the same visible state here - most browsers
+   suppress :focus-visible specifically for a mouse-clicked button, which
+   would otherwise make a click-opened popover look like it belongs to
+   nothing once the pointer moves away. */
+.trigger:focus {
+  background-color: var(--ifm-color-emphasis-200);
+  outline: 2px solid var(--ifm-color-emphasis-400);
+  outline-offset: 1px;
+}
+
+.icon {
+  width: 15px;
+  height: 15px;
+  flex-shrink: 0;
+}
+
+/* Same per-status colors ProvenanceButton's badge uses, so the same status
+   always reads the same color everywhere, icon or text. */
+.original {
+  color: var(--ifm-color-primary);
+}
+
+.upstream {
+  color: var(--ifm-color-info);
+}
+
+.modified {
+  color: var(--portfolio-color-secondary);
+}
+
+.inherited {
+  color: var(--ifm-color-warning-dark);
+}
+
+.popover {
+  position: absolute;
+  top: calc(100% + 6px);
+  left: 0;
+  z-index: 5;
+  width: 220px;
+  padding: 0.75rem;
+  border: 1px solid var(--ifm-color-emphasis-300);
+  border-radius: var(--ifm-global-radius, 8px);
+  background-color: #fff;
+  box-shadow: 0 4px 16px rgb(0 0 0 / 12%);
+}
+
+:global([data-theme='dark']) .popover {
+  background-color: rgb(28 37 46 / 100%);
+}
+
+.popoverTitle {
+  margin: 0 0 4px;
+  font-size: 0.8rem;
+  font-weight: 700;
+}
+
+.popoverBody {
+  margin: 0;
+  color: var(--ifm-color-emphasis-700);
+  font-size: 0.75rem;
+  line-height: 1.5;
+}
+
+.diffTrigger {
+  width: 100%;
+  margin-top: 8px;
+  padding: 6px 8px;
+  border: 1px solid rgb(142 51 255 / 48%);
+  border-radius: 6px;
+  background: transparent;
+  color: var(--portfolio-color-secondary);
+  font-family: var(--ifm-font-family-base);
+  font-size: 0.75rem;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.diffTrigger:hover {
+  border-color: var(--portfolio-color-secondary);
+  background-color: rgb(142 51 255 / 8%);
+}
+
+.diffTrigger:focus {
+  border-color: var(--portfolio-color-secondary);
+  background-color: rgb(142 51 255 / 8%);
+  outline: 2px solid var(--portfolio-color-secondary);
+  outline-offset: 1px;
+}

@@ -2,11 +2,17 @@
   position: fixed;
   inset: 0;
 
-  /* Docusaurus's own sticky navbar sits at Infima's --ifm-z-index-fixed
-     (200): a genuinely full-screen modal has to paint above that too, not
-     just above the page content, or the navbar covers its top edge and
-     swallows clicks meant for the modal underneath it. */
-  z-index: 300;
+  /* Has to clear two separate z-index systems on this site, not just one:
+     Docusaurus's own sticky navbar sits at Infima's --ifm-z-index-fixed
+     (200), and giselle-mui's FeatureFlowSection renders its own internal
+     FloatingSubNav (a sticky, bottom-positioned pill) at MUI's
+     theme.zIndex.speedDial (1050) - confirmed via devtools covering this
+     modal on a real page, not a theoretical concern. MUI's own scale tops
+     out at zIndex.tooltip (1500), so 2000 clears its entire range, not
+     just the one tier that happened to collide today - the next floating
+     giselle-mui chrome this modal opens on top of shouldn't need its own
+     bug report. */
+  z-index: 2000;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -20,6 +26,7 @@
  * popover used, at the size a whole-file side-by-side diff actually needs.
  */
 .panel {
+  position: relative;
   display: flex;
   flex-direction: column;
   width: 100%;
@@ -137,18 +144,48 @@
   line-height: 1.6;
 }
 
+/* Matches .panel's own background (not a shared variable - .panel's colors
+   are their own deliberate literal, see that rule's comment) so the sticky
+   old-line-number column below has something opaque to cover scrolled
+   content with. .removedSide/.addedSide are defined further down and win
+   the cascade on a tinted row (equal specificity, later in source). */
 .lineNumber {
   width: 3rem;
   padding: 0 0.5rem;
+  background-color: #fff;
   color: var(--ifm-color-emphasis-500);
   text-align: right;
   user-select: none;
   white-space: nowrap;
 }
 
+:global([data-theme='dark']) .lineNumber {
+  background-color: rgb(28 37 46 / 100%);
+}
+
+/* The old (leftmost) line-number column only - td:first-child within each
+   row - stays visible while scrolling the table's horizontal overflow, so a
+   long line's number doesn't disappear off the left edge along with it. */
+.lineNumber:first-child {
+  position: sticky;
+  left: 0;
+  z-index: 1;
+  border-right: 1px solid var(--ifm-color-emphasis-300);
+}
+
+/* white-space: pre (no wrapping at all) gave a cell a hard minimum width
+   equal to its longest unbroken line, which the table's own `width: 100%`
+   can never override - a single long line (a prose paragraph, a long
+   import path) was enough to blow the table past its container on its own,
+   duplicated content or not. pre-wrap preserves the same meaningful
+   whitespace (indentation, multiple spaces) but allows the browser to wrap
+   at whitespace; overflow-wrap forces a break even inside an unbroken token
+   (a long URL, a long identifier) that has nowhere else to wrap - between
+   the two, nothing can force the table wider than its container. */
 .lineContent {
   padding: 0 0.75rem;
-  white-space: pre;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
 }
 
 /* Vertical divider between the old and new column pairs: purely
@@ -170,4 +207,21 @@
 
 .removedSide {
   background-color: color-mix(in srgb, var(--ifm-color-danger) 15%, transparent);
+}
+
+/* Only rendered when .body's table genuinely overflows horizontally
+   (see the ResizeObserver check in diff-modal.tsx) - a plain scrollbar alone
+   read as "the table is cropped" rather than "scroll right for more"
+   (reported repeatedly), so this makes the affordance explicit instead. */
+.scrollHint {
+  position: absolute;
+  right: 1rem;
+  bottom: 0.75rem;
+  margin: 0;
+  padding: 0.25rem 0.6rem;
+  border-radius: 999px;
+  background-color: var(--ifm-color-emphasis-800);
+  color: var(--ifm-color-white);
+  font-size: 0.75rem;
+  pointer-events: none;
 }

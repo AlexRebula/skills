@@ -3,6 +3,7 @@ import { describe, expect, it } from 'vitest';
 import { render, screen } from '@testing-library/react';
 import { FlowStageHoverPanel } from './flow-stage-hover-panel';
 import type { FeatureFlowItem } from '@littlebranches/giselle-mui';
+import type { ProvenanceMap } from '../../data/provenance.types';
 
 const ITEM: FeatureFlowItem = {
   id: 'shape-it',
@@ -13,6 +14,11 @@ const ITEM: FeatureFlowItem = {
     { title: 'grilling', description: 'Grill a plan or decision relentlessly.', href: '/thinking-tools/grilling' },
     { title: 'to-spec', description: 'Turn a rough idea into a written spec.', href: '/engineering/to-spec' },
   ],
+};
+
+const PROVENANCE_FIXTURE: ProvenanceMap = {
+  'thinking-tools/grilling': { status: 'upstream' },
+  'engineering/to-spec': { status: 'original' },
 };
 
 describe('FlowStageHoverPanel', () => {
@@ -50,5 +56,19 @@ describe('FlowStageHoverPanel', () => {
   it('shows a hint to look below when expanded', () => {
     render(<FlowStageHoverPanel item={ITEM} isExpanded />);
     expect(screen.getByText('Browse each skill in more depth below.')).toBeInTheDocument();
+  });
+
+  it("renders each skill's provenance icon below its description, whether or not the stage is expanded", () => {
+    render(<FlowStageHoverPanel item={ITEM} isExpanded={false} provenanceMap={PROVENANCE_FIXTURE} />);
+    const grillingItem = screen.getByText('/grilling').closest('li');
+    expect(grillingItem).not.toBeNull();
+    const icon = screen.getByRole('button', { name: 'Originally written by Matt Pocock' });
+    expect(grillingItem).toContainElement(icon);
+    expect(screen.getByRole('button', { name: 'AlexRebula original' })).toBeInTheDocument();
+  });
+
+  it('renders no badge for a skill missing from the provenance map, rather than a broken button', () => {
+    render(<FlowStageHoverPanel item={ITEM} isExpanded={false} provenanceMap={{}} />);
+    expect(screen.queryByRole('button')).not.toBeInTheDocument();
   });
 });
