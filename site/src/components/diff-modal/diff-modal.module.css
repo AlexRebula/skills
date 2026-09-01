@@ -167,9 +167,19 @@
   border-right: 1px solid var(--ifm-color-emphasis-300);
 }
 
+/* white-space: pre (no wrapping at all) gave a cell a hard minimum width
+   equal to its longest unbroken line, which the table's own `width: 100%`
+   can never override - a single long line (a prose paragraph, a long
+   import path) was enough to blow the table past its container on its own,
+   duplicated content or not. pre-wrap preserves the same meaningful
+   whitespace (indentation, multiple spaces) but allows the browser to wrap
+   at whitespace; overflow-wrap forces a break even inside an unbroken token
+   (a long URL, a long identifier) that has nowhere else to wrap - between
+   the two, nothing can force the table wider than its container. */
 .lineContent {
   padding: 0 0.75rem;
-  white-space: pre;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
 }
 
 /* Vertical divider between the old and new column pairs: purely
