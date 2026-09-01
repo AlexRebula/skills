@@ -67,5 +67,30 @@ while IFS= read -r -d '' skill_md; do
   echo "linked $name"
 done
 
+# Remove any .agents/skills/<name> entry that no longer matches a real skill
+# (renamed or deleted since the last sync), so a stale/dangling link doesn't
+# linger and confuse tooling that reads this mirror (VS Code Copilot's skill
+# registration).
+valid_names="$(find "$REPO/skills" -mindepth 3 -maxdepth 3 -name SKILL.md \
+  -not -path '*/node_modules/*' \
+  -not -path '*/deprecated/*' \
+  -print0 |
+  while IFS= read -r -d '' f; do basename "$(dirname "$f")"; done)"
+
+shopt -s nullglob
+for existing in "$DEST"/*; do
+  name="$(basename "$existing")"
+  if ! grep -qxF "$name" <<< "$valid_names"; then
+    echo "pruning stale $name (no longer a real skill)"
+    if [[ "$OSTYPE" == "msys" || "$OSTYPE" == "cygwin" ]]; then
+      win_path="$(cygpath -w "$existing")"
+      cmd //c "rmdir \"$win_path\"" 2>/dev/null || rm -rf "$existing"
+    else
+      rm -rf "$existing"
+    fi
+  fi
+done
+shopt -u nullglob
+
 echo ""
 echo "✔ .agents/skills/ links are up to date."
