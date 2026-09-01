@@ -55,13 +55,6 @@
   font-size: 0.9rem;
 }
 
-/* Sits on its own line under the description (an inline-level element
-   following a block one already starts a new line; this just adds a little
-   breathing room above it, matching the description's own top margin). */
-.provenance {
-  margin-top: 0.4rem;
-}
-
 .hint {
   margin: 1.5rem 0 0;
   font-size: 0.8rem;

@@ -1,4 +1,5 @@
 import React, { type ReactNode } from 'react';
+import Stack from '@mui/material/Stack';
 import Heading from '@theme/Heading';
 import Link from '@docusaurus/Link';
 import { ProvenanceIcon } from '../provenance-icon';
@@ -27,17 +28,17 @@ export function FlowStageHoverPanel({ item, isExpanded, provenanceMap }: FlowSta
       <ul className={styles.skillList}>
         {(item.highlightCards ?? []).map((card) => (
           <li key={card.title} className={styles.skillItem}>
-            {card.href ? (
-              <Link to={card.href} className={styles.skillName}>
-                /{card.title}
-              </Link>
-            ) : (
-              <span className={styles.skillName}>/{card.title}</span>
-            )}
+            <Stack direction="row" spacing={1} sx={{ alignItems: 'center' }}>
+              {card.href && <ProvenanceIcon slug={card.href} provenanceMap={provenanceMap} />}
+              {card.href ? (
+                <Link to={card.href} className={styles.skillName}>
+                  /{card.title}
+                </Link>
+              ) : (
+                <span className={styles.skillName}>/{card.title}</span>
+              )}
+            </Stack>
             <p className={styles.skillDescription}>{card.description}</p>
-            {card.href && (
-              <ProvenanceIcon slug={card.href} provenanceMap={provenanceMap} className={styles.provenance} />
-            )}
           </li>
         ))}
       </ul>
