@@ -39,7 +39,27 @@ function newSideClass(row: DiffRow): string | undefined {
   return row.type === 'add' || row.type === 'change' ? styles.addedSide : undefined;
 }
 
+/**
+ * A "context" row's old and new content are always identical (nothing
+ * changed on that line) - rendering both sides anyway just duplicates the
+ * same text twice, which is most of a typical diff's rows and was the real
+ * cause of a table wide enough to make comparing the lines that actually
+ * differ feel like scrolling through noise to find them (reported directly,
+ * even after the sticky column / scroll hint fix below already shipped -
+ * that fixed discoverability, not the underlying width). One row, one line
+ * number, content spanning the full row instead.
+ */
 function DiffRowView({ row }: { row: DiffRow }): ReactNode {
+  if (row.type === 'context') {
+    return (
+      <tr>
+        <td className={styles.lineNumber}>{row.oldLineNumber ?? ''}</td>
+        <td className={styles.lineContent} colSpan={3}>
+          {row.oldContent}
+        </td>
+      </tr>
+    );
+  }
   return (
     <tr>
       <td className={clsx(styles.lineNumber, oldSideClass(row))}>{row.oldLineNumber ?? ''}</td>

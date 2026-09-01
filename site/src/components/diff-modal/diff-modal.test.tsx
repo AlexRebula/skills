@@ -91,6 +91,14 @@ describe('DiffModal', () => {
     expect(screen.getByText('bar')).toBeInTheDocument();
   });
 
+  it('renders an unchanged (context) row once, spanning the row, rather than duplicating identical content on both sides', () => {
+    render(<DiffModal skillName="ask-matt" upstreamSha="abc1234" files={[SKILL_MD_DIFF]} onClose={() => {}} />);
+    expect(screen.getAllByText('a')).toHaveLength(1);
+    const cell = screen.getByText('a');
+    expect(cell.tagName).toBe('TD');
+    expect(cell).toHaveAttribute('colspan', '3');
+  });
+
   it('links each tab to its panel by id, per the WAI-ARIA tabs pattern', () => {
     render(<DiffModal skillName="ask-matt" upstreamSha="abc1234" files={[REFERENCE_DIFF, SKILL_MD_DIFF]} onClose={() => {}} />);
     const activeTab = screen.getByRole('tab', { name: /SKILL\.md/ });
