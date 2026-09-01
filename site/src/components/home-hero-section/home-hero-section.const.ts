@@ -1,16 +1,16 @@
 import { channelAlpha } from '@littlebranches/giselle-mui';
 
 /** Spacing for the hero's two-column `Grid container`. */
-export const HERO_GRID_SPACING = { xs: 5, md: 4 };
+export const HERO_GRID_SPACING = { xs: 5, md: 7 };
 
 /** `sx` for the hero's `Grid container` - vertically centers both columns. */
 export const HERO_GRID_SX = { alignItems: 'center' };
 
 /** `size` for the hero's left (copy) column - 7/12 at `md` and up. */
-export const HERO_LEFT_COLUMN_SIZE = { xs: 12, md: 7 };
+export const HERO_LEFT_COLUMN_SIZE = { xs: 12, md: 6 };
 
 /** `size` for the hero's right (install/stars) column - 5/12 at `md` and up. */
-export const HERO_RIGHT_COLUMN_SIZE = { xs: 12, md: 5 };
+export const HERO_RIGHT_COLUMN_SIZE = { xs: 12, md: 6 };
 
 /** Spacing for the left column's `Stack` (title, subtitle, persona filter row). */
 export const HERO_LEFT_STACK_SPACING = 3;

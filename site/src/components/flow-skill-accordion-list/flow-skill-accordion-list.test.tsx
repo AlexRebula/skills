@@ -114,4 +114,78 @@ describe('FlowSkillAccordionList', () => {
 
     errorSpy.mockRestore();
   });
+
+  describe('Original vs Matt Pocock grouping (AlexRebula/skills#146)', () => {
+    it('splits a mixed stage into an "Original" group and a "From Matt Pocock" group, original first', () => {
+      render(<FlowSkillAccordionList item={ITEM} skillSummaries={{}} provenanceMap={PROVENANCE_FIXTURE} />);
+      const headings = screen.getAllByText(/^(Original|From Matt Pocock)$/);
+      expect(headings.map((h) => h.textContent)).toEqual(['Original', 'From Matt Pocock']);
+
+      // to-spec (original) sits under the first heading, grilling (upstream) under the second.
+      const originalHeading = screen.getByText('Original');
+      const lineageHeading = screen.getByText('From Matt Pocock');
+      expect(originalHeading.compareDocumentPosition(screen.getByText('/to-spec'))).toBe(
+        Node.DOCUMENT_POSITION_FOLLOWING
+      );
+      expect(lineageHeading.compareDocumentPosition(screen.getByText('/grilling'))).toBe(
+        Node.DOCUMENT_POSITION_FOLLOWING
+      );
+    });
+
+    it('renders no group heading when every skill in the stage is original', () => {
+      const allOriginal: ProvenanceMap = {
+        'thinking-tools/grilling': { status: 'original' },
+        'engineering/to-spec': { status: 'original' },
+      };
+      render(<FlowSkillAccordionList item={ITEM} skillSummaries={{}} provenanceMap={allOriginal} />);
+      expect(screen.queryByText('Original')).not.toBeInTheDocument();
+      expect(screen.queryByText('From Matt Pocock')).not.toBeInTheDocument();
+      expect(screen.getByText('/grilling')).toBeInTheDocument();
+      expect(screen.getByText('/to-spec')).toBeInTheDocument();
+    });
+
+    it('renders no group heading when every skill in the stage has Matt Pocock lineage', () => {
+      const allLineage: ProvenanceMap = {
+        'thinking-tools/grilling': { status: 'upstream' },
+        'engineering/to-spec': { status: 'modified' },
+      };
+      render(<FlowSkillAccordionList item={ITEM} skillSummaries={{}} provenanceMap={allLineage} />);
+      expect(screen.queryByText('Original')).not.toBeInTheDocument();
+      expect(screen.queryByText('From Matt Pocock')).not.toBeInTheDocument();
+    });
+
+    it('treats an "inherited" skill as Matt Pocock lineage, not original', () => {
+      const withInherited: ProvenanceMap = {
+        'thinking-tools/grilling': { status: 'inherited' },
+        'engineering/to-spec': { status: 'original' },
+      };
+      render(<FlowSkillAccordionList item={ITEM} skillSummaries={{}} provenanceMap={withInherited} />);
+      const lineageHeading = screen.getByText('From Matt Pocock');
+      expect(lineageHeading.compareDocumentPosition(screen.getByText('/grilling'))).toBe(
+        Node.DOCUMENT_POSITION_FOLLOWING
+      );
+    });
+
+    it('treats a card with no matching provenance entry as original, not lineage', () => {
+      const partial: ProvenanceMap = { 'thinking-tools/grilling': { status: 'upstream' } };
+      render(<FlowSkillAccordionList item={ITEM} skillSummaries={{}} provenanceMap={partial} />);
+      const originalHeading = screen.getByText('Original');
+      expect(originalHeading.compareDocumentPosition(screen.getByText('/to-spec'))).toBe(
+        Node.DOCUMENT_POSITION_FOLLOWING
+      );
+    });
+
+    it('still only expands one accordion at a time across both groups', () => {
+      render(<FlowSkillAccordionList item={ITEM} skillSummaries={{}} provenanceMap={PROVENANCE_FIXTURE} />);
+      const grillingButton = screen.getByRole('button', { name: '/grilling' });
+      const toSpecButton = screen.getByRole('button', { name: '/to-spec' });
+
+      fireEvent.click(toSpecButton);
+      expect(toSpecButton).toHaveAttribute('aria-expanded', 'true');
+
+      fireEvent.click(grillingButton);
+      expect(grillingButton).toHaveAttribute('aria-expanded', 'true');
+      expect(toSpecButton).toHaveAttribute('aria-expanded', 'false');
+    });
+  });
 });
