@@ -20,14 +20,14 @@ A `dependency-chain.md` file has to exist at `{{WIKI_ROOT}}/wiki/projects/depend
 
 The skill doesn't parse structured data; it reads plain Markdown and extracts by section. At minimum, the file needs:
 
-- **A hard deadline** — one specific date, stated with what it's for (launch, demo, handoff).
-- **A critical path** — a chain showing which repo or task is blocking everything else today.
-- **A per-repo status table** — one line per active repo: name, current phase, blocked or unblocked.
+- **A hard deadline**: one specific date, stated with what it's for (launch, demo, handoff).
+- **A critical path**: a chain showing which repo or task is blocking everything else today.
+- **A per-repo status table**: one line per active repo: name, current phase, blocked or unblocked.
 
 ```md
 # Dependency Chain
 
-**Hard deadline:** 20 Jun 2026 — demo to stakeholder
+**Hard deadline:** 20 Jun 2026, demo to stakeholder
 
 ## Critical path
 

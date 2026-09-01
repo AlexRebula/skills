@@ -1,172 +1,83 @@
-import React, { useEffect, useState, type ReactNode } from 'react';
+import React, { useMemo, useState, type ReactNode } from 'react';
 import Layout from '@theme/Layout';
-import Heading from '@theme/Heading';
-import Link from '@docusaurus/Link';
+import useBaseUrl from '@docusaurus/useBaseUrl';
 
-import InlineMarkdown from '../components/InlineMarkdown';
+import { HomeHeroSection } from '../components/home-hero-section';
+import { LandingStatsSection } from '../components/landing-stats-section';
+import { PersonaPickerSection } from '../components/persona-picker-section';
+import { FlowSection } from '../components/flow-section';
+import { OverviewLinkSection } from '../components/overview-link-section';
+import { computeLandingStats } from '../data/landing-stats';
+import { buildFlowSections, filterFlowSections } from '../data/flow-sections';
+import { buildFeatureFlowItems } from '../data/feature-flow-sections';
 import skillsData from '../data/skills-landing.json';
-import styles from './index.module.css';
+import provenanceData from '../data/provenance.json';
+import type { ProvenanceMap } from '../data/provenance.types';
+import type { SkillsLandingData } from '../data/skills-landing.types';
+import type { PersonaKey } from '../data/personas.types';
+import { FLOW_STAGES } from '../../sidebars';
 
-const REPO = 'AlexRebula/skills';
-
-const CATEGORY_LABELS: Record<string, string> = {
-  engineering: 'Engineering',
-  productivity: 'Productivity',
-  git: 'Git',
-  framework: 'Framework',
-  org: 'Organisation',
-  personal: 'Personal',
-  misc: 'Misc',
-};
-
-function CopyableCommand({ command }: { command: string }): ReactNode {
-  const [copied, setCopied] = useState(false);
-
-  function handleCopy() {
-    if (typeof navigator !== 'undefined' && navigator.clipboard) {
-      navigator.clipboard.writeText(command).then(() => {
-        setCopied(true);
-        setTimeout(() => setCopied(false), 1500);
-      });
-    }
-  }
-
-  return (
-    <div className={styles.commandRow}>
-      <code>{command}</code>
-      <button type="button" className={styles.copyButton} onClick={handleCopy}>
-        {copied ? 'Copied' : 'Copy'}
-      </button>
-    </div>
-  );
-}
-
-function GitHubStars(): ReactNode {
-  const [stars, setStars] = useState<number | null>(null);
-
-  useEffect(() => {
-    fetch(`https://api.github.com/repos/${REPO}`)
-      .then((res) => (res.ok ? res.json() : null))
-      .then((data) => {
-        if (data && typeof data.stargazers_count === 'number') {
-          setStars(data.stargazers_count);
-        }
-      })
-      .catch(() => {
-        // Rate-limited or offline: fall back to a plain link, no count shown.
-      });
-  }, []);
-
-  return (
-    <a
-      href={`https://github.com/${REPO}`}
-      className={styles.starBadge}
-      target="_blank"
-      rel="noreferrer"
-    >
-      {stars ? `★ ${stars.toLocaleString()} stars` : 'View on GitHub'}
-    </a>
-  );
-}
+const provenanceMap = provenanceData as ProvenanceMap;
+const landingData = skillsData as SkillsLandingData;
 
 export default function Home(): ReactNode {
-  const { categories } = skillsData;
+  const { categories } = landingData;
   const totalSkills = categories.reduce((sum, c) => sum + c.skills.length, 0);
+  const landingStats = computeLandingStats({
+    totalSkills,
+    totalCategories: categories.length,
+    provenanceMap,
+  });
+  const flowSections = buildFlowSections(FLOW_STAGES, landingData, provenanceMap);
+
+  // Persona filter state (issue #176): local component state only, resets
+  // on refresh per this ticket's acceptance criteria - no localStorage/URL
+  // param persistence in scope here.
+  const [activePersonas, setActivePersonas] = useState<ReadonlySet<PersonaKey>>(new Set());
+  const togglePersona = (persona: PersonaKey) => {
+    setActivePersonas((prev) => {
+      const next = new Set(prev);
+      if (next.has(persona)) {
+        next.delete(persona);
+      } else {
+        next.add(persona);
+      }
+      return next;
+    });
+  };
+  const filteredFlowSections = useMemo(
+    () => filterFlowSections(flowSections, activePersonas),
+    [flowSections, activePersonas]
+  );
+  // A plain dark backdrop for every highlight-card slide - see
+  // feature-flow-sections.ts's toHighlightCard doc comment for why this is
+  // needed regardless of the giselle-mui scrim bug filed upstream.
+  const skillCardMediaSrc = useBaseUrl('/img/flow-skill-card-backdrop.svg');
+  const featureFlowItems = useMemo(
+    () => buildFeatureFlowItems(filteredFlowSections, skillCardMediaSrc),
+    [filteredFlowSections, skillCardMediaSrc]
+  );
+  // FeatureFlowSectionProps.image is required even with renderRightPanel
+  // supplying the visible content (giselle-mui#188's known limitation: the
+  // internal image-preload/prewarm hooks aren't undefined-safe yet) - this
+  // placeholder is never rendered, just needs to resolve.
+  const featureFlowImageSrc = useBaseUrl('/img/shape-square.svg');
 
   return (
     <Layout
       title="Skills"
       description="A practical skill system for engineers who want to use AI without giving up their standards. Install the ones you use, then type a slash command."
     >
-      <header className={styles.hero}>
-        <div className="container">
-          <div className={styles.heroGrid}>
-            <div>
-              <Heading as="h1" className={styles.heroTitle}>
-                Skills for real engineers
-              </Heading>
-              <p className={styles.heroSubtitle}>
-                A practical skill system for engineers who want to use AI without giving up their
-                standards. Install the ones you use, then type a slash command. This is a fork of{' '}
-                <a href="https://github.com/mattpocock/skills">mattpocock/skills</a> extended with
-                framework scaffolding, the full git and PR lifecycle, and daily engineering
-                workflows.
-              </p>
-              <div className={styles.metaRow}>
-                <GitHubStars />
-              </div>
-            </div>
+      <div>
+        <HomeHeroSection totalSkills={totalSkills} categoriesCount={categories.length} />
 
-            <div>
-              <div className={styles.installCard}>
-                <Heading as="h3">Install the skills</Heading>
-                <p>
-                  Pick the skills you use. The installer writes editable files into your project.
-                </p>
-                <CopyableCommand command={`npx skills@latest add ${REPO}`} />
-              </div>
+        <LandingStatsSection items={landingStats} />
 
-              <div className={styles.installCard}>
-                <Heading as="h3">Install as a Claude Code plugin</Heading>
-                <p>A read-only, always-current bundle you don't fork or edit by hand.</p>
-                <CopyableCommand command={`/plugin marketplace add ${REPO}`} />
-                <div style={{ marginTop: '0.5rem' }}>
-                  <CopyableCommand command="/plugin install alexrebula-skills@AlexRebula" />
-                </div>
-              </div>
+        <PersonaPickerSection activePersonas={activePersonas} onTogglePersona={togglePersona} />
 
-              <p className={styles.agentsNote}>
-                Works with Claude Code directly, and with Cursor, Codex, and any other
-                Agent-Skills-standard harness via the <code>skills.sh</code> installer.
-              </p>
-            </div>
-          </div>
-        </div>
-      </header>
+        <FlowSection items={featureFlowItems} imageSrc={featureFlowImageSrc} />
 
-      <div className="container">
-        <div className={styles.summaryBar}>
-          <div className={styles.summaryItem}>
-            <strong>{totalSkills}</strong>
-            <span>skills</span>
-          </div>
-          <div className={styles.summaryItem}>
-            <strong>{categories.length}</strong>
-            <span>categories</span>
-          </div>
-          <div className={styles.summaryItem}>
-            <strong>MIT</strong>
-            <span>license</span>
-          </div>
-        </div>
-
-        {categories.map((category, i) => (
-          <section key={category.key} className={styles.categorySection}>
-            <div className={styles.categoryHeader}>
-              <span className={styles.categoryIndex}>{String(i + 1).padStart(2, '0')}</span>
-              <Heading as="h2" className={styles.categoryTitle}>
-                {CATEGORY_LABELS[category.key] ?? category.heading}
-              </Heading>
-            </div>
-            <p className={styles.categoryDescription}>
-              <InlineMarkdown text={category.description} />
-            </p>
-            <div className={styles.skillGrid}>
-              {category.skills.map((skill) => (
-                <Link
-                  key={skill.name}
-                  to={`/${category.key}/${skill.name}`}
-                  className={styles.skillCard}
-                >
-                  <span className={styles.skillCommand}>/{skill.name}</span>
-                  <span className={styles.skillDescription}>
-                    <InlineMarkdown text={skill.description} />
-                  </span>
-                </Link>
-              ))}
-            </div>
-          </section>
-        ))}
+        <OverviewLinkSection />
       </div>
     </Layout>
   );

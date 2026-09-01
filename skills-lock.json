@@ -23,7 +23,7 @@
       "source": "AlexRebula/skills",
       "sourceType": "github",
       "skillPath": "skills/org/create-giselle-component/SKILL.md",
-      "computedHash": "8fe94699ac8dd91b2df98f546bc6e5036973146264bad6a7604d3ead12bce8dd"
+      "computedHash": "c86ce498317756e117a9b017d2be89bf150907fd42543421002bcfd115a54920"
     },
     "create-react-component": {
       "source": "AlexRebula/skills",
@@ -61,17 +61,17 @@
       "skillPath": "skills/productivity/handoff/SKILL.md",
       "computedHash": "3fdffd9dce6fc3e9f9f756ba79d694c5f162e11c7e7fbc72a0958f204312e0b1"
     },
-    "ingest": {
-      "source": "AlexRebula/skills",
-      "sourceType": "github",
-      "skillPath": "skills/productivity/ingest/SKILL.md",
-      "computedHash": "e74b997a7ec10d23c3c26f823461505234b6682583db1f7ca1499641ae0b0697"
-    },
     "improve-codebase-architecture": {
       "source": "AlexRebula/skills",
       "sourceType": "github",
       "skillPath": "skills/engineering/improve-codebase-architecture/SKILL.md",
       "computedHash": "2da1d23b8f53cfe67f2e0b68924ab9f4ec400bb6480de097007eeaeb517d1722"
+    },
+    "ingest": {
+      "source": "AlexRebula/skills",
+      "sourceType": "github",
+      "skillPath": "skills/productivity/ingest/SKILL.md",
+      "computedHash": "e74b997a7ec10d23c3c26f823461505234b6682583db1f7ca1499641ae0b0697"
     },
     "prototype": {
       "source": "AlexRebula/skills",
@@ -107,7 +107,7 @@
       "source": "AlexRebula/skills",
       "sourceType": "github",
       "skillPath": "skills/git/review-pr/SKILL.md",
-      "computedHash": "d555375ecd3a1f3c72477135360ae9b0903cf17b51577fcfe576b1e600ea6bbd"
+      "computedHash": "b867ee3d869592e53b327438736490667c0fc99449cb35804e880949f5dd9843"
     },
     "setup-engineering-skills": {
       "source": "AlexRebula/skills",
@@ -120,6 +120,12 @@
       "sourceType": "github",
       "skillPath": "skills/engineering/start-issue/SKILL.md",
       "computedHash": "51b98f7c36a404db877432a02cc95b74e44eab364d2d016f653977a702afd192"
+    },
+    "sync-branches": {
+      "source": "AlexRebula/skills",
+      "sourceType": "github",
+      "skillPath": "skills/git/sync-branches/SKILL.md",
+      "computedHash": "cd90e7f46a345c2e020a920c18fe353bfd2f1008cf6ce56f6dabea57803d7265"
     },
     "tdd": {
       "source": "AlexRebula/skills",
@@ -145,17 +151,17 @@
       "skillPath": "skills/engineering/triage/SKILL.md",
       "computedHash": "56ff15b41bbebfa4cb329d96150d9b297c1d919ce30784d883b8755b4bfd8e7e"
     },
-    "write-a-skill": {
-      "source": "AlexRebula/skills",
-      "sourceType": "github",
-      "skillPath": "skills/productivity/write-a-skill/SKILL.md",
-      "computedHash": "3b58a16bde08f84ed490cd449ecdc40289216d660e070c485f53bc2d1ed2b843"
-    },
     "wiki-lint": {
       "source": "AlexRebula/skills",
       "sourceType": "github",
       "skillPath": "skills/productivity/wiki-lint/SKILL.md",
       "computedHash": "cfb7da7e2d36dfd6221b354ac917fb6b07839ebf391dbe86d0620d8ea7392e3d"
+    },
+    "write-a-skill": {
+      "source": "AlexRebula/skills",
+      "sourceType": "github",
+      "skillPath": "skills/productivity/write-a-skill/SKILL.md",
+      "computedHash": "3b58a16bde08f84ed490cd449ecdc40289216d660e070c485f53bc2d1ed2b843"
     },
     "writing-beats": {
       "source": "AlexRebula/skills",
@@ -180,12 +186,6 @@
       "sourceType": "github",
       "skillPath": "skills/engineering/zoom-out/SKILL.md",
       "computedHash": "a8b8ed45609fdfa9f184d0c9f69326e43822a42eebea14db2792d777373de562"
-    },
-    "sync-branches": {
-      "source": "AlexRebula/skills",
-      "sourceType": "github",
-      "skillPath": "skills/git/sync-branches/SKILL.md",
-      "computedHash": "cd90e7f46a345c2e020a920c18fe353bfd2f1008cf6ce56f6dabea57803d7265"
     }
   }
 }

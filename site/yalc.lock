@@ -1,0 +1,9 @@
+{
+  "version": "v1",
+  "packages": {
+    "@littlebranches/giselle-mui": {
+      "signature": "76ea80777efd157277fb2e031755b443",
+      "file": true
+    }
+  }
+}

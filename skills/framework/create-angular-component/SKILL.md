@@ -5,24 +5,24 @@ description: Scaffold and TDD a new Angular 17+ standalone component. Uses signa
 
 # Create Angular Component
 
-Two phases. Scaffold first — commit before implementing.
+Two phases. Scaffold first: commit before implementing.
 
-Angular 17+ only. Uses standalone components, `input()` signals, and `output()` functions. For older Angular (< 17), ask the user — the decorator-based `@Input()` / `@Output()` variants apply.
+Angular 17+ only. Uses standalone components, `input()` signals, and `output()` functions. For older Angular (< 17), ask the user: the decorator-based `@Input()` / `@Output()` variants apply.
 
 ---
 
-## Before writing any code — alignment (8 required answers)
+## Before writing any code: alignment (8 required answers)
 
 Ask the user:
 
-1. Component name — PascalCase with `Component` suffix (e.g. `UserAvatarComponent`)
-2. Selector — kebab-case (e.g. `app-user-avatar` or `lb-user-avatar`)
+1. Component name: PascalCase with `Component` suffix (e.g. `UserAvatarComponent`)
+2. Selector: kebab-case (e.g. `app-user-avatar` or `lb-user-avatar`)
 3. Folder path where it will live (relative to `src/`)
-4. What it renders — one sentence
+4. What it renders: one sentence
 5. Required inputs and their types
 6. Optional inputs and their defaults
 7. Outputs (event names + payload types)
-8. Does it need any DI tokens or services? (list them — no undisclosed deps)
+8. Does it need any DI tokens or services? (list them: no undisclosed deps)
 
 Do not proceed until all 8 are answered.
 
@@ -32,18 +32,18 @@ Do not proceed until all 8 are answered.
 
 | File           | Convention                                               |
 | -------------- | -------------------------------------------------------- |
-| Folder         | kebab-case — `user-avatar/`                              |
+| Folder         | kebab-case: `user-avatar/`                               |
 | Component file | `<name>.component.ts`                                    |
 | Template       | `<name>.component.html` (or inline for small components) |
 | Styles         | `<name>.component.scss` (or `.css`)                      |
-| Types          | `types.ts` — input/output interfaces always separate     |
+| Types          | `types.ts`: input/output interfaces always separate      |
 | Barrel         | `index.ts`                                               |
 | Tests          | `<name>.component.spec.ts`                               |
 | Docs           | `README.md`                                              |
 
 ---
 
-## Phase 1 — Scaffold (commit before implementing)
+## Phase 1: Scaffold (commit before implementing)
 
 ### Files to create
 
@@ -57,7 +57,7 @@ src/<path>/<name>/
 
 Do NOT create `<name>.component.ts` yet.
 
-### `types.ts` — scaffold template
+### `types.ts`: scaffold template
 
 ```ts
 /**
@@ -70,7 +70,7 @@ export interface <ComponentName>Inputs {
 }
 ```
 
-### `<name>.component.spec.ts` — scaffold template
+### `<name>.component.spec.ts`: scaffold template
 
 ```ts
 import { describe, it } from '@jest/globals'; // or vitest
@@ -81,7 +81,7 @@ describe('<ComponentName>Component', () => {
 });
 ```
 
-### `README.md` — scaffold template
+### `README.md`: scaffold template
 
 ```md
 # <ComponentName>Component
@@ -103,10 +103,10 @@ _One paragraph: the recurring problem this component solves._
 _Key choices made during design._
 ```
 
-### `index.ts` — scaffold template
+### `index.ts`: scaffold template
 
 ```ts
-// Placeholder — not yet implemented.
+// Placeholder: not yet implemented.
 // When <ComponentName>Component is built, replace with:
 // export { <ComponentName>Component } from './<name>.component';
 // export type { <ComponentName>Inputs } from './types';
@@ -114,9 +114,9 @@ _Key choices made during design._
 
 ---
 
-## Phase 2 — Implementation (TDD loop)
+## Phase 2: Implementation (TDD loop)
 
-### Types first — fill in `types.ts` before any template
+### Types first: fill in `types.ts` before any template
 
 ```ts
 export interface UserAvatarInputs {
@@ -129,7 +129,7 @@ export interface UserAvatarInputs {
 }
 ```
 
-### Component file — `<name>.component.ts`
+### Component file: `<name>.component.ts`
 
 ```ts
 import { Component, computed, input, output, ChangeDetectionStrategy } from '@angular/core';
@@ -168,16 +168,16 @@ export class UserAvatarComponent {
 
 **Rules:**
 
-- `standalone: true` — always; no NgModule for new components
-- `ChangeDetectionStrategy.OnPush` — always for new components
-- `input()` / `input.required<T>()` / `output<T>()` — signal-based API (Angular 17+)
-- `computed()` for derived values — never calculate in the template
-- Use `@if` / `@for` / `@switch` block syntax — never `*ngIf`, `*ngFor`, or `NgIf` imports
-- Never use `document.querySelector` or direct DOM manipulation — use Angular APIs
+- `standalone: true`, always; no NgModule for new components
+- `ChangeDetectionStrategy.OnPush`: always for new components
+- `input()` / `input.required<T>()` / `output<T>()`: signal-based API (Angular 17+)
+- `computed()` for derived values, never calculate in the template
+- Use `@if` / `@for` / `@switch` block syntax, never `*ngIf`, `*ngFor`, or `NgIf` imports
+- Never use `document.querySelector` or direct DOM manipulation. Use Angular APIs
 - Inline template only for components under ~10 lines of HTML; otherwise use `.html` file
 - Never use `innerHTML` binding without explicit DOMPurify sanitisation at the call site
 
-### Barrel `index.ts` — replace stub
+### Barrel `index.ts`: replace stub
 
 ```ts
 export { UserAvatarComponent } from './user-avatar.component';
@@ -213,7 +213,7 @@ it('renders initials when no src is provided', async () => {
   expect(screen.getByText('JA')).toBeInTheDocument();
 });
 
-// 3. Each variant — one test per variant
+// 3. Each variant: one test per variant
 it('sets data-size attribute for the sm variant', async () => {
   const { container } = await render(UserAvatarComponent, {
     componentInputs: { name: 'Jane Doe', size: 'sm' },
@@ -221,7 +221,7 @@ it('sets data-size attribute for the sm variant', async () => {
   expect(container.firstChild).toHaveAttribute('data-size', 'sm');
 });
 
-// 4. Outputs — one test per output
+// 4. Outputs: one test per output
 it('emits imageError when the image fails to load', async () => {
   const imageError = jest.fn();
   await render(UserAvatarComponent, {
@@ -246,7 +246,7 @@ it('updates initials when name input changes', async () => {
 
 **Mocking rules:**
 
-- Mock services at the DI boundary — provide a spy or stub via `TestBed` providers
+- Mock services at the DI boundary: provide a spy or stub via `TestBed` providers
 - Never mock Angular core (`Component`, `input`, `computed`, `ChangeDetectorRef`)
 - Never mock child components that live in the same module/library
 

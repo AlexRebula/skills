@@ -1,0 +1,71 @@
+.panel {
+  padding: 2rem;
+}
+
+/* Sticky only once the two columns actually sit side by side (matches
+   MUI's `md` breakpoint, where FeatureFlowSection's own columns stop
+   stacking) - below that there's no "aside" column to stick relative to.
+   `top: 80px` matches giselle-mui's own built-in image column's sticky
+   offset (imageColumnStickyStackSx) for visual consistency. No max-height/
+   overflow here: a stage's skill list only needs to fit within the
+   description column's own (much taller, 12-stage) total height for this
+   to look right, which it comfortably does for every real stage today. */
+@media (width >= 900px) {
+  .panel {
+    position: sticky;
+    top: 80px;
+  }
+}
+
+.title {
+  margin: 0 0 0.75rem;
+  font-size: 2.25rem;
+}
+
+.description {
+  color: var(--ifm-color-emphasis-700);
+  margin: 0;
+}
+
+.skillList {
+  list-style: none;
+  margin: 1.25rem 0 0;
+  padding: 0;
+}
+
+.skillItem {
+  padding: 0.75rem 0;
+  border-top: 1px solid var(--ifm-color-emphasis-200);
+}
+
+.skillItem:first-child {
+  border-top: none;
+  padding-top: 0;
+}
+
+.skillName {
+  font-family: var(--ifm-heading-font-family);
+  font-weight: 700;
+  font-size: 1.15rem;
+}
+
+.skillDescription {
+  margin: 0.25rem 0 0;
+  color: var(--ifm-color-emphasis-700);
+  font-size: 0.9rem;
+}
+
+/* Sits on its own line under the description (an inline-level element
+   following a block one already starts a new line; this just adds a little
+   breathing room above it, matching the description's own top margin). */
+.provenance {
+  margin-top: 0.4rem;
+}
+
+.hint {
+  margin: 1.5rem 0 0;
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--ifm-color-emphasis-500);
+}

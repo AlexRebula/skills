@@ -11,7 +11,7 @@ Read this file in full:
 {{WIKI_ROOT}}\wiki\projects\dependency-chain.md
 ```
 
-> **Path variable:** `{{WIKI_ROOT}}` — replace with the absolute path to your wiki root.
+> **Path variable:** `{{WIKI_ROOT}}`: replace with the absolute path to your wiki root.
 
 Extract:
 
@@ -23,16 +23,16 @@ Extract:
 
 `dependency-chain.md` is a plain Markdown file. It must contain at least:
 
-- **Hard deadline** — a specific date that something must be ready (launch, demo, handoff)
-- **Critical path** — which task or repo is blocking all others today
-- **Per-repo phase status** — one line per active repo: name, current phase, and blocked/unblocked state
+- **Hard deadline**: a specific date that something must be ready (launch, demo, handoff)
+- **Critical path**: which task or repo is blocking all others today
+- **Per-repo phase status**: one line per active repo: name, current phase, and blocked/unblocked state
 
 **Minimum structure example:**
 
 ```md
 # Dependency Chain
 
-**Hard deadline:** 20 Jun 2026 — demo to stakeholder
+**Hard deadline:** 20 Jun 2026, demo to stakeholder
 
 ## Critical path
 

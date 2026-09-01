@@ -5,17 +5,17 @@ description: Scaffold and TDD a new Vue 3 single-file component. Uses Compositio
 
 # Create Vue Component
 
-Two phases. Scaffold first — commit before implementing.
+Two phases. Scaffold first: commit before implementing.
 
 ---
 
-## Before writing any code — alignment (7 required answers)
+## Before writing any code: alignment (7 required answers)
 
 Ask the user:
 
-1. Component name — PascalCase
+1. Component name: PascalCase
 2. Folder path where it will live (relative to `src/`)
-3. What it renders — one sentence
+3. What it renders: one sentence
 4. Required props and their types
 5. Events it emits (name + payload type)
 6. Does it expose any methods via `defineExpose`?
@@ -29,9 +29,9 @@ Do not proceed until all 7 are answered.
 
 | File           | Convention                                                 |
 | -------------- | ---------------------------------------------------------- |
-| Folder         | kebab-case — `user-avatar/`                                |
+| Folder         | kebab-case: `user-avatar/`                                 |
 | Component file | `<name>.vue`                                               |
-| Types          | `types.ts` — props interface always separate, never inline |
+| Types          | `types.ts`: props interface always separate, never inline  |
 | Barrel         | `index.ts`                                                 |
 | Tests          | `<name>.test.ts`                                           |
 | Stories        | `<name>.stories.ts` (if Storybook is in the project)       |
@@ -39,7 +39,7 @@ Do not proceed until all 7 are answered.
 
 ---
 
-## Phase 1 — Scaffold (commit before implementing)
+## Phase 1: Scaffold (commit before implementing)
 
 ### Files to create
 
@@ -53,7 +53,7 @@ src/<path>/<name>/
 
 Do NOT create `<name>.vue` yet. Its absence signals the component is not implemented.
 
-### `types.ts` — scaffold template
+### `types.ts`: scaffold template
 
 ```ts
 /**
@@ -74,7 +74,7 @@ export interface <ComponentName>Emits {
 }
 ```
 
-### `<name>.test.ts` — scaffold template
+### `<name>.test.ts`: scaffold template
 
 ```ts
 import { describe, it } from 'vitest';
@@ -85,7 +85,7 @@ describe('<ComponentName>', () => {
 });
 ```
 
-### `README.md` — scaffold template
+### `README.md`: scaffold template
 
 ```md
 # <ComponentName>
@@ -98,17 +98,17 @@ _One paragraph: the recurring problem this component solves._
 
 | Prop    | Type     | Default | Description               |
 | ------- | -------- | ------- | ------------------------- |
-| `class` | `string` | —       | Forwarded to root element |
+| `class` | `string` | None    | Forwarded to root element |
 
 ## Design decisions
 
 _Key choices made during design._
 ```
 
-### `index.ts` — scaffold template
+### `index.ts`: scaffold template
 
 ```ts
-// Placeholder — not yet implemented.
+// Placeholder: not yet implemented.
 // When <ComponentName> is built, replace with:
 // export { default as <ComponentName> } from './<name>.vue';
 // export type { <ComponentName>Props } from './types';
@@ -116,9 +116,9 @@ _Key choices made during design._
 
 ---
 
-## Phase 2 — Implementation (TDD loop)
+## Phase 2: Implementation (TDD loop)
 
-### Types first — fill in `types.ts` before any template
+### Types first: fill in `types.ts` before any template
 
 ```ts
 export interface UserAvatarProps {
@@ -136,7 +136,7 @@ export interface UserAvatarEmits {
 }
 ```
 
-### Component file — `<name>.vue`
+### Component file: `<name>.vue`
 
 ```vue
 <script setup lang="ts">
@@ -173,13 +173,13 @@ const initials = computed(() =>
 
 **Rules:**
 
-- Always `<script setup lang="ts">` — no Options API, no `defineComponent`
-- `defineProps<PropsInterface>()` — type-generic form, not the object syntax
-- `defineEmits<EmitsInterface>()` — type-generic form
-- Inherit attrs on root element automatically (Vue 3 default) — set `inheritAttrs: false` only when you need to manually place `v-bind="$attrs"` on a non-root element
+- Always `<script setup lang="ts">`: no Options API, no `defineComponent`
+- `defineProps<PropsInterface>()`: type-generic form, not the object syntax
+- `defineEmits<EmitsInterface>()`: type-generic form
+- Inherit attrs on root element automatically (Vue 3 default). Set `inheritAttrs: false` only when you need to manually place `v-bind="$attrs"` on a non-root element
 - Never use `dangerouslySetInnerHTML` equivalent (`v-html`) without explicit DOMPurify sanitisation at the call site
 
-### Barrel `index.ts` — replace stub
+### Barrel `index.ts`: replace stub
 
 ```ts
 export { default as UserAvatar } from './user-avatar.vue';
@@ -215,13 +215,13 @@ it('renders initials when no src is provided', () => {
   expect(screen.getByText('JA')).toBeInTheDocument();
 });
 
-// 3. Each variant — one test per variant
+// 3. Each variant: one test per variant
 it('sets data-size attribute for the sm variant', () => {
   const { container } = render(UserAvatar, { props: { name: 'Jane Doe', size: 'sm' } });
   expect(container.firstChild).toHaveAttribute('data-size', 'sm');
 });
 
-// 4. Emits — one test per event
+// 4. Emits: one test per event
 it('emits image-error when the image fails to load', async () => {
   const { emitted } = render(UserAvatar, {
     props: { name: 'Jane Doe', src: 'bad.jpg' },
@@ -249,7 +249,7 @@ it('forwards data-testid to the root element', () => {
 
 ---
 
-## Stories — `<name>.stories.ts`
+## Stories: `<name>.stories.ts`
 
 Only create if the project has Storybook. Requires `@storybook/vue3`.
 

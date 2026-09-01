@@ -7,14 +7,14 @@ description: Bootstrap a Claude session from a GitHub issue number. Reads the is
 
 Load everything needed to begin working on a GitHub issue and hand off to the right skill.
 
-This skill is a **loader, not a doer**. It gathers context and routes — it does not implement anything itself.
+This skill is a **loader, not a doer**. It gathers context and routes. It does not implement anything itself.
 
 ## Input
 
 `/start-issue <issue-number> [owner/repo]`
 
-- `<issue-number>` — required. The GitHub issue number to start.
-- `[owner/repo]` — optional. Explicit repo override. Defaults to the repo inferred from the current working directory's git remote.
+- `<issue-number>`: required. The GitHub issue number to start.
+- `[owner/repo]`: optional. Explicit repo override. Defaults to the repo inferred from the current working directory's git remote.
 
 ## Process
 
@@ -42,25 +42,25 @@ Scan the issue body for a `## Blocked by` section. Extract any referenced issue 
 
 For each referenced blocker, check whether it is open or closed. The target repo depends on how the reference is written:
 
-- **Bare `#N`** (e.g. `#75`) — use the repo already resolved in Step 1.
-- **`owner/repo#N`** (e.g. `other/repo#75`) — extract `other/repo` from the reference and use that repo instead.
+- **Bare `#N`** (e.g. `#75`): use the repo already resolved in Step 1.
+- **`owner/repo#N`** (e.g. `other/repo#75`): extract `other/repo` from the reference and use that repo instead.
 
 - If the reference is a bare `#N` (no owner/repo prefix), use the current repo:
 
   ```bash
-  gh issue view <N> --repo <current-owner/repo> --json state,title --jq '.state + " — " + .title'
+  gh issue view <N> --repo <current-owner/repo> --json state,title --jq '.state + ": " + .title'
   ```
 
 - If the reference is `owner/repo#N`, parse the owner and repo from the prefix:
 
   ```bash
-  gh issue view <N> --repo <owner/repo> --json state,title --jq '.state + " — " + .title'
+  gh issue view <N> --repo <owner/repo> --json state,title --jq '.state + ": " + .title'
   ```
 
 If **any blocker is still open**, list them clearly and halt:
 
 ```
-⚠️  Blocked — cannot start yet.
+⚠️  Blocked: cannot start yet.
 
 Open blockers:
   - #75 Add npm script wrappers (open)
@@ -74,7 +74,7 @@ Do not proceed past this point until all blockers are closed.
 
 Look for a branch or open PR already linked to this issue.
 
-First, search PR titles and bodies for a reference to the issue number (`issue:` is not a valid GitHub PR search qualifier — search by `#<number>` instead):
+First, search PR titles and bodies for a reference to the issue number (`issue:` is not a valid GitHub PR search qualifier, so search by `#<number>` instead):
 
 ```bash
 gh pr list --repo <owner/repo> --search "#<number>" --json number,title,headRefName,state
@@ -99,7 +99,7 @@ Read the issue body for mentions of file paths (e.g. `src/lib/md/frontmatter.ts`
 - Read the file if it exists (or the first 80 lines if large)
 - Note its purpose in one sentence
 
-Do not attempt to read files speculatively — only files explicitly mentioned.
+Do not attempt to read files speculatively, only files explicitly mentioned.
 
 ### 7. Build the briefing block
 
@@ -107,7 +107,7 @@ Print a structured briefing to the conversation:
 
 ```
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-  ISSUE BRIEF — #<number> <title>
+  ISSUE BRIEF: #<number> <title>
   <url>
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
@@ -118,7 +118,7 @@ BLOCKERS      none  (or listed + confirmed closed)
 
 WHAT TO BUILD
 <issue body, trimmed to the "## What to build" section if present,
- otherwise the full body — max 40 lines>
+ otherwise the full body, max 40 lines>
 
 ACCEPTANCE CRITERIA
 <"## Acceptance criteria" checklist from issue body, or "not specified">
@@ -137,7 +137,7 @@ Read the issue labels and apply the routing table:
 
 | State role        | Suggested skill | Notes                                            |
 | ----------------- | --------------- | ------------------------------------------------ |
-| `ready-for-agent` | `/tdd`          | Fully specified — proceed regardless of category |
+| `ready-for-agent` | `/tdd`          | Fully specified: proceed regardless of category  |
 | anything else     | warn + halt     | See below                                        |
 
 **If the issue is not in `ready-for-agent` state**, tell the user:

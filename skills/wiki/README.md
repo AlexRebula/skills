@@ -1,0 +1,11 @@
+# Wiki
+
+Skills for keeping a personal knowledge base current: ingesting sources, extracting what's quotable or jargon-heavy out of them, answering questions from it, and health-checking the whole thing.
+
+- **[ingest](./ingest/SKILL.md)**: Ingest a raw source file into the personal wiki. Reads the source, extracts metadata, writes a wiki/sources/ synthesis page, updates related wiki pages, and updates wiki/index.md and wiki/log.md. Add `--deep` to also write a long-form deep dive at wiki/deep/<slug>-deep.md.
+- **[query](./query/SKILL.md)**: Answer a question using the personal wiki. Reads the index, drills into relevant pages, synthesises an answer with citations, and optionally files the answer as a new wiki page.
+- **[wiki-lint](./wiki-lint/SKILL.md)**: Health-check the personal wiki. Scans for contradictions, orphan pages, stale claims, missing cross-references, and data gaps. Produces a prioritised finding list and suggests next ingests.
+- **[extract-quotes](./extract-quotes/SKILL.md)**: Companion to `/ingest`. Pull the most quotable verbatim lines from a source into a per-source quotes page and a vault-wide speaker-grouped barrel. Works without a completed ingest (from a raw file, URL, or pasted text), staging unfiled quotes until ingest files them. Optional topic argument narrows or expands focus. Opt-in, curatorial not exhaustive.
+- **[extract-vocabulary](./extract-vocabulary/SKILL.md)**: Companion to `/ingest`. Pull jargon out of an already-ingested source and file each term into its own vocabulary file under the owning concept's folder (ELI5/junior-dev level), cross-linked from the concept page, a flat A-Z barrel index, and the source page. Opt-in: run manually on jargon-heavy sources, not every ingest.
+- **[rebuild-root-index](./rebuild-root-index/SKILL.md)**: Rescan every git repo under `$AR_ROOT` and refresh the master barrel index. Diffs against a content-hash manifest so only new, changed, or deleted files are re-summarized. Chained from `/ingest` or run standalone.
+- **[log-incident](./log-incident/SKILL.md)**: Log an AI behavioural incident or workflow violation to the wiki's incidents hub. Drafts the structured record from the current conversation, gets approval, then writes the file, updates the index, and opens a PR. No Asana involved.

@@ -1,0 +1,41 @@
+#!/usr/bin/env sh
+# .githooks/pre-push
+#
+# Runs the quality gate before every push: root tests, the provenance
+# script's lint, and the docs site's full check (typecheck, lint,
+# stylelint, tests). If any check fails the push is blocked: fix the
+# issues and push again.
+#
+# To bypass in exceptional circumstances (use sparingly):
+#   git push --no-verify
+
+# Resolve node from PATH explicitly, needed on Windows where Git hooks
+# run in a minimal shell that may not inherit the user's PATH.
+NODE=$(command -v node 2>/dev/null || command -v node.exe 2>/dev/null)
+if [ -z "$NODE" ]; then
+  for candidate in \
+    "$NVM_DIR/current/node.exe" \
+    "$LOCALAPPDATA/fnm_multishells/*/node.exe" \
+    "$APPDATA/nvm/current/node.exe" \
+    "/c/Program Files/nodejs/node.exe"; do
+    # shellcheck disable=SC2086
+    for f in $candidate; do
+      if [ -x "$f" ]; then NODE="$f"; break 2; fi
+    done
+  done
+fi
+if [ -z "$NODE" ]; then
+  echo "pre-push: node not found, skipping quality gate. Install Node.js or run: npm test && npm run lint:provenance-script && (cd site && npm run check)"
+  exit 0
+fi
+
+set -e
+
+echo "pre-push: running root tests..."
+npm test
+
+echo "pre-push: linting scripts/generate-provenance.ts..."
+npm run lint:provenance-script
+
+echo "pre-push: running docs site check (typecheck, lint, stylelint, tests)..."
+(cd site && npm run check)

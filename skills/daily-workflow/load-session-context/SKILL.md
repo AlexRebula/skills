@@ -1,0 +1,64 @@
+---
+name: load-session-context
+description: Load recent session history so a new session can pick up where the last one left off. Reads the sessions index, loads only the latest wrap file from the most recent session, and surfaces pending tasks and unresolved blockers. Run at the start of any session before the user's first task.
+---
+
+# Load Session Context
+
+> If `{{SESSIONS_ROOT}}` appears as a literal placeholder (i.e. was not substituted by your environment), invoke `/resolve-ai-paths` before continuing. It will scan for the sessions folder and return the resolved value.
+
+## Session index
+
+Open `{{SESSIONS_ROOT}}/sessions-index.md`.
+
+**The index is append-only, not sorted by date.** New rows get added wherever a session happened to finish writing, so a row's position in the file is not a reliable proxy for recency — a session from three days ago can sit below one from a week earlier. Never treat "top of file" as "most recent."
+
+Determine the 5 most recent rows correctly:
+
+1. Parse every row's `Date` column and sort by it (descending) yourself — do not rely on file order.
+2. Cross-check against disk as a safety net: `ls -dt "{{SESSIONS_ROOT}}"/*/ | head -5` lists session folders by actual modification time. If this disagrees with your date-sorted read of the index (e.g. a folder exists on disk with a later date than the row you picked as "most recent"), trust disk and re-derive from there — the index row may be missing, misdated, or you mis-parsed it.
+
+Note the title and primary work for each of the resulting top 5.
+
+## Latest wrap file
+
+**Always read the latest wrap file from the most recent session** (load it now):
+
+1. Take the session folder for the most recent row as determined above (by actual date, verified against disk — not file position).
+2. List the files in that folder: `ls "{{SESSIONS_ROOT}}/<session-name>/"`
+3. Read the **highest-numbered file** (e.g. `05-...md` if it exists, else `01-...md`).
+4. This is your "where we left off" context. Extract: pending tasks, unresolved blockers, decisions made.
+
+**Do NOT load all wrap files from the session**: only the latest one. Older files in the same session folder are superseded by the latest.
+
+## Today's morning brief (if it exists)
+
+Check `{{MORNING_BRIEFS_ROOT}}/<today's date>/`. If any `.md` files exist, read the highest-numbered one. This tells you if a standup already ran today.
+
+## Older sessions
+
+For the 4 older sessions: read titles and projects from the index only. Do not open their files unless they contain an unresolved blocker flagged as relevant to today.
+
+## Verify pending tasks before surfacing
+
+For each pending task extracted from the wrap file, run two checks before including it in the report:
+
+1. **GitHub issue status**: if the task references an issue number, run `gh issue view <N> --json state --jq '.state'`. Skip the task if the result is `CLOSED`.
+2. **Actual implementation**: do a quick check (grep or file existence) to confirm the work has not already landed. Skip the task if it has.
+
+Only include tasks that pass both checks. Do not surface tasks that are already done.
+
+## Report
+
+After loading, print a short summary:
+
+```
+**Picked up from:** <session title> (<date>)
+**Pending tasks:**
+- [BLOCKING] ...
+- [HIGH] ...
+- [LOW] ...
+**Last open branch/PR:** <branch> → PR #N
+```
+
+Then wait for the user's instruction.

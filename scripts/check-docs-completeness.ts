@@ -17,27 +17,17 @@
  *   npx tsx scripts/check-docs-completeness.ts [--skills-root <path>] [--docs-root <path>]
  *
  * Exit codes:
- *   0 — every enumerated skill has a docs page
- *   1 — at least one skill is missing a docs page
+ *   0: every enumerated skill has a docs page
+ *   1: at least one skill is missing a docs page
  */
 
 import { existsSync, readdirSync, statSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { TARGET_CATEGORIES } from '../site/src/data/categories.ts';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const REPO_ROOT = join(__dirname, '..');
-
-/** The only categories this check ever considers. */
-export const TARGET_CATEGORIES = [
-  'engineering',
-  'productivity',
-  'git',
-  'framework',
-  'org',
-  'personal',
-  'misc',
-] as const;
 
 /** Categories that must never be enumerated, regardless of contents. */
 export const IGNORED_CATEGORIES = ['deprecated', 'in-progress'] as const;

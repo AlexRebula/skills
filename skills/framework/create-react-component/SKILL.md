@@ -1,25 +1,25 @@
 ---
 name: create-react-component
-description: Scaffold and TDD a new React component from scratch. Framework-agnostic scaffold rules — types first, it.todo stubs, README, roadmap, then a strict red-green-refactor TDD loop. No MUI dependency.
+description: "Scaffold and TDD a new React component from scratch. Framework-agnostic scaffold rules: types first, it.todo stubs, README, roadmap, then a strict red-green-refactor TDD loop. No MUI dependency."
 ---
 
 # Create React Component
 
-Two phases. Scaffold first — commit before implementing.
+Two phases. Scaffold first: commit before implementing.
 
 ---
 
-## Before writing any code — alignment (7 required answers)
+## Before writing any code: alignment (7 required answers)
 
 Ask the user:
 
-1. Component name — PascalCase
+1. Component name: PascalCase
 2. Folder path where it will live (relative to `src/`)
-3. What it renders — one sentence (drives the README "why it exists")
+3. What it renders: one sentence (drives the README "why it exists")
 4. Required props and their types
 5. Optional props and their variants
 6. Does it need `ref` forwarding? (yes for anything wrapping a native element)
-7. Does it need any external dependencies? (list them — no undisclosed deps)
+7. Does it need any external dependencies? (list them, no undisclosed deps)
 
 Do not proceed until all 7 are answered.
 
@@ -29,9 +29,9 @@ Do not proceed until all 7 are answered.
 
 | File           | Convention                                                                |
 | -------------- | ------------------------------------------------------------------------- |
-| Folder         | kebab-case — `user-avatar/`                                               |
+| Folder         | kebab-case: `user-avatar/`                                               |
 | Component file | `<name>.tsx`                                                              |
-| Types          | `types.ts` — props interface always separate, never inline                |
+| Types          | `types.ts`: props interface always separate, never inline                |
 | Barrel         | `index.ts`                                                                |
 | Tests          | `<name>.test.tsx`                                                         |
 | Stories        | `<name>.stories.tsx` (if Storybook is in the project)                     |
@@ -40,7 +40,7 @@ Do not proceed until all 7 are answered.
 
 ---
 
-## Phase 1 — Scaffold (commit before implementing)
+## Phase 1: Scaffold (commit before implementing)
 
 ### Files to create
 
@@ -54,7 +54,7 @@ src/<path>/<name>/
 
 Do NOT create `<name>.tsx` yet. Its absence signals the component is not implemented.
 
-### `types.ts` — scaffold template
+### `types.ts`: scaffold template
 
 ```ts
 /**
@@ -68,7 +68,7 @@ export interface <ComponentName>Props {
 }
 ```
 
-### `<name>.test.tsx` — scaffold template
+### `<name>.test.tsx`: scaffold template
 
 ```tsx
 import { describe, it } from 'vitest';
@@ -79,7 +79,7 @@ describe('<ComponentName>', () => {
 });
 ```
 
-### `README.md` — scaffold template
+### `README.md`: scaffold template
 
 ```md
 # <ComponentName>
@@ -92,17 +92,17 @@ _One paragraph: the recurring problem this component solves._
 
 | Prop        | Type     | Default | Description               |
 | ----------- | -------- | ------- | ------------------------- |
-| `className` | `string` | —       | Forwarded to root element |
+| `className` | `string` | None    | Forwarded to root element |
 
 ## Design decisions
 
 _Key choices made during design._
 ```
 
-### `index.ts` — scaffold template
+### `index.ts`: scaffold template
 
 ```ts
-// Placeholder — not yet implemented.
+// Placeholder: not yet implemented.
 // When <ComponentName> is built, replace with:
 // export { <ComponentName> } from './<name>';
 // export type { <ComponentName>Props } from './types';
@@ -110,9 +110,9 @@ _Key choices made during design._
 
 ---
 
-## Phase 2 — Implementation (TDD loop)
+## Phase 2: Implementation (TDD loop)
 
-### Types first — fill in `types.ts` before any JSX
+### Types first: fill in `types.ts` before any JSX
 
 ```ts
 import type { HTMLAttributes } from 'react';
@@ -133,7 +133,7 @@ export interface UserAvatarProps extends HTMLAttributes<HTMLDivElement> {
 - Always in `types.ts`, never in the component file
 - Exported via barrel as `export type { ComponentProps } from './types'`
 
-### Component file — `<name>.tsx`
+### Component file: `<name>.tsx`
 
 ```tsx
 import { forwardRef } from 'react';
@@ -155,14 +155,14 @@ UserAvatar.displayName = 'UserAvatar';
 
 **Rules:**
 
-- `...other` spread onto root element — forwards `data-*`, `aria-*`, event handlers
+- `...other` spread onto root element: forwards `data-*`, `aria-*`, event handlers
 - `forwardRef` required for anything wrapping a native element
 - `displayName` set on every component
 - No `React.FC`
-- No hardcoded colours — use CSS variables or class names
+- No hardcoded colours: use CSS variables or class names
 - Never use `dangerouslySetInnerHTML`
 
-### Barrel `index.ts` — replace stub
+### Barrel `index.ts`: replace stub
 
 ```ts
 export { UserAvatar } from './user-avatar';
@@ -175,7 +175,7 @@ export type { UserAvatarProps } from './types';
 RED:     Replace first it.todo with a real failing test → run → confirm it fails
 GREEN:   Write minimal code to pass → run → confirm it passes
 REPEAT:  One test at a time until all stubs are replaced
-REFACTOR: After all tests pass — clean up duplication, no new behaviour
+REFACTOR: After all tests pass, clean up duplication, no new behaviour
 ```
 
 Never write all tests before any implementation. Never refactor while a test is red.
@@ -198,7 +198,7 @@ it('renders initials when no src is provided', () => {
   expect(screen.getByText('JA')).toBeInTheDocument();
 });
 
-// 3. Each optional variant — one test per variant
+// 3. Each optional variant: one test per variant
 it('sets data-size attribute for the sm variant', () => {
   const { container } = render(<UserAvatar name="Jane Doe" size="sm" />);
   expect(container.firstChild).toHaveAttribute('data-size', 'sm');
@@ -210,7 +210,7 @@ it('forwards arbitrary props to the root element', () => {
   expect(container.firstChild).toHaveAttribute('data-testid', 'avatar');
 });
 
-// 5. ref forwarding — only if forwardRef is used
+// 5. ref forwarding: only if forwardRef is used
 it('forwards ref to the root element', () => {
   const ref = { current: null };
   render(<UserAvatar name="Jane Doe" ref={ref} />);
@@ -234,7 +234,7 @@ export function renderWithProviders(ui: React.ReactElement) {
 }
 ```
 
-Use it only when the component actually needs the provider — not as a blanket default.
+Use it only when the component actually needs the provider, not as a blanket default.
 
 **Mocking rules:**
 
@@ -244,7 +244,7 @@ Use it only when the component actually needs the provider — not as a blanket 
 
 ---
 
-## Stories — `<name>.stories.tsx`
+## Stories: `<name>.stories.tsx`
 
 Only create if the project has Storybook. Match the title to the folder path.
 
@@ -270,7 +270,7 @@ export const WithImage: Story = {
 };
 ```
 
-No real names, emails, or client data in stories — use generic placeholders.
+No real names, emails, or client data in stories: use generic placeholders.
 
 ---
 

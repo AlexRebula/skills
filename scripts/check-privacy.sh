@@ -17,6 +17,13 @@ NC='\033[0m'
 
 FOUND=0
 
+is_lockfile() {
+  case "$(basename "$1")" in
+    package-lock.json|yarn.lock|pnpm-lock.yaml) return 0 ;;
+    *) return 1 ;;
+  esac
+}
+
 # ── Structural patterns (always enforced) ────────────────────────────────────
 
 STRUCTURAL_PATTERNS=(
@@ -44,13 +51,15 @@ FILES=()
 
 if [[ "${1:-}" == "--staged" ]]; then
   while IFS= read -r f; do
-    [[ "$f" == *.md || "$f" == *.txt || "$f" == *.json || "$f" == *.yaml || "$f" == *.yml ]] && FILES+=("$f")
+    [[ "$f" == *.md || "$f" == *.txt || "$f" == *.json || "$f" == *.yaml || "$f" == *.yml ]] && \
+    ! is_lockfile "$f" && FILES+=("$f")
   done < <(git -C "$REPO_ROOT" diff --cached --name-only --diff-filter=ACM)
 elif [[ "${1:-}" == "--diff" ]]; then
   BASE="${2:-origin/main}"
   while IFS= read -r f; do
     [[ -f "$REPO_ROOT/$f" ]] && \
     [[ "$f" == *.md || "$f" == *.txt || "$f" == *.json || "$f" == *.yaml || "$f" == *.yml ]] && \
+    ! is_lockfile "$f" && \
     FILES+=("$REPO_ROOT/$f")
   done < <(git -C "$REPO_ROOT" diff --name-only --diff-filter=ACM "$BASE"...HEAD)
 else

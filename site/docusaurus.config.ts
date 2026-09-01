@@ -6,18 +6,25 @@ import type * as Preset from '@docusaurus/preset-classic';
 
 const config: Config = {
   title: 'AlexRebula Skills',
-  tagline: 'Agent skills for Claude Code — install, reference, and extend',
+  tagline: 'Agent skills for Claude Code: install, reference, and extend',
   favicon: 'img/favicon.ico',
 
   future: {
     v4: true,
   },
 
-  url: 'https://skills-two-cyan.vercel.app',
+  url: 'https://skills.alexrebula.com',
   baseUrl: '/',
 
   onBrokenLinks: 'throw',
   onBrokenMarkdownLinks: 'warn',
+
+  stylesheets: [
+    {
+      href: 'https://fonts.googleapis.com/css2?family=Public+Sans:ital,wght@0,300..800;1,300..800&family=Barlow:ital,wght@0,500;0,600;0,700;1,600&display=swap',
+      type: 'text/css',
+    },
+  ],
 
   i18n: {
     defaultLocale: 'en',
@@ -33,8 +40,12 @@ const config: Config = {
           routeBasePath: '/',
           sidebarPath: './sidebars.ts',
           include: [
+            'overview.md',
             'engineering/**/*.{md,mdx}',
-            'productivity/**/*.{md,mdx}',
+            'wiki/**/*.{md,mdx}',
+            'daily-workflow/**/*.{md,mdx}',
+            'mentoring/**/*.{md,mdx}',
+            'thinking-tools/**/*.{md,mdx}',
             'git/**/*.{md,mdx}',
             'framework/**/*.{md,mdx}',
             'org/**/*.{md,mdx}',
@@ -42,9 +53,9 @@ const config: Config = {
             'misc/**/*.{md,mdx}',
           ],
           exclude: ['roadmap.md', 'generalization.md', 'pr-messages/**'],
-          // No landing page exists at "/" (routeBasePath above), so disable
-          // breadcrumbs' "Home" link — it would otherwise point at a route
-          // with no page and fail the onBrokenLinks: 'throw' check.
+          // Breadcrumbs' "Home" link isn't wired to this site's custom "/"
+          // landing page (src/pages/index.tsx) — left disabled to avoid a
+          // mismatched link rather than assuming it now resolves correctly.
           breadcrumbs: false,
           // Docs live at repo-root `docs/` (configured above via `path: '../docs'`),
           // not `site/docs/`, so the edit link must point at the real file location.
@@ -68,14 +79,14 @@ const config: Config = {
       logo: {
         alt: 'AlexRebula Skills Logo',
         src: 'img/logo.svg',
-        // The navbar brand always links somewhere (Docusaurus falls back to
-        // "/" otherwise), and there's no landing page at "/" — routeBasePath
-        // sends the root straight into the docs sidebar with no page of its
-        // own. Point the brand at the GitHub repo instead of an internal
-        // route so it doesn't trip onBrokenLinks: 'throw'.
-        href: 'https://github.com/AlexRebula/skills',
+        href: '/',
       },
       items: [
+        {
+          to: '/overview',
+          label: 'Overview',
+          position: 'left',
+        },
         {
           href: 'https://github.com/AlexRebula/skills',
           label: 'GitHub',

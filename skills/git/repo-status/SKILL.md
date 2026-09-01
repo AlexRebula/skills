@@ -7,13 +7,13 @@ description: Dynamically discover all workspace git repos and produce a dirty st
 
 ## Discover repo paths dynamically (never hardcode paths)
 
-> If `dependency-chain.md` was already loaded earlier in this session, it is in context. Do not re-read it — use the path references already extracted.
+> If `dependency-chain.md` was already loaded earlier in this session, it is in context. Do not re-read it: use the path references already extracted.
 
-**Source 1 — Workspace context (primary):** Your system context includes a `<workspace_info>` block that lists the open workspace folders. Extract every folder path from that block.
+**Source 1: Workspace context (primary):** Your system context includes a `<workspace_info>` block that lists the open workspace folders. Extract every folder path from that block.
 
-**Source 2 — dependency-chain.md:** Scan `{{WIKI_ROOT}}\wiki\projects\dependency-chain.md` for file system path references (any line containing an absolute path or a known repo name). Add any paths not already in your list.
+**Source 2: dependency-chain.md:** Scan `{{WIKI_ROOT}}\wiki\projects\dependency-chain.md` for file system path references (any line containing an absolute path or a known repo name). Add any paths not already in your list.
 
-**Source 3 — developer input (fallback):** If fewer than 2 repos are found after Sources 1 and 2, ask:
+**Source 3: developer input (fallback):** If fewer than 2 repos are found after Sources 1 and 2, ask:
 
 > "I could not auto-detect your repo locations from the workspace context. What is your project root directory? (e.g. `D:/projects` or `/path/to/repos`)"
 
@@ -27,7 +27,7 @@ Discard any path that is not a git repo.
 
 **For any expected repo that cannot be located on disk:**
 
-- Log it explicitly — do NOT skip silently:
+- Log it explicitly. Do NOT skip silently:
   ```
   ⚠️ Repo not found on disk: <repo-name>
      Last known path: <path if seen in dependency-chain.md, else 'unknown'>

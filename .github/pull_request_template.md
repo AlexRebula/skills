@@ -1,6 +1,6 @@
 ## What does this PR do?
 
-<!-- One paragraph — what is the concrete deliverable? -->
+<!-- One paragraph: what is the concrete deliverable? -->
 
 ## Why
 

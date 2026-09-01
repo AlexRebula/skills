@@ -12,7 +12,7 @@ The prose half doesn't need reaching for. Text about to be shown to a person run
 | --- | --- |
 | Any text you're about to show someone: a PR body, a commit message, a doc page, a summary | Runs automatically, no invocation needed |
 | A file has leftover generation tells you want gone: dead comments, impossible try/catch, placeholder docstrings | `/deslopify <file>` |
-| You want to check whether a diff is well designed, simple, or follows repo conventions | [code-review](./code-review.md), not this skill |
+| You want to check whether a diff is well designed, simple, or follows repo conventions | [review-pr](../git/review-pr.md), not this skill |
 | You want the diff simplified or de-duplicated | `/simplify` |
 
 ## Prerequisites
@@ -33,7 +33,7 @@ The last step is a self-audit: read the result and ask what still gives it away.
 
 The code pass hunts a narrower thing: leftovers from a generation pass that a careful human wouldn't have left in, not general code quality. A restated comment above the line it restates, a `try`/`catch` around code that can't actually throw, a null check guarding against a state the types already rule out, a docstring that just repeats the function's name in sentence form, an over-long name where a short one was already clear, a stray `TODO` that isn't tracking anything real. Each one gets fixed directly, not written up as a list of findings to act on later.
 
-Questions about whether a design is the simplest one, whether logic is duplicated elsewhere, or whether the diff matches the repo's conventions belong to other skills. If a code-pass finding is really about design rather than a generation tell, `deslopify` names it and leaves the fix to [code-review](./code-review.md) or `/simplify`.
+Questions about whether a design is the simplest one, whether logic is duplicated elsewhere, or whether the diff matches the repo's conventions belong to other skills. If a code-pass finding is really about design rather than a generation tell, `deslopify` names it and leaves the fix to [review-pr](../git/review-pr.md) or `/simplify`.
 
 Because the code pass touches files without the same turn-by-turn visibility the prose pass has (nobody's watching a chat response get edited before it lands), it reports what changed and why, file and line, in the same reply. It doesn't make the edits and stay quiet about them.
 
@@ -43,7 +43,7 @@ Because the code pass touches files without the same turn-by-turn visibility the
 Because the risk is different in each direction. Skipping the prose pass means a puffed-up, dashed-up first draft reaches a human reader with no one catching it first. Running the code pass unasked means editing files that weren't part of the task, which is a worse failure than leaving one restated comment in place. The asymmetry is deliberate, not an oversight.
 
 **Does it replace a design review?**
-No. It only fixes things that look machine-generated: dead branches, restated comments, placeholder docstrings. It has nothing to say about whether the design itself is right, reused elsewhere, or the simplest shape for the problem. That's [code-review](./code-review.md) and `/simplify`.
+No. It only fixes things that look machine-generated: dead branches, restated comments, placeholder docstrings. It has nothing to say about whether the design itself is right, reused elsewhere, or the simplest shape for the problem. That's [review-pr](../git/review-pr.md) and `/simplify`.
 
 **What if a `TODO` is genuinely tracking future work?**
 It stays. The code pass only removes scaffolding that isn't a real, intended follow-up: stub functions and placeholder values left behind by a generation pass, not comments that describe an actual plan.
@@ -58,4 +58,4 @@ It stays. The code pass only removes scaffolding that isn't a real, intended fol
 
 ## Where it fits
 
-`deslopify` sits alongside the main build chain rather than inside it. The prose half applies wherever text is about to be shown, regardless of which skill produced it: [tdd](./tdd.md), [code-review](./code-review.md), [to-tickets](./to-tickets.md), and every other skill's output all pass through it before a human sees them. The code half is a tool you reach for directly, most often paired with a `/code-review` pass or run on its own against a specific file.
+`deslopify` sits alongside the main build chain rather than inside it. The prose half applies wherever text is about to be shown, regardless of which skill produced it: [tdd](./tdd.md), [review-pr](../git/review-pr.md), [to-tickets](./to-tickets.md), and every other skill's output all pass through it before a human sees them. The code half is a tool you reach for directly, most often paired with a `/review-pr` pass or run on its own against a specific file.

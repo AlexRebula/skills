@@ -10,7 +10,7 @@ Run it once before starting new component work, so you know what baseline you're
 | --- | --- |
 | Starting component work in `giselle-mui` and want to know the state of existing tests first | `audit-giselle-tests` |
 | Building a brand new component from scratch | [create-giselle-component](./create-giselle-component.md), which carries the same test patterns forward |
-| The tests are fine but the code itself needs a broader review | [code-review](https://aihero.dev/skills-code-review) |
+| The tests are fine but the code itself needs a broader review | [review-pr](../git/review-pr.md) |
 | A behaviour needs building test-first | [tdd](https://aihero.dev/skills-tdd) |
 
 ## Prerequisites
@@ -23,9 +23,9 @@ Every `*.test.ts` file gets classified into exactly one bucket before any fix is
 
 | Bucket | What it looks like | Action |
 | --- | --- | --- |
-| A — Placeholder stubs | `it.todo` only, no `expect` calls | Leave alone. This is the two-phase scaffold pattern the quality gate itself enforces. |
-| B — MUI-mock anti-pattern | Contains `vi.mock('@mui/material/...')` or `vi.mock('@mui/material/styles')` | Rewrite. The test is verifying the mock, not the component. |
-| C — Good tests | Imports through the barrel, uses `renderWithTheme` or `@testing-library/react` with no MUI mocks | Check for missing required cases, top up if needed. |
+| A: Placeholder stubs | `it.todo` only, no `expect` calls | Leave alone. This is the two-phase scaffold pattern the quality gate itself enforces. |
+| B: MUI-mock anti-pattern | Contains `vi.mock('@mui/material/...')` or `vi.mock('@mui/material/styles')` | Rewrite. The test is verifying the mock, not the component. |
+| C: Good tests | Imports through the barrel, uses `renderWithTheme` or `@testing-library/react` with no MUI mocks | Check for missing required cases, top up if needed. |
 
 Bucket B is the one that costs real time to fix, and it's worth understanding why it's wrong rather than just applying the rewrite mechanically: if a component's internal structure changes but the mocked-out pieces stay the same shape, the test still passes. It has stopped testing the component.
 

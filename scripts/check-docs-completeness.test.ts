@@ -42,8 +42,8 @@ describe('checkDocsCompleteness', () => {
   it('reports zero missing when every skill in the target categories has a docs page', () => {
     makeSkill('engineering', 'tdd');
     makeDocsPage('engineering', 'tdd');
-    makeSkill('productivity', 'capture');
-    makeDocsPage('productivity', 'capture');
+    makeSkill('wiki', 'capture');
+    makeDocsPage('wiki', 'capture');
 
     const report = checkDocsCompleteness(skillsRoot, docsRoot);
 
@@ -57,21 +57,21 @@ describe('checkDocsCompleteness', () => {
     makeSkill('engineering', 'tdd');
     makeDocsPage('engineering', 'tdd');
     makeSkill('engineering', 'deslopify'); // no docs page
-    makeSkill('productivity', 'capture'); // no docs page
-    makeDocsPage('productivity', 'other-skill'); // unrelated docs page, should not count
+    makeSkill('wiki', 'capture'); // no docs page
+    makeDocsPage('wiki', 'other-skill'); // unrelated docs page, should not count
 
     const report = checkDocsCompleteness(skillsRoot, docsRoot);
 
     expect(report.totalMissing).toBe(2);
     expect(report.missingByCategory.engineering).toEqual(['deslopify']);
-    expect(report.missingByCategory.productivity).toEqual(['capture']);
+    expect(report.missingByCategory.wiki).toEqual(['capture']);
     expect(report.missingByCategory.git).toBeUndefined();
 
     const text = formatReport(report);
     expect(text).toContain('engineering:');
     expect(text).toContain('- deslopify (expected docs/engineering/deslopify.md)');
-    expect(text).toContain('productivity:');
-    expect(text).toContain('- capture (expected docs/productivity/capture.md)');
+    expect(text).toContain('wiki:');
+    expect(text).toContain('- capture (expected docs/wiki/capture.md)');
   });
 
   it('ignores deprecated and in-progress categories entirely, even when populated with undocumented skills', () => {
@@ -90,7 +90,7 @@ describe('checkDocsCompleteness', () => {
 
     expect(report.totalMissing).toBe(0);
     expect(report.missingByCategory).toEqual({});
-    // Only the one engineering skill was ever counted — deprecated/in-progress
+    // Only the one engineering skill was ever counted: deprecated/in-progress
     // skills must not contribute to totalSkillsChecked either.
     expect(report.totalSkillsChecked).toBe(1);
     expect(report.missingByCategory.deprecated).toBeUndefined();

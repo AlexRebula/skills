@@ -23,7 +23,7 @@ Arguments: `<N>` is required (ask if it's missing). Add `<owner>/<repo>` if the 
 
 Standards and workflow load first, always, before a single thread is read. Then the repo and branch get identified and the merge/CI state gets checked, and this step is treated as mandatory rather than a nice-to-have: a clean `git status` locally does not mean the branch is conflict-free against the base, and the only trustworthy signal is the API's `mergeable` and `mergeStateStatus` fields. Merge conflicts block everything else and get resolved first; CI failures don't block gathering threads, but the fix rides along in the same batch commit as the review fixes.
 
-Only after both of those checks does thread-gathering start, and it gathers *every* thread, plus your own prior replies, before triaging a single one — the dedup index built from your own past replies is what stops the skill from posting a second verdict or a second SHA follow-up on a thread it already answered in an earlier pass.
+Only after both of those checks does thread-gathering start, and it gathers *every* thread, plus your own prior replies, before triaging a single one. The dedup index built from your own past replies is what stops the skill from posting a second verdict or a second SHA follow-up on a thread it already answered in an earlier pass.
 
 ## The five verdicts
 
@@ -33,7 +33,7 @@ A thread carrying a GitHub suggested-change block gets an explicit accept-or-rej
 
 ## The close-out audit is not optional
 
-Before handing back to the branch owner, every reply posted under your account in the session gets scanned for commitment language: "will," "follow-up," "separate issue," "fix in this PR." Each one needs a matching artifact — a commit SHA, an opened issue with its link posted back, or an updated PR description — before the report goes out. A reply that says "I'll open an issue for this" with no issue ever opened is exactly the gap this step exists to catch.
+Before handing back to the branch owner, every reply posted under your account in the session gets scanned for commitment language: "will," "follow-up," "separate issue," "fix in this PR." Each one needs a matching artifact (a commit SHA, an opened issue with its link posted back, or an updated PR description) before the report goes out. A reply that says "I'll open an issue for this" with no issue ever opened is exactly the gap this step exists to catch.
 
 ## Common questions
 

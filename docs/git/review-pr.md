@@ -1,6 +1,6 @@
 ## What it does
 
-`review-pr` reviews a diff on two axes: **Standards**, whether the code follows the repo's documented conventions, and **Spec**, whether it implements what the originating issue or PRD actually asked for. It runs in two modes. PR mode reviews an already-open PR and posts findings through the GitHub PR Reviews API as inline comments. Branch mode (`--branch`) reviews a branch diff before any PR exists and reports findings in chat only, so you can catch problems before you open one.
+`review-pr` reviews a diff on two axes: **Standards**, whether the code follows the repo's documented conventions plus a fixed Fowler smell baseline that applies even when the repo documents nothing, and **Spec**, whether it implements what the originating issue or PRD actually asked for. It runs in two modes. PR mode reviews an already-open PR and posts findings through the GitHub PR Reviews API as inline comments. Branch mode (`--branch`) reviews a branch diff before any PR exists and reports findings in chat only, so you can catch problems before you open one.
 
 ## When to reach for it
 
@@ -10,7 +10,7 @@
 
 Before either sub-agent runs, the diff is scanned directly for a fixed list of always-blocking patterns: `dangerouslySetInnerHTML`, an unchecked `javascript:` scheme on an interactive component, real personal data in test fixtures, plaintext financial identifiers, hardcoded secrets, a missing `aria-label` on an icon-only control, and leftover `console.log`/`warn`/`error` in production code. These are flagged immediately, before any sub-agent output comes back, because they do not need a judgement call.
 
-The Standards sub-agent gets the full diff plus every standards document the repo carries (`AGENTS.md`, `CLAUDE.md`, `CONTRIBUTING.md`, ADR titles, plus any `--standards-url` content) and reports violations labelled `blocking`, `non-blocking`, or `suggestion`, citing the exact standard. It skips anything a linter or formatter already enforces. The Spec sub-agent gets the diff plus the spec (an issue, a PRD, or a spec file found by branch or feature name) and reports missing requirements, scope creep, and requirements that look implemented but are actually wrong, quoting the spec line for each finding. Both run in a single parallel dispatch, not sequentially.
+The Standards sub-agent gets the full diff plus every standards document the repo carries (`AGENTS.md`, `CLAUDE.md`, `CONTRIBUTING.md`, ADR titles, plus any `--standards-url` content), plus a fixed baseline of twelve Fowler code smells that applies even when the repo documents nothing. It reports violations labelled `blocking`, `non-blocking`, or `suggestion`, citing the exact standard; baseline smells always land as `suggestion`, since they are judgement calls a documented repo standard can override. It skips anything a linter or formatter already enforces. The Spec sub-agent gets the diff plus the spec (an issue, a PRD, or a spec file found by branch or feature name) and reports missing requirements, scope creep, and requirements that look implemented but are actually wrong, quoting the spec line for each finding. Both run in a single parallel dispatch, not sequentially.
 
 ## PR mode posts; branch mode only reports
 

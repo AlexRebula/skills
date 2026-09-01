@@ -1,0 +1,59 @@
+name: Docs site quality gate
+
+on:
+  pull_request:
+    paths:
+      - 'site/**'
+      - 'scripts/generate-provenance.ts'
+      - 'scripts/generate-landing-data.ts'
+      - 'skills/**'
+      - '.github/workflows/site-quality.yml'
+  push:
+    branches: ['main']
+    paths:
+      - 'site/**'
+      - 'scripts/generate-provenance.ts'
+      - 'scripts/generate-landing-data.ts'
+      - 'skills/**'
+
+jobs:
+  site-quality:
+    name: typecheck, lint, stylelint, test
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0 # generate-provenance.ts diffs against a fetched upstream remote
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: 'npm'
+          cache-dependency-path: |
+            package-lock.json
+            site/package-lock.json
+
+      - name: Install root dependencies
+        run: npm ci
+
+      - name: Lint generate-provenance.ts
+        run: npm run lint:provenance-script
+
+      - name: Install site dependencies
+        working-directory: site
+        run: npm ci
+
+      - name: Run root tests
+        run: npm test
+
+      - name: Run site quality gate (typecheck, lint, stylelint, test)
+        working-directory: site
+        run: npm run check
+
+      - name: Build site
+        working-directory: site
+        run: npm run build

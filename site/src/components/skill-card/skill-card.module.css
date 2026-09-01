@@ -1,0 +1,146 @@
+/*
+ * Layout reproduces AnalyticsWidgetSummary (rm/.../sections/overview/analytics/
+ * analytics-widget-summary.tsx) exactly: `p: 3` padding, `theme.shape.borderRadius * 2`
+ * = 16px corners, `boxShadow: none`. The trend indicator and sparkline chart
+ * are omitted (there's no metric here to show a trend or series for).
+ *
+ * Color is per-variant custom properties (--bg-1/--bg-2/--fg/--shape-tint,
+ * set by .green/.amber below) consumed by one shared rule set, rather than
+ * each variant repeating the same background-image/color/shape declarations
+ * with only the literal values differing.
+ */
+.card {
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  min-height: 9rem;
+  padding: 1.5rem;
+  border-radius: 16px;
+  box-shadow: none;
+  background-color: #fff;
+  background-image: linear-gradient(135deg, var(--bg-1), var(--bg-2));
+  color: var(--fg);
+}
+
+/* The clickable name/icon/label block: its own flex column so it lays out
+   exactly as it did when the whole card was one <a>, but scoped to just
+   this content — leaving room for a diff button as a sibling, not nested
+   inside the anchor (see the SkillCard doc comment for why). */
+.cardLink {
+  display: flex;
+  flex-direction: column;
+  color: inherit;
+  text-decoration: none;
+}
+
+.cardLink:hover,
+.cardLink:focus-visible {
+  text-decoration: none;
+  color: var(--fg);
+}
+
+.iconBox {
+  display: inline-flex;
+  margin-bottom: 1.5rem;
+}
+
+/* Typography.variant="subtitle2": the slot "Weekly sales" occupied. */
+.label {
+  margin-bottom: 0.5rem;
+  font-family: var(--ifm-font-family-base);
+  font-weight: 600;
+  font-size: 0.875rem;
+  line-height: calc(22 / 14);
+}
+
+/* Typography.variant="h4": the slot "714k" occupied. */
+.name {
+  font-family: var(--ifm-heading-font-family);
+  font-weight: 700;
+  font-size: 1.25rem;
+  line-height: 1.5;
+}
+
+/* SvgColor with src=".../background/shape-square.svg": a `currentColor`-
+   masked span, tinted per variant via --shape-tint, positioned/sized/opacity
+   exactly as the source (top:0, left:-20, 240x240, opacity 0.24, zIndex -1).
+   The mask image itself is set inline (skill-card.tsx) since its URL is
+   resolved at runtime via useBaseUrl. */
+.shape {
+  position: absolute;
+  z-index: -1;
+  top: 0;
+  left: -20px;
+  width: 240px;
+  height: 240px;
+  opacity: 0.24;
+  color: var(--shape-tint);
+  background-color: currentcolor;
+  mask-repeat: no-repeat;
+  mask-position: center;
+  mask-size: contain;
+}
+
+/* "original": common.white base with the same 135deg lighter/light gradient
+   overlay at 48% alpha, text in primary.darker, as the portfolio source. */
+.green {
+  --bg-1: rgb(200 250 214 / 48%);
+  --bg-2: rgb(91 228 155 / 48%);
+  --fg: #004b50;
+  --shape-tint: var(--ifm-color-primary);
+}
+
+/* "inherited": same treatment, warm/amber instead of green, so it reads as
+   its own status at a glance rather than a lesser "original". */
+.amber {
+  --bg-1: rgb(255 236 199 / 48%);
+  --bg-2: rgb(255 183 77 / 48%);
+  --fg: #5c3d00;
+  --shape-tint: var(--ifm-color-warning);
+}
+
+/* "upstream": same treatment, cyan/info instead of green or amber — the
+   theme's own info color, matching what ProvenanceButton used for this
+   status before this card absorbed it. */
+.blue {
+  --bg-1: rgb(202 253 245 / 48%);
+  --bg-2: rgb(0 184 217 / 48%);
+  --fg: #003768;
+  --shape-tint: var(--ifm-color-info);
+}
+
+/* "modified": same treatment, the theme's secondary/violet — matching
+   ProvenanceButton's "modified" color before this card absorbed it. The
+   only variant with a .diffButton (see below). */
+.purple {
+  --bg-1: rgb(239 214 255 / 48%);
+  --bg-2: rgb(142 51 255 / 48%);
+  --fg: #27097a;
+  --shape-tint: var(--portfolio-color-secondary);
+}
+
+/* The "modified" card's own diff affordance: a small pill in the card's own
+   fg color, sitting below the name/label block instead of underneath the
+   card as a separate row (the old ProvenanceButton layout). */
+.diffButton {
+  align-self: flex-start;
+  margin-top: 1rem;
+  padding: 0.35rem 0.75rem;
+  border: 1px solid rgb(142 51 255 / 48%);
+  border-radius: 8px;
+  background: transparent;
+  color: var(--fg);
+  font-family: var(--ifm-font-family-base);
+  font-weight: 600;
+  font-size: 0.8rem;
+  cursor: pointer;
+  transition: background-color 0.15s ease, border-color 0.15s ease;
+}
+
+.diffButton:hover,
+.diffButton:focus-visible {
+  border-color: var(--portfolio-color-secondary);
+  background-color: rgb(142 51 255 / 8%);
+}

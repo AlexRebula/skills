@@ -11,7 +11,7 @@ Use this skill for any LittleBranches repository. Use `/respond-pr-review` for a
 
 ## Arguments
 
-`/respond-giselle-pr-review <N>` — PR number. Required. Ask if omitted. `/respond-giselle-pr-review <N> <owner>/<repo>` — if the repo cannot be inferred from context. `/respond-giselle-pr-review <N> --standards-url <url>` — load standards from a custom raw URL instead of the default LittleBranches AGENTS.md.
+`/respond-giselle-pr-review <N>`: PR number. Required. Ask if omitted. `/respond-giselle-pr-review <N> <owner>/<repo>`: if the repo cannot be inferred from context. `/respond-giselle-pr-review <N> --standards-url <url>`: load standards from a custom raw URL instead of the default LittleBranches AGENTS.md.
 
 ---
 
@@ -21,7 +21,7 @@ Use this skill for any LittleBranches repository. Use `/respond-pr-review` for a
 
 Always load these before reading any thread.
 
-**If `--standards-url` was provided:** Fetch that URL for the public barrel. Skip the private barrel unconditionally — the caller supplied their own standards source. Also load the workflow doc:
+**If `--standards-url` was provided:** Fetch that URL for the public barrel. Skip the private barrel unconditionally: the caller supplied their own standards source. Also load the workflow doc:
 
 ```
 Public:   <standards-url>
@@ -35,14 +35,14 @@ Public:   https://raw.githubusercontent.com/LittleBranches/oss-quality-standards
 Workflow: https://raw.githubusercontent.com/LittleBranches/oss-quality-standards/main/docs/pr-review-workflow.md
 ```
 
-For the private AGENTS.md, use the authenticated `gh` CLI to fetch via the GitHub Contents API. `fetch_webpage` will always 404 — the repo is private and raw.githubusercontent.com requires auth.
+For the private AGENTS.md, use the authenticated `gh` CLI to fetch via the GitHub Contents API. `fetch_webpage` will always 404: the repo is private and raw.githubusercontent.com requires auth.
 
 ```sh
 gh api repos/LittleBranches/oss-quality-standards-private/contents/AGENTS.md \
   --jq '.content | @base64d'
 ```
 
-This works on any machine where `gh` is authenticated. No hardcoded paths. Only skip the private barrel if `gh` itself returns a permission error — and if so, note explicitly that banned-content and encryption rules were not checked.
+This works on any machine where `gh` is authenticated. No hardcoded paths. Only skip the private barrel if `gh` itself returns a permission error, and if so, note explicitly that banned-content and encryption rules were not checked.
 
 ### 2. Identify the repo and verify the branch
 
@@ -60,15 +60,15 @@ If the current branch is not the PR branch, switch to it before editing.
 
 This step is **mandatory**. Merge conflicts and CI failures have different blocking behaviors:
 
-- **Merge conflicts** (`mergeable: CONFLICTING` or `mergeStateStatus: DIRTY`) — block everything. Resolve before proceeding to step 3.
-- **CI failures** — allow proceeding to gather threads. Diagnose and capture logs first, then include the CI fix in the step 6 batch commit.
+- **Merge conflicts** (`mergeable: CONFLICTING` or `mergeStateStatus: DIRTY`): block everything. Resolve before proceeding to step 3.
+- **CI failures**: allow proceeding to gather threads. Diagnose and capture logs first, then include the CI fix in the step 6 batch commit.
 
 ```sh
 gh pr view <N> --repo <owner>/<repo> --json mergeable,mergeStateStatus
 gh pr checks <N> --repo <owner>/<repo>
 ```
 
-> **Important:** A clean local working tree (`git status` showing nothing to commit) does **not** mean the branch is conflict-free with `main`. It only means the branch has no uncommitted local changes. Always trust the API response: if `mergeable` is `CONFLICTING` or `mergeStateStatus` is `DIRTY`, real merge conflicts exist and must be resolved — even when `git status` shows clean. Verify by actually running `git merge origin/<base-branch>`, not by inspecting local state.
+> **Important:** A clean local working tree (`git status` showing nothing to commit) does **not** mean the branch is conflict-free with `main`. It only means the branch has no uncommitted local changes. Always trust the API response: if `mergeable` is `CONFLICTING` or `mergeStateStatus` is `DIRTY`, real merge conflicts exist and must be resolved, even when `git status` shows clean. Verify by actually running `git merge origin/<base-branch>`, not by inspecting local state.
 
 **If `mergeable` is `CONFLICTING` or `mergeStateStatus` is `DIRTY`:**
 
@@ -84,15 +84,15 @@ Resolve each conflicting file using the following strategy:
 
 | File type | Resolution strategy |
 | --- | --- |
-| Generated/vendored artifacts (`.yalc/`, `dist/`, `package-lock.json`) | `git checkout --theirs <file>` — always take base branch (latest build) |
-| Data files (`*.json`, `*.csv`) | Read both sides carefully; preserve all new entries from both HEAD and base — never discard either side's additions |
-| Source files (`*.ts`, `*.tsx`, `*.md`) | Manual merge — read conflict sections, apply both sets of meaningful changes |
+| Generated/vendored artifacts (`.yalc/`, `dist/`, `package-lock.json`) | `git checkout --theirs <file>`: always take base branch (latest build) |
+| Data files (`*.json`, `*.csv`) | Read both sides carefully; preserve all new entries from both HEAD and base, never discard either side's additions |
+| Source files (`*.ts`, `*.tsx`, `*.md`) | Manual merge: read conflict sections, apply both sets of meaningful changes |
 
 After resolving:
 
 ```sh
 git add -A
-git commit -m "chore: merge <base-branch> — resolve conflicts before PR review response"
+git commit -m "chore: merge <base-branch>, resolve conflicts before PR review response"
 git push origin <pr-branch>
 ```
 
@@ -136,8 +136,8 @@ Do not skip `--paginate`; large PRs can silently omit older comments without it.
 
 After running these commands, build a deduplication index from your own replies:
 
-- **Acknowledged threads**: any thread where your account already has an inline reply (look for your login in `in_reply_to_id` reply chains, or as the root comment author). Step 5 must skip these — do not post a second verdict reply.
-- **SHA-replied threads**: any thread where one of your existing replies contains `"Fixed in "` or `"Deferred"`. Step 7 must skip these — do not post a second SHA follow-up.
+- **Acknowledged threads**: any thread where your account already has an inline reply (look for your login in `in_reply_to_id` reply chains, or as the root comment author). Step 5 must skip these. Do not post a second verdict reply.
+- **SHA-replied threads**: any thread where one of your existing replies contains `"Fixed in "` or `"Deferred"`. Step 7 must skip these. Do not post a second SHA follow-up.
 
 Triage and code fixes are always idempotent and must never be skipped. Only the reply steps (5 and 7) are gated by this check.
 
@@ -145,17 +145,17 @@ Triage and code fixes are always idempotent and must never be skipped. Only the 
 
 Assign one verdict per thread:
 
-- `✅ Valid` — fix it in the batch commit
-- `❌ Not valid` — explain why the concern does not apply
-- `⚠️ Partially valid` — fix the valid part, reject the wrong part
-- `⏸️ Needs branch owner input` — missing business context; do not guess
-- `⏭️ Valid but deferred` — real issue, but out of scope for this PR; open an issue and link it
+- `✅ Valid`: fix it in the batch commit
+- `❌ Not valid`: explain why the concern does not apply
+- `⚠️ Partially valid`: fix the valid part, reject the wrong part
+- `⏸️ Needs branch owner input`: missing business context; do not guess
+- `⏭️ Valid but deferred`: real issue, but out of scope for this PR; open an issue and link it
 
 Security and WCAG comments are treated as valid unless you have a specific technical reason they are false positives.
 
 ### 5. Reply inline before fixing
 
-Every thread gets a reply in the same thread before any code change — **unless you already have a reply in that thread**. Before posting, check the acknowledged set from Step 3: if your account has any existing reply in the thread, skip this step for that thread. Do not post a second verdict reply.
+Every thread gets a reply in the same thread before any code change, **unless you already have a reply in that thread**. Before posting, check the acknowledged set from Step 3: if your account has any existing reply in the thread, skip this step for that thread. Do not post a second verdict reply.
 
 For threads with no existing reply from you:
 
@@ -186,7 +186,7 @@ If a thread includes a GitHub suggested change block, explicitly accept it into 
 ```text
 ✅ Valid. <one sentence confirming the issue and why it matters>. Accepting Copilot suggestion verbatim.
 
-⚠️ Partially valid. <what is right> but <what is overstated or incorrect>. Rejecting suggestion — fixing with <alternative> because <reason>.
+⚠️ Partially valid. <what is right> but <what is overstated or incorrect>. Rejecting suggestion: fixing with <alternative> because <reason>.
 ```
 
 If a deferred thread is valid, open the issue first, then post the `⏭️` reply with the issue link.
@@ -198,7 +198,7 @@ This step is **mandatory** and runs before the Step 6 batch fix and the Step 7 S
 For each thread that contains a GitHub suggested change block:
 
 - **Option A (Accept):** apply the exact suggested diff to the file verbatim. In the ack reply, state: "Accepting Copilot suggestion verbatim."
-- **Option B (Reject):** do NOT apply the suggestion. In the ack reply, state why: "Rejecting suggestion — fixing with [alternative] because [reason]."
+- **Option B (Reject):** do NOT apply the suggestion. In the ack reply, state why: "Rejecting suggestion: fixing with [alternative] because [reason]."
 - Never write a custom fix for a thread that has a suggestion without first recording Option A or B.
 - Do not proceed to the SHA follow-up reply for a thread until its suggestion disposition is recorded.
 
@@ -218,7 +218,7 @@ The fix commit should be a single batch commit that covers all valid threads.
 
 ### 7. Post follow-up SHA replies
 
-After the push, reply to every fixed thread with the short SHA — **unless you already posted a SHA follow-up for that thread**. Before posting, check the SHA-replied set from Step 3: if your account already has a `"Fixed in"` or `"Deferred"` reply in the thread, skip it.
+After the push, reply to every fixed thread with the short SHA, **unless you already posted a SHA follow-up for that thread**. Before posting, check the SHA-replied set from Step 3: if your account already has a `"Fixed in"` or `"Deferred"` reply in the thread, skip it.
 
 For threads without an existing SHA reply:
 
@@ -262,7 +262,7 @@ If the fix batch changed the PR scope, update the PR description before handing 
 
 A thread becomes outdated when a new commit shifts the diff position of the lines it referenced. GitHub collapses outdated threads in the UI with an "Outdated" badge, and the `line` field on the comment is `null`.
 
-**Outdated threads are fully replyable inline.** The `POST .../pulls/comments/<id>/replies` endpoint works normally for outdated threads — no fallback to top-level PR comments is needed. Reply using Steps 5 and 7 exactly as you would for any active thread.
+**Outdated threads are fully replyable inline.** The `POST .../pulls/comments/<id>/replies` endpoint works normally for outdated threads. No fallback to top-level PR comments is needed. Reply using Steps 5 and 7 exactly as you would for any active thread.
 
 #### Top-level comments only
 

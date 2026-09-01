@@ -1,0 +1,52 @@
+.list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+/*
+ * The accordion root's own visual recipe (mirroring alexrebula's own FAQ
+ * accordion, src/sections/home/ar-home-faqs.tsx: no divider border, rounded
+ * corners, subtle hover/expanded tint instead of a hard box-shadow card)
+ * lives as `sx` on the <Accordion> element itself, not here - a plain
+ * CSS-module class loses a specificity fight against MUI's own
+ * emotion-injected Paper/Accordion styles (box-shadow, per-corner
+ * border-radius), while `sx` resolves through MUI's own styling pipeline
+ * and reliably wins.
+ */
+
+.title {
+  font-family: var(--ifm-heading-font-family);
+  font-weight: 600;
+  font-size: 1.05rem;
+}
+
+.description {
+  margin: 0;
+  color: var(--ifm-color-emphasis-700);
+  line-height: 1.6;
+}
+
+/* Gap between paragraphs only - margin: 0 above keeps the first flush with the accordion top and the last flush with "Learn more" below. */
+.description + .description {
+  margin-top: 0.75rem;
+}
+
+.learnMore {
+  display: inline-block;
+  margin-top: 0.5rem;
+}
+
+/* Passed as `leadingAction`, not `trailingContent`: giselle-mui's Accordion
+   renders `trailingContent` literally inside AccordionSummary's own <button>,
+   which would nest ProvenanceIcon's own trigger <button> inside it (invalid
+   HTML, hydration error). `leadingAction` renders as a true DOM sibling
+   instead (see accordion.tsx's summaryRowSx wrapper) - the same slot the
+   library's own checklist checkbox uses for its independently-clickable
+   control - so a click here never reaches the toggle's own handler; no
+   stopPropagation needed. */
+.provenanceSlot {
+  display: flex;
+  align-items: center;
+  flex-shrink: 0;
+}

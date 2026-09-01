@@ -8,7 +8,7 @@ const SKILL = readFileSync(join(__dirname, 'SKILL.md'), 'utf8');
 
 describe('audit-giselle-tests', () => {
 
-  // ── Bucket A — correct scaffold pattern ──────────────────────────────────
+  // ── Bucket A: correct scaffold pattern ──────────────────────────────────
   it('Bucket A pattern uses it.todo stubs, not describe.skip', () => {
     // The two-phase scaffold standard (AGENTS.md §5.5) uses it.todo, not describe.skip.
     // An audit skill that corrects tests must recognise the right pattern.
@@ -16,9 +16,9 @@ describe('audit-giselle-tests', () => {
     expect(SKILL).not.toContain('describe.skip');
   });
 
-  // ── Fix pattern — correct theme wrapper ──────────────────────────────────
+  // ── Fix pattern: correct theme wrapper ──────────────────────────────────
   it('fix pattern uses GiselleThemeProvider, not ThemeProvider + createTheme()', () => {
-    // giselle-mui uses CSS variables mode — plain createTheme() does not populate
+    // giselle-mui uses CSS variables mode. Plain createTheme() does not populate
     // theme.vars.* and causes render crashes. GiselleThemeProvider is the only
     // correct wrapper (matches create-giselle-component §10 rule).
     expect(SKILL).toContain('GiselleThemeProvider');
