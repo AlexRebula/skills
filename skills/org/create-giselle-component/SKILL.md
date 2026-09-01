@@ -478,6 +478,34 @@ export const Outlined: Story = {
 
 Story names: PascalCase. Never repeat the component name in the story name. No real names, emails, or client data in any story: use generic placeholders.
 
+**Demo/fixture content that's more than a trivial literal (oss-quality-standards §8.4):** a single short value like `args: { label: 'Revenue' }` above is fine written directly in the story. But once a story's content grows past that — multiple paragraphs, a multi-item array, anything that reads as real sample data rather than a placeholder — pull it into a small local data module instead of inlining it in `.stories.tsx`. Follow the same `sections-api`-style convention used elsewhere: factory function(s) + types, colocated with the component (e.g. `__fixtures__/<name>.fixtures.ts`), imported by the story:
+
+```ts
+// __fixtures__/testimonial-card.fixtures.ts
+export interface TestimonialCardDemoData {
+  quote: string;
+  author: string;
+}
+
+export function createTestimonialCardDemoData(): TestimonialCardDemoData {
+  return {
+    quote: 'Working with this team turned our biggest blocker into a two-week win...',
+    author: 'Jane Doe, Acme Corp',
+  };
+}
+```
+
+```ts
+// testimonial-card.stories.tsx
+import { createTestimonialCardDemoData } from './__fixtures__/testimonial-card.fixtures';
+
+export const Default: Story = {
+  args: createTestimonialCardDemoData(),
+};
+```
+
+No JSX-as-logic in the fixture file and no runtime validation needed — it just returns a typed literal.
+
 ---
 
 ## Update README.md: fill in the File structure section
