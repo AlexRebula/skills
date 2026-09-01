@@ -2,6 +2,7 @@ import React, { useState, type ReactNode } from 'react';
 import { Accordion } from '@littlebranches/giselle-mui';
 import Link from '@docusaurus/Link';
 import { InlineMarkdown } from '../inline-markdown';
+import { ProvenanceIcon } from '../provenance-icon';
 import realSkillSummaries from '../../data/skill-summaries.json';
 import type { FlowSkillAccordionListProps } from './types';
 import styles from './flow-skill-accordion-list.module.css';
@@ -51,6 +52,7 @@ function toSummaryKey(href: string | undefined): string | undefined {
 export function FlowSkillAccordionList({
   item,
   skillSummaries = realSkillSummaries,
+  provenanceMap,
 }: FlowSkillAccordionListProps): ReactNode {
   const [expandedTitle, setExpandedTitle] = useState<string | null>(null);
 
@@ -67,6 +69,11 @@ export function FlowSkillAccordionList({
             onChange={(_event, isExpanded) => setExpandedTitle(isExpanded ? card.title : null)}
             expandIcon={<ChevronDownIcon />}
             title={<span className={styles.title}>/{card.title}</span>}
+            leadingAction={
+              card.href ? (
+                <ProvenanceIcon slug={card.href} provenanceMap={provenanceMap} className={styles.provenanceSlot} />
+              ) : undefined
+            }
             // A plain CSS-module class loses a specificity fight against
             // MUI's own emotion-injected Paper/Accordion styles (box-shadow,
             // per-corner border-radius) - sx resolves through the same

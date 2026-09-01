@@ -20,6 +20,7 @@
  * popover used, at the size a whole-file side-by-side diff actually needs.
  */
 .panel {
+  position: relative;
   display: flex;
   flex-direction: column;
   width: 100%;
@@ -137,13 +138,33 @@
   line-height: 1.6;
 }
 
+/* Matches .panel's own background (not a shared variable - .panel's colors
+   are their own deliberate literal, see that rule's comment) so the sticky
+   old-line-number column below has something opaque to cover scrolled
+   content with. .removedSide/.addedSide are defined further down and win
+   the cascade on a tinted row (equal specificity, later in source). */
 .lineNumber {
   width: 3rem;
   padding: 0 0.5rem;
+  background-color: #fff;
   color: var(--ifm-color-emphasis-500);
   text-align: right;
   user-select: none;
   white-space: nowrap;
+}
+
+:global([data-theme='dark']) .lineNumber {
+  background-color: rgb(28 37 46 / 100%);
+}
+
+/* The old (leftmost) line-number column only - td:first-child within each
+   row - stays visible while scrolling the table's horizontal overflow, so a
+   long line's number doesn't disappear off the left edge along with it. */
+.lineNumber:first-child {
+  position: sticky;
+  left: 0;
+  z-index: 1;
+  border-right: 1px solid var(--ifm-color-emphasis-300);
 }
 
 .lineContent {
@@ -170,4 +191,21 @@
 
 .removedSide {
   background-color: color-mix(in srgb, var(--ifm-color-danger) 15%, transparent);
+}
+
+/* Only rendered when .body's table genuinely overflows horizontally
+   (see the ResizeObserver check in diff-modal.tsx) - a plain scrollbar alone
+   read as "the table is cropped" rather than "scroll right for more"
+   (reported repeatedly), so this makes the affordance explicit instead. */
+.scrollHint {
+  position: absolute;
+  right: 1rem;
+  bottom: 0.75rem;
+  margin: 0;
+  padding: 0.25rem 0.6rem;
+  border-radius: 999px;
+  background-color: var(--ifm-color-emphasis-800);
+  color: var(--ifm-color-white);
+  font-size: 0.75rem;
+  pointer-events: none;
 }

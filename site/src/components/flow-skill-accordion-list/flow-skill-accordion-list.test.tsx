@@ -1,8 +1,9 @@
 import React from 'react';
-import { describe, expect, it } from 'vitest';
+import { describe, expect, it, vi } from 'vitest';
 import { render, screen, fireEvent } from '@testing-library/react';
 import { FlowSkillAccordionList } from './flow-skill-accordion-list';
 import type { FeatureFlowItem } from '@littlebranches/giselle-mui';
+import type { ProvenanceMap } from '../../data/provenance.types';
 
 const ITEM: FeatureFlowItem = {
   id: 'shape-it',
@@ -21,6 +22,11 @@ const ITEM: FeatureFlowItem = {
       href: '/engineering/to-spec',
     },
   ],
+};
+
+const PROVENANCE_FIXTURE: ProvenanceMap = {
+  'thinking-tools/grilling': { status: 'upstream' },
+  'engineering/to-spec': { status: 'original' },
 };
 
 describe('FlowSkillAccordionList', () => {
@@ -79,5 +85,33 @@ describe('FlowSkillAccordionList', () => {
     expect(screen.getByText('code', { selector: 'code' })).toBeInTheDocument();
     // the short description never renders once a doc-page summary exists
     expect(screen.queryByText('Grill a plan or decision relentlessly.')).not.toBeInTheDocument();
+  });
+
+  it("renders each card's provenance badge already, before it's expanded", () => {
+    render(<FlowSkillAccordionList item={ITEM} skillSummaries={{}} provenanceMap={PROVENANCE_FIXTURE} />);
+    expect(screen.getByRole('button', { name: 'Originally written by Matt Pocock' })).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: 'Your own addition' })).toBeInTheDocument();
+  });
+
+  it('clicking a provenance badge does not also toggle the accordion it sits in', () => {
+    render(<FlowSkillAccordionList item={ITEM} skillSummaries={{}} provenanceMap={PROVENANCE_FIXTURE} />);
+    const badge = screen.getByRole('button', { name: 'Originally written by Matt Pocock' });
+    const toggle = screen.getByRole('button', { name: '/grilling' });
+
+    fireEvent.click(badge);
+
+    expect(toggle).toHaveAttribute('aria-expanded', 'false');
+  });
+
+  it('never nests the provenance badge inside the accordion toggle button (invalid HTML, hydration error)', () => {
+    const errorSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
+    render(<FlowSkillAccordionList item={ITEM} skillSummaries={{}} provenanceMap={PROVENANCE_FIXTURE} />);
+
+    const badge = screen.getByRole('button', { name: 'Originally written by Matt Pocock' });
+    const toggle = screen.getByRole('button', { name: '/grilling' });
+    expect(toggle).not.toContainElement(badge);
+    expect(errorSpy).not.toHaveBeenCalledWith(expect.stringContaining('cannot be a descendant'));
+
+    errorSpy.mockRestore();
   });
 });

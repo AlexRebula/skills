@@ -79,15 +79,15 @@ describe('FlowSection', () => {
   it("renders every item's title and description in its own row", () => {
     renderWithTheme(<FlowSection items={ITEMS} imageSrc="/shape-square.svg" />);
 
-    // `FlowStageHoverPanel` (the default active item's `renderRightPanel`
-    // content) also renders the first item's title/description, so this
-    // scopes each assertion to its own row button rather than querying the
-    // whole document.
-    const rows = screen.getAllByRole('button');
-    expect(rows).toHaveLength(ITEMS.length);
-    ITEMS.forEach((item, index) => {
-      expect(rows[index]).toHaveTextContent(item.title);
-      expect(rows[index]).toHaveTextContent(item.description);
+    // Scoped by each row's own accessible name (its stage title), not by
+    // position in a whole-document button count: `FlowStageHoverPanel`'s
+    // per-skill provenance badges (also real <button>s) sit elsewhere in the
+    // document, so counting "every button" would double-count unrelated
+    // controls rather than the two stage rows this test actually cares about.
+    ITEMS.forEach((item) => {
+      const row = screen.getByRole('button', { name: new RegExp(item.title) });
+      expect(row).toHaveTextContent(item.title);
+      expect(row).toHaveTextContent(item.description);
     });
   });
 

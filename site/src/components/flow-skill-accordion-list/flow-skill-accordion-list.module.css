@@ -36,3 +36,17 @@
   display: inline-block;
   margin-top: 0.5rem;
 }
+
+/* Passed as `leadingAction`, not `trailingContent`: giselle-mui's Accordion
+   renders `trailingContent` literally inside AccordionSummary's own <button>,
+   which would nest ProvenanceIcon's own trigger <button> inside it (invalid
+   HTML, hydration error). `leadingAction` renders as a true DOM sibling
+   instead (see accordion.tsx's summaryRowSx wrapper) - the same slot the
+   library's own checklist checkbox uses for its independently-clickable
+   control - so a click here never reaches the toggle's own handler; no
+   stopPropagation needed. */
+.provenanceSlot {
+  display: flex;
+  align-items: center;
+  flex-shrink: 0;
+}

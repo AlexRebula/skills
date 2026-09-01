@@ -80,6 +80,28 @@ export function DiffModal({ skillName, upstreamSha, files, onClose }: DiffModalP
   const closeButtonRef = useRef<HTMLButtonElement>(null);
   const tabRefs = useRef<Record<string, HTMLButtonElement | null>>({});
   const previouslyFocused = useRef<Element | null>(null);
+  const bodyRef = useRef<HTMLDivElement>(null);
+  const [hasOverflow, setHasOverflow] = useState(false);
+
+  // The side-by-side table can run far wider than any real viewport (a long
+  // code line easily produces a several-thousand-pixel-wide row) - `.body`'s
+  // own `overflow: auto` already lets it scroll, but a plain scrollbar alone
+  // is easy to miss, which reads as "the table is cropped" rather than
+  // "scroll right for more" (reported repeatedly). ResizeObserver instead of
+  // a one-off check on mount: switching tabs (a different file's table, a
+  // different natural width) must re-evaluate, not just the initial file.
+  useEffect(() => {
+    const body = bodyRef.current;
+    if (!body) return;
+    function checkOverflow() {
+      if (!body) return;
+      setHasOverflow(body.scrollWidth > body.clientWidth);
+    }
+    checkOverflow();
+    const observer = new ResizeObserver(checkOverflow);
+    observer.observe(body);
+    return () => observer.disconnect();
+  }, [activeFile]);
 
   // Move focus in on mount, restore it to whatever had it before (the
   // trigger button, in practice) on unmount, rather than letting it fall
@@ -182,6 +204,7 @@ export function DiffModal({ skillName, upstreamSha, files, onClose }: DiffModalP
         )}
 
         <div
+          ref={bodyRef}
           className={styles.body}
           role={hasTabs ? 'tabpanel' : undefined}
           id={hasTabs ? panelId(activeDiff.file) : undefined}
@@ -198,6 +221,7 @@ export function DiffModal({ skillName, upstreamSha, files, onClose }: DiffModalP
             </tbody>
           </table>
         </div>
+        {hasOverflow && <p className={styles.scrollHint}>Scroll to see more →</p>}
       </div>
     </div>
   );

@@ -1,6 +1,7 @@
 import React, { type ReactNode } from 'react';
 import Heading from '@theme/Heading';
 import Link from '@docusaurus/Link';
+import { ProvenanceIcon } from '../provenance-icon';
 import type { FlowStageHoverPanelProps } from './types';
 import styles from './flow-stage-hover-panel.module.css';
 
@@ -16,7 +17,7 @@ import styles from './flow-stage-hover-panel.module.css';
  * `FeatureFlowHighlightCarousel`) - `isExpanded` only changes this panel's
  * own hint line.
  */
-export function FlowStageHoverPanel({ item, isExpanded }: FlowStageHoverPanelProps): ReactNode {
+export function FlowStageHoverPanel({ item, isExpanded, provenanceMap }: FlowStageHoverPanelProps): ReactNode {
   return (
     <div className={styles.panel}>
       <Heading as="h3" className={styles.title}>
@@ -34,6 +35,9 @@ export function FlowStageHoverPanel({ item, isExpanded }: FlowStageHoverPanelPro
               <span className={styles.skillName}>/{card.title}</span>
             )}
             <p className={styles.skillDescription}>{card.description}</p>
+            {card.href && (
+              <ProvenanceIcon slug={card.href} provenanceMap={provenanceMap} className={styles.provenance} />
+            )}
           </li>
         ))}
       </ul>

@@ -38,4 +38,13 @@ beforeAll(() => {
     }
   }
   vi.stubGlobal('IntersectionObserver', NoopIntersectionObserver);
+
+  // jsdom doesn't implement ResizeObserver either - DiffModal uses one to
+  // detect when its diff table overflows horizontally.
+  class NoopResizeObserver {
+    observe() {}
+    unobserve() {}
+    disconnect() {}
+  }
+  vi.stubGlobal('ResizeObserver', NoopResizeObserver);
 });

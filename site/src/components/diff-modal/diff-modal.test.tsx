@@ -148,4 +148,25 @@ describe('DiffModal', () => {
 
     expect(document.activeElement).toBe(skillTab);
   });
+
+  it("shows no scroll hint when the diff table fits within the panel (jsdom's default 0/0 layout)", () => {
+    render(<DiffModal skillName="ask-matt" upstreamSha="abc1234" files={[SKILL_MD_DIFF]} onClose={() => {}} />);
+    expect(screen.queryByText('Scroll to see more →')).not.toBeInTheDocument();
+  });
+
+  it('shows a scroll hint once the diff table overflows the panel horizontally', async () => {
+    const user = userEvent.setup();
+    render(<DiffModal skillName="ask-matt" upstreamSha="abc1234" files={[REFERENCE_DIFF, SKILL_MD_DIFF]} onClose={() => {}} />);
+    const body = screen.getByRole('tabpanel');
+    Object.defineProperty(body, 'scrollWidth', { configurable: true, value: 4000 });
+    Object.defineProperty(body, 'clientWidth', { configurable: true, value: 1200 });
+
+    // ResizeObserver is stubbed as a no-op in jsdom (vitest.setup.ts), so its
+    // callback never fires here - but the overflow check also re-runs on
+    // every activeFile change (a different file's table, a different natural
+    // width), which switching tabs triggers against the values just set above.
+    await user.click(screen.getByRole('tab', { name: /reference\.md/ }));
+
+    expect(screen.getByText('Scroll to see more →')).toBeInTheDocument();
+  });
 });
