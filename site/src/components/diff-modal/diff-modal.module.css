@@ -2,11 +2,17 @@
   position: fixed;
   inset: 0;
 
-  /* Docusaurus's own sticky navbar sits at Infima's --ifm-z-index-fixed
-     (200): a genuinely full-screen modal has to paint above that too, not
-     just above the page content, or the navbar covers its top edge and
-     swallows clicks meant for the modal underneath it. */
-  z-index: 300;
+  /* Has to clear two separate z-index systems on this site, not just one:
+     Docusaurus's own sticky navbar sits at Infima's --ifm-z-index-fixed
+     (200), and giselle-mui's FeatureFlowSection renders its own internal
+     FloatingSubNav (a sticky, bottom-positioned pill) at MUI's
+     theme.zIndex.speedDial (1050) - confirmed via devtools covering this
+     modal on a real page, not a theoretical concern. MUI's own scale tops
+     out at zIndex.tooltip (1500), so 2000 clears its entire range, not
+     just the one tier that happened to collide today - the next floating
+     giselle-mui chrome this modal opens on top of shouldn't need its own
+     bug report. */
+  z-index: 2000;
   display: flex;
   align-items: center;
   justify-content: center;

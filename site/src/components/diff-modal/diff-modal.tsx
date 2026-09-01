@@ -1,4 +1,5 @@
 import React, { useEffect, useRef, useState, type KeyboardEvent as ReactKeyboardEvent, type ReactNode } from 'react';
+import { createPortal } from 'react-dom';
 import clsx from 'clsx';
 import type { DiffRow } from '../../data/provenance.types';
 import type { DiffModalProps } from './types';
@@ -182,7 +183,16 @@ export function DiffModal({ skillName, upstreamSha, files, onClose }: DiffModalP
   const hasTabs = files.length > 1;
   const activeDiff = files.find((f) => f.file === activeFile) ?? files[0];
 
-  return (
+  // Portaled straight to <body>, not rendered inline where the trigger
+  // happens to sit: `position: sticky` (used by FlowStageHoverPanel's own
+  // .panel, and by giselle-mui's internal FloatingSubNav) establishes a new
+  // stacking context regardless of z-index, so a modal nested inside one
+  // has its own z-index evaluated relative to that ancestor's rank in the
+  // page - not at the true page root - no matter how high the number is.
+  // Confirmed live: z-index: 2000 here still lost to a sticky ancestor's
+  // effectively-zero rank when rendered inline. A portal is the actual fix
+  // for "must render above literally everything," not a bigger number.
+  return createPortal(
     <div className={styles.overlay}>
       <div ref={panelRef} className={styles.panel} role="dialog" aria-modal="true" aria-label={`What's different in ${skillName}`}>
         <div className={styles.header}>
@@ -243,6 +253,7 @@ export function DiffModal({ skillName, upstreamSha, files, onClose }: DiffModalP
         </div>
         {hasOverflow && <p className={styles.scrollHint}>Scroll to see more →</p>}
       </div>
-    </div>
+    </div>,
+    document.body,
   );
 }
