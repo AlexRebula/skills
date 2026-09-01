@@ -1523,6 +1523,7 @@ function SectionTitle({
   txtGradient,
   description,
   titleComponent = "h2",
+  titleVariant = "h2",
   ...other
 }) {
   return /* @__PURE__ */ (0, import_jsx_runtime22.jsxs)(
@@ -1539,7 +1540,7 @@ function SectionTitle({
       ...other,
       children: [
         caption && /* @__PURE__ */ (0, import_jsx_runtime22.jsx)(SectionCaption, { title: caption, sx: slotProps?.caption?.sx }),
-        /* @__PURE__ */ (0, import_jsx_runtime22.jsxs)(import_Typography7.default, { component: titleComponent, variant: "h2", sx: slotProps?.title?.sx, children: [
+        /* @__PURE__ */ (0, import_jsx_runtime22.jsxs)(import_Typography7.default, { component: titleComponent, variant: titleVariant, sx: slotProps?.title?.sx, children: [
           title,
           " ",
           txtGradient && /* @__PURE__ */ (0, import_jsx_runtime22.jsx)(import_Box11.default, { component: "span", sx: txtGradientSpanSx, children: txtGradient })

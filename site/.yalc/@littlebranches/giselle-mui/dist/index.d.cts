@@ -1742,6 +1742,8 @@ declare function TwoColumnShowcaseRow({ text, controls, orientation, controlsAli
 type TextSlotProps = {
     sx?: SxProps<Theme>;
 };
+/** Heading levels `SectionTitle`'s `titleComponent`/`titleVariant` accept. */
+type SectionTitleHeadingLevel = 'h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6';
 type SectionTitleProps = Omit<BoxProps, 'title'> & {
     /**
      * Optional gradient accent word appended to `title`.
@@ -1752,13 +1754,26 @@ type SectionTitleProps = Omit<BoxProps, 'title'> & {
     /** Main heading text. */
     title: ReactNode;
     /**
-     * Rendered tag for the heading. `h1` keeps this component's own `h2`
-     * visual sizing/weight - only the semantic tag changes, so a page's one
-     * real `<h1>` (e.g. its own hero) can still look identical to every other
-     * `SectionTitle` on the page.
+     * Rendered tag for the heading - independent of `titleVariant` (its visual
+     * size), matching how MUI's own `Typography` separates `component` from
+     * `variant`. Set this alone to change only the semantic tag while keeping
+     * this component's default `h2` sizing (e.g. a page's one real `<h1>`
+     * that should still look identical to every other `SectionTitle` on the
+     * page). Combine with `titleVariant` when nesting a real heading hierarchy
+     * (a section's own subsection using `titleComponent="h3"` at a visually
+     * smaller `titleVariant="h3"`, for instance).
      * @default 'h2'
      */
-    titleComponent?: 'h1' | 'h2';
+    titleComponent?: SectionTitleHeadingLevel;
+    /**
+     * Visual size/weight for the heading - independent of `titleComponent`
+     * (its semantic tag). Defaults to `'h2'` sizing regardless of
+     * `titleComponent`, so a `titleComponent="h1"` heading still looks
+     * identical to every other `SectionTitle` unless a different
+     * `titleVariant` is explicitly requested.
+     * @default 'h2'
+     */
+    titleVariant?: SectionTitleHeadingLevel;
     /**
      * Short overline label rendered above the heading.
      * Styled as `overline` typography in `text.disabled` colour.
@@ -1816,12 +1831,19 @@ declare function SectionCaption({ title, sx, ...other }: SectionCaptionProps): r
  * ## Page H1
  * Pass `titleComponent="h1"` for the one section that should carry the
  * page's actual `<h1>` (e.g. a homepage's hero) - the rendered tag changes,
- * `variant="h2"` sizing does not, so it still looks identical to every
- * other `SectionTitle` on the page.
+ * `titleVariant` sizing does not (still `h2` by default), so it still looks
+ * identical to every other `SectionTitle` on the page.
+ *
+ * ## Nested heading hierarchy
+ * `titleComponent` and `titleVariant` are independent, the same way MUI's
+ * own `Typography` separates `component` from `variant` - set both together
+ * for a genuine nested hierarchy (a subsection's `SectionTitle` at
+ * `titleComponent="h3"`, `titleVariant="h3"`, visibly smaller than its
+ * parent's `h2`).
  *
  * **Quality status (13 May 2026):** DoD 20/20 · Best practices 13/13
  */
-declare function SectionTitle({ sx, title, caption, slotProps, txtGradient, description, titleComponent, ...other }: SectionTitleProps): react.JSX.Element;
+declare function SectionTitle({ sx, title, caption, slotProps, txtGradient, description, titleComponent, titleVariant, ...other }: SectionTitleProps): react.JSX.Element;
 
 interface SectionContainerProps extends Omit<ContainerProps, 'maxWidth'> {
     /**
