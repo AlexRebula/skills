@@ -51,8 +51,8 @@ export const FLOW_STAGES = [
   ]),
   stage('Shape it', [
     { category: 'thinking-tools', name: 'grill-me' },
-    { category: 'thinking-tools', name: 'grilling' },
     { category: 'engineering', name: 'grill-with-docs' },
+    { category: 'thinking-tools', name: 'grilling' },
     { category: 'thinking-tools', name: 'wait-what' },
     { category: 'thinking-tools', name: 'to-questionnaire' },
     { category: 'engineering', name: 'to-spec' },

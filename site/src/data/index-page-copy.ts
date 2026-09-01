@@ -19,8 +19,7 @@ export const INSTALL_NOTE_PREFIX = 'Or as a read-only Claude Code plugin:';
 
 export const STATS_CAPTION = 'By the numbers';
 export const STATS_TITLE = 'This fork, at a glance';
-export const STATS_DESCRIPTION =
-  'Pulled from the same skill and provenance data the sections below render — not a separate, hand-maintained count.';
+export const STATS_DESCRIPTION = 'Generated straight from the repo, so these numbers never go stale.';
 
 export const FLOW_SECTION_TITLE = 'The Flow';
 

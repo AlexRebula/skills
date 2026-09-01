@@ -168,7 +168,7 @@ Skills I use daily for code work.
 **User-invoked**
 
 - **[ask-matt](./skills/engineering/ask-matt/SKILL.md)**: Ask which skill or flow fits your situation. A router over the whole skill set in this repo.
-- **[grill-with-docs](./skills/engineering/grill-with-docs/SKILL.md)**: Grilling session that also builds your project's domain model, sharpening terminology and updating `CONTEXT.md` and ADRs inline.
+- **[grill-with-docs](./skills/engineering/grill-with-docs/SKILL.md)**: Grilling session that also builds your project's domain model, sharpening terminology and updating `CONTEXT.md` and ADRs inline — the stateful front door onto the same `grilling` primitive `grill-me` uses, plus `domain-modeling`.
 - **[triage](./skills/engineering/triage/SKILL.md)**: Move issues (and, where configured, external PRs) through a state machine of triage roles: categorise, verify, grill if needed, write agent-ready briefs.
 - **[improve-codebase-architecture](./skills/engineering/improve-codebase-architecture/SKILL.md)**: Scan a codebase for deepening opportunities, present them as a visual HTML report, then grill through whichever one you pick.
 - **[setup-engineering-skills](./skills/engineering/setup-engineering-skills/SKILL.md)**: Configure this repo for the engineering skills (issue tracker, triage labels, domain doc layout). Run once per repo before using the other engineering skills.
@@ -286,7 +286,7 @@ Skills about growing someone else's work, not your own: preparing and auditing G
 
 Interview and communication-repair primitives, reached for directly or run underneath other skills.
 
-- **[grill-me](./skills/thinking-tools/grill-me/SKILL.md)**: Get relentlessly interviewed about a plan or design until every branch of the decision tree is resolved.
+- **[grill-me](./skills/thinking-tools/grill-me/SKILL.md)**: Get relentlessly interviewed about a plan or design until every branch of the decision tree is resolved — the stateless, user-invoked front door onto the `grilling` primitive.
 - **[grilling](./skills/thinking-tools/grilling/SKILL.md)**: Interview the user relentlessly about a plan, decision, or idea until every branch of the decision tree is resolved. The reusable interview primitive behind `grill-me`, `grill-with-docs`, `triage`, `wayfinder`, and `improve-codebase-architecture`.
 - **[to-questionnaire](./skills/thinking-tools/to-questionnaire/SKILL.md)**: Turn a decision you can't answer alone into a Markdown questionnaire for the one person who can, filled in async, or together over a meeting. It grills you about the send (who it's for, what you need back), not the subject.
 - **[wait-what](./skills/thinking-tools/wait-what/SKILL.md)**: Fire this the moment a message doesn't land. The agent re-pitches it with the context you're missing, in plain English, using your `CONTEXT.md` vocabulary.
