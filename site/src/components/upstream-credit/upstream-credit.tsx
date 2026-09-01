@@ -28,14 +28,24 @@ export function UpstreamCredit({ slug, provenanceMap = defaultProvenance as Prov
   if (!entry) return null;
 
   const wording = WORDING[entry.status];
-  if (!wording) return null; // this status has nothing of Matt's to credit
-  if (!entry.upstreamUrl) return null; // shouldn't happen for a creditable status; nothing to link to if it somehow does
+  // shouldn't happen for a creditable status without a link; nothing to link to if it somehow does
+  const canLinkToUpstream = Boolean(wording && entry.upstreamUrl);
+  if (!canLinkToUpstream && !entry.renamedFrom) return null;
 
   return (
-    <p className={styles.credit}>
-      <a href={entry.upstreamUrl} target="_blank" rel="noreferrer">
-        {wording}
-      </a>
-    </p>
+    <>
+      {entry.renamedFrom && (
+        <p className={styles.credit}>
+          Renamed from Matt Pocock&apos;s <code>{entry.renamedFrom}</code>.
+        </p>
+      )}
+      {canLinkToUpstream && (
+        <p className={styles.credit}>
+          <a href={entry.upstreamUrl} target="_blank" rel="noreferrer">
+            {wording}
+          </a>
+        </p>
+      )}
+    </>
   );
 }

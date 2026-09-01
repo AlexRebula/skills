@@ -51,6 +51,13 @@ export interface ProvenanceEntry {
    * needs a runtime GitHub call.
    */
   diffs?: FileDiff[];
+  /**
+   * Set when this skill's local name differs from the name its upstream
+   * lineage was actually matched under (see site/src/data/skill-renames.ts).
+   * Independent of `status`: a renamed skill still needs credit for the old
+   * name even once its real status is correctly resolved.
+   */
+  renamedFrom?: string;
 }
 
 export type ProvenanceMap = Record<string, ProvenanceEntry>;

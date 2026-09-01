@@ -10,9 +10,9 @@ export interface SkillRef {
 }
 
 // The one skill deliberately excluded from FLOW_STAGES (site/sidebars.ts):
-// ask-matt is a router over the whole set (see docs/overview.md's "The
+// ask-alex is a router over the whole set (see docs/overview.md's "The
 // router" section), not a step inside any one stage, so it's called out on
 // its own in sidebars.ts instead of nested in a stage. Lives here, not in
 // sidebars.ts itself, for the loader reason above - this is the one place
 // both sidebars.ts and check-flow-stages.ts can safely import it from.
-export const ROUTER_SKILL: SkillRef = { category: 'engineering', name: 'ask-matt' };
+export const ROUTER_SKILL: SkillRef = { category: 'engineering', name: 'ask-alex' };

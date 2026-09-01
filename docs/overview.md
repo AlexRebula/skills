@@ -2,7 +2,7 @@
 
 The homepage shows the same stages and the same skills, but only the shape — which skill belongs to which stage, nothing about why. This page is that reasoning written out.
 
-`ask-matt` already answers "which skill fits my situation" one question at a time. This page is the other direction: once you know the shape, read straight through here and see how all 76 skills in this fork actually fit together, not as a keyword index but as the shape of a real day.
+`ask-alex` already answers "which skill fits my situation" one question at a time. This page is the other direction: once you know the shape, read straight through here and see how all 76 skills in this fork actually fit together, not as a keyword index but as the shape of a real day.
 
 Matt Pocock's own site groups his ~48 skills into Main Flow, Shaping, Upkeep, Productivity Skills, and Reference Skills. That grouping doesn't fit here: this fork carries a full git and PR lifecycle, a personal wiki, session bookkeeping, apprentice mentoring, and LittleBranches org-specific tooling that he has no equivalent for. The stages below are this fork's own, built around when in a session you'd actually reach for something, not a reskin of his.
 
@@ -20,7 +20,7 @@ Run the whole thing, or reach for any one of its parts standalone when that's al
 
 ## The router
 
-`/ask-matt` doesn't belong to any one stage below. It's a standalone router over the whole set: describe the situation you're in, and it names the skill or sequence that fits, plus where the human decisions in that sequence sit. Every other stage on this page is a destination `/ask-matt` can point you to; it's never a step inside one of them.
+`/ask-alex` doesn't belong to any one stage below. It's a standalone router over the whole set: describe the situation you're in, and it names the skill or sequence that fits, plus where the human decisions in that sequence sit. Every other stage on this page is a destination `/ask-alex` can point you to; it's never a step inside one of them.
 
 ## Shape it
 

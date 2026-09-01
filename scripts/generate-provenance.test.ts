@@ -1,8 +1,10 @@
 import { describe, expect, it } from 'vitest';
 import {
+  buildHistoryPathspecs,
   buildLineDiff,
   buildUpstreamUrl,
   deriveStatus,
+  namesToSearch,
   parseHistoryLog,
   parseNumstat,
   pickCurrentUpstreamPath,
@@ -39,6 +41,34 @@ describe('deriveStatus', () => {
     expect(
       deriveStatus({ existsUpstream: true, unchangedVsUpstream: true, existedUpstreamHistorically: true }),
     ).toBe('upstream');
+  });
+});
+
+describe('namesToSearch', () => {
+  it('returns just the name when it was never renamed', () => {
+    expect(namesToSearch('grill-me', {})).toEqual(['grill-me']);
+  });
+
+  it('returns the name plus its single prior name, current name first, when a rename mapping exists', () => {
+    expect(namesToSearch('ask-alex', { 'ask-alex': 'ask-matt' })).toEqual(['ask-alex', 'ask-matt']);
+  });
+
+  it('defaults to the real SKILL_RENAMES map when none is passed', () => {
+    expect(namesToSearch('ask-alex')).toEqual(['ask-alex', 'ask-matt']);
+    expect(namesToSearch('setup-engineering-skills')).toEqual(['setup-engineering-skills', 'setup-matt-pocock-skills']);
+  });
+});
+
+describe('buildHistoryPathspecs', () => {
+  it('builds one any-category SKILL.md pathspec per name', () => {
+    expect(buildHistoryPathspecs(['ask-alex', 'ask-matt'])).toEqual([
+      'skills/*/ask-alex/SKILL.md',
+      'skills/*/ask-matt/SKILL.md',
+    ]);
+  });
+
+  it('returns an empty array for an empty name list', () => {
+    expect(buildHistoryPathspecs([])).toEqual([]);
   });
 });
 
