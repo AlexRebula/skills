@@ -200,6 +200,7 @@ Framework-specific scaffolding. Each skill follows a consistent two-phase workfl
 - **[create-angular-component](./skills/framework/create-angular-component/SKILL.md)**: Scaffold and TDD a new Angular 17+ standalone component. Uses signal-based inputs/outputs and Angular Testing Library.
 - **[create-react-component](./skills/framework/create-react-component/SKILL.md)**: Scaffold and TDD a new React component from scratch. Framework-agnostic, no MUI dependency.
 - **[create-vue-component](./skills/framework/create-vue-component/SKILL.md)**: Scaffold and TDD a new Vue 3 single-file component. Uses Composition API with `<script setup>`, `defineProps` generics, and `@testing-library/vue`.
+- **[migrate-react-subcomponent](./skills/framework/migrate-react-subcomponent/SKILL.md)**: Migrate an existing, already-implemented flat sub-component into its own subfolder — a mechanical move of working code, not a scaffold-from-scratch rebuild.
 
 ---
 

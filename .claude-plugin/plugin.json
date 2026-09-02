@@ -41,6 +41,7 @@
     "./skills/framework/create-angular-component",
     "./skills/framework/create-react-component",
     "./skills/framework/create-vue-component",
+    "./skills/framework/migrate-react-subcomponent",
     "./skills/git/commit-wip",
     "./skills/git/create-pr",
     "./skills/git/morning-pr-sweep",
