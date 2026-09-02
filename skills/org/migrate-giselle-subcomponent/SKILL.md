@@ -183,6 +183,8 @@ import surfaces as a compile error there even if `rg`'s pattern missed it (e.g. 
 
 ## Step 8 — Gate, Definition of Done, ratchet cleanup
 
+> **Inventory / matrix ports:** Scenario A checklist below is unchanged. If this work is also a Minimals↔giselle **inventory** port, the row is not fully done until matrix **G C P M N U** are green **and** this folder DoD is met — matrix **D** is the rollup. See `cleanup-workflow.md` **Inventory / migration DoD** and the wiki matrix legend. Pure Scenario A folder moves (no inventory row) ignore matrix gates.
+
 Definition of done for a sub-component (from `cleanup-workflow.md` Scenario A — this list
 is reproduced here because every invocation of this skill ends on it; if it and the
 source file ever disagree, the source file wins and this list needs updating to match):
