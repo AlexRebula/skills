@@ -229,6 +229,7 @@ Skills specific to the [LittleBranches](https://github.com/LittleBranches) organ
 - **[create-giselle-component](./skills/org/create-giselle-component/SKILL.md)**: Scaffold and TDD a new `giselle-mui` component following OSS Quality Standards rules, two-phase: scaffold (types, test stubs, README), then implement (TDD vertical slices with real ThemeProvider).
 - **[load-dependency-chain](./skills/org/load-dependency-chain/SKILL.md)**: Read the `dependency-chain.md` file and extract the hard deadline, critical path, and phase status for each active repo.
 - **[load-oss-standards](./skills/org/load-oss-standards/SKILL.md)**: Verify access to the public and private LittleBranches AGENTS.md barrels and print a session health-check table.
+- **[migrate-giselle-subcomponent](./skills/org/migrate-giselle-subcomponent/SKILL.md)**: Migrate an existing, already-implemented flat sub-component into its own Scenario A subfolder per `cleanup-workflow.md` — a mechanical move of working code, not a scaffold-from-scratch rebuild.
 - **[respond-giselle-pr-review](./skills/org/respond-giselle-pr-review/SKILL.md)**: Respond to an existing Copilot PR review in a LittleBranches repo: pre-load AGENTS.md + workflow rules, triage every thread, reply inline before fixing, batch valid fixes, and post SHA follow-ups.
 - **[sync-roadmap](./skills/org/sync-roadmap/SKILL.md)**: Pull current task statuses from Asana and write them back into each repo's `docs/roadmap.md` and `data.tsx` `done` flags. Asana is the master; this skill flows changes downstream.
 

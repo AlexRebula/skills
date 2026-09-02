@@ -125,6 +125,7 @@ export const FLOW_STAGES = [
   ]),
   stage('LittleBranches specifics', [
     { category: 'org', name: 'create-giselle-component' },
+    { category: 'org', name: 'migrate-giselle-subcomponent' },
     { category: 'org', name: 'audit-giselle-tests' },
     { category: 'org', name: 'respond-giselle-pr-review' },
     { category: 'org', name: 'load-oss-standards' },
