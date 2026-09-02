@@ -56,6 +56,7 @@
     "./skills/org/create-giselle-component",
     "./skills/org/load-dependency-chain",
     "./skills/org/load-oss-standards",
+    "./skills/org/migrate-giselle-subcomponent",
     "./skills/org/respond-giselle-pr-review",
     "./skills/org/sync-roadmap",
     "./skills/daily-workflow/asana-sync",
