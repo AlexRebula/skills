@@ -69,6 +69,7 @@ export const FLOW_STAGES = [
     { category: 'framework', name: 'create-react-component' },
     { category: 'framework', name: 'create-vue-component' },
     { category: 'framework', name: 'create-angular-component' },
+    { category: 'framework', name: 'migrate-react-subcomponent' },
   ]),
   stage('Words for the codebase', [
     { category: 'engineering', name: 'codebase-design' },
