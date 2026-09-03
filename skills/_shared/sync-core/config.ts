@@ -50,14 +50,19 @@ export function readConfig(projectRoot: string): SyncConfig | null {
   return JSON.parse(readFileSync(file, 'utf8')) as SyncConfig;
 }
 
-function ensureGitignoreEntry(projectRoot: string): void {
+/**
+ * Adds `filename` to `projectRoot`'s `.gitignore` if it isn't already
+ * listed there. Shared by every sync-core file that must never be
+ * committed (`.sync-config.json`, and `sync-up`'s `.banned-patterns.local`).
+ */
+export function ensureGitignoreEntry(projectRoot: string, filename: string): void {
   const gitignorePath = path.join(projectRoot, '.gitignore');
   const existing = existsSync(gitignorePath) ? readFileSync(gitignorePath, 'utf8') : '';
   const lines = existing.split('\n');
-  if (lines.includes(CONFIG_FILENAME)) return;
+  if (lines.includes(filename)) return;
 
   const prefix = existing.length > 0 && !existing.endsWith('\n') ? '\n' : '';
-  appendFileSync(gitignorePath, `${prefix}${CONFIG_FILENAME}\n`);
+  appendFileSync(gitignorePath, `${prefix}${filename}\n`);
 }
 
 async function defaultPrompt(question: string): Promise<string> {
@@ -95,7 +100,7 @@ export async function bootstrapConfig(
       ).trim();
       writeFileSync(configPath(projectRoot), JSON.stringify(existing, null, 2) + '\n');
     }
-    ensureGitignoreEntry(projectRoot);
+    ensureGitignoreEntry(projectRoot, CONFIG_FILENAME);
     return existing;
   }
 
@@ -109,7 +114,7 @@ export async function bootstrapConfig(
 
   const config: SyncConfig = { repoA, repoB, qualityGateCommand };
   writeFileSync(configPath(projectRoot), JSON.stringify(config, null, 2) + '\n');
-  ensureGitignoreEntry(projectRoot);
+  ensureGitignoreEntry(projectRoot, CONFIG_FILENAME);
 
   return config;
 }

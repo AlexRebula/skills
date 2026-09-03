@@ -14,4 +14,5 @@ Skills for the full git and PR lifecycle, from discovering what needs committing
 - **[sync-branches](./sync-branches/SKILL.md)**: Fetch latest main, flag already-merged branches, pull each stale branch from origin, then merge main into every active branch. Works on one repo or many.
 - **[sync-down](./sync-down/SKILL.md)**: Pull incoming changes from your configured source repo into your working repo, gated by your own quality-gate command. Never commits.
 - **[sync-status](./sync-status/SKILL.md)**: Report drift between two repos you've configured as a synced pair (e.g. an isolated playground and its production counterpart), with no side effects.
+- **[sync-up](./sync-up/SKILL.md)**: Promote a chosen file list from your working repo into your target repo via a reviewed PR, gated by your own quality-gate command, a built-in privacy scan, and an optional banned-content check. Never merges.
 - **[wip-sweep](./wip-sweep/SKILL.md)**: Scope selection + tiered WIP commit/push/PR model (T1 scope → T2 local commit → T3 push → T4 draft PRs) with confirmation gates at each tier.
