@@ -54,7 +54,7 @@ On any failing gate, nothing is opened and the target repo is left completely un
 ```
 Quality gate: PASS
 Privacy scan: FOUND 1 issue(s)
-  - email in src/leaky.ts: jane.doe@personalmail.com
+  - email in src/leaky.ts: jane.doe@example.io
 Banned-content check: PASS
 
 One or more gates failed. No PR opened, target repo left untouched.
