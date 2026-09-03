@@ -1,12 +1,15 @@
 import React, { type ReactNode } from 'react';
+import Typography from '@mui/material/Typography';
 import { SectionContainer, SectionTitle } from '@littlebranches/giselle-mui';
 import { PersonaFilterRow } from '../persona-filter-row';
 import {
   PERSONA_PICKER_CAPTION,
   PERSONA_PICKER_TITLE,
   PERSONA_PICKER_DESCRIPTION,
+  PERSONA_PICKER_ROUTER_PREFIX,
+  PERSONA_PICKER_ROUTER_SUFFIX,
 } from '../../data/index-page-copy';
-import { PERSONA_PICKER_TITLE_SX } from './persona-picker-section.const';
+import { PERSONA_PICKER_TITLE_SX, PERSONA_PICKER_ROUTER_NOTE_SX } from './persona-picker-section.const';
 import type { PersonaPickerSectionProps } from './types';
 
 /**
@@ -28,6 +31,9 @@ export function PersonaPickerSection({
         sx={PERSONA_PICKER_TITLE_SX}
       />
       <PersonaFilterRow activePersonas={activePersonas} onTogglePersona={onTogglePersona} />
+      <Typography variant="body2" color="text.secondary" sx={PERSONA_PICKER_ROUTER_NOTE_SX}>
+        {PERSONA_PICKER_ROUTER_PREFIX} <code>/ask-alex</code> {PERSONA_PICKER_ROUTER_SUFFIX}
+      </Typography>
     </SectionContainer>
   );
 }

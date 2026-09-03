@@ -32,3 +32,7 @@ export const PERSONA_PICKER_CAPTION = 'Choose your category';
 export const PERSONA_PICKER_TITLE = 'Flows tailored to you';
 export const PERSONA_PICKER_DESCRIPTION =
   "Choose which persona category best fits you and we'll suggest the workflows and skills for you.";
+
+export const PERSONA_PICKER_ROUTER_PREFIX = "Don't know where to start? Skip the picker and run";
+export const PERSONA_PICKER_ROUTER_SUFFIX =
+  "instead — works like Matt Pocock's ask-matt, scoped to this fork: describe your situation and it'll name the skill or sequence that fits.";

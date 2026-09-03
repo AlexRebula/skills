@@ -9,6 +9,7 @@ import {
   PERSONA_PICKER_CAPTION,
   PERSONA_PICKER_TITLE,
   PERSONA_PICKER_DESCRIPTION,
+  PERSONA_PICKER_ROUTER_PREFIX,
 } from '../../data/index-page-copy';
 
 // The component doesn't wrap in its own GiselleThemeProvider (relies on the
@@ -33,6 +34,13 @@ describe('PersonaPickerSection', () => {
     expect(
       screen.getByRole('heading', { level: 2, name: PERSONA_PICKER_TITLE })
     ).toBeInTheDocument();
+  });
+
+  it('renders the /ask-alex router note', () => {
+    renderWithTheme(<PersonaPickerSection activePersonas={new Set()} onTogglePersona={vi.fn()} />);
+
+    expect(screen.getByText(PERSONA_PICKER_ROUTER_PREFIX, { exact: false })).toBeInTheDocument();
+    expect(screen.getByText('/ask-alex')).toBeInTheDocument();
   });
 
   it('renders the persona filter row and forwards toggle clicks', async () => {
