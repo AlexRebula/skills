@@ -54,7 +54,9 @@ Correct, and expected. `implement` has no completion step. It ends at the commit
 
 **Can I point it at all my tickets at once, or run several in parallel?**
 
-No. One invocation, one ticket. Batch dispatch across a ticket queue and [subagent](https://www.aihero.dev/ai-coding-dictionary/subagent) fan-out are both requested repeatedly, and neither exists. Running several `/implement` sessions side by side in one checkout is worse than unsupported: one field report describes a `git commit --amend` in one session landing on another session's commit, a stash vanishing from `refs/stash`, and commits landing on the wrong branch, all in a single afternoon across three issues. The sessions share one working directory, one index, and one HEAD. Git worktrees are the community workaround, and note that `refs/stash` is shared across worktrees too, so worktrees alone do not fix the stash case. If you want parallelism today, you are assembling it yourself.
+Not in parallel — [subagent](https://www.aihero.dev/ai-coding-dictionary/subagent) fan-out is requested repeatedly and does not exist. Running several `/implement` sessions side by side in one checkout is worse than unsupported: one field report describes a `git commit --amend` in one session landing on another session's commit, a stash vanishing from `refs/stash`, and commits landing on the wrong branch, all in a single afternoon across three issues. The sessions share one working directory, one index, and one HEAD. Git worktrees are the community workaround, and note that `refs/stash` is shared across worktrees too, so worktrees alone do not fix the stash case.
+
+Sequentially, though, [implement-tickets](https://aihero.dev/skills-implement-tickets) now does exactly this: given a parent issue with GitHub-native sub-issues, it loops `/implement` across the children one at a time in dependency order, stacking branches for in-batch dependencies instead of waiting for merges, until the whole batch is built.
 
 **Can it open a pull request instead of committing?**
 
