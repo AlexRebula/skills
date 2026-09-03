@@ -43,6 +43,7 @@ function stage(label: string, skills: SkillRef[]): SidebarItem {
 // drift out of sync as skills get added, renamed, or re-categorised.
 export const FLOW_STAGES = [
   stage('Start the day', [
+    { category: 'engineering', name: 'ask-alex' },
     { category: 'daily-workflow', name: 'standup-prep' },
     { category: 'daily-workflow', name: 'standup-prep-preflight' },
     { category: 'daily-workflow', name: 'check-prior-work' },
