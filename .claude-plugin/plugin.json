@@ -55,6 +55,7 @@
     "./skills/git/sync-branches",
     "./skills/git/sync-down",
     "./skills/git/sync-status",
+    "./skills/git/sync-up",
     "./skills/git/wip-sweep",
     "./skills/org/audit-giselle-tests",
     "./skills/org/create-giselle-component",

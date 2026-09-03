@@ -1,6 +1,6 @@
 ## What it does
 
-`sync-status` reports drift between two repos you've paired up: files added, removed, or changed on either side, without touching either one. It's the read-only member of a three-skill family: `sync-status` reports, [sync-down](./sync-down.md) pulls incoming changes in behind a quality gate, and `sync-up` promotes your own changes back out behind a quality gate, a privacy scan, and a reviewed PR. (`sync-up` is tracked as follow-on work and doesn't exist in this repo yet.)
+`sync-status` reports drift between two repos you've paired up: files added, removed, or changed on either side, without touching either one. It's the read-only member of a three-skill family: `sync-status` reports, [sync-down](./sync-down.md) pulls incoming changes in behind a quality gate, and [sync-up](./sync-up.md) promotes your own changes back out behind a quality gate, a privacy scan, and a reviewed PR.
 
 The typical pairing this exists for is an isolated playground repo and its production counterpart: somewhere you can experiment freely, with a way to see what's drifted in either direction before deciding what to do about it.
 
