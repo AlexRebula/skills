@@ -85,6 +85,7 @@
     "./skills/wiki/wiki-lint",
     "./skills/mentoring/learner-history",
     "./skills/wiki/log-incident",
+    "./skills/wiki/archive-file",
     "./skills/mentoring/next-issue",
     "./skills/wiki/rebuild-root-index",
     "./skills/daily-workflow/load-session-guidelines",

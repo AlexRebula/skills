@@ -107,6 +107,7 @@ export const FLOW_STAGES = [
     { category: 'wiki', name: 'extract-vocabulary' },
     { category: 'wiki', name: 'rebuild-root-index' },
     { category: 'wiki', name: 'log-incident' },
+    { category: 'wiki', name: 'archive-file' },
   ]),
   stage('Close the session', [
     { category: 'daily-workflow', name: 'session-wrap' },
