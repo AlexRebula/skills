@@ -100,6 +100,7 @@ export const FLOW_STAGES = [
     { category: 'git', name: 'open-pr-sweep' },
     { category: 'git', name: 'repo-status' },
     { category: 'git', name: 'query-issues' },
+    { category: 'git', name: 'sync-status' },
   ]),
   stage('Run the wiki', [
     { category: 'wiki', name: 'ingest' },
