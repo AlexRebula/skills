@@ -101,6 +101,7 @@ export const FLOW_STAGES = [
     { category: 'git', name: 'repo-status' },
     { category: 'git', name: 'query-issues' },
     { category: 'git', name: 'sync-status' },
+    { category: 'git', name: 'sync-down' },
   ]),
   stage('Run the wiki', [
     { category: 'wiki', name: 'ingest' },

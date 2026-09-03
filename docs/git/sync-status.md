@@ -1,6 +1,6 @@
 ## What it does
 
-`sync-status` reports drift between two repos you've paired up: files added, removed, or changed on either side, without touching either one. It's the read-only member of a three-skill family: `sync-status` reports, `sync-down` pulls incoming changes in behind a quality gate, and `sync-up` promotes your own changes back out behind a quality gate, a privacy scan, and a reviewed PR. (`sync-down` and `sync-up` are tracked as follow-on work and don't exist in this repo yet.)
+`sync-status` reports drift between two repos you've paired up: files added, removed, or changed on either side, without touching either one. It's the read-only member of a three-skill family: `sync-status` reports, [sync-down](./sync-down.md) pulls incoming changes in behind a quality gate, and `sync-up` promotes your own changes back out behind a quality gate, a privacy scan, and a reviewed PR. (`sync-up` is tracked as follow-on work and doesn't exist in this repo yet.)
 
 The typical pairing this exists for is an isolated playground repo and its production counterpart: somewhere you can experiment freely, with a way to see what's drifted in either direction before deciding what to do about it.
 
@@ -10,9 +10,9 @@ Ask for it with "sync status," "what's drifted," or "check sync drift." Run it a
 
 ## First run bootstraps your config
 
-The first time you run any of the three sync-core skills in a project, there's no `.sync-config.json` yet, so `sync-status` shows the disclaimer (an MIT-style AS-IS/NO-WARRANTY notice, stating the author isn't responsible for anything you leak through your own configuration) and asks for the two repo paths. That answer is written to `.sync-config.json` at your project's root, and a `.gitignore` entry is added for it in the same step, since it holds paths and settings that are yours alone.
+The first time you run any of the three sync-core skills in a project, there's no `.sync-config.json` yet, so `sync-status` shows the disclaimer (an MIT-style AS-IS/NO-WARRANTY notice, stating the author isn't responsible for anything you leak through your own configuration) and asks for the two repo paths, plus the quality-gate command `sync-down` and `sync-up` will later run (asked upfront so you only answer it once across all three skills, even though `sync-status` itself never runs it). That answer is written to `.sync-config.json` at your project's root, and a `.gitignore` entry is added for it in the same step, since it holds paths and settings that are yours alone.
 
-Every run after that reuses the existing config as-is. Nothing is re-prompted, and nothing is overwritten: deleting the file is the only way to redo the interview.
+Every run after that reuses the existing config as-is. Nothing is re-prompted, and nothing is overwritten: deleting the file is the only way to redo the interview. (A config created before the gate command existed gets it backfilled with one extra prompt, without touching the repo paths you already answered.)
 
 ## The diff is real, not git-based
 
@@ -20,7 +20,7 @@ Drift is computed by walking both directory trees directly and comparing file co
 
 ## It's working if
 
-- Running it in a fresh project walks you through the disclaimer and the two-path interview exactly once, and never again after `.sync-config.json` exists.
+- Running it in a fresh project walks you through the disclaimer and the full interview exactly once, and never again after `.sync-config.json` exists.
 - `.sync-config.json` never appears in `git status` as trackable: it's gitignored from the moment it's created.
 - The report names every added, removed, and changed file by path, and states a total drift count.
 - Neither configured repo has a single byte changed by running this skill.

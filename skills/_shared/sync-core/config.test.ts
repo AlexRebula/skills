@@ -41,38 +41,42 @@ describe('readConfig', () => {
     const project = makeProjectDir();
     writeFileSync(
       path.join(project, CONFIG_FILENAME),
-      JSON.stringify({ repoA: '/a', repoB: '/b' })
+      JSON.stringify({ repoA: '/a', repoB: '/b', qualityGateCommand: 'npm run check' })
     );
 
-    expect(readConfig(project)).toEqual({ repoA: '/a', repoB: '/b' });
+    expect(readConfig(project)).toEqual({ repoA: '/a', repoB: '/b', qualityGateCommand: 'npm run check' });
   });
 });
 
 describe('bootstrapConfig: first run', () => {
-  it('creates .sync-config.json from the two prompted repo paths when missing', async () => {
+  it('creates .sync-config.json from the prompted repo paths and gate command when missing', async () => {
     const project = makeProjectDir();
-    const prompt = fakePrompt(['/path/to/playground', '/path/to/production']);
+    const prompt = fakePrompt(['/path/to/playground', '/path/to/production', 'npm run check']);
 
     const config = await bootstrapConfig(project, { prompt, onDisclaimer: vi.fn() });
 
-    expect(config).toEqual({ repoA: '/path/to/playground', repoB: '/path/to/production' });
+    expect(config).toEqual({
+      repoA: '/path/to/playground',
+      repoB: '/path/to/production',
+      qualityGateCommand: 'npm run check',
+    });
     const written = JSON.parse(readFileSync(path.join(project, CONFIG_FILENAME), 'utf8'));
-    expect(written).toEqual({ repoA: '/path/to/playground', repoB: '/path/to/production' });
+    expect(written).toEqual(config);
   });
 
-  it('trims whitespace from prompted paths', async () => {
+  it('trims whitespace from prompted answers', async () => {
     const project = makeProjectDir();
-    const prompt = fakePrompt(['  /a  ', '  /b  ']);
+    const prompt = fakePrompt(['  /a  ', '  /b  ', '  npm run check  ']);
 
     const config = await bootstrapConfig(project, { prompt, onDisclaimer: vi.fn() });
 
-    expect(config).toEqual({ repoA: '/a', repoB: '/b' });
+    expect(config).toEqual({ repoA: '/a', repoB: '/b', qualityGateCommand: 'npm run check' });
   });
 
   it('shows the disclaimer exactly once during first-run bootstrap', async () => {
     const project = makeProjectDir();
     const onDisclaimer = vi.fn();
-    const prompt = fakePrompt(['/a', '/b']);
+    const prompt = fakePrompt(['/a', '/b', 'npm run check']);
 
     await bootstrapConfig(project, { prompt, onDisclaimer });
 
@@ -82,7 +86,7 @@ describe('bootstrapConfig: first run', () => {
 
   it('adds a gitignore entry for the config file on creation', async () => {
     const project = makeProjectDir();
-    const prompt = fakePrompt(['/a', '/b']);
+    const prompt = fakePrompt(['/a', '/b', 'npm run check']);
 
     await bootstrapConfig(project, { prompt, onDisclaimer: vi.fn() });
 
@@ -93,7 +97,7 @@ describe('bootstrapConfig: first run', () => {
   it('appends the gitignore entry without clobbering existing entries', async () => {
     const project = makeProjectDir();
     writeFileSync(path.join(project, '.gitignore'), 'node_modules\ndist\n');
-    const prompt = fakePrompt(['/a', '/b']);
+    const prompt = fakePrompt(['/a', '/b', 'npm run check']);
 
     await bootstrapConfig(project, { prompt, onDisclaimer: vi.fn() });
 
@@ -105,18 +109,18 @@ describe('bootstrapConfig: first run', () => {
   });
 });
 
-describe('bootstrapConfig: existing config', () => {
+describe('bootstrapConfig: existing, complete config', () => {
   it('returns the existing config without prompting or overwriting it', async () => {
     const project = makeProjectDir();
     writeFileSync(
       path.join(project, CONFIG_FILENAME),
-      JSON.stringify({ repoA: '/existing/a', repoB: '/existing/b' })
+      JSON.stringify({ repoA: '/existing/a', repoB: '/existing/b', qualityGateCommand: 'npm run check' })
     );
     const prompt = vi.fn();
 
     const config = await bootstrapConfig(project, { prompt, onDisclaimer: vi.fn() });
 
-    expect(config).toEqual({ repoA: '/existing/a', repoB: '/existing/b' });
+    expect(config).toEqual({ repoA: '/existing/a', repoB: '/existing/b', qualityGateCommand: 'npm run check' });
     expect(prompt).not.toHaveBeenCalled();
   });
 
@@ -124,7 +128,7 @@ describe('bootstrapConfig: existing config', () => {
     const project = makeProjectDir();
     writeFileSync(
       path.join(project, CONFIG_FILENAME),
-      JSON.stringify({ repoA: '/existing/a', repoB: '/existing/b' })
+      JSON.stringify({ repoA: '/existing/a', repoB: '/existing/b', qualityGateCommand: 'npm run check' })
     );
     const onDisclaimer = vi.fn();
 
@@ -137,7 +141,7 @@ describe('bootstrapConfig: existing config', () => {
     const project = makeProjectDir();
     writeFileSync(
       path.join(project, CONFIG_FILENAME),
-      JSON.stringify({ repoA: '/existing/a', repoB: '/existing/b' })
+      JSON.stringify({ repoA: '/existing/a', repoB: '/existing/b', qualityGateCommand: 'npm run check' })
     );
 
     await bootstrapConfig(project, { prompt: vi.fn(), onDisclaimer: vi.fn() });
@@ -150,7 +154,7 @@ describe('bootstrapConfig: existing config', () => {
     const project = makeProjectDir();
     writeFileSync(
       path.join(project, CONFIG_FILENAME),
-      JSON.stringify({ repoA: '/existing/a', repoB: '/existing/b' })
+      JSON.stringify({ repoA: '/existing/a', repoB: '/existing/b', qualityGateCommand: 'npm run check' })
     );
     writeFileSync(path.join(project, '.gitignore'), `node_modules\n${CONFIG_FILENAME}\n`);
 
@@ -159,6 +163,36 @@ describe('bootstrapConfig: existing config', () => {
     const gitignore = readFileSync(path.join(project, '.gitignore'), 'utf8');
     const occurrences = gitignore.split('\n').filter((line) => line === CONFIG_FILENAME).length;
     expect(occurrences).toBe(1);
+  });
+});
+
+describe('bootstrapConfig: existing config missing qualityGateCommand', () => {
+  it('backfills qualityGateCommand by prompting for just that one field, without re-asking for repo paths', async () => {
+    const project = makeProjectDir();
+    writeFileSync(
+      path.join(project, CONFIG_FILENAME),
+      JSON.stringify({ repoA: '/existing/a', repoB: '/existing/b' })
+    );
+    const prompt = fakePrompt(['npm run check']);
+
+    const config = await bootstrapConfig(project, { prompt, onDisclaimer: vi.fn() });
+
+    expect(config).toEqual({ repoA: '/existing/a', repoB: '/existing/b', qualityGateCommand: 'npm run check' });
+    const written = JSON.parse(readFileSync(path.join(project, CONFIG_FILENAME), 'utf8'));
+    expect(written).toEqual(config);
+  });
+
+  it('does not show the disclaimer again for a backfill on an existing config', async () => {
+    const project = makeProjectDir();
+    writeFileSync(
+      path.join(project, CONFIG_FILENAME),
+      JSON.stringify({ repoA: '/existing/a', repoB: '/existing/b' })
+    );
+    const onDisclaimer = vi.fn();
+
+    await bootstrapConfig(project, { prompt: fakePrompt(['npm run check']), onDisclaimer });
+
+    expect(onDisclaimer).not.toHaveBeenCalled();
   });
 });
 

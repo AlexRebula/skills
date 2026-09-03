@@ -29,8 +29,9 @@ Run from the project you want to track drift for (or pass its path as an argumen
 1. The disclaimer above.
 2. A prompt for the path to your first repo (e.g. your playground).
 3. A prompt for the path to your second repo (e.g. production).
+4. A prompt for the quality-gate command `sync-down` and `sync-up` will run before landing anything (e.g. `npm run check`). `sync-status` itself never runs this command, but the interview asks for it upfront so you only answer it once across all three skills.
 
-This writes `.sync-config.json` at your project's root and adds it to `.gitignore`, since it's never meant to be committed: it holds your own local repo paths. On every later run, the existing config is reused as-is; nothing is prompted or overwritten.
+This writes `.sync-config.json` at your project's root and adds it to `.gitignore`, since it's never meant to be committed: it holds your own local repo paths and gate command. On every later run, the existing config is reused as-is; nothing is prompted or overwritten. (If you already have a `.sync-config.json` from before the quality-gate command was added, `sync-status` will prompt just for that one missing field, without touching your existing repo paths.)
 
 Once configured, the skill prints a report like:
 
