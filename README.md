@@ -247,6 +247,7 @@ Skills for keeping a personal knowledge base current: ingesting sources, extract
 - **[extract-vocabulary](./skills/wiki/extract-vocabulary/SKILL.md)**: Companion to `/ingest`: pull jargon out of an already-ingested source and file each term into its own vocabulary file under the owning concept's folder (ELI5/junior-dev level), cross-linked from the concept page, a flat A-Z barrel index, and the source page. Opt-in: run manually on jargon-heavy sources, not every ingest.
 - **[rebuild-root-index](./skills/wiki/rebuild-root-index/SKILL.md)**: Rescan every git repo under `$AR_ROOT` and refresh the master barrel index. Diffs against a content-hash manifest so only new/changed/deleted files are re-summarized. Chained from `/ingest` or run standalone.
 - **[log-incident](./skills/wiki/log-incident/SKILL.md)**: Log an AI behavioural incident or workflow violation to the wiki's incidents hub. Drafts the structured record from the current conversation, gets approval, then writes the file, updates the index, and opens a PR. No Asana involved.
+- **[archive-file](./skills/wiki/archive-file/SKILL.md)**: Archive a stale file: move it to the repo's archive folder, stamp its frontmatter (created, summary, archived-date, parent/children/related), log the move, and flag dangling references. Minimal v1 primitive: no staleness detection, no auto-rewriting of other pages.
 - **[capture](./skills/daily-workflow/capture/SKILL.md)**: Routes a freeform note or task to the right content project — often the wiki itself. Full detail under Daily Workflow.
 
 ---
