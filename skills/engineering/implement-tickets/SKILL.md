@@ -13,6 +13,7 @@ A thin orchestration loop around `/implement`: given a parent issue whose childr
 ## Arguments
 
 `/implement-tickets <parent-issue-number>`: work through every child of this issue until each has been implemented.
+
 `/implement-tickets <parent-issue-number> --board`: same, plus publish/update a status-board artifact tracking progress as you go.
 
 ---
