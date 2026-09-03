@@ -36,8 +36,8 @@ Once configured, the skill prints a report like:
 
 ```
 Comparing:
-  A: /Users/you/playground
-  B: /Users/you/production
+  A: ~/code/playground
+  B: ~/code/production
 
 Only in A (missing from B): 1
   - src/only-a.ts
