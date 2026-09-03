@@ -12,5 +12,6 @@ Skills for the full git and PR lifecycle, from discovering what needs committing
 - **[respond-pr-review](./respond-pr-review/SKILL.md)**: Respond to an existing Copilot PR review in any repo: gather every thread, reply inline before fixing, batch valid fixes into one commit, and post SHA follow-ups.
 - **[review-pr](./review-pr/SKILL.md)**: Review an open GitHub PR on two axes: Standards (does the code follow the repo's own conventions?) and Spec (does it match the originating issue/PRD?). Posts findings via the GitHub PR Reviews API with inline line comments.
 - **[sync-branches](./sync-branches/SKILL.md)**: Fetch latest main, flag already-merged branches, pull each stale branch from origin, then merge main into every active branch. Works on one repo or many.
+- **[sync-down](./sync-down/SKILL.md)**: Pull incoming changes from your configured source repo into your working repo, gated by your own quality-gate command. Never commits.
 - **[sync-status](./sync-status/SKILL.md)**: Report drift between two repos you've configured as a synced pair (e.g. an isolated playground and its production counterpart), with no side effects.
 - **[wip-sweep](./wip-sweep/SKILL.md)**: Scope selection + tiered WIP commit/push/PR model (T1 scope → T2 local commit → T3 push → T4 draft PRs) with confirmation gates at each tier.
