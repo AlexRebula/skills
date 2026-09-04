@@ -18,6 +18,8 @@ Check with the user that these seams match their expectations.
 
 3. Write the spec using the template below, then publish it to the project issue tracker. Apply the `ready-for-agent` triage label - no need for additional triage.
 
+4. If this conversation reached this spec by way of an existing placeholder/queue issue on the tracker (e.g. a "Grill:" issue that requested the interview this spec now synthesizes, or any other issue whose sole purpose was to queue this work) — close that issue with a comment linking to the newly published spec. It has been superseded; do not leave it open as a stale duplicate of the same work. Do not close it if it's the kind of issue that should stay open on its own merits (a real bug report, a tracked feature request with its own life beyond this spec) — only close issues that existed purely to queue this exact conversation.
+
 <spec-template>
 
 ## Problem Statement
