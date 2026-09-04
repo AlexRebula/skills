@@ -49,23 +49,27 @@ Save `headRefName` (the branch) and `baseRefName` (the base) for the rest of thi
 
 ## Step 3: Close the linked issue(s) with a summary comment
 
-Scan the PR's `title` and `body` for an issue reference: `Closes #N`, `Fixes #N`, `Resolves #N`, or an explicit "Parent"/ticket link.
+Scan the PR's `title` and `body` for an issue reference: `Closes #N`, `Fixes #N`, `Resolves #N`, or an explicit "Parent"/ticket link. The reference may be **same-repo** (`Closes #N`) or **cross-repo** (`Closes owner/repo#N`, e.g. a tracker repo separate from the code repo) — extract whichever repo the reference actually names; do not assume it's the PR's own repo.
 
-If no reference is found, skip this step silently — not every PR closes an issue.
+Also watch for an **invalid cross-repo shorthand**: a bare `reponame#N` with no owner (e.g. `Closes wiki#621`) is not valid GitHub auto-close syntax and never fires, even though it looks like it should. If you see this pattern, treat the reference as found but know the automatic close did **not** happen — go straight to the explicit-close branch below regardless of what the issue's current state shows. The shorthand has no owner in the text itself; resolve it from conversation context (a repo named `<reponame>` this session already discussed) or, if ambiguous, ask the user which `owner/<reponame>` was meant rather than guessing.
 
-If a reference is found:
+If no reference is found at all, skip this step silently — not every PR closes an issue.
+
+If a reference is found, resolve `<issue-repo>` to the repo the reference actually names (same-repo, fully-qualified `owner/repo`, or the owner resolved above for a bare-shorthand match) — not necessarily the PR's own `<owner>/<repo>`:
 
 ```sh
-gh issue view <N> --repo <owner>/<repo> --json state,comments
+gh issue view <N> --repo <issue-repo> --json state,comments
 ```
 
 - **If the issue is already closed with a substantive comment** (mentions the PR, summarises what shipped): nothing to do.
 - **If the issue is already closed but with no comment, or only GitHub's own auto-close event**: add one now.
-- **If the issue is still open** (the `Closes #N` syntax didn't fire, e.g. it was in a commit message rather than the PR body): close it explicitly.
+- **If the issue is still open** (the closing syntax didn't fire — invalid shorthand, cross-repo reference GitHub doesn't auto-link, or it was in a commit message rather than the PR body): close it explicitly.
 
 ```sh
-gh issue close <N> --repo <owner>/<repo> --comment "<one or two sentences: what shipped, link to PR #<N>>"
+gh issue close <N> --repo <issue-repo> --comment "<one or two sentences: what shipped, link to PR <pr-owner>/<pr-repo>#<N>>"
 ```
+
+When closing a cross-repo reference, use the fully-qualified PR link in the comment (`owner/repo#N`) since the issue lives in a different repo than the reader is looking at.
 
 ---
 
