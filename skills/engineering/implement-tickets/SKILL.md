@@ -8,7 +8,7 @@ disable-model-invocation: true
 
 A thin orchestration loop around `/implement`: given a parent issue whose children are already ticketed (via `/to-tickets`), repeatedly finds the frontier — every child whose blockers are satisfied — and implements each one, until the whole batch is done. This skill does not reimplement TDD, review, or commit logic; all of that stays in `/implement`. Its only job is sequencing and, optionally, visualizing progress.
 
-**Scope for v1**: GitHub-native sub-issues only, one repo at a time. A blocker outside the current parent's child set (e.g. a sibling batch's ticket) is treated as external and must already be closed — this skill does not stack across two different `/implement-tickets` runs.
+**Scope for v1**: GitHub-native sub-issues only. The parent/child tracker issues may live in a different repo than the code PRs this skill opens (e.g. a shared tracker repo driving work across several code repos) — see Step 2c for the closing-syntax requirement that pattern needs. A blocker outside the current parent's child set (e.g. a sibling batch's ticket) is treated as external and must already be closed — this skill does not stack across two different `/implement-tickets` runs.
 
 ## Arguments
 
@@ -43,6 +43,8 @@ Repeat until every child has been implemented:
 
    c. **Open the PR.** `/implement`'s own scope ends at commit — it does not open a PR. Call `/create-pr <branch> skip-hygiene auto-approve` (skip-hygiene: `/implement` already ran review; auto-approve: no human is present to green-light each one individually during an AFK run). When `create-pr`'s Step 1b stacking check fires: if the branch it's stacked on belongs to a blocker **within this same batch** (tracked from step 3a), treat the stack as already-confirmed intentional and proceed — do not halt asking the user, since no one is present to answer. Only halt for a stack against something outside this batch's known branches, which would mean something genuinely unexpected happened.
 
+      **If the parent/child tickets live in a different repo than the one this PR is being opened in** (a shared tracker repo driving `/implement` runs against one or more separate code repos): the PR body's closing keyword **must** use the fully-qualified `Closes <tracker-owner>/<tracker-repo>#<N>` form. A bare `Closes <tracker-repo>#<N>` (no owner) is not valid GitHub auto-close syntax anywhere, same-repo or not, and silently never fires — it will look like the reference worked (it reads fine in the PR body) but the tracker issue will sit open forever with no error surfaced. Verify the rendered PR body actually contains the qualified form before moving on to the next ticket.
+
    d. If `--board` was passed, update the artifact (Step 3) to move this ticket from Ready → Done.
 
 4. Recompute the frontier and repeat.
@@ -64,7 +66,7 @@ Once every child has been implemented (a PR opened for each), report:
 
 - The full ticket → branch → PR list, in the order they were built, making the stack explicit (which branch sits on which).
 - That **nothing has been merged** — merging stays the human's call, in dependency order (bottom of the stack first), same as everywhere else in this workflow.
-- That the parent issue itself is untouched — this skill never closes or modifies the parent (same rule `/to-tickets` follows at publish time). Once the human has merged the stack and run `/pr-merged` on each PR (which closes each ticket), the parent's sub-issue tracking will show 100% completion on its own, and the human can close it.
+- That the parent issue itself is untouched — this skill never closes or modifies the parent (same rule `/to-tickets` follows at publish time). Once the human merges the stack, GitHub auto-closes each ticket on its own **if and only if** every PR used the correctly-qualified closing keyword from Step 2c (cross-repo references need the `owner/repo#N` form, or GitHub silently ignores them). Running `/pr-merged` on each PR afterward is still the mechanical backstop that catches and fixes any ticket that didn't auto-close for that or any other reason. The parent's sub-issue tracking then shows 100% completion, and the human can close it.
 - The board artifact's URL, if `--board` was used.
 
 ## Out of scope for v1
