@@ -1,6 +1,6 @@
 import { Transition, Variants, MotionProps, ViewportOptions, MotionValue } from 'framer-motion';
-import * as react from 'react';
-import react__default, { ReactNode, RefObject } from 'react';
+import * as React from 'react';
+import React__default, { ReactNode, RefObject } from 'react';
 import { BoxProps } from '@mui/material/Box';
 
 /**
@@ -220,7 +220,7 @@ type MotionContainerProps = Omit<BoxProps, 'animate' | 'children'> & Omit<Motion
     action?: boolean;
     /** Controls playback when `action` is `true`. @default false */
     animate?: boolean;
-    children?: react__default.ReactNode;
+    children?: React__default.ReactNode;
 };
 
 /**
@@ -240,8 +240,10 @@ type MotionContainerProps = Omit<BoxProps, 'animate' | 'children'> & Omit<Motion
  *   <motion.div variants={fade('inUp')}>Item 2</motion.div>
  * </MotionContainer>
  * ```
+ *
+ * **Quality status (02 Sep 2026):** DoD 20/22 · Best practices not re-audited — SonarQube not verified · no Responsive story
  */
-declare function MotionContainer({ animate, children, action, ...other }: MotionContainerProps): react.JSX.Element;
+declare function MotionContainer({ animate, children, action, ...other }: MotionContainerProps): React.JSX.Element;
 
 /**
  * Props for `MotionViewport`.
@@ -263,7 +265,7 @@ type MotionViewportProps = Omit<BoxProps, 'animate' | 'children'> & {
      * @default true
      */
     disableAnimateOnMobile?: boolean;
-    children?: react__default.ReactNode;
+    children?: React__default.ReactNode;
 };
 
 /**
@@ -290,12 +292,14 @@ type MotionViewportProps = Omit<BoxProps, 'animate' | 'children'> & {
  *   <m.div variants={fade('inUp')}>Body</m.div>
  * </MotionViewport>
  * ```
+ *
+ * **Quality status (02 Sep 2026):** DoD 20/22 · Best practices not re-audited — SonarQube not verified · root sx not array-spread
  */
-declare function MotionViewport({ children, viewport, sx, disableAnimateOnMobile, ...other }: MotionViewportProps): react.JSX.Element;
+declare function MotionViewport({ children, viewport, sx, disableAnimateOnMobile, ...other }: MotionViewportProps): React.JSX.Element;
 
 interface UseScrollParallaxResult {
     /** Attach to the element whose scroll position drives the parallax. */
-    ref: react__default.RefObject<HTMLDivElement | null>;
+    ref: React__default.RefObject<HTMLDivElement | null>;
     /**
      * Five spring-smoothed `y` motion values, slowest → fastest
      * (`layers[0]` ±40px … `layers[4]` ±200px).
@@ -373,8 +377,10 @@ type InteractiveHeroLogoProps = Omit<BoxProps, 'sx' | 'children' | 'ref' | Frame
  *
  * Supports frame-scrub animation via `frameSources`, directional portraits via
  * `portraitSources`, and respects `prefers-reduced-motion` throughout.
+ *
+ * **Quality status (02 Sep 2026):** DoD 19/22 · Best practices not re-audited — SonarQube not verified · size-constant regression tests missing · JSDoc prop coverage incomplete
  */
-declare function InteractiveHeroLogo({ sx, rootSx, frameSources, artisticLogoSrc, logoAlt, portraitSrc, portraitSources, portraitAlt, children, ...other }: InteractiveHeroLogoProps): react.JSX.Element;
+declare function InteractiveHeroLogo({ sx, rootSx, frameSources, artisticLogoSrc, logoAlt, portraitSrc, portraitSources, portraitAlt, children, ...other }: InteractiveHeroLogoProps): React.JSX.Element;
 
 type HeroButtonItem = {
     /** Button label text. */
@@ -416,8 +422,10 @@ type HeroButtonsRowProps = Omit<BoxProps, 'children'> & {
  *   motionProps={{ variants: fade('inUp', { distance: 24 }) }}
  * />
  * ```
+ *
+ * **Quality status (02 Sep 2026):** DoD 21/22 · Best practices not re-audited — SonarQube not verified
  */
-declare function HeroButtonsRow({ items, motionProps, sx, ...other }: HeroButtonsRowProps): react.JSX.Element;
+declare function HeroButtonsRow({ items, motionProps, sx, ...other }: HeroButtonsRowProps): React.JSX.Element;
 
 type FloatingSubNavItem = {
     id: string;
@@ -448,8 +456,10 @@ type FloatingSubNavProps = {
  * `FloatingSubNav` renders a compact pill of icon-only navigation buttons
  * that floats above the page content. Supports a **fixed** (viewport) variant
  * and a **sticky** (parent-contained) variant.
+ *
+ * **Quality status (02 Sep 2026):** DoD 20/22 · Best practices not re-audited — SonarQube not verified · no ...other spread on root
  */
-declare function FloatingSubNav({ items, activeId, onSelect, sticky }: FloatingSubNavProps): react.JSX.Element;
+declare function FloatingSubNav({ items, activeId, onSelect, sticky }: FloatingSubNavProps): React.JSX.Element;
 
 type HeroSlotProps = {
     heading?: ReactNode;
@@ -492,30 +502,6 @@ type ScrollParallaxHeroProps = Omit<BoxProps, 'children'> & HeroSlotProps & {
      * Negative values move the layer upward as the user scrolls down.
      */
     parallax?: ParallaxMultipliers;
-};
-/** Props for `AnimatedHeroHeading`. */
-type AnimatedHeroHeadingProps = {
-    /**
-     * The plain-text portion before the animated highlight span.
-     * Rendered as a text node inside the `<h1>`.
-     */
-    subheading: string;
-    /**
-     * The highlighted word(s). Rendered with an infinitely cycling linear gradient
-     * animation using `theme.vars.palette.primary.main` and `theme.vars.palette.warning.main`.
-     */
-    highlight: string;
-    /**
-     * Motion props for the fade-in wrapper `motion.div`.
-     * Defaults to `fade('inUp', { distance: 24 })`.
-     */
-    motionProps?: MotionProps;
-    /**
-     * Additional sx overrides applied to the `<h1>` Box element.
-     *
-     * Use to override `fontFamily`, `maxWidth`, `textAlign`, etc.
-     */
-    sx?: BoxProps['sx'];
 };
 /** Return value of `useScrollPercent`. */
 type UseScrollPercentResult = {
@@ -560,9 +546,34 @@ type UseScrollPercentResult = {
  * />
  * ```
  *
- * **Quality status (May 2026):** implementation complete, tests passing.
+ * **Quality status (02 Sep 2026):** DoD 21/22 · Best practices not re-audited — SonarQube not verified
  */
-declare function ScrollParallaxHero({ logo, heading, text, actions, icons, background, parallax, sx, ...other }: ScrollParallaxHeroProps): react.JSX.Element;
+declare function ScrollParallaxHero({ logo, heading, text, actions, icons, background, parallax, sx, ...other }: ScrollParallaxHeroProps): React.JSX.Element;
+
+/** Props for `AnimatedHeroHeading`. */
+type AnimatedHeroHeadingProps = Omit<BoxProps, 'sx' | 'children'> & {
+    /**
+     * The plain-text portion before the animated highlight span.
+     * Rendered as a text node inside the `<h1>`.
+     */
+    subheading: string;
+    /**
+     * The highlighted word(s). Rendered with an infinitely cycling linear gradient
+     * animation using `theme.vars.palette.primary.main` and `theme.vars.palette.warning.main`.
+     */
+    highlight: string;
+    /**
+     * Motion props for the fade-in wrapper `motion.div`.
+     * Defaults to `fade('inUp', { distance: 24 })`.
+     */
+    motionProps?: MotionProps;
+    /**
+     * Additional sx overrides applied to the `<h1>` Box element.
+     *
+     * Use to override `fontFamily`, `maxWidth`, `textAlign`, etc.
+     */
+    sx?: BoxProps['sx'];
+};
 
 /**
  * `AnimatedHeroHeading` — an animated `<h1>` with a cycling gradient highlight span.
@@ -591,9 +602,15 @@ declare function ScrollParallaxHero({ logo, heading, text, actions, icons, backg
  * **Note:** `fontFamily` is not baked in — it is intentionally left to the consumer.
  * Override via `sx` to apply any custom typeface from the active theme.
  *
- * **Quality status (May 2026):** implementation complete, styles tested.
+ * **Ref and passthrough target:** the outer `motion.div` only exists to carry the
+ * fade-in `motionProps` — it has no other props and nothing a consumer would want a
+ * handle on. `ref` and `...other` are forwarded to the inner `<h1>` Box instead, since
+ * that is the semantically meaningful DOM node (and the one every other `Box`-wrapping
+ * component in this library exposes a ref to).
+ *
+ * **Quality status (02 Sep 2026):** DoD 21/22 · Best practices not re-audited — SonarQube not verified
  */
-declare function AnimatedHeroHeading({ subheading, highlight, motionProps, sx, }: AnimatedHeroHeadingProps): react.JSX.Element;
+declare const AnimatedHeroHeading: React__default.ForwardRefExoticComponent<Omit<AnimatedHeroHeadingProps, "ref"> & React__default.RefAttributes<HTMLHeadingElement>>;
 
 /**
  * Tracks how far the user has scrolled through the hero section as a percentage (0–100).
@@ -701,8 +718,8 @@ type FaqSectionProps = Omit<BoxProps, 'children'> & {
  * and `GiselleIcon` renders it automatically. Pass a `ReactNode` to supply
  * any custom icon element instead.
  *
- * **Quality status (13 May 2026):** DoD 20/20 · Best practices 13/13
+ * **Quality status (02 Sep 2026):** DoD 20/22 · Best practices 13/13 — SonarQube not verified · size-constant regression tests missing
  */
-declare function FaqSection({ caption, title, txtGradient, faqs, contactTitle, contactDescription, contactHref, contactLabel, contactIcon, sx, ...other }: FaqSectionProps): react.JSX.Element;
+declare function FaqSection({ caption, title, txtGradient, faqs, contactTitle, contactDescription, contactHref, contactLabel, contactIcon, sx, ...other }: FaqSectionProps): React.JSX.Element;
 
 export { AnimatedHeroHeading, type AnimatedHeroHeadingProps, type FadeTransition, FaqSection as FaqAccordion, type FaqSectionProps as FaqAccordionProps, type FaqItem, FaqSection, type FaqSectionProps, FloatingSubNav, type FloatingSubNavItem, type FloatingSubNavProps, type HeroButtonItem, HeroButtonsRow, type HeroButtonsRowProps, type HoverPhase, InteractiveHeroLogo, type InteractiveHeroLogoProps, MotionContainer, type MotionContainerProps, MotionViewport, type MotionViewportProps, type ParallaxMultipliers, type PortraitDirection, type PortraitSource, ScrollParallaxHero, type ScrollParallaxHeroProps, type UseScrollParallaxResult, type UseScrollPercentResult, bounce, container, fade, flip, hover, rotate, scale, slide, tap, transitionEnter, transitionExit, transitionHover, transitionTap, useScrollParallax, useScrollPercent, useTransformY, zoom };

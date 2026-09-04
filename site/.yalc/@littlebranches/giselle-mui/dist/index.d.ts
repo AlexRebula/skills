@@ -1,13 +1,13 @@
 import * as _mui_material_styles from '@mui/material/styles';
 import { CssVarsThemeOptions, CssVarsTheme, SxProps, Theme } from '@mui/material/styles';
-import * as react from 'react';
-import react__default, { ReactNode } from 'react';
+import * as React$1 from 'react';
+import React__default, { ReactNode } from 'react';
 import { IconProps } from '@iconify/react';
 import { ChipProps } from '@mui/material/Chip';
 import { AccordionProps as AccordionProps$1 } from '@mui/material/Accordion';
 import { IconButtonProps } from '@mui/material/IconButton';
-import { BoxProps } from '@mui/material/Box';
 import { PaperProps } from '@mui/material/Paper';
+import { BoxProps } from '@mui/material/Box';
 import { ButtonBaseProps } from '@mui/material/ButtonBase';
 import { CardProps } from '@mui/material/Card';
 import { GridProps } from '@mui/material/Grid';
@@ -386,8 +386,10 @@ interface GiselleThemeProviderProps {
  *
  * <GiselleThemeProvider theme={myTheme}><App /></GiselleThemeProvider>
  * ```
+ *
+ * **Quality status (02 Sep 2026):** DoD 20/22 · Best practices not re-audited — SonarQube not verified · no Responsive story
  */
-declare function GiselleThemeProvider({ children, themeOverrides, theme, defaultMode, }: GiselleThemeProviderProps): react.JSX.Element;
+declare function GiselleThemeProvider({ children, themeOverrides, theme, defaultMode, }: GiselleThemeProviderProps): React$1.JSX.Element;
 
 /**
  * Minimum contract for all settings state shapes managed by `GiselleSettingsProvider`.
@@ -506,43 +508,6 @@ type GiselleSettingsProviderProps<TState extends BaseSettingsState> = {
      */
     storage?: 'localStorage' | 'cookie' | StorageAdapter<TState>;
 };
-/**
- * Props for `GiselleThemeAndSettingsProvider` — a convenience wrapper that
- * composes `GiselleThemeProvider` and `GiselleSettingsProvider` in one component
- * and optionally bridges settings state to the MUI color scheme.
- */
-type GiselleThemeAndSettingsProviderProps<TState extends BaseSettingsState> = GiselleSettingsProviderProps<TState> & {
-    /**
-     * Partial theme options deep-merged on top of the Giselle brand defaults.
-     * Ignored when `theme` is provided. Same as `GiselleThemeProviderProps.themeOverrides`.
-     */
-    themeOverrides?: CssVarsThemeOptions;
-    /**
-     * A fully custom theme created with `extendTheme()`. When provided, `themeOverrides`
-     * is ignored. Same as `GiselleThemeProviderProps.theme`.
-     */
-    theme?: CssVarsTheme;
-    /**
-     * Initial color scheme applied before settings are read.
-     * Same as `GiselleThemeProviderProps.defaultMode`.
-     *
-     * @default 'system'
-     */
-    defaultMode?: 'light' | 'dark' | 'system';
-    /**
-     * Map settings state to an MUI color scheme mode.
-     *
-     * When provided, the MUI color scheme is synced to the returned value
-     * whenever settings change. Use this to drive `light`/`dark`/`system` mode
-     * from your settings state.
-     *
-     * **Example:**
-     * ```ts
-     * getMode={(s) => s.mode}
-     * ```
-     */
-    getMode?: (state: TState) => 'light' | 'dark' | 'system' | undefined;
-};
 
 /**
  * Generic settings state provider for MUI applications.
@@ -581,8 +546,48 @@ type GiselleThemeAndSettingsProviderProps<TState extends BaseSettingsState> = Gi
  * ## Schema migration
  * Increment `version` in `defaultSettings` whenever the settings shape changes.
  * The provider resets all stored state automatically when a version mismatch is detected.
+ *
+ * **Quality status (02 Sep 2026):** DoD 18/22 · Best practices not re-audited — SonarQube not verified · companion files incomplete · named size constant still inline · no Responsive story
  */
-declare function GiselleSettingsProvider<TState extends BaseSettingsState>({ children, defaultSettings, initialState, storageKey, storage, }: GiselleSettingsProviderProps<TState>): react.JSX.Element;
+declare function GiselleSettingsProvider<TState extends BaseSettingsState>({ children, defaultSettings, initialState, storageKey, storage, }: GiselleSettingsProviderProps<TState>): React$1.JSX.Element;
+
+/**
+ * Props for `GiselleThemeAndSettingsProvider` — a convenience wrapper that
+ * composes `GiselleThemeProvider` and `GiselleSettingsProvider` in one component
+ * and optionally bridges settings state to the MUI color scheme.
+ */
+type GiselleThemeAndSettingsProviderProps<TState extends BaseSettingsState> = GiselleSettingsProviderProps<TState> & {
+    /**
+     * Partial theme options deep-merged on top of the Giselle brand defaults.
+     * Ignored when `theme` is provided. Same as `GiselleThemeProviderProps.themeOverrides`.
+     */
+    themeOverrides?: CssVarsThemeOptions;
+    /**
+     * A fully custom theme created with `extendTheme()`. When provided, `themeOverrides`
+     * is ignored. Same as `GiselleThemeProviderProps.theme`.
+     */
+    theme?: CssVarsTheme;
+    /**
+     * Initial color scheme applied before settings are read.
+     * Same as `GiselleThemeProviderProps.defaultMode`.
+     *
+     * @default 'system'
+     */
+    defaultMode?: 'light' | 'dark' | 'system';
+    /**
+     * Map settings state to an MUI color scheme mode.
+     *
+     * When provided, the MUI color scheme is synced to the returned value
+     * whenever settings change. Use this to drive `light`/`dark`/`system` mode
+     * from your settings state.
+     *
+     * **Example:**
+     * ```ts
+     * getMode={(s) => s.mode}
+     * ```
+     */
+    getMode?: (state: TState) => 'light' | 'dark' | 'system' | undefined;
+};
 
 /**
  * Convenience wrapper that composes `GiselleThemeProvider` and
@@ -626,8 +631,10 @@ declare function GiselleSettingsProvider<TState extends BaseSettingsState>({ chi
  *   <App />
  * </GiselleThemeAndSettingsProvider>
  * ```
+ *
+ * **Quality status (02 Sep 2026):** DoD 20/22 · Best practices not re-audited — SonarQube not verified · no Responsive story
  */
-declare function GiselleThemeAndSettingsProvider<TState extends BaseSettingsState>({ children, defaultSettings, initialState, storageKey, storage, themeOverrides, theme, defaultMode, getMode, }: GiselleThemeAndSettingsProviderProps<TState>): react.JSX.Element;
+declare function GiselleThemeAndSettingsProvider<TState extends BaseSettingsState>({ children, defaultSettings, initialState, storageKey, storage, themeOverrides, theme, defaultMode, getMode, }: GiselleThemeAndSettingsProviderProps<TState>): React$1.JSX.Element;
 
 /**
  * Access the Giselle settings context.
@@ -656,7 +663,7 @@ declare function useGiselleSettings<TState extends BaseSettingsState>(): Giselle
  * `className` and `style` are intentionally kept as explicit props because they are
  * forwarded to the inner `Icon` SVG element, not the outer wrapper.
  */
-interface GiselleIconProps extends Omit<react__default.HTMLAttributes<HTMLSpanElement>, 'style' | 'className' | 'children'> {
+interface GiselleIconProps extends Omit<React__default.HTMLAttributes<HTMLSpanElement>, 'style' | 'className' | 'children'> {
     /**
      * Iconify icon identifier in the format `"prefix:name"`,
      * e.g. `"solar:rocket-bold-duotone"` or `"logos:react"`.
@@ -680,7 +687,7 @@ interface GiselleIconProps extends Omit<react__default.HTMLAttributes<HTMLSpanEl
     /** HTML `class` attribute forwarded to the inner `Icon` SVG element. */
     className?: string;
     /** Inline style forwarded to the inner `Icon` SVG element. */
-    style?: react__default.CSSProperties;
+    style?: React__default.CSSProperties;
     /**
      * Flip the icon horizontally, vertically, or both.
      * @example `"horizontal"` | `"vertical"` | `"horizontal,vertical"`
@@ -718,9 +725,9 @@ interface GiselleIconProps extends Omit<react__default.HTMLAttributes<HTMLSpanEl
  *   decoration={<MetricCardDecoration color="primary" />}
  * />
  *
- * **Quality status (13 May 2026):** DoD 20/20 · Best practices 13/13
+ * **Quality status (02 Sep 2026):** DoD 21/22 · Best practices 13/13 — SonarQube not verified
  */
-declare function GiselleIcon({ icon, width, height, sx, className, style, flip, rotate, ...other }: GiselleIconProps): react.JSX.Element;
+declare function GiselleIcon({ icon, width, height, sx, className, style, flip, rotate, ...other }: GiselleIconProps): React$1.JSX.Element;
 
 type StatusLabelStatus = 'active' | 'inactive' | 'pending' | 'review' | 'done' | 'cancelled' | 'overdue';
 type StatusColorKey = 'success' | 'warning' | 'info' | 'error' | 'default';
@@ -743,9 +750,9 @@ interface StatusLabelProps extends Omit<ChipProps, 'label' | 'color' | 'icon'> {
  * <StatusLabel status="pending" label="Awaiting approval" />
  * ```
  *
- * **Quality status (23 May 2026):** DoD 20/20 · Best practices 13/13
+ * **Quality status (02 Sep 2026):** DoD 19/22 · Best practices 13/13 — SonarQube not verified · size-constant regression tests missing · not all six palette keys in stories
  */
-declare const StatusLabel: react__default.ForwardRefExoticComponent<Omit<StatusLabelProps, "ref"> & react__default.RefAttributes<HTMLDivElement>>;
+declare const StatusLabel: React__default.ForwardRefExoticComponent<Omit<StatusLabelProps, "ref"> & React__default.RefAttributes<HTMLDivElement>>;
 
 /**
  * Props for the {@link SelectableLabel} component.
@@ -763,8 +770,12 @@ interface SelectableLabelProps extends Omit<ChipProps, 'onClick' | 'icon'> {
     onSelectedChange?: (nextSelected: boolean) => void;
 }
 
-/** A toggleable chip for multi-select filter groups, built on MUI `Chip` with `SelectableCard`'s selected-state styling. */
-declare const SelectableLabel: react.ForwardRefExoticComponent<Omit<SelectableLabelProps, "ref"> & react.RefAttributes<HTMLDivElement>>;
+/**
+ * A toggleable chip for multi-select filter groups, built on MUI `Chip` with `SelectableCard`'s selected-state styling.
+ *
+ * **Quality status (02 Sep 2026):** DoD 20/22 · Best practices not re-audited — SonarQube not verified · no Responsive story
+ */
+declare const SelectableLabel: React$1.ForwardRefExoticComponent<Omit<SelectableLabelProps, "ref"> & React$1.RefAttributes<HTMLDivElement>>;
 
 /**
  * Props for the {@link Accordion} component.
@@ -986,9 +997,9 @@ type AccordionProps = Omit<AccordionProps$1, 'children' | 'title'> & {
  * </Accordion>
  * ```
  *
- * **Quality status (13 May 2026):** DoD 20/20 · Best practices 13/13 · Coverage 100% · Cleanup complete
+ * **Quality status (02 Sep 2026):** DoD 21/22 · Best practices 13/13 — SonarQube not verified
  */
-declare function Accordion({ title, children, checklist, done, indeterminate, onDoneButtonClick, leadingIcon, leadingAction, trailingContent, expandIcon, checkIcon, checkDoneIcon, checkHoverIcon, sx, ...other }: AccordionProps): react.JSX.Element;
+declare function Accordion({ title, children, checklist, done, indeterminate, onDoneButtonClick, leadingIcon, leadingAction, trailingContent, expandIcon, checkIcon, checkDoneIcon, checkHoverIcon, sx, ...other }: AccordionProps): React$1.JSX.Element;
 
 /**
  * Minimum touch target size (px) for the done-toggle checkbox.
@@ -1091,9 +1102,9 @@ type ToggleIconButtonProps = Omit<IconButtonProps, 'children' | 'onClick' | 'ari
  * />
  * ```
  *
- * **Quality status (13 May 2026):** DoD 20/20 · Best practices 13/13
+ * **Quality status (02 Sep 2026):** DoD 21/22 · Best practices 13/13 — SonarQube not verified
  */
-declare function ToggleIconButton({ pressed, idleIcon, pressedIcon, hoverIcon, onPressedChange, sx, ...other }: ToggleIconButtonProps): react.JSX.Element;
+declare function ToggleIconButton({ pressed, idleIcon, pressedIcon, hoverIcon, onPressedChange, sx, ...other }: ToggleIconButtonProps): React$1.JSX.Element;
 
 /**
  * Width and height (px) of the default built-in SVG icons inside `ToggleIconButton`.
@@ -1144,6 +1155,7 @@ interface MetricCardProps extends PaperProps {
      */
     decoration?: ReactNode;
 }
+
 interface MetricCardDecorationProps extends BoxProps {
     /**
      * Palette color used for the gradient fill.
@@ -1160,8 +1172,10 @@ interface MetricCardDecorationProps extends BoxProps {
  * @example
  * import { MetricCard, MetricCardDecoration } from '@littlebranches/giselle-mui';
  * <MetricCard decoration={<MetricCardDecoration color="primary" />} ... />
+ *
+ * **Quality status (02 Sep 2026):** DoD 19/22 · Best practices not re-audited — SonarQube not verified · size-constant regression tests missing · no Responsive story
  */
-declare function MetricCardDecoration({ color, sx, ...other }: MetricCardDecorationProps): react.JSX.Element;
+declare const MetricCardDecoration: React__default.ForwardRefExoticComponent<Omit<MetricCardDecorationProps, "ref"> & React__default.RefAttributes<HTMLDivElement>>;
 
 /**
  * MetricCard — compact stat card with a large value, label, icon slot, and decoration slot.
@@ -1181,9 +1195,9 @@ declare function MetricCardDecoration({ color, sx, ...other }: MetricCardDecorat
  *   sx={(theme) => ({ boxShadow: theme.shadows[2] })}
  * />
  *
- * **Quality status (8 May 2026):** DoD 20/20 · Best practices 13/13
+ * **Quality status (02 Sep 2026):** DoD 20/22 · Best practices 13/13 — SonarQube not verified · JSDoc prop coverage incomplete
  */
-declare function MetricCard({ value, label, sublabel, icon, color, decoration, elevation, sx, ...other }: MetricCardProps): react.JSX.Element;
+declare function MetricCard({ value, label, sublabel, icon, color, decoration, elevation, sx, ...other }: MetricCardProps): React$1.JSX.Element;
 
 interface SelectableCardProps extends ButtonBaseProps {
     /**
@@ -1224,9 +1238,9 @@ interface SelectableCardProps extends ButtonBaseProps {
  *   ...children...
  * </SelectableCard>
  *
- * **Quality status (13 May 2026):** DoD 20/20 · Best practices 13/13
+ * **Quality status (02 Sep 2026):** DoD 21/22 · Best practices 13/13 — SonarQube not verified
  */
-declare function SelectableCard({ selected, disabled, children, sx, ...other }: SelectableCardProps): react.JSX.Element;
+declare function SelectableCard({ selected, disabled, children, sx, ...other }: SelectableCardProps): React$1.JSX.Element;
 
 type QuoteColor = 'primary' | 'secondary' | 'info' | 'success' | 'warning' | 'error';
 interface QuoteCardProps extends PaperProps {
@@ -1281,9 +1295,9 @@ interface QuoteCardProps extends PaperProps {
  *   elevation={0}
  * />
  *
- * **Quality status (13 May 2026):** DoD 20/20 · Best practices 13/13
+ * **Quality status (02 Sep 2026):** DoD 20/22 · Best practices 13/13 — SonarQube not verified · styles test misses a factory
  */
-declare function QuoteCard({ quote, author, source, color, elevation, sx, ...other }: QuoteCardProps): react.JSX.Element;
+declare function QuoteCard({ quote, author, source, color, elevation, sx, ...other }: QuoteCardProps): React$1.JSX.Element;
 
 type StatCardColor = 'primary' | 'secondary' | 'info' | 'success' | 'warning' | 'error';
 /**
@@ -1400,9 +1414,9 @@ declare const STAT_CARD_SPARKLINE_OPTIONS: ApexOptions;
  * />
  * ```
  *
- * **Quality status (13 May 2026):** DoD 20/20 · Best practices 13/13
+ * **Quality status (02 Sep 2026):** DoD 20/22 · Best practices 13/13 — SonarQube not verified · size-constant regression tests missing
  */
-declare function StatCard({ label, value, trend, trendLabel, icon, color, chart, sx, ...other }: StatCardProps): react.JSX.Element;
+declare function StatCard({ label, value, trend, trendLabel, icon, color, chart, sx, ...other }: StatCardProps): React$1.JSX.Element;
 
 interface StatCardRowProps extends Omit<GridProps, 'children' | 'container'> {
     /** Items to render as `StatCard` tiles in the responsive grid row. */
@@ -1464,9 +1478,9 @@ interface StatCardRowProps extends Omit<GridProps, 'children' | 'container'> {
  * />
  * ```
  *
- * **Quality status (July 2026):** DoD — complete
+ * **Quality status (02 Sep 2026):** DoD 21/22 · Best practices not re-audited — SonarQube not verified
  */
-declare function StatCardRow({ items, renderChart, sx, ...other }: StatCardRowProps): react.JSX.Element;
+declare function StatCardRow({ items, renderChart, sx, ...other }: StatCardRowProps): React$1.JSX.Element;
 
 interface ProfileStat {
     label: string;
@@ -1479,7 +1493,10 @@ interface ProfileSummaryCardProps extends Omit<PaperProps, 'children'> {
     stats: ProfileStat[];
 }
 
-declare function ProfileSummaryCard({ name, role, avatarSrc, stats, sx, ...other }: ProfileSummaryCardProps): react.JSX.Element;
+/**
+ * **Quality status (02 Sep 2026):** DoD 19/22 · Best practices not re-audited — SonarQube not verified · JSDoc prop coverage incomplete · no Responsive story
+ */
+declare function ProfileSummaryCard({ name, role, avatarSrc, stats, sx, ...other }: ProfileSummaryCardProps): React$1.JSX.Element;
 
 interface NestedChecklistState {
     /** Whether the parent item is done (all children done). */
@@ -1572,7 +1589,7 @@ interface IconActionItem {
      * Overrides the root element of `IconButton` — e.g. pass `RouterLink` together
      * with `href` to make the button navigate.
      */
-    component?: react__default.ElementType;
+    component?: React__default.ElementType;
     /**
      * Disables the button and prevents interaction.
      * @default false
@@ -1662,9 +1679,9 @@ declare const DEFAULT_ICON_ACTIONS: IconActionItem[];
  * />
  * ```
  *
- * **Quality status (8 May 2026):** DoD 20/20 · Best practices 13/13
+ * **Quality status (02 Sep 2026):** DoD 21/22 · Best practices 13/13 — SonarQube not verified
  */
-declare function IconActionBar({ actions, sx, ...other }: IconActionBarProps): react.JSX.Element;
+declare function IconActionBar({ actions, sx, ...other }: IconActionBarProps): React$1.JSX.Element;
 
 /** Controls the visual order and flow direction of the two columns. */
 type ShowcaseRowOrientation = 'row' | 'row-reverse' | 'column' | 'column-reverse';
@@ -1687,7 +1704,7 @@ type TwoColumnShowcaseRowProps = Omit<GridProps, 'direction' | 'container' | 'co
      * Content rendered in the controls column.
      * Accepts any `ReactNode` — form controls, cards, previews, etc.
      */
-    controls: react__default.ReactNode;
+    controls: React__default.ReactNode;
     /**
      * Controls the visual order and flow direction of the two columns.
      * - `'row'`            → text left,    controls right  (default)
@@ -1705,7 +1722,7 @@ type TwoColumnShowcaseRowProps = Omit<GridProps, 'direction' | 'container' | 'co
      *
      * @default 'flex-start'
      */
-    controlsAlign?: react__default.CSSProperties['alignItems'];
+    controlsAlign?: React__default.CSSProperties['alignItems'];
     /** `sx` applied to the text column `Stack`. */
     textSx?: SxProps<Theme>;
     /** `sx` applied to the controls column `Stack`. */
@@ -1735,9 +1752,9 @@ type TwoColumnShowcaseRowProps = Omit<GridProps, 'direction' | 'container' | 'co
  * <TwoColumnShowcaseRow controls={<DashboardPreview />} orientation="column" />
  * ```
  *
- * **Quality status (13 May 2026):** DoD 20/20 · Best practices 13/13
+ * **Quality status (02 Sep 2026):** DoD 21/22 · Best practices 13/13 — SonarQube not verified
  */
-declare function TwoColumnShowcaseRow({ text, controls, orientation, controlsAlign, textSx, controlsSx, sx, ...other }: TwoColumnShowcaseRowProps): react.JSX.Element;
+declare function TwoColumnShowcaseRow({ text, controls, orientation, controlsAlign, textSx, controlsSx, sx, ...other }: TwoColumnShowcaseRowProps): React$1.JSX.Element;
 
 type TextSlotProps = {
     sx?: SxProps<Theme>;
@@ -1793,18 +1810,19 @@ type SectionTitleProps = Omit<BoxProps, 'title'> & {
         description?: TextSlotProps;
     };
 };
-type SectionCaptionProps = {
+
+type SectionCaptionProps = Omit<BoxProps, 'title'> & {
+    /** Overline label text. */
     title: ReactNode;
-    sx?: SxProps<Theme>;
 };
 
 /**
  * `SectionCaption` renders the overline label above the section heading.
  * Exported so consumers can use it standalone when they need just the overline.
  *
- * **Quality status (13 May 2026):** DoD 9/9 · Best practices 13/13
+ * **Quality status (02 Sep 2026):** DoD 20/22 · Best practices 13/13 — SonarQube not verified · no Responsive story
  */
-declare function SectionCaption({ title, sx, ...other }: SectionCaptionProps): react.JSX.Element;
+declare const SectionCaption: React__default.ForwardRefExoticComponent<Omit<SectionCaptionProps, "ref"> & React__default.RefAttributes<HTMLSpanElement>>;
 
 /**
  * `SectionTitle` renders a stacked heading group: optional overline caption,
@@ -1841,9 +1859,9 @@ declare function SectionCaption({ title, sx, ...other }: SectionCaptionProps): r
  * `titleComponent="h3"`, `titleVariant="h3"`, visibly smaller than its
  * parent's `h2`).
  *
- * **Quality status (13 May 2026):** DoD 20/20 · Best practices 13/13
+ * **Quality status (02 Sep 2026):** DoD 21/22 · Best practices 13/13 — SonarQube not verified
  */
-declare function SectionTitle({ sx, title, caption, slotProps, txtGradient, description, titleComponent, titleVariant, ...other }: SectionTitleProps): react.JSX.Element;
+declare function SectionTitle({ sx, title, caption, slotProps, txtGradient, description, titleComponent, titleVariant, ...other }: SectionTitleProps): React$1.JSX.Element;
 
 interface SectionContainerProps extends Omit<ContainerProps, 'maxWidth'> {
     /**
@@ -1880,9 +1898,9 @@ interface SectionContainerProps extends Omit<ContainerProps, 'maxWidth'> {
  * </SectionContainer>
  * ```
  *
- * **Quality status (14 May 2026):** DoD 21/21 · Best practices 13/13
+ * **Quality status (02 Sep 2026):** DoD 21/22 · Best practices 13/13 — SonarQube not verified
  */
-declare function SectionContainer({ children, maxWidth, py, sx, ...other }: SectionContainerProps): react.JSX.Element;
+declare function SectionContainer({ children, maxWidth, py, sx, ...other }: SectionContainerProps): React$1.JSX.Element;
 
 /** Every decorative piece `BasicSection` knows how to render. */
 type DecorationKind = 'corner-plus' | 'corner-x' | 'border-line' | 'triangle-left' | 'triangle-down' | 'dot';
@@ -1963,8 +1981,10 @@ interface BasicSectionProps extends Omit<BoxProps<'section'>, 'component'> {
  *   <Typography variant="h2">Section heading</Typography>
  * </BasicSection>
  * ```
+ *
+ * **Quality status (02 Sep 2026):** DoD 19/22 · Best practices not re-audited — SonarQube not verified · helper component defined inline · no Responsive story
  */
-declare const BasicSection: react__default.ForwardRefExoticComponent<Omit<BasicSectionProps, "ref"> & react__default.RefAttributes<HTMLElement>>;
+declare const BasicSection: React__default.ForwardRefExoticComponent<Omit<BasicSectionProps, "ref"> & React__default.RefAttributes<HTMLElement>>;
 
 type HeroSlotProps = {
     heading?: ReactNode;
@@ -2025,9 +2045,9 @@ interface HeroSectionProps extends Omit<BoxProps, 'color'>, HeroSlotProps {
  * <HeroSection heading="Success hero" color="success" />
  * ```
  *
- * **Quality status (14 May 2026):** DoD 21/21 · Best practices 13/13
+ * **Quality status (02 Sep 2026):** DoD 21/22 · Best practices 13/13 — SonarQube not verified
  */
-declare function HeroSection({ heading, text, actions, icons, color, sx, ...other }: HeroSectionProps): react.JSX.Element;
+declare function HeroSection({ heading, text, actions, icons, color, sx, ...other }: HeroSectionProps): React$1.JSX.Element;
 
 /** One high-impact stat block shown above an item's long description. */
 interface FeatureFlowMetric {
@@ -2201,9 +2221,9 @@ interface FeatureFlowSectionProps extends Omit<BoxProps, 'children'> {
  * />
  * ```
  *
- * **Quality status (28 Aug 2026):** DoD 19/20 · Best practices 10/13
+ * **Quality status (02 Sep 2026):** DoD 18/22 · Best practices 10/13 — SonarQube not verified · size-constant regression tests missing · not all six palette keys in stories · no Responsive story
  */
-declare const FeatureFlowSection: react__default.ForwardRefExoticComponent<Omit<FeatureFlowSectionProps, "ref"> & react__default.RefAttributes<HTMLElement>>;
+declare const FeatureFlowSection: React__default.ForwardRefExoticComponent<Omit<FeatureFlowSectionProps, "ref"> & React__default.RefAttributes<HTMLElement>>;
 
 /**
  * Maps a maturity/readiness percentage to a MUI palette key.
@@ -2280,8 +2300,10 @@ interface AnimatedGradientTextProps extends Omit<BoxProps, 'color'> {
  *   </AnimatedGradientText>
  * </Typography>
  * ```
+ *
+ * **Quality status (02 Sep 2026):** DoD 20/22 · Best practices not re-audited — SonarQube not verified · size-constant regression tests missing
  */
-declare function AnimatedGradientText({ children, color1, color2, duration, component, sx, ...other }: AnimatedGradientTextProps): react.JSX.Element;
+declare function AnimatedGradientText({ children, color1, color2, duration, component, sx, ...other }: AnimatedGradientTextProps): React$1.JSX.Element;
 
 /** One icon + label pair in a TechIconStrip. */
 interface TechIconItem {
@@ -2322,7 +2344,9 @@ interface TechIconStripProps extends Omit<BoxProps, 'children' | 'title'> {
  *   ]}
  * />
  * ```
+ *
+ * **Quality status (02 Sep 2026):** DoD 20/22 · Best practices not re-audited — SonarQube not verified · size-constant regression tests missing
  */
-declare function TechIconStrip({ items, heading, centeredWrap, sx, ...other }: TechIconStripProps): react.JSX.Element;
+declare function TechIconStrip({ items, heading, centeredWrap, sx, ...other }: TechIconStripProps): React$1.JSX.Element;
 
-export { TOGGLE_ICON_SIZE as ACCORDION_CHECK_ICON_SIZE, ACCORDION_DONE_MIN_TOUCH_TARGET, TOGGLE_MIN_TOUCH_TARGET as ACCORDION_ICON_BUTTON_MIN_SIZE, Accordion, type AccordionProps, AnimatedGradientText, type AnimatedGradientTextProps, type BaseSettingsState, BasicSection, type BasicSectionProps, DEFAULT_ICON_ACTIONS, type DecorationElement, type DecorationKind, type FeatureFlowGridSize, type FeatureFlowHighlightCard, type FeatureFlowImage, type FeatureFlowItem, type FeatureFlowMetric, FeatureFlowSection, type FeatureFlowSectionProps, type FeatureFlowTechnology, GISELLE_PRIMARY_DARK_MAIN, GISELLE_PRIMARY_MAIN, GISELLE_SECONDARY_MAIN, GiselleIcon, type GiselleIconData, type GiselleIconMap, type GiselleIconProps, type GiselleSettingsContextValue, GiselleSettingsProvider, type GiselleSettingsProviderProps, GiselleThemeAndSettingsProvider, type GiselleThemeAndSettingsProviderProps, GiselleThemeProvider, type GiselleThemeProviderProps, type HeroColorKey, HeroSection, type HeroSectionProps, type HeroSlotProps, IconActionBar, type IconActionBarProps, type IconActionItem, MetricCard, type MetricCardColor, MetricCardDecoration, type MetricCardDecorationProps, type MetricCardProps, type NestedChecklistState, type PaletteColorKey, type ProfileStat, ProfileSummaryCard, type ProfileSummaryCardProps, QuoteCard, type QuoteCardProps, STAT_CARD_SPARKLINE_OPTIONS, SectionCaption, SectionContainer, type SectionContainerProps, SectionTitle, type SectionTitleProps, SelectableCard, type SelectableCardProps, SelectableLabel, type SelectableLabelProps, type SetCookieOptions, type ShowcaseRowOrientation, StatCard, type StatCardColor, type StatCardItem, type StatCardProps, StatCardRow, type StatCardRowProps, type StatusColorKey, StatusLabel, type StatusLabelProps, type StatusLabelStatus, type StorageAdapter, TOGGLE_ICON_SIZE, TOGGLE_MIN_TOUCH_TARGET, type TechIconItem, TechIconStrip, type TechIconStripProps, ToggleIconButton, type ToggleIconButtonProps, TwoColumnShowcaseRow, type TwoColumnShowcaseRowProps, type TwoColumnShowcaseRowText, type UseLocalStorageReturn, channelAlpha, createIconRegistrar, getCookieValue, giselleTheme, giselleThemeOptions, hexToChannel, isDeepEqual, pxToRem, remToPx, resolveMaturityColor, resolveMaturityLabel, setCookieValue, useGiselleSettings, useLocalStorage, useNestedChecklist };
+export { TOGGLE_ICON_SIZE as ACCORDION_CHECK_ICON_SIZE, ACCORDION_DONE_MIN_TOUCH_TARGET, TOGGLE_MIN_TOUCH_TARGET as ACCORDION_ICON_BUTTON_MIN_SIZE, Accordion, type AccordionProps, AnimatedGradientText, type AnimatedGradientTextProps, type BaseSettingsState, BasicSection, type BasicSectionProps, DEFAULT_ICON_ACTIONS, type DecorationElement, type DecorationKind, type FeatureFlowGridSize, type FeatureFlowHighlightCard, type FeatureFlowImage, type FeatureFlowItem, type FeatureFlowMetric, FeatureFlowSection, type FeatureFlowSectionProps, type FeatureFlowTechnology, GISELLE_PRIMARY_DARK_MAIN, GISELLE_PRIMARY_MAIN, GISELLE_SECONDARY_MAIN, GiselleIcon, type GiselleIconData, type GiselleIconMap, type GiselleIconProps, type GiselleSettingsContextValue, GiselleSettingsProvider, type GiselleSettingsProviderProps, GiselleThemeAndSettingsProvider, type GiselleThemeAndSettingsProviderProps, GiselleThemeProvider, type GiselleThemeProviderProps, type HeroColorKey, HeroSection, type HeroSectionProps, type HeroSlotProps, IconActionBar, type IconActionBarProps, type IconActionItem, MetricCard, type MetricCardColor, MetricCardDecoration, type MetricCardDecorationProps, type MetricCardProps, type NestedChecklistState, type PaletteColorKey, type ProfileStat, ProfileSummaryCard, type ProfileSummaryCardProps, QuoteCard, type QuoteCardProps, STAT_CARD_SPARKLINE_OPTIONS, SectionCaption, type SectionCaptionProps, SectionContainer, type SectionContainerProps, SectionTitle, type SectionTitleProps, SelectableCard, type SelectableCardProps, SelectableLabel, type SelectableLabelProps, type SetCookieOptions, type ShowcaseRowOrientation, StatCard, type StatCardColor, type StatCardItem, type StatCardProps, StatCardRow, type StatCardRowProps, type StatusColorKey, StatusLabel, type StatusLabelProps, type StatusLabelStatus, type StorageAdapter, TOGGLE_ICON_SIZE, TOGGLE_MIN_TOUCH_TARGET, type TechIconItem, TechIconStrip, type TechIconStripProps, ToggleIconButton, type ToggleIconButtonProps, TwoColumnShowcaseRow, type TwoColumnShowcaseRowProps, type TwoColumnShowcaseRowText, type UseLocalStorageReturn, channelAlpha, createIconRegistrar, getCookieValue, giselleTheme, giselleThemeOptions, hexToChannel, isDeepEqual, pxToRem, remToPx, resolveMaturityColor, resolveMaturityLabel, setCookieValue, useGiselleSettings, useLocalStorage, useNestedChecklist };
