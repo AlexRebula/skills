@@ -608,3 +608,9 @@ One component = one branch = one PR. Do not mix multiple components in a single 
 - [ ] `roadmap.md` updated if any open improvements identified
 - [ ] Zero-personal-data in tests and stories
 - [ ] CONTEXT.md updated if new domain terms introduced
+
+### Tracking docs
+
+- [ ] `docs/component-compliance.md`'s row updated for this component (per `docs/components/cleanup-workflow.md`'s tracking step)
+- [ ] `docs/component-inventory.md`'s row updated (DoD score against the Scenario A/B checklist, Last audited date) — if this repo maintains that file
+- [ ] If the project maintains a private, non-public migration/porting-tracking matrix, its row for this component is updated too — ask the user for its name/location; never assume or hardcode one here
