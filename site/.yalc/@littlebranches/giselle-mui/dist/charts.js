@@ -66,6 +66,9 @@ var chartWrapSx = {
   mx: "auto",
   overflow: "hidden"
 };
+var legendDividerSx = {
+  my: 2
+};
 var legendRowSx = {
   display: "flex",
   flexWrap: "wrap",
@@ -89,6 +92,9 @@ var legendDotSx = (color) => ({
   borderRadius: "50%",
   bgcolor: color,
   flexShrink: 0
+});
+var chartFallbackSx = (chartHeight) => ({
+  height: chartHeight
 });
 
 // src/components/chart/radial-progress/radial-progress-card.tsx
@@ -118,7 +124,7 @@ function RadialProgressCard({
   return /* @__PURE__ */ jsxs(Card, { sx: [...Array.isArray(sx) ? sx : [sx]], ...other, children: [
     (title !== void 0 || subheader !== void 0) && /* @__PURE__ */ jsx(CardHeader, { title, subheader }),
     /* @__PURE__ */ jsxs(CardContent, { children: [
-      /* @__PURE__ */ jsx(Box, { sx: chartWrapSx, children: /* @__PURE__ */ jsx(Suspense, { fallback: /* @__PURE__ */ jsx(Box, { sx: { height: chartHeight } }), children: /* @__PURE__ */ jsx(
+      /* @__PURE__ */ jsx(Box, { sx: chartWrapSx, children: /* @__PURE__ */ jsx(Suspense, { fallback: /* @__PURE__ */ jsx(Box, { sx: chartFallbackSx(chartHeight) }), children: /* @__PURE__ */ jsx(
         ReactApexChart,
         {
           type: "radialBar",
@@ -128,7 +134,7 @@ function RadialProgressCard({
           height: chartHeight
         }
       ) }) }),
-      /* @__PURE__ */ jsx(Divider, { sx: { my: 2 } }),
+      /* @__PURE__ */ jsx(Divider, { sx: legendDividerSx }),
       /* @__PURE__ */ jsx(Box, { sx: legendRowSx, children: series.map((item, i) => /* @__PURE__ */ jsxs(Box, { sx: legendItemSx, children: [
         /* @__PURE__ */ jsx(Box, { sx: legendDotSx(resolvedColors[i] ?? theme.palette.primary.main) }),
         /* @__PURE__ */ jsx(Typography, { variant: "subtitle2", children: item.label }),

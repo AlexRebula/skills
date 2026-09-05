@@ -47,21 +47,22 @@
   "scripts": {
     "prebuild": "node -e \"require('fs').rmSync('dist', {recursive:true,force:true})\"",
     "build": "tsup",
-    "typecheck": "tsc --noEmit",
-    "lint": "eslint \"src/**/*.{ts,tsx}\"",
-    "lint:fix": "eslint --fix \"src/**/*.{ts,tsx}\"",
-    "fm:check": "prettier --check \"src/**/*.{ts,tsx}\"",
-    "fm:fix": "prettier --write \"src/**/*.{ts,tsx}\"",
-    "test": "vitest run",
-    "test:watch": "vitest",
-    "test:coverage": "vitest run --coverage",
+    "typecheck": "tsc --noEmit && tsc --noEmit -p scripts/tsconfig.json",
+    "lint": "eslint \"src/**/*.{ts,tsx}\" \"scripts/**/*.{js,cjs,mjs,ts}\"",
+    "lint:fix": "eslint --fix \"src/**/*.{ts,tsx}\" \"scripts/**/*.{js,cjs,mjs,ts}\"",
+    "fm:check": "prettier --check \"src/**/*.{ts,tsx}\" \"scripts/**/*.{js,cjs,mjs,ts}\"",
+    "fm:fix": "prettier --write \"src/**/*.{ts,tsx}\" \"scripts/**/*.{js,cjs,mjs,ts}\"",
+    "test": "vitest run --project=unit",
+    "test:watch": "vitest --project=unit",
+    "test:coverage": "vitest run --project=unit --coverage",
+    "test:visual": "vitest run --project=storybook",
     "storybook": "storybook dev -p 6006",
     "build-storybook": "storybook build",
-    "check": "node scripts/quality-gate.js --fix",
-    "check:verify": "node scripts/quality-gate.js --verify",
-    "check:verify:fast": "node scripts/quality-gate.js --verify --no-storybook",
-    "check:verify:smart": "node scripts/quality-gate.js --verify --smart --storybook",
-    "check:verify:full": "node scripts/quality-gate.js --verify --storybook",
+    "check": "node scripts/quality-gate.ts --fix",
+    "check:verify": "node scripts/quality-gate.ts --verify",
+    "check:verify:fast": "node scripts/quality-gate.ts --verify --no-storybook",
+    "check:verify:smart": "node scripts/quality-gate.ts --verify --smart --storybook",
+    "check:verify:full": "node scripts/quality-gate.ts --verify --storybook",
     "clean": "rm -rf dist storybook-static",
     "postinstall": "node --input-type=module -e \"import('./scripts/setup-hooks.js').catch((error)=>{const msg=String(error?.message??'');const isMissingSetupHooks=error?.code==='ERR_MODULE_NOT_FOUND'&&(msg.includes('scripts/setup-hooks.js')||msg.includes('scripts\\\\setup-hooks.js'));if(!isMissingSetupHooks){console.error('Failed to run scripts/setup-hooks.js during postinstall.');console.error(error);process.exitCode=1;}})\""
   },
@@ -111,5 +112,5 @@
       "optional": true
     }
   },
-  "yalcSig": "76ea80777efd157277fb2e031755b443"
+  "yalcSig": "35c0d799bb688adf5486441fe2d364f2"
 }

@@ -28,20 +28,20 @@ to the consumer — accessibility patterns, CSS variables mode conventions, icon
 discipline, and composable data shapes. The table below names the specific decision each
 component encodes and why packaging it once is worth it.
 
-| Component / utility                   | Decision left to the consumer by MUI                                                                                                                                                               | What this library decides for you                                                                                                                                      |
-| ------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `SelectableCard`                      | `<Paper onClick={...}>` is not keyboard accessible — `Tab` will not focus it and `Enter`/`Space` will not trigger it                                                                               | `ButtonBase` as the root element — keyboard and pointer are identical, zero consumer code required                                                                     |
-| `Accordion`                           | Adding a checkbox to the heading creates `<button><button>` — invalid HTML and an ARIA violation. The common workaround is `pointer-events: none` hacks that break keyboard                        | `CheckIconButton` is a fully independent interactive element; expand/collapse and done-toggle never share a trigger                                                    |
-| `channelAlpha`                        | In MUI v7 CSS variables mode `theme.palette.primary.main` does not respond to the active color scheme. The correct `rgba(var(--channel) / alpha)` pattern is underdocumented and easy to get wrong | One function, correct in light AND dark mode, works wherever `theme.vars.palette.*Channel` is available                                                                |
-| `GiselleIcon` + `createIconRegistrar` | `@iconify/react` silently fetches from `api.iconify.design` when an icon string is not pre-registered — a production CDN dependency and a render flash                                             | Pre-registration is enforced at test time; a missing icon is a test failure, not a runtime surprise                                                                    |
-| `TimelineTwoColumn`                   | MUI Lab has a basic `Timeline`. Nothing provides alternating columns, phase cards, milestone badges, expandable rows, or a `done` state API                                                        | Full feature set, accessible eye-button interactions (WCAG 2.2 AA compliant where used), column-side invariants regression-tested, single `TimelinePhase[]` data shape |
-| `TimelineCompact`                     | The two-column layout does not fit mobile widths. The usual fix is a separate data shape or complex responsive logic in the data layer                                                             | Same `TimelinePhase[]` data shape — swap `TimelineTwoColumn` for `TimelineCompact` at `xs`/`sm`, one line of code, no data changes                                     |
-| Root MUI wrappers (`sx` spread)       | Most third-party MUI wrappers accept `sx` as a single value. Passing an array silently drops every entry after the first — which is the MUI-recommended way to extend styles                       | Components that expose root MUI styling props spread `sx` correctly: `sx={[base, ...(Array.isArray(sx) ? sx : [sx])]}`                                                 |
-| `/charts`, `/motion` subpaths         | A library that bundles ApexCharts or framer-motion forces those dependencies on every consumer, even those who use neither                                                                         | Separate tsup entries — `@littlebranches/giselle-mui` has zero chart or animation deps; opt in with `@littlebranches/giselle-mui/charts` or `.../motion`               |
-| `useNestedChecklist`                  | No MUI equivalent for parent/child done-state cascade (mark a phase done → all its milestones become done; all milestones done → phase auto-completes)                                             | Framework-agnostic hook, reusable across any nested tree structure                                                                                                     |
-| `ToggleIconButton`                    | A toggle button that switches between pressed and not pressed states. Without it, moving the mouse too quickly results in the hover getting stuck. On top of that, the screen readers can not see it at all.      | Fixes both issues by using CSS hover (instead of JS) and setting aria-pressed automatically.          |
-| `MetricCard`, `StatCard`              | Color-tinted cards that work in both light and dark mode usually require `useColorScheme()` re-renders or hardcoded hex pairs for each mode                                                        | `theme.vars.palette[color].mainChannel` — the CSS custom property flips automatically with the color scheme                                                            |
-| `StatCardRow`                         | Building a responsive multi-card stat row normally means repeating `xs`/`sm`/`md` breakpoint logic in every layout that needs one                                                                  | Breakpoints baked in (`xs:12, sm:6, md:3`) and chart rendering is opt-in via `renderChart`, so the main bundle stays free of ApexCharts                                |
+| Component / utility                   | Decision left to the consumer by MUI                                                                                                                                                                         | What this library decides for you                                                                                                                                      |
+| ------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `SelectableCard`                      | `<Paper onClick={...}>` is not keyboard accessible — `Tab` will not focus it and `Enter`/`Space` will not trigger it                                                                                         | `ButtonBase` as the root element — keyboard and pointer are identical, zero consumer code required                                                                     |
+| `Accordion`                           | Adding a checkbox to the heading creates `<button><button>` — invalid HTML and an ARIA violation. The common workaround is `pointer-events: none` hacks that break keyboard                                  | `CheckIconButton` is a fully independent interactive element; expand/collapse and done-toggle never share a trigger                                                    |
+| `channelAlpha`                        | In MUI v7 CSS variables mode `theme.palette.primary.main` does not respond to the active color scheme. The correct `rgba(var(--channel) / alpha)` pattern is underdocumented and easy to get wrong           | One function, correct in light AND dark mode, works wherever `theme.vars.palette.*Channel` is available                                                                |
+| `GiselleIcon` + `createIconRegistrar` | `@iconify/react` silently fetches from `api.iconify.design` when an icon string is not pre-registered — a production CDN dependency and a render flash                                                       | Pre-registration is enforced at test time; a missing icon is a test failure, not a runtime surprise                                                                    |
+| `TimelineTwoColumn`                   | MUI Lab has a basic `Timeline`. Nothing provides alternating columns, phase cards, milestone badges, expandable rows, or a `done` state API                                                                  | Full feature set, accessible eye-button interactions (WCAG 2.2 AA compliant where used), column-side invariants regression-tested, single `TimelinePhase[]` data shape |
+| `TimelineCompact`                     | The two-column layout does not fit mobile widths. The usual fix is a separate data shape or complex responsive logic in the data layer                                                                       | Same `TimelinePhase[]` data shape — swap `TimelineTwoColumn` for `TimelineCompact` at `xs`/`sm`, one line of code, no data changes                                     |
+| Root MUI wrappers (`sx` spread)       | Most third-party MUI wrappers accept `sx` as a single value. Passing an array silently drops every entry after the first — which is the MUI-recommended way to extend styles                                 | Components that expose root MUI styling props spread `sx` correctly: `sx={[base, ...(Array.isArray(sx) ? sx : [sx])]}`                                                 |
+| `/charts`, `/motion` subpaths         | A library that bundles ApexCharts or framer-motion forces those dependencies on every consumer, even those who use neither                                                                                   | Separate tsup entries — `@littlebranches/giselle-mui` has zero chart or animation deps; opt in with `@littlebranches/giselle-mui/charts` or `.../motion`               |
+| `useNestedChecklist`                  | No MUI equivalent for parent/child done-state cascade (mark a phase done → all its milestones become done; all milestones done → phase auto-completes)                                                       | Framework-agnostic hook, reusable across any nested tree structure                                                                                                     |
+| `ToggleIconButton`                    | A toggle button that switches between pressed and not pressed states. Without it, moving the mouse too quickly results in the hover getting stuck. On top of that, the screen readers can not see it at all. | Fixes both issues by using CSS hover (instead of JS) and setting aria-pressed automatically.                                                                           |
+| `MetricCard`, `StatCard`              | Color-tinted cards that work in both light and dark mode usually require `useColorScheme()` re-renders or hardcoded hex pairs for each mode                                                                  | `theme.vars.palette[color].mainChannel` — the CSS custom property flips automatically with the color scheme                                                            |
+| `StatCardRow`                         | Building a responsive multi-card stat row normally means repeating `xs`/`sm`/`md` breakpoint logic in every layout that needs one                                                                            | Breakpoints baked in (`xs:12, sm:6, md:3`) and chart rendering is opt-in via `renderChart`, so the main bundle stays free of ApexCharts                                |
 
 ---
 
@@ -90,7 +90,7 @@ Current high-priority timeline items include:
 > The API is stable and the test suite covers component structure, prop forwarding, ARIA
 > semantics, and interaction behaviour across all shipped components. The package is fully
 > built and tested locally. First public npm release is planned alongside the portfolio
-> site launch (May/June 2026). Feedback and issues are welcome on [GitHub](https://github.com/AlexRebula/giselle-mui/issues).
+> site launch (May/June 2026). Feedback and issues are welcome on [GitHub](https://github.com/LittleBranches/giselle-mui/issues).
 
 Test coverage is functional and growing. The current suite covers component structure,
 prop forwarding, ARIA semantics, and interaction behaviour. Coverage of edge cases
@@ -145,34 +145,43 @@ Full integration guides:
 
 ## Components
 
-| Component                                         | What it solves                                                                                                                                                                                        |
-| ------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `GiselleIcon`                                     | `@iconify/react` wrapper with full MUI `sx` support — fixes the `Box component={ThirdParty}` TypeScript pitfall and the CDN flicker problem.                                                          |
-| `createIconRegistrar`                             | Bundles icon SVG bodies offline — no CDN, no flicker, any framework.                                                                                                                                  |
-| `MetricCard` + `MetricCardDecoration`             | Structured stat card (value / label / icon / decoration slots) with CSS-var colour tinting. Zero icon-library dependency.                                                                             |
-| `StatCard`                                        | Single-metric summary card (value / label / icon / trend) — data-layer driven via `StatCardItem`; palette-key colour prop.                                                                            |
-| `StatCardRow`                                     | Responsive grid of `StatCard` tiles built from a `StatCardItem[]` array — chart slot stays optional so the main bundle never pulls in a charting library.                                            |
-| `SelectableCard`                                  | Clickable card on `ButtonBase` — correct `aria-pressed`, keyboard focus ring, and hover state without rediscovering the `Paper onClick` pitfall.                                                      |
-| `QuoteCard`                                       | Testimonial card with CSS-var tinted border and conditional attribution row.                                                                                                                          |
-| `Accordion`                                       | Collapsible row with an independent done-toggle before the title — solves the nested-interactive-element WCAG violation that occurs when a checkbox sits inside a summary button.                     |
-| `TimelineTwoColumn` + `PhaseCard` + `TimelineDot` | Two-column alternating timeline for career or roadmap layouts — phase cards, milestone badges, animated active dot, checklist mode.                                                                   |
-| `TimelineCompact`                                 | Single-column accordion timeline for the same `TimelinePhase[]` data — swap in at `xs`/`sm` breakpoints, no data layer changes required.                                                              |
-| `TaskList`                                        | Flat or nested task checklist driven by `TimelinePhase[]` task arrays — done-state, priority badges, and optional eye-button viewed tracking.                                                         |
-| `RadialProgressCard`                              | Multi-segment radial bar chart card showing one aggregate metric with per-dimension breakdown — encodes the ApexCharts radial-bar configuration once. Imported from `@littlebranches/giselle-mui/charts`. |
-| `useNestedChecklist`                              | Framework-agnostic hook for parent/child done-state cascade — mark a phase done → all milestones become done; all milestones done → phase auto-completes.                                             |
-| `IconActionBar`                                   | Horizontal row of `Tooltip` + `IconButton` pairs — encodes the disabled-child `<span>` wrapper pattern so tooltips work on disabled buttons.                                                          |
-| `ToggleIconButton`                                          | A toggle button that switches between pressed and not pressed states — built with CSS-driven hover instead of JavaScript, and with `aria-pressed` set automatically, so the hover never gets stuck and screen readers always know the toggle state.                                                                                                                                                                             |
-| `FloatingSubNav`                                  | Sticky / fixed floating pill navigation bar with `framer-motion` enter/exit animation — position-mode aware, scroll-offset configurable.                                                              |
-| `SectionTitle` + `SectionCaption`                 | Section heading with optional subtitle and colour accent, and a standalone caption primitive — consistent vertical rhythm across section layouts.                                                     |
-| `SectionContainer`                                | Standardised section wrapper with configurable max-width, padding, and background — ensures consistent outer spacing across all section layouts.                                                      |
-| `TwoColumnShowcaseRow`                                    | Responsive two-column row (text + visual) for showcase/feature layouts — MUI v7 Grid v2 with configurable column widths.                                                                                              |
+| Component                                         | What it solves                                                                                                                                                                                                                                      |
+| ------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `GiselleIcon`                                     | `@iconify/react` wrapper with full MUI `sx` support — fixes the `Box component={ThirdParty}` TypeScript pitfall and the CDN flicker problem.                                                                                                        |
+| `createIconRegistrar`                             | Bundles icon SVG bodies offline — no CDN, no flicker, any framework.                                                                                                                                                                                |
+| `MetricCard` + `MetricCardDecoration`             | Structured stat card (value / label / icon / decoration slots) with CSS-var colour tinting. Zero icon-library dependency.                                                                                                                           |
+| `StatCard`                                        | Single-metric summary card (value / label / icon / trend) — data-layer driven via `StatCardItem`; palette-key colour prop.                                                                                                                          |
+| `StatCardRow`                                     | Responsive grid of `StatCard` tiles built from a `StatCardItem[]` array — chart slot stays optional so the main bundle never pulls in a charting library.                                                                                           |
+| `SelectableCard`                                  | Clickable card on `ButtonBase` — correct `aria-pressed`, keyboard focus ring, and hover state without rediscovering the `Paper onClick` pitfall.                                                                                                    |
+| `QuoteCard`                                       | Testimonial card with CSS-var tinted border and conditional attribution row.                                                                                                                                                                        |
+| `Accordion`                                       | Collapsible row with an independent done-toggle before the title — solves the nested-interactive-element WCAG violation that occurs when a checkbox sits inside a summary button.                                                                   |
+| `TimelineTwoColumn` + `PhaseCard` + `TimelineDot` | Two-column alternating timeline for career or roadmap layouts — phase cards, milestone badges, animated active dot, checklist mode.                                                                                                                 |
+| `TimelineCompact`                                 | Single-column accordion timeline for the same `TimelinePhase[]` data — swap in at `xs`/`sm` breakpoints, no data layer changes required.                                                                                                            |
+| `TaskList`                                        | Flat or nested task checklist driven by `TimelinePhase[]` task arrays — done-state, priority badges, and optional eye-button viewed tracking.                                                                                                       |
+| `RadialProgressCard`                              | Multi-segment radial bar chart card showing one aggregate metric with per-dimension breakdown — encodes the ApexCharts radial-bar configuration once. Imported from `@littlebranches/giselle-mui/charts`.                                           |
+| `useNestedChecklist`                              | Framework-agnostic hook for parent/child done-state cascade — mark a phase done → all milestones become done; all milestones done → phase auto-completes.                                                                                           |
+| `IconActionBar`                                   | Horizontal row of `Tooltip` + `IconButton` pairs — encodes the disabled-child `<span>` wrapper pattern so tooltips work on disabled buttons.                                                                                                        |
+| `ToggleIconButton`                                | A toggle button that switches between pressed and not pressed states — built with CSS-driven hover instead of JavaScript, and with `aria-pressed` set automatically, so the hover never gets stuck and screen readers always know the toggle state. |
+| `FloatingSubNav`                                  | Sticky / fixed floating pill navigation bar with `framer-motion` enter/exit animation — position-mode aware, scroll-offset configurable.                                                                                                            |
+| `SectionTitle` + `SectionCaption`                 | Section heading with optional subtitle and colour accent, and a standalone caption primitive — consistent vertical rhythm across section layouts.                                                                                                   |
+| `SectionContainer`                                | Standardised section wrapper with configurable max-width, padding, and background — ensures consistent outer spacing across all section layouts.                                                                                                    |
+| `TwoColumnShowcaseRow`                            | Responsive two-column row (text + visual) for showcase/feature layouts — MUI v7 Grid v2 with configurable column widths.                                                                                                                            |
 
-
-**Full API documentation, prop tables, and live examples → [Storybook](./storybook-static/index.html)** (build locally with `npm run build-storybook`, then open the generated file)
+**Full API documentation, prop tables, and live examples → [Storybook](https://giselle-mui-storybook.vercel.app)** (or build locally with `npm run build-storybook` to preview unreleased changes before they reach `main`)
 
 **Design decisions and architecture per component → [Docusaurus docs](https://giselle-docs.vercel.app/giselle-mui)**
 
-Every component exists because it solves a problem that is either easy to get wrong or non-trivial to implement correctly with MUI alone. Each `src/components/<name>/README.md` documents the design rationale, accessibility decisions, and library-safety notes.
+Every component exists because it solves a problem that is either easy to get wrong or non-trivial to implement correctly with MUI alone.
+
+Components live in a nested tree that mirrors the "Components" navigation a consumer sees in the docs site — the same convention MUI itself uses:
+
+```
+src/components/<layer>/<category>/<name>/
+```
+
+`<layer>` is one of `material`, `motion`, `section`, `chart`, `lab`, or `theming`. `<category>` follows MUI's own grouping for the `material` layer — `surfaces/card/`, `data-display/icon/`, `layout/`, `navigation/`, `input/`, `feedback/`. So `MetricCard` lives at `src/components/material/surfaces/card/metric/`, and `GiselleIcon` at `src/components/material/data-display/icon/giselle/`. Internal sub-components nest one level deeper inside their parent's folder, each in its own named folder.
+
+Each component folder's `README.md` documents the design rationale, accessibility decisions, and library-safety notes; its `roadmap.md` tracks planned work. The full folder-by-folder listing is in [`docs/component-inventory.md`](./docs/component-inventory.md).
 
 ---
 
@@ -281,8 +290,8 @@ Then call `registerIcons()` at module level before React renders:
 - **Next.js Pages Router** — call it in `pages/_app.tsx`
 
 Full setup guide (framework examples, viewBox rules, monorepo caveats):
-→ [GiselleIcon README](./src/components/giselle-icon/README.md)
-→ [docs/iconify-registration.md](./docs/iconify-registration.md)
+→ [GiselleIcon README](./src/components/material/data-display/icon/giselle/README.md)
+→ [docs/components/icon/giselle/iconify-registration.md](./docs/components/icon/giselle/iconify-registration.md)
 
 ---
 
@@ -299,7 +308,7 @@ Full setup guide (framework examples, viewBox rules, monorepo caveats):
 ## Local development
 
 ```bash
-git clone git@github.com:AlexRebula/giselle-mui.git
+git clone git@github.com:LittleBranches/giselle-mui.git
 cd giselle-mui
 npm install
 npm run typecheck
@@ -329,24 +338,23 @@ Full workflow, publishing steps, and the reasoning behind yalc:
 
 ## Roadmap
 
-| Phase                    | Status     | Description                                                                                                                           |
-| ------------------------ | ---------- | ------------------------------------------------------------------------------------------------------------------------------------- |
-| Core components          | ✅ Done    | `GiselleIcon`, `MetricCard`, `SelectableCard`, `QuoteCard`, `TimelineTwoColumn` — all with unit tests + READMEs                       |
-| Storybook stories        | ✅ Done    | Stories shipped for all components. Deployed locally; public hosting planned.                                                         |
-| Phase A theme utilities  | ✅ Done    | `channelAlpha`, `hexToChannel`, `pxToRem`/`remToPx` — see [`docs/roadmap.md`](./docs/roadmap.mdx)                                     |
-| Phase B brand theme      | ✅ Done    | `giselleTheme` preset + palette constants — import from `@littlebranches/giselle-mui/utils` — see [`docs/roadmap.md`](./docs/roadmap.mdx) |
-| npm publish              | ⬜ Planned | Alongside portfolio launch, May/June 2026                                                                                             |
-| Additional components    | ⬜ Planned | Components extracted from portfolio patterns as they meet the extraction checklist                                                    |
-| Storybook public hosting | ⬜ Planned | Chromatic or self-hosted, cross-linked from Docusaurus                                                                                |
+| Phase                   | Status     | Description                                                                                                                                                               |
+| ----------------------- | ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Core components         | ✅ Done    | `GiselleIcon`, `MetricCard`, `SelectableCard`, `QuoteCard`, `TimelineTwoColumn` — all with unit tests + READMEs                                                           |
+| Storybook stories       | ✅ Done    | Stories shipped for all components. Publicly hosted at [giselle-mui-storybook.vercel.app](https://giselle-mui-storybook.vercel.app), redeployed on every merge to `main`. |
+| Phase A theme utilities | ✅ Done    | `channelAlpha`, `hexToChannel`, `pxToRem`/`remToPx` — see [`docs/roadmap.md`](./docs/roadmap.md)                                                                          |
+| Phase B brand theme     | ✅ Done    | `giselleTheme` preset + palette constants — import from `@littlebranches/giselle-mui/utils` — see [`docs/roadmap.md`](./docs/roadmap.md)                                  |
+| npm publish             | ⬜ Planned | Alongside portfolio launch, May/June 2026                                                                                                                                 |
+| Additional components   | ⬜ Planned | Components extracted from portfolio patterns as they meet the extraction checklist                                                                                        |
 
-Full detail: [`docs/roadmap.md`](./docs/roadmap.mdx)
+Full detail: [`docs/roadmap.md`](./docs/roadmap.md)
 
 ---
 
 ## Part of the Giselle UI ecosystem
 
-| Package                            | Description                                              | Status |
-| ---------------------------------- | -------------------------------------------------------- | ------ |
+| Package                                | Description                                              | Status |
+| -------------------------------------- | -------------------------------------------------------- | ------ |
 | `@littlebranches/giselle-mui`          | MUI wrapper components (this package)                    | Beta   |
 | `@littlebranches/giselle-ui`           | Framework-agnostic component primitives                  | Beta   |
 | `@littlebranches/giselle-sections-sdk` | Typed section data contracts for portfolio/product sites | Beta   |

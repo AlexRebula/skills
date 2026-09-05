@@ -387,10 +387,10 @@ function GiselleSettingsProvider({
   );
 }
 
-// src/components/theming/settings-provider/theme-and-settings-provider.tsx
+// src/components/theming/settings-provider/theme-and-settings-provider/theme-and-settings-provider.tsx
 import { Fragment } from "react";
 
-// src/components/theming/settings-provider/settings-theme-bridge.tsx
+// src/components/theming/settings-provider/theme-and-settings-provider/settings-theme-bridge/settings-theme-bridge.tsx
 import { useEffect as useEffect3 } from "react";
 import { useColorScheme } from "@mui/material/styles";
 function SettingsThemeBridge({
@@ -407,7 +407,7 @@ function SettingsThemeBridge({
   return null;
 }
 
-// src/components/theming/settings-provider/theme-and-settings-provider.tsx
+// src/components/theming/settings-provider/theme-and-settings-provider/theme-and-settings-provider.tsx
 import { jsx as jsx3, jsxs } from "react/jsx-runtime";
 function GiselleThemeAndSettingsProvider({
   children,
@@ -819,7 +819,6 @@ import Typography2 from "@mui/material/Typography";
 
 // src/components/material/surfaces/card/metric/metric-card.const.ts
 var METRIC_CARD_ICON_BOX_SIZE = 36;
-var METRIC_CARD_DECORATION_SIZE = 140;
 
 // src/components/material/surfaces/card/metric/metric-card.styles.ts
 var metricCardPaperSx = {
@@ -840,6 +839,16 @@ var metricCardContentSx = {
   zIndex: 1,
   flexGrow: 1
 };
+var metricCardValueSx = {
+  typography: "h3"
+};
+var metricCardLabelSx = {
+  color: "text.secondary"
+};
+var metricCardSublabelSx = {
+  color: "text.disabled",
+  mt: 0.25
+};
 var metricCardIconBoxSx = (color) => (theme) => ({
   top: 24,
   right: 20,
@@ -852,6 +861,15 @@ var metricCardIconBoxSx = (color) => (theme) => ({
   justifyContent: "center",
   color: theme.vars.palette[color]?.main
 });
+
+// src/components/material/surfaces/card/metric/metric-card-decoration/metric-card-decoration.tsx
+import React2 from "react";
+import Box3 from "@mui/material/Box";
+
+// src/components/material/surfaces/card/metric/metric-card-decoration/metric-card-decoration.const.ts
+var METRIC_CARD_DECORATION_SIZE = 140;
+
+// src/components/material/surfaces/card/metric/metric-card-decoration/metric-card-decoration.styles.ts
 var metricCardDecorationSx = (color) => (theme) => ({
   top: -40,
   right: -56,
@@ -864,16 +882,21 @@ var metricCardDecorationSx = (color) => (theme) => ({
   background: `linear-gradient(to right, ${theme.vars.palette[color]?.main}, transparent)`
 });
 
-// src/components/material/surfaces/card/metric/metric-card-decoration.tsx
-import Box3 from "@mui/material/Box";
+// src/components/material/surfaces/card/metric/metric-card-decoration/metric-card-decoration.tsx
 import { jsx as jsx10 } from "react/jsx-runtime";
-function MetricCardDecoration({
-  color = "primary",
-  sx,
-  ...other
-}) {
-  return /* @__PURE__ */ jsx10(Box3, { sx: [metricCardDecorationSx(color), ...Array.isArray(sx) ? sx : [sx]], ...other });
-}
+var MetricCardDecoration = React2.forwardRef(
+  function MetricCardDecoration2({ color = "primary", sx, ...other }, ref) {
+    return /* @__PURE__ */ jsx10(
+      Box3,
+      {
+        ref,
+        sx: [metricCardDecorationSx(color), ...Array.isArray(sx) ? sx : [sx]],
+        ...other
+      }
+    );
+  }
+);
+MetricCardDecoration.displayName = "MetricCardDecoration";
 
 // src/components/material/surfaces/card/metric/metric-card.tsx
 import { jsx as jsx11, jsxs as jsxs4 } from "react/jsx-runtime";
@@ -897,18 +920,9 @@ function MetricCard({
       children: [
         decoration && /* @__PURE__ */ jsx11(Box4, { "aria-hidden": "true", sx: decorationOverlaySx, children: decoration }),
         /* @__PURE__ */ jsxs4(Box4, { sx: metricCardContentSx, children: [
-          /* @__PURE__ */ jsx11(Box4, { sx: { typography: "h3" }, children: value }),
-          /* @__PURE__ */ jsx11(Typography2, { noWrap: true, variant: "subtitle2", component: "div", sx: { color: "text.secondary" }, children: label }),
-          sublabel && /* @__PURE__ */ jsx11(
-            Typography2,
-            {
-              noWrap: true,
-              variant: "caption",
-              component: "div",
-              sx: { color: "text.disabled", mt: 0.25 },
-              children: sublabel
-            }
-          )
+          /* @__PURE__ */ jsx11(Box4, { sx: metricCardValueSx, children: value }),
+          /* @__PURE__ */ jsx11(Typography2, { noWrap: true, variant: "subtitle2", component: "div", sx: metricCardLabelSx, children: label }),
+          sublabel && /* @__PURE__ */ jsx11(Typography2, { noWrap: true, variant: "caption", component: "div", sx: metricCardSublabelSx, children: sublabel })
         ] }),
         icon && /* @__PURE__ */ jsx11(Box4, { "aria-hidden": "true", sx: metricCardIconBoxSx(color), children: icon })
       ]
@@ -1005,6 +1019,28 @@ var quoteTextSx = {
   color: "text.secondary",
   lineHeight: 1.85
 };
+var quoteCardRowSlotSx = {
+  display: "flex",
+  gap: 2
+};
+var quoteCardTextSlotSx = {
+  flex: 1,
+  minWidth: 0
+};
+var quoteAttributionRowSlotSx = {
+  mt: 2,
+  color: "text.disabled",
+  alignItems: "center"
+};
+var quoteAuthorSx = {
+  fontWeight: "fontWeightMedium"
+};
+var quoteSeparatorSx = {
+  opacity: 0.6
+};
+var quoteSourceSx = {
+  opacity: 0.72
+};
 var quoteCardPaperSx = (color) => (theme) => ({
   p: 3,
   borderRadius: 2,
@@ -1029,23 +1065,15 @@ function QuoteCard({
       elevation,
       sx: [quoteCardPaperSx(color), ...Array.isArray(sx) ? sx : [sx]],
       ...other,
-      children: /* @__PURE__ */ jsxs5(Box5, { sx: { display: "flex", gap: 2 }, children: [
+      children: /* @__PURE__ */ jsxs5(Box5, { sx: quoteCardRowSlotSx, children: [
         /* @__PURE__ */ jsx13(Typography3, { "aria-hidden": true, sx: quoteMarkSx(color), children: "\u201C" }),
-        /* @__PURE__ */ jsxs5(Box5, { sx: { flex: 1, minWidth: 0 }, children: [
+        /* @__PURE__ */ jsxs5(Box5, { sx: quoteCardTextSlotSx, children: [
           /* @__PURE__ */ jsx13(Typography3, { variant: "body1", sx: quoteTextSx, children: quote }),
-          (author || source) && /* @__PURE__ */ jsxs5(
-            Stack,
-            {
-              direction: "row",
-              spacing: 0.75,
-              sx: { mt: 2, color: "text.disabled", alignItems: "center" },
-              children: [
-                author && /* @__PURE__ */ jsx13(Typography3, { variant: "caption", sx: { fontWeight: "fontWeightMedium" }, children: author }),
-                author && source && /* @__PURE__ */ jsx13(Typography3, { variant: "caption", "aria-hidden": true, sx: { opacity: 0.6 }, children: "\xB7" }),
-                source && /* @__PURE__ */ jsx13(Typography3, { variant: "caption", sx: { opacity: 0.72 }, children: source })
-              ]
-            }
-          )
+          (author || source) && /* @__PURE__ */ jsxs5(Stack, { direction: "row", spacing: 0.75, sx: quoteAttributionRowSlotSx, children: [
+            author && /* @__PURE__ */ jsx13(Typography3, { variant: "caption", sx: quoteAuthorSx, children: author }),
+            author && source && /* @__PURE__ */ jsx13(Typography3, { variant: "caption", "aria-hidden": true, sx: quoteSeparatorSx, children: "\xB7" }),
+            source && /* @__PURE__ */ jsx13(Typography3, { variant: "caption", sx: quoteSourceSx, children: source })
+          ] })
         ] })
       ] })
     }
@@ -1096,6 +1124,14 @@ var labelsBoxSx = {
   flexGrow: 1,
   minWidth: STAT_CARD_LABELS_MIN_WIDTH
 };
+var statCardLabelSx = {
+  mb: 0.5
+};
+var trendLabelSx = {
+  opacity: 0.72,
+  ml: 0.5,
+  fontWeight: 400
+};
 var decorationSx = {
   position: "absolute",
   bottom: -20,
@@ -1113,48 +1149,54 @@ var STAT_CARD_SPARKLINE_OPTIONS = {
   markers: { strokeWidth: 0 }
 };
 
-// src/components/material/surfaces/card/stat/stat-card-shape.tsx
+// src/components/material/surfaces/card/stat/stat-card-shape/stat-card-shape.tsx
+import React3 from "react";
 import { jsx as jsx14, jsxs as jsxs6 } from "react/jsx-runtime";
-function StatCardShape() {
-  return /* @__PURE__ */ jsxs6(
-    "svg",
-    {
-      width: "120",
-      height: "120",
-      viewBox: "0 0 120 120",
-      fill: "none",
-      xmlns: "http://www.w3.org/2000/svg",
-      children: [
-        /* @__PURE__ */ jsx14(
-          "rect",
-          {
-            x: "14",
-            y: "14",
-            width: "80",
-            height: "80",
-            rx: "16",
-            transform: "rotate(15 54 54)",
-            fill: "currentColor",
-            fillOpacity: "0.16"
-          }
-        ),
-        /* @__PURE__ */ jsx14(
-          "rect",
-          {
-            x: "32",
-            y: "32",
-            width: "56",
-            height: "56",
-            rx: "12",
-            transform: "rotate(-8 60 60)",
-            fill: "currentColor",
-            fillOpacity: "0.1"
-          }
-        )
-      ]
-    }
-  );
-}
+var StatCardShape = React3.forwardRef(
+  function StatCardShape2(props, ref) {
+    return /* @__PURE__ */ jsxs6(
+      "svg",
+      {
+        ref,
+        width: "120",
+        height: "120",
+        viewBox: "0 0 120 120",
+        fill: "none",
+        xmlns: "http://www.w3.org/2000/svg",
+        ...props,
+        children: [
+          /* @__PURE__ */ jsx14(
+            "rect",
+            {
+              x: "14",
+              y: "14",
+              width: "80",
+              height: "80",
+              rx: "16",
+              transform: "rotate(15 54 54)",
+              fill: "currentColor",
+              fillOpacity: "0.16"
+            }
+          ),
+          /* @__PURE__ */ jsx14(
+            "rect",
+            {
+              x: "32",
+              y: "32",
+              width: "56",
+              height: "56",
+              rx: "12",
+              transform: "rotate(-8 60 60)",
+              fill: "currentColor",
+              fillOpacity: "0.1"
+            }
+          )
+        ]
+      }
+    );
+  }
+);
+StatCardShape.displayName = "StatCardShape";
 
 // src/components/material/surfaces/card/stat/stat-card.tsx
 import { jsx as jsx15, jsxs as jsxs7 } from "react/jsx-runtime";
@@ -1180,19 +1222,11 @@ function StatCard({
         trend,
         "%"
       ] }),
-      trendLabel && /* @__PURE__ */ jsx15(
-        Typography4,
-        {
-          component: "span",
-          variant: "caption",
-          sx: { opacity: 0.72, ml: 0.5, fontWeight: 400 },
-          children: trendLabel
-        }
-      )
+      trendLabel && /* @__PURE__ */ jsx15(Typography4, { component: "span", variant: "caption", sx: trendLabelSx, children: trendLabel })
     ] }),
     /* @__PURE__ */ jsxs7(Box6, { sx: contentRowSx, children: [
       /* @__PURE__ */ jsxs7(Box6, { sx: labelsBoxSx, children: [
-        /* @__PURE__ */ jsx15(Typography4, { variant: "subtitle2", sx: { mb: 0.5 }, children: label }),
+        /* @__PURE__ */ jsx15(Typography4, { variant: "subtitle2", sx: statCardLabelSx, children: label }),
         /* @__PURE__ */ jsx15(Typography4, { variant: "h4", children: value })
       ] }),
       chart
@@ -1226,11 +1260,25 @@ import Typography5 from "@mui/material/Typography";
 import Divider from "@mui/material/Divider";
 
 // src/components/material/surfaces/card/profile-summary/profile-summary-card.styles.ts
+var profileSummaryCardPaperSx = {
+  p: 3,
+  textAlign: "center"
+};
 var avatarSx = {
   width: 64,
   height: 64,
   mx: "auto",
   mb: 2
+};
+var roleSx = {
+  mb: 2
+};
+var statsRowSlotSx = {
+  display: "flex",
+  justifyContent: "center"
+};
+var statCellSlotSx = {
+  px: 2
 };
 
 // src/components/material/surfaces/card/profile-summary/profile-summary-card.tsx
@@ -1243,13 +1291,13 @@ function ProfileSummaryCard({
   sx,
   ...other
 }) {
-  return /* @__PURE__ */ jsxs8(Paper3, { sx: [{ p: 3, textAlign: "center" }, ...Array.isArray(sx) ? sx : [sx]], ...other, children: [
+  return /* @__PURE__ */ jsxs8(Paper3, { sx: [profileSummaryCardPaperSx, ...Array.isArray(sx) ? sx : [sx]], ...other, children: [
     /* @__PURE__ */ jsx17(Avatar, { src: avatarSrc, alt: name, sx: avatarSx, children: name[0] }),
     /* @__PURE__ */ jsx17(Typography5, { variant: "h6", children: name }),
-    role && /* @__PURE__ */ jsx17(Typography5, { variant: "body2", color: "text.secondary", sx: { mb: 2 }, children: role }),
-    /* @__PURE__ */ jsx17(Box7, { sx: { display: "flex", justifyContent: "center" }, children: stats.map((stat, index) => /* @__PURE__ */ jsxs8(Box7, { children: [
+    role && /* @__PURE__ */ jsx17(Typography5, { variant: "body2", color: "text.secondary", sx: roleSx, children: role }),
+    /* @__PURE__ */ jsx17(Box7, { sx: statsRowSlotSx, children: stats.map((stat, index) => /* @__PURE__ */ jsxs8(Box7, { children: [
       index > 0 && /* @__PURE__ */ jsx17(Divider, { orientation: "vertical", flexItem: true }),
-      /* @__PURE__ */ jsxs8(Box7, { sx: { px: 2 }, children: [
+      /* @__PURE__ */ jsxs8(Box7, { sx: statCellSlotSx, children: [
         /* @__PURE__ */ jsx17(Typography5, { variant: "subtitle1", children: stat.value }),
         /* @__PURE__ */ jsx17(Typography5, { variant: "caption", color: "text.secondary", children: stat.label })
       ] })
@@ -1340,6 +1388,31 @@ import Box9 from "@mui/material/Box";
 import Grid2 from "@mui/material/Grid";
 import Stack2 from "@mui/material/Stack";
 import Typography6 from "@mui/material/Typography";
+
+// src/components/material/layout/showcase-row/two-column-showcase-row.styles.ts
+var showcaseRowRootSx = (orientation) => ({
+  flexDirection: { xs: "column", md: orientation }
+});
+var textColumnSx = {
+  maxWidth: 520
+};
+var overlineSx = {
+  color: "text.secondary"
+};
+var controlsGridItemSx = {
+  minWidth: 0
+};
+var controlsStackSx = (controlsAlign) => ({
+  alignItems: controlsAlign,
+  width: 1,
+  minWidth: 0
+});
+var controlsSlotSx = {
+  width: 1,
+  minWidth: 0
+};
+
+// src/components/material/layout/showcase-row/two-column-showcase-row.tsx
 import { jsx as jsx20, jsxs as jsxs9 } from "react/jsx-runtime";
 function TwoColumnShowcaseRow({
   text,
@@ -1359,33 +1432,23 @@ function TwoColumnShowcaseRow({
       container: true,
       columnSpacing: isVertical ? 0 : { xs: 0, md: 6 },
       rowSpacing: { xs: 4, md: isVertical ? 4 : 0 },
-      sx: [
-        { flexDirection: { xs: "column", md: orientation } },
-        ...Array.isArray(sx) ? sx : [sx]
-      ],
+      sx: [showcaseRowRootSx(orientation), ...Array.isArray(sx) ? sx : [sx]],
       ...other,
       children: [
-        text && /* @__PURE__ */ jsx20(Grid2, { size: itemSize, children: /* @__PURE__ */ jsxs9(
-          Stack2,
-          {
-            spacing: 2,
-            sx: [{ maxWidth: 520 }, ...Array.isArray(textSx) ? textSx : [textSx]],
-            children: [
-              text.overline && /* @__PURE__ */ jsx20(Typography6, { variant: "overline", sx: { color: "text.secondary" }, children: text.overline }),
-              text.heading && /* @__PURE__ */ jsx20(Typography6, { variant: "h4", children: text.heading }),
-              text.description && /* @__PURE__ */ jsx20(Typography6, { variant: "body1", color: "text.secondary", children: text.description })
-            ]
-          }
-        ) }),
-        /* @__PURE__ */ jsx20(Grid2, { size: itemSize, sx: { minWidth: 0 }, children: /* @__PURE__ */ jsx20(
+        text && /* @__PURE__ */ jsx20(Grid2, { size: itemSize, children: /* @__PURE__ */ jsxs9(Stack2, { spacing: 2, sx: [textColumnSx, ...Array.isArray(textSx) ? textSx : [textSx]], children: [
+          text.overline && /* @__PURE__ */ jsx20(Typography6, { variant: "overline", sx: overlineSx, children: text.overline }),
+          text.heading && /* @__PURE__ */ jsx20(Typography6, { variant: "h4", children: text.heading }),
+          text.description && /* @__PURE__ */ jsx20(Typography6, { variant: "body1", color: "text.secondary", children: text.description })
+        ] }) }),
+        /* @__PURE__ */ jsx20(Grid2, { size: itemSize, sx: controlsGridItemSx, children: /* @__PURE__ */ jsx20(
           Stack2,
           {
             spacing: 2,
             sx: [
-              { alignItems: controlsAlign, width: 1, minWidth: 0 },
+              controlsStackSx(controlsAlign),
               ...Array.isArray(controlsSx) ? controlsSx : [controlsSx]
             ],
-            children: /* @__PURE__ */ jsx20(Box9, { sx: { width: 1, minWidth: 0 }, children: controls })
+            children: /* @__PURE__ */ jsx20(Box9, { sx: controlsSlotSx, children: controls })
           }
         ) })
       ]
@@ -1407,27 +1470,43 @@ var txtGradientSpanSx = (theme) => ({
   backgroundClip: "text",
   color: "transparent"
 });
+var sectionTitleRootSx = {
+  gap: 3,
+  display: "flex",
+  flexDirection: "column"
+};
+var sectionTitleDescriptionSx = {
+  color: "text.secondary",
+  typography: "body1"
+};
 
-// src/components/material/layout/section-title/section-caption.tsx
+// src/components/material/layout/section-title/section-caption/section-caption.tsx
+import React4 from "react";
 import Box10 from "@mui/material/Box";
+
+// src/components/material/layout/section-title/section-caption/section-caption.styles.ts
+var sectionCaptionSx = {
+  typography: "overline",
+  color: "text.disabled"
+};
+
+// src/components/material/layout/section-title/section-caption/section-caption.tsx
 import { jsx as jsx21 } from "react/jsx-runtime";
-function SectionCaption({ title, sx, ...other }) {
-  return /* @__PURE__ */ jsx21(
-    Box10,
-    {
-      component: "span",
-      sx: [
-        {
-          typography: "overline",
-          color: "text.disabled"
-        },
-        ...Array.isArray(sx) ? sx : [sx]
-      ],
-      ...other,
-      children: title
-    }
-  );
-}
+var SectionCaption = React4.forwardRef(
+  function SectionCaption2({ title, sx, ...other }, ref) {
+    return /* @__PURE__ */ jsx21(
+      Box10,
+      {
+        ref,
+        component: "span",
+        sx: [sectionCaptionSx, ...Array.isArray(sx) ? sx : [sx]],
+        ...other,
+        children: title
+      }
+    );
+  }
+);
+SectionCaption.displayName = "SectionCaption";
 
 // src/components/material/layout/section-title/section-title.tsx
 import { jsx as jsx22, jsxs as jsxs10 } from "react/jsx-runtime";
@@ -1442,42 +1521,35 @@ function SectionTitle({
   titleVariant = "h2",
   ...other
 }) {
-  return /* @__PURE__ */ jsxs10(
-    Box11,
-    {
-      sx: [
-        {
-          gap: 3,
-          display: "flex",
-          flexDirection: "column"
-        },
-        ...Array.isArray(sx) ? sx : [sx]
-      ],
-      ...other,
-      children: [
-        caption && /* @__PURE__ */ jsx22(SectionCaption, { title: caption, sx: slotProps?.caption?.sx }),
-        /* @__PURE__ */ jsxs10(Typography7, { component: titleComponent, variant: titleVariant, sx: slotProps?.title?.sx, children: [
-          title,
-          " ",
-          txtGradient && /* @__PURE__ */ jsx22(Box11, { component: "span", sx: txtGradientSpanSx, children: txtGradient })
-        ] }),
-        description && /* @__PURE__ */ jsx22(
-          Box11,
-          {
-            sx: [
-              { color: "text.secondary", typography: "body1" },
-              ...Array.isArray(slotProps?.description?.sx) ? slotProps.description.sx : [slotProps?.description?.sx]
-            ],
-            children: description
-          }
-        )
-      ]
-    }
-  );
+  return /* @__PURE__ */ jsxs10(Box11, { sx: [sectionTitleRootSx, ...Array.isArray(sx) ? sx : [sx]], ...other, children: [
+    caption && /* @__PURE__ */ jsx22(SectionCaption, { title: caption, sx: slotProps?.caption?.sx }),
+    /* @__PURE__ */ jsxs10(Typography7, { component: titleComponent, variant: titleVariant, sx: slotProps?.title?.sx, children: [
+      title,
+      " ",
+      txtGradient && /* @__PURE__ */ jsx22(Box11, { component: "span", sx: txtGradientSpanSx, children: txtGradient })
+    ] }),
+    description && /* @__PURE__ */ jsx22(
+      Box11,
+      {
+        sx: [
+          sectionTitleDescriptionSx,
+          ...Array.isArray(slotProps?.description?.sx) ? slotProps.description.sx : [slotProps?.description?.sx]
+        ],
+        children: description
+      }
+    )
+  ] });
 }
 
 // src/components/material/layout/section-container/section-container.tsx
 import Container from "@mui/material/Container";
+
+// src/components/material/layout/section-container/section-container.styles.ts
+var sectionContainerSx = (py) => ({
+  py
+});
+
+// src/components/material/layout/section-container/section-container.tsx
 import { jsx as jsx23 } from "react/jsx-runtime";
 function SectionContainer({
   children,
@@ -1486,11 +1558,19 @@ function SectionContainer({
   sx,
   ...other
 }) {
-  return /* @__PURE__ */ jsx23(Container, { maxWidth, sx: [{ py }, ...Array.isArray(sx) ? sx : [sx]], ...other, children });
+  return /* @__PURE__ */ jsx23(
+    Container,
+    {
+      maxWidth,
+      sx: [sectionContainerSx(py), ...Array.isArray(sx) ? sx : [sx]],
+      ...other,
+      children
+    }
+  );
 }
 
 // src/components/material/layout/basic-section/basic-section.tsx
-import React2 from "react";
+import React5 from "react";
 import Box12 from "@mui/material/Box";
 
 // src/components/material/layout/basic-section/basic-section.styles.ts
@@ -1623,7 +1703,7 @@ function resolveDecoration(decoration) {
   if (decoration === false) return [];
   return decoration;
 }
-var BasicSection = React2.forwardRef(function BasicSection2({
+var BasicSection = React5.forwardRef(function BasicSection2({
   children,
   decoration = true,
   containerMaxWidth,
@@ -1700,7 +1780,7 @@ function HeroSection({
 }
 
 // src/components/section/feature-flow/feature-flow-section.tsx
-import React7, { useCallback as useCallback8, useEffect as useEffect5, useMemo as useMemo4, useRef as useRef3, useState as useState6 } from "react";
+import React12, { useCallback as useCallback8, useEffect as useEffect5, useMemo as useMemo4, useRef as useRef3, useState as useState6 } from "react";
 import Grid4 from "@mui/material/Grid";
 import LinearProgress from "@mui/material/LinearProgress";
 
@@ -1709,35 +1789,7 @@ import { useCallback as useCallback7 } from "react";
 import { AnimatePresence } from "framer-motion";
 import Box15 from "@mui/material/Box";
 
-// src/components/material/navigation/floating-sub-nav/floating-sub-nav.const.ts
-var SUB_NAV_BUTTON_SIZE = {
-  xs: 36,
-  sm: 38,
-  md: 42,
-  lg: 44
-};
-var PILL_BUTTON_ROW_SPACING = 0.5;
-
 // src/components/material/navigation/floating-sub-nav/floating-sub-nav.styles.ts
-var grey500Ch = (theme) => theme.vars.palette.grey["500Channel"];
-var blackCh = (theme) => theme.vars.palette.common["blackChannel"];
-var pillSx = (theme) => ({
-  display: "flex",
-  flexDirection: "column",
-  alignItems: "center",
-  p: 0.5,
-  borderRadius: 2,
-  bgcolor: "background.paper",
-  border: `1px solid ${channelAlpha(grey500Ch(theme), 0.14)}`,
-  boxShadow: [
-    `0 2px 8px 0 ${channelAlpha(grey500Ch(theme), 0.1)}`,
-    `0 8px 32px -4px ${channelAlpha(grey500Ch(theme), 0.18)}`
-  ].join(", "),
-  ...theme.applyStyles("dark", {
-    border: `1px solid ${channelAlpha(grey500Ch(theme), 0.08)}`,
-    boxShadow: `0 1px 4px 0 ${channelAlpha(blackCh(theme), 0.12)}`
-  })
-});
 var stickyWrapperSx = (theme) => ({
   position: "sticky",
   bottom: { xs: 32, sm: 32, md: 40 },
@@ -1760,6 +1812,65 @@ var fixedWrapperSx = (theme) => ({
   transform: "translateX(-50%)",
   zIndex: theme.zIndex.speedDial
 });
+
+// src/components/material/navigation/floating-sub-nav/nav-pill/nav-pill.tsx
+import React7 from "react";
+import { m } from "framer-motion";
+import Box14 from "@mui/material/Box";
+import Stack3 from "@mui/material/Stack";
+
+// src/components/material/navigation/floating-sub-nav/nav-pill/nav-pill.animations.ts
+var PILL_EASING = [0.4, 0, 0.2, 1];
+var PILL_TRANSITION_DURATION = 0.28;
+var pillTransition = {
+  duration: PILL_TRANSITION_DURATION,
+  ease: PILL_EASING
+};
+var pillVariants = {
+  initial: { opacity: 0, y: 20 },
+  animate: { opacity: 1, y: 0 },
+  exit: { opacity: 0, y: 10 }
+};
+
+// src/components/material/navigation/floating-sub-nav/nav-pill/nav-pill.const.ts
+var PILL_BUTTON_ROW_SPACING = 0.5;
+
+// src/components/material/navigation/floating-sub-nav/nav-pill/nav-pill.styles.ts
+var grey500Ch = (theme) => theme.vars.palette.grey["500Channel"];
+var blackCh = (theme) => theme.vars.palette.common["blackChannel"];
+var pillSx = (theme) => ({
+  display: "flex",
+  flexDirection: "column",
+  alignItems: "center",
+  p: 0.5,
+  borderRadius: 2,
+  bgcolor: "background.paper",
+  border: `1px solid ${channelAlpha(grey500Ch(theme), 0.14)}`,
+  boxShadow: [
+    `0 2px 8px 0 ${channelAlpha(grey500Ch(theme), 0.1)}`,
+    `0 8px 32px -4px ${channelAlpha(grey500Ch(theme), 0.18)}`
+  ].join(", "),
+  ...theme.applyStyles("dark", {
+    border: `1px solid ${channelAlpha(grey500Ch(theme), 0.08)}`,
+    boxShadow: `0 1px 4px 0 ${channelAlpha(blackCh(theme), 0.12)}`
+  })
+});
+
+// src/components/material/navigation/floating-sub-nav/sub-nav-button/sub-nav-button.tsx
+import React6, { useCallback as useCallback6 } from "react";
+import Tooltip2 from "@mui/material/Tooltip";
+import ButtonBase2 from "@mui/material/ButtonBase";
+
+// src/components/material/navigation/floating-sub-nav/sub-nav-button/sub-nav-button.const.ts
+var SUB_NAV_BUTTON_SIZE = {
+  xs: 36,
+  sm: 38,
+  md: 42,
+  lg: 44
+};
+
+// src/components/material/navigation/floating-sub-nav/sub-nav-button/sub-nav-button.styles.ts
+var grey500Ch2 = (theme) => theme.vars.palette.grey["500Channel"];
 var subNavButtonSx = (isActive) => (theme) => ({
   display: "flex",
   alignItems: "center",
@@ -1783,11 +1894,11 @@ var subNavButtonSx = (isActive) => (theme) => ({
   "&:hover": {
     opacity: 0.72,
     color: "text.primary",
-    bgcolor: channelAlpha(grey500Ch(theme), 0.08)
+    bgcolor: channelAlpha(grey500Ch2(theme), 0.08)
   },
   "&:active": {
     opacity: 0.56,
-    bgcolor: channelAlpha(grey500Ch(theme), 0.12)
+    bgcolor: channelAlpha(grey500Ch2(theme), 0.12)
   },
   ...isActive && {
     color: "primary.main",
@@ -1804,52 +1915,36 @@ var subNavButtonSx = (isActive) => (theme) => ({
   }
 });
 
-// src/components/material/navigation/floating-sub-nav/nav-pill.tsx
-import { m } from "framer-motion";
-import Box14 from "@mui/material/Box";
-import Stack3 from "@mui/material/Stack";
-
-// src/components/material/navigation/floating-sub-nav/floating-sub-nav.animations.ts
-var PILL_EASING = [0.4, 0, 0.2, 1];
-var PILL_TRANSITION_DURATION = 0.28;
-var pillTransition = {
-  duration: PILL_TRANSITION_DURATION,
-  ease: PILL_EASING
-};
-var pillVariants = {
-  initial: { opacity: 0, y: 20 },
-  animate: { opacity: 1, y: 0 },
-  exit: { opacity: 0, y: 10 }
-};
-
-// src/components/material/navigation/floating-sub-nav/sub-nav-button.tsx
-import { useCallback as useCallback6 } from "react";
-import Tooltip2 from "@mui/material/Tooltip";
-import ButtonBase2 from "@mui/material/ButtonBase";
+// src/components/material/navigation/floating-sub-nav/sub-nav-button/sub-nav-button.tsx
 import { jsx as jsx26 } from "react/jsx-runtime";
-function SubNavButton({ item, isActive, onPress }) {
-  const handleClick = useCallback6(() => onPress(item.id), [onPress, item.id]);
-  return /* @__PURE__ */ jsx26(Tooltip2, { title: item.label, placement: "top", arrow: true, children: /* @__PURE__ */ jsx26(
-    ButtonBase2,
-    {
-      disableRipple: true,
-      component: "button",
-      type: "button",
-      "aria-label": item.label,
-      "aria-pressed": isActive,
-      onClick: handleClick,
-      sx: subNavButtonSx(isActive),
-      children: item.icon
-    }
-  ) });
-}
+var SubNavButton = React6.forwardRef(
+  function SubNavButton2({ item, isActive, onPress }, ref) {
+    const handleClick = useCallback6(() => onPress(item.id), [onPress, item.id]);
+    return /* @__PURE__ */ jsx26(Tooltip2, { title: item.label, placement: "top", arrow: true, children: /* @__PURE__ */ jsx26(
+      ButtonBase2,
+      {
+        ref,
+        disableRipple: true,
+        component: "button",
+        type: "button",
+        "aria-label": item.label,
+        "aria-pressed": isActive,
+        onClick: handleClick,
+        sx: subNavButtonSx(isActive),
+        children: item.icon
+      }
+    ) });
+  }
+);
+SubNavButton.displayName = "SubNavButton";
 
-// src/components/material/navigation/floating-sub-nav/nav-pill.tsx
+// src/components/material/navigation/floating-sub-nav/nav-pill/nav-pill.tsx
 import { jsx as jsx27 } from "react/jsx-runtime";
-function NavPill({ items, activeId, onPress }) {
+var NavPill = React7.forwardRef(function NavPill2({ items, activeId, onPress }, ref) {
   return /* @__PURE__ */ jsx27(
     m.div,
     {
+      ref,
       variants: pillVariants,
       initial: "initial",
       animate: "animate",
@@ -1866,7 +1961,8 @@ function NavPill({ items, activeId, onPress }) {
       )) }) })
     }
   );
-}
+});
+NavPill.displayName = "NavPill";
 
 // src/components/material/navigation/floating-sub-nav/floating-sub-nav.tsx
 import { jsx as jsx28 } from "react/jsx-runtime";
@@ -1949,28 +2045,25 @@ var DETAIL_PANEL_LAYOUT_TRANSITION = {
 // src/components/section/feature-flow/feature-flow-section.styles.ts
 var GREY_500_CHANNEL2 = "var(--mui-palette-grey-500Channel)";
 var COMMON_BLACK_CHANNEL = "var(--mui-palette-common-blackChannel)";
-var COMMON_WHITE_CHANNEL = "var(--mui-palette-common-whiteChannel)";
-var HIGHLIGHT_CAROUSEL_HEIGHT = 570;
 var selectedHoverShadow = (channel, innerAlpha, outerAlpha) => `0 0 2px 0 ${channelAlpha(channel, innerAlpha)}, -8px 20px 40px -4px ${channelAlpha(channel, outerAlpha)}`;
 var selectedActiveShadow = (channel, innerAlpha, outerAlpha) => `0 0 1px 0 ${channelAlpha(channel, innerAlpha)}, -1px 2px 4px -1px ${channelAlpha(channel, outerAlpha)}`;
 var featureFlowRootSx = (isExpanded) => ({
   pt: { xs: 10, md: 20 },
   pb: isExpanded ? 10 : { xs: 10, md: 20 }
 });
-var imageColumnCardSx = (theme) => ({
-  top: 0,
-  left: "50%",
-  width: 720,
-  maxWidth: "100%",
-  borderRadius: 2,
-  overflow: "hidden",
-  position: "absolute",
-  transform: "translateX(-50%)",
-  bgcolor: "background.default",
-  boxShadow: `-40px 40px 80px 0px ${channelAlpha(GREY_500_CHANNEL2, 0.16)}`,
-  ...theme.applyStyles("dark", {
-    boxShadow: `-40px 40px 80px 0px ${channelAlpha(COMMON_BLACK_CHANNEL, 0.16)}`
+var featureFlowGridContainerSx = (isExpanded) => (theme) => ({
+  position: "relative",
+  pb: isExpanded ? { xs: 5, md: 8 } : 0,
+  transition: theme.transitions.create("padding-bottom", {
+    duration: theme.transitions.duration.short
   })
+});
+var featureFlowDescriptionGridSx = (isLeft) => ({
+  order: { xs: 1, md: isLeft ? 1 : 2 },
+  pl: { md: isLeft ? 0 : 4 }
+});
+var featureFlowImageGridSx = (isLeft) => ({
+  order: { xs: 2, md: isLeft ? 2 : 1 }
 });
 var detailPanelChannel = (color) => color === "grey" ? GREY_500_CHANNEL2 : `var(--mui-palette-${color}-mainChannel)`;
 var detailPanelSx = (color = "primary") => {
@@ -2005,18 +2098,17 @@ var featureFlowItemSx = ({ isSelected, isActive, isExpanded, expandable }) => (t
     outlineOffset: 2
   },
   ...expandable && !isSelected && {
-    // `!important` is required here: this row renders as `component={m.button}`
-    // with `variants={fade('inUp', …)}` for its entrance animation, and once
-    // that animation settles framer-motion leaves a permanent inline
-    // `style="opacity: 1"` on the element. Inline styles beat any class-based
-    // rule regardless of specificity — without `!important`, `:hover`/`:active`
-    // can change the background but can never actually dim the row (see #185).
+    // No `!important` needed (see #192): the entrance fade now lives on
+    // an outer `m.div` wrapping this row (`FeatureFlowItemRow`), not on
+    // this element itself, so framer-motion's persistent inline
+    // `style="opacity: 1"` never lands here to out-specificity these
+    // rules (previously required as a truce — see #185).
     "&:hover": {
-      opacity: "0.72 !important",
+      opacity: 0.72,
       bgcolor: channelAlpha(GREY_500_CHANNEL2, 0.08)
     },
     "&:active": {
-      opacity: "0.56 !important",
+      opacity: 0.56,
       bgcolor: channelAlpha(GREY_500_CHANNEL2, 0.12)
     }
   },
@@ -2050,95 +2142,10 @@ var featureFlowItemSx = ({ isSelected, isActive, isExpanded, expandable }) => (t
     boxShadow: isSelected ? `inset 3px 0 0 ${theme.vars.palette.primary.main}, -8px 8px 20px -4px ${channelAlpha(GREY_500_CHANNEL2, 0.12)}` : `inset 3px 0 0 ${theme.vars.palette.primary.main}`
   }
 });
-var imageColumnStickyStackSx = {
-  position: { xs: "relative", md: "sticky" },
-  top: { md: 80 },
-  width: 1,
-  alignItems: "center",
-  justifyContent: "center",
-  zIndex: 1
-};
-var imageColumnOuterGhostSx = {
-  width: 720,
-  maxWidth: "100%",
-  display: "block",
-  visibility: "hidden",
-  pointerEvents: "none",
-  userSelect: "none"
-};
-var imageColumnInnerGhostSx = {
-  width: "100%",
-  display: "block",
-  visibility: "hidden",
-  pointerEvents: "none",
-  userSelect: "none"
-};
 var crossfadeOpacitySx = (isActive, durationSeconds) => ({
   opacity: isActive ? 1 : 0,
   transition: `opacity ${durationSeconds}s ease`
 });
-var imageColumnFrameSx = (isActive) => ({
-  width: "100%",
-  display: "block",
-  pointerEvents: "none",
-  userSelect: "none",
-  position: "absolute",
-  top: 0,
-  left: 0,
-  ...crossfadeOpacitySx(isActive, 0.4)
-});
-var highlightCarouselRootSx = {
-  position: "relative",
-  height: HIGHLIGHT_CAROUSEL_HEIGHT,
-  borderRadius: 2,
-  overflow: "hidden"
-};
-var highlightSlideImageSx = (isActive) => ({
-  position: "absolute",
-  inset: 0,
-  width: 1,
-  height: 1,
-  objectFit: "cover",
-  objectPosition: "center top",
-  ...crossfadeOpacitySx(isActive, 0.5)
-});
-var highlightScrimSx = {
-  position: "absolute",
-  inset: 0,
-  pointerEvents: "none",
-  background: `linear-gradient(to top, ${channelAlpha(COMMON_BLACK_CHANNEL, 1)} 0%, ${channelAlpha(COMMON_BLACK_CHANNEL, 0.5)} 40%, transparent 69%)`
-};
-var highlightTextSlotSx = {
-  position: "relative",
-  height: 1,
-  display: "flex",
-  flexDirection: "column",
-  justifyContent: "flex-end",
-  px: { xs: 3, md: 4 },
-  pb: { xs: 3, md: 4 },
-  color: "common.white"
-};
-var highlightControlsRowSx = {
-  position: "absolute",
-  top: 16,
-  right: 16,
-  display: "flex",
-  alignItems: "center",
-  gap: 1
-};
-var highlightDetailTextSx = {
-  color: channelAlpha(COMMON_WHITE_CHANNEL, 0.9),
-  lineHeight: 1.7
-};
-var highlightIndexLabelSx = {
-  color: "common.white",
-  minWidth: 32,
-  textAlign: "center"
-};
-var highlightArrowButtonSx = {
-  color: "common.white",
-  bgcolor: channelAlpha(COMMON_WHITE_CHANNEL, 0.12)
-};
 
 // src/components/section/feature-flow/feature-flow-section.utils.ts
 import { useEffect as useEffect4, useRef as useRef2, useState as useState4 } from "react";
@@ -2243,7 +2250,7 @@ function useImageRevealTransform() {
 import Stack5 from "@mui/material/Stack";
 
 // src/components/section/feature-flow/item-row/feature-flow-item-row.tsx
-import React3 from "react";
+import React8 from "react";
 import { m as m3, useReducedMotion as useReducedMotion2 } from "framer-motion";
 import Stack4 from "@mui/material/Stack";
 import Typography8 from "@mui/material/Typography";
@@ -2337,7 +2344,7 @@ var itemRowTextSlotSx = {
 
 // src/components/section/feature-flow/item-row/feature-flow-item-row.tsx
 import { jsx as jsx30, jsxs as jsxs13 } from "react/jsx-runtime";
-var FeatureFlowItemRow = React3.forwardRef(
+var FeatureFlowItemRow = React8.forwardRef(
   function FeatureFlowItemRow2({
     icon,
     title,
@@ -2353,7 +2360,7 @@ var FeatureFlowItemRow = React3.forwardRef(
     ...other
   }, ref) {
     const reducedMotion = useReducedMotion2();
-    return /* @__PURE__ */ jsxs13(
+    return /* @__PURE__ */ jsx30(m3.div, { variants: fade("inUp", { distance: reducedMotion ? 0 : 24 }), children: /* @__PURE__ */ jsxs13(
       ButtonBase3,
       {
         ...other,
@@ -2361,8 +2368,6 @@ var FeatureFlowItemRow = React3.forwardRef(
         disableRipple: true,
         type: "button",
         "aria-pressed": expandable ? isSelected : void 0,
-        component: m3.button,
-        variants: fade("inUp", { distance: reducedMotion ? 0 : 24 }),
         onMouseEnter: onHover,
         onFocus,
         onClick: expandable ? onSelect : void 0,
@@ -2378,10 +2383,20 @@ var FeatureFlowItemRow = React3.forwardRef(
           ] })
         ]
       }
-    );
+    ) });
   }
 );
 FeatureFlowItemRow.displayName = "FeatureFlowItemRow";
+
+// src/components/section/feature-flow/description-column/feature-flow-description-column.styles.ts
+var descriptionColumnTitleSx = {
+  mb: { xs: 5, md: 8 },
+  textAlign: { xs: "center", md: "left" }
+};
+var descriptionColumnRowListSx = {
+  maxWidth: { sm: 560, md: 400 },
+  mx: { xs: "auto", md: "unset" }
+};
 
 // src/components/section/feature-flow/description-column/feature-flow-description-column.tsx
 import { Fragment as Fragment2, jsx as jsx31, jsxs as jsxs14 } from "react/jsx-runtime";
@@ -2406,14 +2421,14 @@ function FeatureFlowDescriptionColumn({
         title,
         txtGradient,
         description,
-        sx: { mb: { xs: 5, md: 8 }, textAlign: { xs: "center", md: "left" } }
+        sx: descriptionColumnTitleSx
       }
     ),
     /* @__PURE__ */ jsx31(
       Stack5,
       {
         spacing: 1.5,
-        sx: { maxWidth: { sm: 560, md: 400 }, mx: { xs: "auto", md: "unset" } },
+        sx: descriptionColumnRowListSx,
         onMouseLeave: onLeave,
         onBlur: (event) => {
           if (event.relatedTarget instanceof Node && event.currentTarget.contains(event.relatedTarget)) {
@@ -2449,10 +2464,68 @@ function FeatureFlowDescriptionColumn({
 }
 
 // src/components/section/feature-flow/image-column/feature-flow-image-column.tsx
-import React4 from "react";
+import React9 from "react";
 import { m as m4 } from "framer-motion";
 import Box17 from "@mui/material/Box";
 import Stack6 from "@mui/material/Stack";
+
+// src/components/section/feature-flow/image-column/feature-flow-image-column.styles.ts
+var GREY_500_CHANNEL3 = "var(--mui-palette-grey-500Channel)";
+var COMMON_BLACK_CHANNEL2 = "var(--mui-palette-common-blackChannel)";
+var imageColumnCardSx = (theme) => ({
+  top: 0,
+  left: "50%",
+  width: 720,
+  maxWidth: "100%",
+  borderRadius: 2,
+  overflow: "hidden",
+  position: "absolute",
+  transform: "translateX(-50%)",
+  bgcolor: "background.default",
+  boxShadow: `-40px 40px 80px 0px ${channelAlpha(GREY_500_CHANNEL3, 0.16)}`,
+  ...theme.applyStyles("dark", {
+    boxShadow: `-40px 40px 80px 0px ${channelAlpha(COMMON_BLACK_CHANNEL2, 0.16)}`
+  })
+});
+var imageColumnStickyStackSx = {
+  position: { xs: "relative", md: "sticky" },
+  top: { md: 80 },
+  width: 1,
+  alignItems: "center",
+  justifyContent: "center",
+  zIndex: 1
+};
+var imageColumnOuterGhostSx = {
+  width: 720,
+  maxWidth: "100%",
+  display: "block",
+  visibility: "hidden",
+  pointerEvents: "none",
+  userSelect: "none"
+};
+var imageColumnInnerGhostSx = {
+  width: "100%",
+  display: "block",
+  visibility: "hidden",
+  pointerEvents: "none",
+  userSelect: "none"
+};
+var imageColumnFrameSx = (isActive) => ({
+  width: "100%",
+  display: "block",
+  pointerEvents: "none",
+  userSelect: "none",
+  position: "absolute",
+  top: 0,
+  left: 0,
+  ...crossfadeOpacitySx(isActive, 0.4)
+});
+var imageColumnRevealWrapperSx = {
+  width: 1,
+  position: "relative"
+};
+
+// src/components/section/feature-flow/image-column/feature-flow-image-column.tsx
 import { jsx as jsx32, jsxs as jsxs15 } from "react/jsx-runtime";
 var RESTING_REVEAL_STYLE = {
   opacity: 1,
@@ -2460,11 +2533,11 @@ var RESTING_REVEAL_STYLE = {
   scale: 1,
   filter: "none"
 };
-var FeatureFlowImageColumn = React4.forwardRef(
+var FeatureFlowImageColumn = React9.forwardRef(
   function FeatureFlowImageColumn2({ activeSrc, ghostSrc, allSrcs, alt, revealStyle = RESTING_REVEAL_STYLE, sx, ...other }, ref) {
     return /* @__PURE__ */ jsxs15(Stack6, { ref, sx: imageColumnStickyStackSx, ...other, children: [
       /* @__PURE__ */ jsx32(Box17, { component: "img", alt: "", "aria-hidden": true, src: ghostSrc, sx: imageColumnOuterGhostSx }),
-      /* @__PURE__ */ jsx32(Box17, { sx: [imageColumnCardSx, ...Array.isArray(sx) ? sx : [sx]], children: /* @__PURE__ */ jsxs15(Box17, { component: m4.div, style: revealStyle, sx: { width: 1, position: "relative" }, children: [
+      /* @__PURE__ */ jsx32(Box17, { sx: [imageColumnCardSx, ...Array.isArray(sx) ? sx : [sx]], children: /* @__PURE__ */ jsxs15(Box17, { component: m4.div, style: revealStyle, sx: imageColumnRevealWrapperSx, children: [
         /* @__PURE__ */ jsx32(Box17, { component: "img", alt: "", "aria-hidden": true, src: ghostSrc, sx: imageColumnInnerGhostSx }),
         allSrcs.map((src) => /* @__PURE__ */ jsx32(
           Box17,
@@ -2485,7 +2558,7 @@ var FeatureFlowImageColumn = React4.forwardRef(
 FeatureFlowImageColumn.displayName = "FeatureFlowImageColumn";
 
 // src/components/section/feature-flow/item-detail/feature-flow-item-detail.tsx
-import React6 from "react";
+import React11 from "react";
 import { m as m6, AnimatePresence as AnimatePresence3, useReducedMotion as useReducedMotion4 } from "framer-motion";
 import Box20 from "@mui/material/Box";
 import Grid3 from "@mui/material/Grid";
@@ -2536,6 +2609,9 @@ var iconSlotSx = {
     height: TECH_ICON_STRIP_ICON_SIZE
   }
 };
+var itemLabelSx = {
+  fontSize: TECH_ICON_STRIP_LABEL_FONT_SIZE
+};
 
 // src/components/material/data-display/icon/tech-strip/tech-icon-strip.tsx
 import { jsx as jsx33, jsxs as jsxs16 } from "react/jsx-runtime";
@@ -2550,18 +2626,83 @@ function TechIconStrip({
     heading && /* @__PURE__ */ jsx33(Typography9, { component: "span", sx: titleSx, variant: "overline", children: heading }),
     /* @__PURE__ */ jsx33(Box18, { sx: stripWrapperSx(centeredWrap), children: items.map((item) => /* @__PURE__ */ jsxs16(Box18, { sx: itemSx, children: [
       /* @__PURE__ */ jsx33(Box18, { "aria-hidden": true, sx: iconSlotSx, children: item.icon }),
-      /* @__PURE__ */ jsx33(Typography9, { sx: { fontSize: TECH_ICON_STRIP_LABEL_FONT_SIZE }, variant: "caption", children: item.label })
+      /* @__PURE__ */ jsx33(Typography9, { sx: itemLabelSx, variant: "caption", children: item.label })
     ] }, item.label)) })
   ] });
 }
 
 // src/components/section/feature-flow/highlight-carousel/feature-flow-highlight-carousel.tsx
-import React5, { useState as useState5 } from "react";
+import React10, { useState as useState5 } from "react";
 import { m as m5, AnimatePresence as AnimatePresence2, useReducedMotion as useReducedMotion3 } from "framer-motion";
 import Box19 from "@mui/material/Box";
 import Link from "@mui/material/Link";
 import IconButton3 from "@mui/material/IconButton";
 import Typography10 from "@mui/material/Typography";
+
+// src/components/section/feature-flow/highlight-carousel/feature-flow-highlight-carousel.styles.ts
+var COMMON_BLACK_CHANNEL3 = "var(--mui-palette-common-blackChannel)";
+var COMMON_WHITE_CHANNEL = "var(--mui-palette-common-whiteChannel)";
+var HIGHLIGHT_CAROUSEL_HEIGHT = 570;
+var highlightCarouselRootSx = {
+  position: "relative",
+  height: HIGHLIGHT_CAROUSEL_HEIGHT,
+  borderRadius: 2,
+  overflow: "hidden"
+};
+var highlightSlideImageSx = (isActive) => ({
+  position: "absolute",
+  inset: 0,
+  width: 1,
+  height: 1,
+  objectFit: "cover",
+  objectPosition: "center top",
+  ...crossfadeOpacitySx(isActive, 0.5)
+});
+var highlightScrimSx = {
+  position: "absolute",
+  inset: 0,
+  pointerEvents: "none",
+  background: `linear-gradient(to top, ${channelAlpha(COMMON_BLACK_CHANNEL3, 1)} 0%, ${channelAlpha(COMMON_BLACK_CHANNEL3, 0.5)} 40%, transparent 69%)`
+};
+var highlightTextSlotSx = {
+  position: "relative",
+  height: 1,
+  display: "flex",
+  flexDirection: "column",
+  justifyContent: "flex-end",
+  px: { xs: 3, md: 4 },
+  pb: { xs: 3, md: 4 },
+  color: "common.white"
+};
+var highlightTitleSx = {
+  mb: 1
+};
+var highlightLearnMoreLinkSx = {
+  mt: 1,
+  display: "inline-block",
+  color: "inherit"
+};
+var highlightControlsRowSx = {
+  position: "absolute",
+  top: 16,
+  right: 16,
+  display: "flex",
+  alignItems: "center",
+  gap: 1
+};
+var highlightDetailTextSx = {
+  color: channelAlpha(COMMON_WHITE_CHANNEL, 0.9),
+  lineHeight: 1.7
+};
+var highlightIndexLabelSx = {
+  color: "common.white",
+  minWidth: 32,
+  textAlign: "center"
+};
+var highlightArrowButtonSx = {
+  color: "common.white",
+  bgcolor: channelAlpha(COMMON_WHITE_CHANNEL, 0.12)
+};
 
 // src/components/section/feature-flow/highlight-carousel/feature-flow-highlight-carousel.animations.ts
 var HIGHLIGHT_TEXT_SLIDE_DISTANCE = 24;
@@ -2579,7 +2720,7 @@ var highlightTextVariants = (distance) => ({
 
 // src/components/section/feature-flow/highlight-carousel/feature-flow-highlight-carousel.tsx
 import { jsx as jsx34, jsxs as jsxs17 } from "react/jsx-runtime";
-var FeatureFlowHighlightCarousel = React5.forwardRef(function FeatureFlowHighlightCarousel2({ cards, sx, ...other }, ref) {
+var FeatureFlowHighlightCarousel = React10.forwardRef(function FeatureFlowHighlightCarousel2({ cards, sx, ...other }, ref) {
   const [selectedIndex, setSelectedIndex] = useState5(0);
   const [step, setStep] = useState5(1);
   const reducedMotion = useReducedMotion3();
@@ -2614,17 +2755,9 @@ var FeatureFlowHighlightCarousel = React5.forwardRef(function FeatureFlowHighlig
         exit: "exit",
         transition: { duration: 0.28, ease: "easeOut" },
         children: [
-          /* @__PURE__ */ jsx34(Typography10, { variant: "h4", sx: { mb: 1 }, children: selectedCard?.title }),
+          /* @__PURE__ */ jsx34(Typography10, { variant: "h4", sx: highlightTitleSx, children: selectedCard?.title }),
           /* @__PURE__ */ jsx34(Typography10, { variant: "body1", sx: highlightDetailTextSx, children: selectedCard?.description }),
-          selectedCard?.href && /* @__PURE__ */ jsx34(
-            Link,
-            {
-              href: selectedCard.href,
-              variant: "body2",
-              sx: { mt: 1, display: "inline-block", color: "inherit" },
-              children: "Learn more"
-            }
-          )
+          selectedCard?.href && /* @__PURE__ */ jsx34(Link, { href: selectedCard.href, variant: "body2", sx: highlightLearnMoreLinkSx, children: "Learn more" })
         ]
       },
       selectedIndex
@@ -2682,7 +2815,7 @@ var itemDetailLongDescriptionSx = {
 
 // src/components/section/feature-flow/item-detail/feature-flow-item-detail.tsx
 import { jsx as jsx35, jsxs as jsxs18 } from "react/jsx-runtime";
-var FeatureFlowItemDetail = React6.forwardRef(
+var FeatureFlowItemDetail = React11.forwardRef(
   function FeatureFlowItemDetail2({ item, onNodeRef, renderHighlightPanel, detailPanelColor = "primary", sx, ...other }, ref) {
     const reducedMotion = useReducedMotion4();
     const slideDistance = reducedMotion ? 0 : 8;
@@ -2751,7 +2884,7 @@ FeatureFlowItemDetail.displayName = "FeatureFlowItemDetail";
 
 // src/components/section/feature-flow/feature-flow-section.tsx
 import { Fragment as Fragment3, jsx as jsx36, jsxs as jsxs19 } from "react/jsx-runtime";
-var FeatureFlowSection = React7.forwardRef(
+var FeatureFlowSection = React12.forwardRef(
   function FeatureFlowSection2({
     caption,
     title,
@@ -2978,42 +3111,25 @@ var FeatureFlowSection = React7.forwardRef(
             container: true,
             columnSpacing,
             rowSpacing: { xs: 5, md: 0 },
-            sx: (theme) => ({
-              position: "relative",
-              // Only when a detail panel is showing: without this, the last
-              // row's card sits flush against the detail panel's border —
-              // detailPanelSx's own py pushes its *content* down from that
-              // border, not the border away from what's above it.
-              pb: expandedItemId ? { xs: 5, md: 8 } : 0,
-              transition: theme.transitions.create("padding-bottom", {
-                duration: theme.transitions.duration.short
-              })
-            }),
+            sx: featureFlowGridContainerSx(Boolean(expandedItemId)),
             children: [
-              /* @__PURE__ */ jsx36(
-                Grid4,
+              /* @__PURE__ */ jsx36(Grid4, { size: resolvedDescriptionGridSize, sx: featureFlowDescriptionGridSx(isLeft), children: /* @__PURE__ */ jsx36(
+                FeatureFlowDescriptionColumn,
                 {
-                  size: resolvedDescriptionGridSize,
-                  sx: { order: { xs: 1, md: isLeft ? 1 : 2 }, pl: { md: isLeft ? 0 : 4 } },
-                  children: /* @__PURE__ */ jsx36(
-                    FeatureFlowDescriptionColumn,
-                    {
-                      caption,
-                      title,
-                      txtGradient,
-                      description,
-                      items,
-                      selectedItemIndex,
-                      activeItemIndex,
-                      expandedItemId,
-                      onItemHover: handleItemHover,
-                      onItemSelect: handleItemClick,
-                      onLeave: handleLeave
-                    }
-                  )
+                  caption,
+                  title,
+                  txtGradient,
+                  description,
+                  items,
+                  selectedItemIndex,
+                  activeItemIndex,
+                  expandedItemId,
+                  onItemHover: handleItemHover,
+                  onItemSelect: handleItemClick,
+                  onLeave: handleLeave
                 }
-              ),
-              /* @__PURE__ */ jsx36(Grid4, { size: resolvedImageGridSize, sx: { order: { xs: 2, md: isLeft ? 2 : 1 } }, children: rightPanel })
+              ) }),
+              /* @__PURE__ */ jsx36(Grid4, { size: resolvedImageGridSize, sx: featureFlowImageGridSx(isLeft), children: rightPanel })
             ]
           }
         ) })

@@ -553,28 +553,12 @@ function preloadImages(srcs) {
   });
 }
 
-// src/components/section/hero/interactive-logo/portrait-layer.tsx
+// src/components/section/hero/interactive-logo/portrait-layer/portrait-layer.tsx
+import React from "react";
 import { motion as motion2 } from "framer-motion";
 import Box3 from "@mui/material/Box";
 
-// src/components/section/hero/interactive-logo/interactive-logo.styles.ts
-var originalLayerSx = {
-  position: "relative",
-  zIndex: 1,
-  width: 1,
-  height: 1,
-  willChange: "transform"
-};
-var artisticLogoSx = {
-  inset: 0,
-  zIndex: 2,
-  width: 1,
-  height: 1,
-  objectFit: "contain",
-  objectPosition: "center center",
-  position: "absolute",
-  pointerEvents: "none"
-};
+// src/components/section/hero/interactive-logo/portrait-layer/portrait-layer.styles.ts
 var portraitWrapperSx = {
   top: "50%",
   left: "50%",
@@ -595,139 +579,136 @@ var portraitImageSx = {
   objectPosition: "center center",
   display: "block"
 };
-var innerContainerSx = {
+
+// src/components/section/hero/interactive-logo/portrait-layer/portrait-layer.tsx
+import { jsx as jsx3 } from "react/jsx-runtime";
+var PortraitLayer = React.forwardRef(
+  function PortraitLayer2({ portraitSrc, portraitAlt, showPortrait, portraitFadeTransition }, ref) {
+    if (!portraitSrc) {
+      return null;
+    }
+    return /* @__PURE__ */ jsx3(Box3, { ref, sx: portraitWrapperSx, children: /* @__PURE__ */ jsx3(
+      Box3,
+      {
+        component: motion2.img,
+        alt: portraitAlt,
+        src: portraitSrc,
+        initial: {
+          opacity: 0,
+          scale: 1.035,
+          filter: "blur(10px)"
+        },
+        animate: {
+          opacity: showPortrait ? 1 : 0,
+          scale: showPortrait ? 1 : 1.035,
+          filter: showPortrait ? "blur(0px)" : "blur(10px)"
+        },
+        transition: portraitFadeTransition,
+        sx: portraitImageSx
+      }
+    ) });
+  }
+);
+PortraitLayer.displayName = "PortraitLayer";
+
+// src/components/section/hero/interactive-logo/original-logo-layer/original-logo-layer.tsx
+import React2 from "react";
+import { motion as motion3 } from "framer-motion";
+import Box4 from "@mui/material/Box";
+
+// src/components/section/hero/interactive-logo/original-logo-layer/original-logo-layer.styles.ts
+var originalLayerSx = {
   position: "relative",
-  display: "inline-flex",
+  zIndex: 1,
   width: 1,
   height: 1,
-  overflow: "visible",
-  transformStyle: "preserve-3d",
-  transition: "filter 240ms ease",
-  mb: { xs: 0 }
+  willChange: "transform"
 };
-var rootBoxSx = (cursor) => () => ({
-  perspective: 1200,
-  cursor,
-  overflow: "visible"
-});
-var logoStack3dWrapperSx = {
-  position: "relative",
+var activeFrameImageSx = {
   width: 1,
   height: 1
 };
 
-// src/components/section/hero/interactive-logo/portrait-layer.tsx
-import { jsx as jsx3 } from "react/jsx-runtime";
-function PortraitLayer({
-  portraitSrc,
-  portraitAlt,
-  showPortrait,
-  portraitFadeTransition
-}) {
-  if (!portraitSrc) {
-    return null;
-  }
-  return /* @__PURE__ */ jsx3(Box3, { sx: portraitWrapperSx, children: /* @__PURE__ */ jsx3(
-    Box3,
-    {
-      component: motion2.img,
-      alt: portraitAlt,
-      src: portraitSrc,
-      initial: {
-        opacity: 0,
-        scale: 1.035,
-        filter: "blur(10px)"
-      },
-      animate: {
-        opacity: showPortrait ? 1 : 0,
-        scale: showPortrait ? 1 : 1.035,
-        filter: showPortrait ? "blur(0px)" : "blur(10px)"
-      },
-      transition: portraitFadeTransition,
-      sx: portraitImageSx
-    }
-  ) });
-}
-
-// src/components/section/hero/interactive-logo/original-logo-layer.tsx
-import { motion as motion3 } from "framer-motion";
-import Box4 from "@mui/material/Box";
+// src/components/section/hero/interactive-logo/original-logo-layer/original-logo-layer.tsx
 import { jsx as jsx4 } from "react/jsx-runtime";
-function OriginalLogoLayer({
-  hoverPhase,
-  logoFadeTransition,
-  activeFrame,
-  logoAlt,
-  hasArtisticContent = false,
-  children
-}) {
-  const isArtistic = hoverPhase === "artistic";
-  const animateOpacity = isArtistic || !hasArtisticContent ? 1 : 0;
-  const animateScale = isArtistic || !hasArtisticContent ? 1 : 0.985;
-  const animateFilter = isArtistic || !hasArtisticContent ? "blur(0px)" : "blur(4px)";
-  return /* @__PURE__ */ jsx4(
-    Box4,
-    {
-      component: motion3.div,
-      initial: {
-        opacity: 0,
-        scale: 1,
-        filter: "blur(0px)"
-      },
-      animate: {
-        opacity: animateOpacity,
-        scale: animateScale,
-        filter: animateFilter
-      },
-      transition: logoFadeTransition,
-      sx: originalLayerSx,
-      children: activeFrame ? /* @__PURE__ */ jsx4(
-        Box4,
-        {
-          component: "img",
-          alt: logoAlt ?? "Logo",
-          src: activeFrame,
-          sx: { width: 1, height: 1 }
-        }
-      ) : children
-    }
-  );
-}
+var OriginalLogoLayer = React2.forwardRef(
+  function OriginalLogoLayer2({ hoverPhase, logoFadeTransition, activeFrame, logoAlt, hasArtisticContent = false, children }, ref) {
+    const isArtistic = hoverPhase === "artistic";
+    const animateOpacity = isArtistic || !hasArtisticContent ? 1 : 0;
+    const animateScale = isArtistic || !hasArtisticContent ? 1 : 0.985;
+    const animateFilter = isArtistic || !hasArtisticContent ? "blur(0px)" : "blur(4px)";
+    return /* @__PURE__ */ jsx4(
+      Box4,
+      {
+        ref,
+        component: motion3.div,
+        initial: {
+          opacity: 0,
+          scale: 1,
+          filter: "blur(0px)"
+        },
+        animate: {
+          opacity: animateOpacity,
+          scale: animateScale,
+          filter: animateFilter
+        },
+        transition: logoFadeTransition,
+        sx: originalLayerSx,
+        children: activeFrame ? /* @__PURE__ */ jsx4(Box4, { component: "img", alt: logoAlt ?? "Logo", src: activeFrame, sx: activeFrameImageSx }) : children
+      }
+    );
+  }
+);
+OriginalLogoLayer.displayName = "OriginalLogoLayer";
 
-// src/components/section/hero/interactive-logo/artistic-logo-layer.tsx
+// src/components/section/hero/interactive-logo/artistic-logo-layer/artistic-logo-layer.tsx
+import React3 from "react";
 import { motion as motion4 } from "framer-motion";
 import Box5 from "@mui/material/Box";
+
+// src/components/section/hero/interactive-logo/artistic-logo-layer/artistic-logo-layer.styles.ts
+var artisticLogoSx = {
+  inset: 0,
+  zIndex: 2,
+  width: 1,
+  height: 1,
+  objectFit: "contain",
+  objectPosition: "center center",
+  position: "absolute",
+  pointerEvents: "none"
+};
+
+// src/components/section/hero/interactive-logo/artistic-logo-layer/artistic-logo-layer.tsx
 import { jsx as jsx5 } from "react/jsx-runtime";
-function ArtisticLogoLayer({
-  artisticLogoSrc,
-  showArtisticLogo,
-  logoFadeTransition,
-  logoAlt
-}) {
-  if (!artisticLogoSrc) {
-    return null;
-  }
-  return /* @__PURE__ */ jsx5(
-    Box5,
-    {
-      component: motion4.img,
-      alt: logoAlt ?? "Logo",
-      src: artisticLogoSrc,
-      initial: {
-        opacity: 1,
-        scale: 1.03,
-        filter: "blur(8px)"
-      },
-      animate: {
-        opacity: showArtisticLogo ? 1 : 0,
-        scale: showArtisticLogo ? 1 : 1.03,
-        filter: showArtisticLogo ? "blur(0px)" : "blur(8px)"
-      },
-      transition: logoFadeTransition,
-      sx: artisticLogoSx
+var ArtisticLogoLayer = React3.forwardRef(
+  function ArtisticLogoLayer2({ artisticLogoSrc, showArtisticLogo, logoFadeTransition, logoAlt }, ref) {
+    if (!artisticLogoSrc) {
+      return null;
     }
-  );
-}
+    return /* @__PURE__ */ jsx5(
+      Box5,
+      {
+        ref,
+        component: motion4.img,
+        alt: logoAlt ?? "Logo",
+        src: artisticLogoSrc,
+        initial: {
+          opacity: 1,
+          scale: 1.03,
+          filter: "blur(8px)"
+        },
+        animate: {
+          opacity: showArtisticLogo ? 1 : 0,
+          scale: showArtisticLogo ? 1 : 1.03,
+          filter: showArtisticLogo ? "blur(0px)" : "blur(8px)"
+        },
+        transition: logoFadeTransition,
+        sx: artisticLogoSx
+      }
+    );
+  }
+);
+ArtisticLogoLayer.displayName = "ArtisticLogoLayer";
 
 // src/components/section/hero/interactive-logo/use-hover-phase-transition.ts
 import { useRef as useRef2, useState, useEffect } from "react";
@@ -781,6 +762,28 @@ function useHoverPhaseTransition({
   }, [hasActivatedPortrait, hasPortrait, isHovered, reducedMotion]);
   return { hoverPhase, hasActivatedPortrait, activePortraitDirection, setActivePortraitDirection };
 }
+
+// src/components/section/hero/interactive-logo/interactive-logo.styles.ts
+var innerContainerSx = {
+  position: "relative",
+  display: "inline-flex",
+  width: 1,
+  height: 1,
+  overflow: "visible",
+  transformStyle: "preserve-3d",
+  transition: "filter 240ms ease",
+  mb: { xs: 0 }
+};
+var rootBoxSx = (cursor) => () => ({
+  perspective: 1200,
+  cursor,
+  overflow: "visible"
+});
+var logoStack3dWrapperSx = {
+  position: "relative",
+  width: 1,
+  height: 1
+};
 
 // src/components/section/hero/interactive-logo/interactive-logo.utils.ts
 function getRandomPortraitSrc(src) {
@@ -1068,40 +1071,7 @@ import { useCallback as useCallback3 } from "react";
 import { AnimatePresence } from "framer-motion";
 import Box9 from "@mui/material/Box";
 
-// src/utils/theme/theme-utils/theme-utils.ts
-function channelAlpha(channel, alpha) {
-  return `rgba(${channel} / ${alpha})`;
-}
-
-// src/components/material/navigation/floating-sub-nav/floating-sub-nav.const.ts
-var SUB_NAV_BUTTON_SIZE = {
-  xs: 36,
-  sm: 38,
-  md: 42,
-  lg: 44
-};
-var PILL_BUTTON_ROW_SPACING = 0.5;
-
 // src/components/material/navigation/floating-sub-nav/floating-sub-nav.styles.ts
-var grey500Ch = (theme) => theme.vars.palette.grey["500Channel"];
-var blackCh = (theme) => theme.vars.palette.common["blackChannel"];
-var pillSx = (theme) => ({
-  display: "flex",
-  flexDirection: "column",
-  alignItems: "center",
-  p: 0.5,
-  borderRadius: 2,
-  bgcolor: "background.paper",
-  border: `1px solid ${channelAlpha(grey500Ch(theme), 0.14)}`,
-  boxShadow: [
-    `0 2px 8px 0 ${channelAlpha(grey500Ch(theme), 0.1)}`,
-    `0 8px 32px -4px ${channelAlpha(grey500Ch(theme), 0.18)}`
-  ].join(", "),
-  ...theme.applyStyles("dark", {
-    border: `1px solid ${channelAlpha(grey500Ch(theme), 0.08)}`,
-    boxShadow: `0 1px 4px 0 ${channelAlpha(blackCh(theme), 0.12)}`
-  })
-});
 var stickyWrapperSx = (theme) => ({
   position: "sticky",
   bottom: { xs: 32, sm: 32, md: 40 },
@@ -1124,6 +1094,70 @@ var fixedWrapperSx = (theme) => ({
   transform: "translateX(-50%)",
   zIndex: theme.zIndex.speedDial
 });
+
+// src/components/material/navigation/floating-sub-nav/nav-pill/nav-pill.tsx
+import React5 from "react";
+import { m as m2 } from "framer-motion";
+import Box8 from "@mui/material/Box";
+import Stack from "@mui/material/Stack";
+
+// src/components/material/navigation/floating-sub-nav/nav-pill/nav-pill.animations.ts
+var PILL_EASING = [0.4, 0, 0.2, 1];
+var PILL_TRANSITION_DURATION = 0.28;
+var pillTransition = {
+  duration: PILL_TRANSITION_DURATION,
+  ease: PILL_EASING
+};
+var pillVariants = {
+  initial: { opacity: 0, y: 20 },
+  animate: { opacity: 1, y: 0 },
+  exit: { opacity: 0, y: 10 }
+};
+
+// src/components/material/navigation/floating-sub-nav/nav-pill/nav-pill.const.ts
+var PILL_BUTTON_ROW_SPACING = 0.5;
+
+// src/utils/theme/theme-utils/theme-utils.ts
+function channelAlpha(channel, alpha) {
+  return `rgba(${channel} / ${alpha})`;
+}
+
+// src/components/material/navigation/floating-sub-nav/nav-pill/nav-pill.styles.ts
+var grey500Ch = (theme) => theme.vars.palette.grey["500Channel"];
+var blackCh = (theme) => theme.vars.palette.common["blackChannel"];
+var pillSx = (theme) => ({
+  display: "flex",
+  flexDirection: "column",
+  alignItems: "center",
+  p: 0.5,
+  borderRadius: 2,
+  bgcolor: "background.paper",
+  border: `1px solid ${channelAlpha(grey500Ch(theme), 0.14)}`,
+  boxShadow: [
+    `0 2px 8px 0 ${channelAlpha(grey500Ch(theme), 0.1)}`,
+    `0 8px 32px -4px ${channelAlpha(grey500Ch(theme), 0.18)}`
+  ].join(", "),
+  ...theme.applyStyles("dark", {
+    border: `1px solid ${channelAlpha(grey500Ch(theme), 0.08)}`,
+    boxShadow: `0 1px 4px 0 ${channelAlpha(blackCh(theme), 0.12)}`
+  })
+});
+
+// src/components/material/navigation/floating-sub-nav/sub-nav-button/sub-nav-button.tsx
+import React4, { useCallback as useCallback2 } from "react";
+import Tooltip from "@mui/material/Tooltip";
+import ButtonBase from "@mui/material/ButtonBase";
+
+// src/components/material/navigation/floating-sub-nav/sub-nav-button/sub-nav-button.const.ts
+var SUB_NAV_BUTTON_SIZE = {
+  xs: 36,
+  sm: 38,
+  md: 42,
+  lg: 44
+};
+
+// src/components/material/navigation/floating-sub-nav/sub-nav-button/sub-nav-button.styles.ts
+var grey500Ch2 = (theme) => theme.vars.palette.grey["500Channel"];
 var subNavButtonSx = (isActive) => (theme) => ({
   display: "flex",
   alignItems: "center",
@@ -1147,11 +1181,11 @@ var subNavButtonSx = (isActive) => (theme) => ({
   "&:hover": {
     opacity: 0.72,
     color: "text.primary",
-    bgcolor: channelAlpha(grey500Ch(theme), 0.08)
+    bgcolor: channelAlpha(grey500Ch2(theme), 0.08)
   },
   "&:active": {
     opacity: 0.56,
-    bgcolor: channelAlpha(grey500Ch(theme), 0.12)
+    bgcolor: channelAlpha(grey500Ch2(theme), 0.12)
   },
   ...isActive && {
     color: "primary.main",
@@ -1168,52 +1202,36 @@ var subNavButtonSx = (isActive) => (theme) => ({
   }
 });
 
-// src/components/material/navigation/floating-sub-nav/nav-pill.tsx
-import { m as m2 } from "framer-motion";
-import Box8 from "@mui/material/Box";
-import Stack from "@mui/material/Stack";
-
-// src/components/material/navigation/floating-sub-nav/floating-sub-nav.animations.ts
-var PILL_EASING = [0.4, 0, 0.2, 1];
-var PILL_TRANSITION_DURATION = 0.28;
-var pillTransition = {
-  duration: PILL_TRANSITION_DURATION,
-  ease: PILL_EASING
-};
-var pillVariants = {
-  initial: { opacity: 0, y: 20 },
-  animate: { opacity: 1, y: 0 },
-  exit: { opacity: 0, y: 10 }
-};
-
-// src/components/material/navigation/floating-sub-nav/sub-nav-button.tsx
-import { useCallback as useCallback2 } from "react";
-import Tooltip from "@mui/material/Tooltip";
-import ButtonBase from "@mui/material/ButtonBase";
+// src/components/material/navigation/floating-sub-nav/sub-nav-button/sub-nav-button.tsx
 import { jsx as jsx8 } from "react/jsx-runtime";
-function SubNavButton({ item, isActive, onPress }) {
-  const handleClick = useCallback2(() => onPress(item.id), [onPress, item.id]);
-  return /* @__PURE__ */ jsx8(Tooltip, { title: item.label, placement: "top", arrow: true, children: /* @__PURE__ */ jsx8(
-    ButtonBase,
-    {
-      disableRipple: true,
-      component: "button",
-      type: "button",
-      "aria-label": item.label,
-      "aria-pressed": isActive,
-      onClick: handleClick,
-      sx: subNavButtonSx(isActive),
-      children: item.icon
-    }
-  ) });
-}
+var SubNavButton = React4.forwardRef(
+  function SubNavButton2({ item, isActive, onPress }, ref) {
+    const handleClick = useCallback2(() => onPress(item.id), [onPress, item.id]);
+    return /* @__PURE__ */ jsx8(Tooltip, { title: item.label, placement: "top", arrow: true, children: /* @__PURE__ */ jsx8(
+      ButtonBase,
+      {
+        ref,
+        disableRipple: true,
+        component: "button",
+        type: "button",
+        "aria-label": item.label,
+        "aria-pressed": isActive,
+        onClick: handleClick,
+        sx: subNavButtonSx(isActive),
+        children: item.icon
+      }
+    ) });
+  }
+);
+SubNavButton.displayName = "SubNavButton";
 
-// src/components/material/navigation/floating-sub-nav/nav-pill.tsx
+// src/components/material/navigation/floating-sub-nav/nav-pill/nav-pill.tsx
 import { jsx as jsx9 } from "react/jsx-runtime";
-function NavPill({ items, activeId, onPress }) {
+var NavPill = React5.forwardRef(function NavPill2({ items, activeId, onPress }, ref) {
   return /* @__PURE__ */ jsx9(
     m2.div,
     {
+      ref,
       variants: pillVariants,
       initial: "initial",
       animate: "animate",
@@ -1230,7 +1248,8 @@ function NavPill({ items, activeId, onPress }) {
       )) }) })
     }
   );
-}
+});
+NavPill.displayName = "NavPill";
 
 // src/components/material/navigation/floating-sub-nav/floating-sub-nav.tsx
 import { jsx as jsx10 } from "react/jsx-runtime";
@@ -1296,27 +1315,6 @@ var heroStackSx = {
 };
 var parallaxYStyle = (y) => ({ y });
 var parallaxOpacityStyle = (opacity) => ({ opacity });
-var headingH1Sx = (theme) => ({
-  my: 0,
-  mx: "auto",
-  maxWidth: 680,
-  display: "flex",
-  flexWrap: "wrap",
-  typography: "h2",
-  justifyContent: "center",
-  [theme.breakpoints.up("lg")]: {
-    fontSize: theme.typography.pxToRem(72),
-    lineHeight: "90px"
-  }
-});
-var headingHighlightSx = (theme) => ({
-  backgroundImage: `linear-gradient(300deg, ${theme.vars.palette.primary.main} 0%, ${theme.vars.palette.warning.main} 25%, ${theme.vars.palette.primary.main} 50%, ${theme.vars.palette.warning.main} 75%, ${theme.vars.palette.primary.main} 100%)`,
-  backgroundSize: "400%",
-  backgroundClip: "text",
-  WebkitBackgroundClip: "text",
-  WebkitTextFillColor: "transparent",
-  ml: { xs: 0.75, md: 1, xl: 1.5 }
-});
 
 // src/components/section/hero/scroll-parallax/scroll-parallax-hero.const.ts
 var DEFAULT_PARALLAX_MULTIPLIERS = {
@@ -1434,11 +1432,12 @@ function ScrollParallaxHero({
   );
 }
 
-// src/components/section/hero/scroll-parallax/animated-hero-heading.tsx
+// src/components/section/hero/scroll-parallax/animated-hero-heading/animated-hero-heading.tsx
+import React6 from "react";
 import { motion as motion8 } from "framer-motion";
 import Box11 from "@mui/material/Box";
 
-// src/components/section/hero/scroll-parallax/scroll-parallax-hero.animations.ts
+// src/components/section/hero/scroll-parallax/animated-hero-heading/animated-hero-heading.animations.ts
 var headingMotionProps = {
   variants: fade("inUp", { distance: 24 })
 };
@@ -1450,30 +1449,60 @@ var gradientHighlightTransition = {
   repeatType: "reverse"
 };
 
-// src/components/section/hero/scroll-parallax/animated-hero-heading.tsx
+// src/components/section/hero/scroll-parallax/animated-hero-heading/animated-hero-heading.styles.ts
+var headingH1Sx = (theme) => ({
+  my: 0,
+  mx: "auto",
+  maxWidth: 680,
+  display: "flex",
+  flexWrap: "wrap",
+  typography: "h2",
+  justifyContent: "center",
+  [theme.breakpoints.up("lg")]: {
+    fontSize: theme.typography.pxToRem(72),
+    lineHeight: "90px"
+  }
+});
+var headingHighlightSx = (theme) => ({
+  backgroundImage: `linear-gradient(300deg, ${theme.vars.palette.primary.main} 0%, ${theme.vars.palette.warning.main} 25%, ${theme.vars.palette.primary.main} 50%, ${theme.vars.palette.warning.main} 75%, ${theme.vars.palette.primary.main} 100%)`,
+  backgroundSize: "400%",
+  backgroundClip: "text",
+  WebkitBackgroundClip: "text",
+  WebkitTextFillColor: "transparent",
+  ml: { xs: 0.75, md: 1, xl: 1.5 }
+});
+
+// src/components/section/hero/scroll-parallax/animated-hero-heading/animated-hero-heading.tsx
 import { jsx as jsx12, jsxs as jsxs3 } from "react/jsx-runtime";
-function AnimatedHeroHeading({
-  subheading,
-  highlight,
-  motionProps,
-  sx
-}) {
-  const resolvedMotionProps = motionProps ?? headingMotionProps;
-  return /* @__PURE__ */ jsx12(motion8.div, { ...resolvedMotionProps, children: /* @__PURE__ */ jsxs3(Box11, { component: "h1", sx: [headingH1Sx, ...Array.isArray(sx) ? sx : [sx]], children: [
-    subheading,
-    " ",
-    /* @__PURE__ */ jsx12(
+var AnimatedHeroHeading = React6.forwardRef(
+  function AnimatedHeroHeading2({ subheading, highlight, motionProps, sx, ...other }, ref) {
+    const resolvedMotionProps = motionProps ?? headingMotionProps;
+    return /* @__PURE__ */ jsx12(motion8.div, { ...resolvedMotionProps, children: /* @__PURE__ */ jsxs3(
       Box11,
       {
-        component: motion8.span,
-        animate: gradientHighlightAnimate,
-        transition: gradientHighlightTransition,
-        sx: headingHighlightSx,
-        children: highlight
+        ref,
+        component: "h1",
+        sx: [headingH1Sx, ...Array.isArray(sx) ? sx : [sx]],
+        ...other,
+        children: [
+          subheading,
+          " ",
+          /* @__PURE__ */ jsx12(
+            Box11,
+            {
+              component: motion8.span,
+              animate: gradientHighlightAnimate,
+              transition: gradientHighlightTransition,
+              sx: headingHighlightSx,
+              children: highlight
+            }
+          )
+        ]
       }
-    )
-  ] }) });
-}
+    ) });
+  }
+);
+AnimatedHeroHeading.displayName = "AnimatedHeroHeading";
 
 // src/components/section/faq/accordion/faq-accordion.tsx
 import { useState as useState5 } from "react";
@@ -1550,27 +1579,43 @@ var txtGradientSpanSx = (theme) => ({
   backgroundClip: "text",
   color: "transparent"
 });
+var sectionTitleRootSx = {
+  gap: 3,
+  display: "flex",
+  flexDirection: "column"
+};
+var sectionTitleDescriptionSx = {
+  color: "text.secondary",
+  typography: "body1"
+};
 
-// src/components/material/layout/section-title/section-caption.tsx
+// src/components/material/layout/section-title/section-caption/section-caption.tsx
+import React7 from "react";
 import Box13 from "@mui/material/Box";
+
+// src/components/material/layout/section-title/section-caption/section-caption.styles.ts
+var sectionCaptionSx = {
+  typography: "overline",
+  color: "text.disabled"
+};
+
+// src/components/material/layout/section-title/section-caption/section-caption.tsx
 import { jsx as jsx14 } from "react/jsx-runtime";
-function SectionCaption({ title, sx, ...other }) {
-  return /* @__PURE__ */ jsx14(
-    Box13,
-    {
-      component: "span",
-      sx: [
-        {
-          typography: "overline",
-          color: "text.disabled"
-        },
-        ...Array.isArray(sx) ? sx : [sx]
-      ],
-      ...other,
-      children: title
-    }
-  );
-}
+var SectionCaption = React7.forwardRef(
+  function SectionCaption2({ title, sx, ...other }, ref) {
+    return /* @__PURE__ */ jsx14(
+      Box13,
+      {
+        ref,
+        component: "span",
+        sx: [sectionCaptionSx, ...Array.isArray(sx) ? sx : [sx]],
+        ...other,
+        children: title
+      }
+    );
+  }
+);
+SectionCaption.displayName = "SectionCaption";
 
 // src/components/material/layout/section-title/section-title.tsx
 import { jsx as jsx15, jsxs as jsxs4 } from "react/jsx-runtime";
@@ -1585,38 +1630,24 @@ function SectionTitle({
   titleVariant = "h2",
   ...other
 }) {
-  return /* @__PURE__ */ jsxs4(
-    Box14,
-    {
-      sx: [
-        {
-          gap: 3,
-          display: "flex",
-          flexDirection: "column"
-        },
-        ...Array.isArray(sx) ? sx : [sx]
-      ],
-      ...other,
-      children: [
-        caption && /* @__PURE__ */ jsx15(SectionCaption, { title: caption, sx: slotProps?.caption?.sx }),
-        /* @__PURE__ */ jsxs4(Typography, { component: titleComponent, variant: titleVariant, sx: slotProps?.title?.sx, children: [
-          title,
-          " ",
-          txtGradient && /* @__PURE__ */ jsx15(Box14, { component: "span", sx: txtGradientSpanSx, children: txtGradient })
-        ] }),
-        description && /* @__PURE__ */ jsx15(
-          Box14,
-          {
-            sx: [
-              { color: "text.secondary", typography: "body1" },
-              ...Array.isArray(slotProps?.description?.sx) ? slotProps.description.sx : [slotProps?.description?.sx]
-            ],
-            children: description
-          }
-        )
-      ]
-    }
-  );
+  return /* @__PURE__ */ jsxs4(Box14, { sx: [sectionTitleRootSx, ...Array.isArray(sx) ? sx : [sx]], ...other, children: [
+    caption && /* @__PURE__ */ jsx15(SectionCaption, { title: caption, sx: slotProps?.caption?.sx }),
+    /* @__PURE__ */ jsxs4(Typography, { component: titleComponent, variant: titleVariant, sx: slotProps?.title?.sx, children: [
+      title,
+      " ",
+      txtGradient && /* @__PURE__ */ jsx15(Box14, { component: "span", sx: txtGradientSpanSx, children: txtGradient })
+    ] }),
+    description && /* @__PURE__ */ jsx15(
+      Box14,
+      {
+        sx: [
+          sectionTitleDescriptionSx,
+          ...Array.isArray(slotProps?.description?.sx) ? slotProps.description.sx : [slotProps?.description?.sx]
+        ],
+        children: description
+      }
+    )
+  ] });
 }
 
 // src/components/section/faq/accordion/faq-accordion.const.ts
@@ -1653,15 +1684,30 @@ var contactSectionSx = {
   textAlign: "center",
   background: `linear-gradient(to left, ${channelAlpha("var(--mui-palette-grey-500Channel)", 0.08)}, transparent)`
 };
+var motionViewportSx = {
+  pt: 10,
+  position: "relative"
+};
+var sectionTitleSx = {
+  textAlign: "center"
+};
+var footerWrapperSx = {
+  position: "relative"
+};
+var contactDescriptionSx = {
+  mt: 2,
+  mb: 3,
+  color: "text.secondary"
+};
 
 // src/components/section/faq/accordion/motion-viewport/faq-motion-viewport.tsx
-import React from "react";
+import React8 from "react";
 import { motion as motion9 } from "framer-motion";
 import Box15 from "@mui/material/Box";
 import useMediaQuery3 from "@mui/material/useMediaQuery";
 import { jsx as jsx16 } from "react/jsx-runtime";
 var MotionBox = motion9(Box15);
-var FaqMotionViewport = React.forwardRef(
+var FaqMotionViewport = React8.forwardRef(
   function FaqMotionViewport2({ children, sx }, ref) {
     const smDown = useMediaQuery3((theme) => theme.breakpoints.down("sm"));
     if (smDown) {
@@ -1687,7 +1733,7 @@ FaqMotionViewport.displayName = "FaqMotionViewport";
 import Stack3 from "@mui/material/Stack";
 
 // src/components/section/faq/accordion/accordion-svg/faq-accordion-svg.tsx
-import React2 from "react";
+import React9 from "react";
 import { motion as motion10 } from "framer-motion";
 import { styled } from "@mui/material/styles";
 
@@ -1713,7 +1759,7 @@ import { jsx as jsx17 } from "react/jsx-runtime";
 var MotionSvg = styled(motion10.svg, {
   shouldForwardProp: (prop) => prop !== "vertical"
 })``;
-var FaqFloatLine = React2.forwardRef(
+var FaqFloatLine = React9.forwardRef(
   function FaqFloatLine2({ sx, vertical, ...other }, ref) {
     return /* @__PURE__ */ jsx17(
       MotionSvg,
@@ -1761,7 +1807,7 @@ var FaqFloatLine = React2.forwardRef(
   }
 );
 FaqFloatLine.displayName = "FaqFloatLine";
-var FaqFloatPlusIcon = React2.forwardRef(function FaqFloatPlusIcon2({ sx, ...other }, ref) {
+var FaqFloatPlusIcon = React9.forwardRef(function FaqFloatPlusIcon2({ sx, ...other }, ref) {
   return /* @__PURE__ */ jsx17(
     MotionSvg,
     {
@@ -1789,7 +1835,7 @@ var FaqFloatPlusIcon = React2.forwardRef(function FaqFloatPlusIcon2({ sx, ...oth
   );
 });
 FaqFloatPlusIcon.displayName = "FaqFloatPlusIcon";
-var FaqFloatTriangleDownIcon = React2.forwardRef(
+var FaqFloatTriangleDownIcon = React9.forwardRef(
   function FaqFloatTriangleDownIcon2({ sx, ...other }, ref) {
     return /* @__PURE__ */ jsx17(
       MotionSvg,
@@ -1837,16 +1883,24 @@ var smallTriangleSx = {
   opacity: 0.24,
   position: "static"
 };
+var primaryTriangleSx = {
+  position: "static",
+  opacity: 0.12
+};
+var verticalFloatLineSx = {
+  top: 0,
+  left: FAQ_FLOAT_LINE_LEFT
+};
 
 // src/components/section/faq/accordion/top-lines/faq-top-lines.tsx
 import { Fragment, jsx as jsx18, jsxs as jsxs5 } from "react/jsx-runtime";
 function FaqTopLines() {
   return /* @__PURE__ */ jsxs5(Fragment, { children: [
     /* @__PURE__ */ jsxs5(Stack3, { spacing: 8, sx: topTriangleStackSx, children: [
-      /* @__PURE__ */ jsx18(FaqFloatTriangleDownIcon, { sx: { position: "static", opacity: 0.12 } }),
+      /* @__PURE__ */ jsx18(FaqFloatTriangleDownIcon, { sx: primaryTriangleSx }),
       /* @__PURE__ */ jsx18(FaqFloatTriangleDownIcon, { sx: smallTriangleSx })
     ] }),
-    /* @__PURE__ */ jsx18(FaqFloatLine, { vertical: true, sx: { top: 0, left: FAQ_FLOAT_LINE_LEFT } })
+    /* @__PURE__ */ jsx18(FaqFloatLine, { vertical: true, sx: verticalFloatLineSx })
   ] });
 }
 FaqTopLines.displayName = "FaqTopLines";
@@ -1854,14 +1908,24 @@ FaqTopLines.displayName = "FaqTopLines";
 // src/components/section/faq/accordion/bottom-lines/faq-bottom-lines.const.ts
 var FAQ_PLUS_ICON_LEFT = 72;
 
+// src/components/section/faq/accordion/bottom-lines/faq-bottom-lines.styles.ts
+var floatLineEdgeSx = (edge) => ({
+  ...edge === "top" ? { top: 0 } : { bottom: 0 },
+  left: 0
+});
+var floatPlusIconEdgeSx = (edge) => ({
+  ...edge === "top" ? { top: -8 } : { bottom: -8 },
+  left: FAQ_PLUS_ICON_LEFT
+});
+
 // src/components/section/faq/accordion/bottom-lines/faq-bottom-lines.tsx
 import { Fragment as Fragment2, jsx as jsx19, jsxs as jsxs6 } from "react/jsx-runtime";
 function FaqBottomLines() {
   return /* @__PURE__ */ jsxs6(Fragment2, { children: [
-    /* @__PURE__ */ jsx19(FaqFloatLine, { sx: { top: 0, left: 0 } }),
-    /* @__PURE__ */ jsx19(FaqFloatLine, { sx: { bottom: 0, left: 0 } }),
-    /* @__PURE__ */ jsx19(FaqFloatPlusIcon, { sx: { top: -8, left: FAQ_PLUS_ICON_LEFT } }),
-    /* @__PURE__ */ jsx19(FaqFloatPlusIcon, { sx: { bottom: -8, left: FAQ_PLUS_ICON_LEFT } })
+    /* @__PURE__ */ jsx19(FaqFloatLine, { sx: floatLineEdgeSx("top") }),
+    /* @__PURE__ */ jsx19(FaqFloatLine, { sx: floatLineEdgeSx("bottom") }),
+    /* @__PURE__ */ jsx19(FaqFloatPlusIcon, { sx: floatPlusIconEdgeSx("top") }),
+    /* @__PURE__ */ jsx19(FaqFloatPlusIcon, { sx: floatPlusIconEdgeSx("bottom") })
   ] });
 }
 FaqBottomLines.displayName = "FaqBottomLines";
@@ -1887,7 +1951,7 @@ function FaqSection({
     setExpanded(isExpanded ? panel : false);
   };
   const resolvedIcon = typeof contactIcon === "string" ? /* @__PURE__ */ jsx20(GiselleIcon, { icon: contactIcon }) : contactIcon;
-  return /* @__PURE__ */ jsx20(Box16, { component: "section", sx: [...Array.isArray(sx) ? sx : [sx]], ...other, children: /* @__PURE__ */ jsxs7(FaqMotionViewport, { sx: { pt: 10, position: "relative" }, children: [
+  return /* @__PURE__ */ jsx20(Box16, { component: "section", sx: [...Array.isArray(sx) ? sx : [sx]], ...other, children: /* @__PURE__ */ jsxs7(FaqMotionViewport, { sx: motionViewportSx, children: [
     /* @__PURE__ */ jsx20(FaqTopLines, {}),
     /* @__PURE__ */ jsxs7(Container2, { children: [
       /* @__PURE__ */ jsx20(
@@ -1896,7 +1960,7 @@ function FaqSection({
           caption,
           title,
           txtGradient,
-          sx: { textAlign: "center" }
+          sx: sectionTitleSx
         }
       ),
       /* @__PURE__ */ jsx20(Box16, { sx: contentBoxSx, children: faqs.map((item, index) => /* @__PURE__ */ jsxs7(
@@ -1922,11 +1986,11 @@ function FaqSection({
         item.question
       )) })
     ] }),
-    /* @__PURE__ */ jsxs7(Stack4, { sx: { position: "relative" }, children: [
+    /* @__PURE__ */ jsxs7(Stack4, { sx: footerWrapperSx, children: [
       /* @__PURE__ */ jsx20(FaqBottomLines, {}),
       contactHref && /* @__PURE__ */ jsxs7(Box16, { sx: contactSectionSx, children: [
         /* @__PURE__ */ jsx20(motion11.div, { variants: fade("in"), children: /* @__PURE__ */ jsx20(Typography2, { variant: "h4", children: contactTitle }) }),
-        /* @__PURE__ */ jsx20(motion11.div, { variants: fade("in"), children: /* @__PURE__ */ jsx20(Typography2, { sx: { mt: 2, mb: 3, color: "text.secondary" }, children: contactDescription }) }),
+        /* @__PURE__ */ jsx20(motion11.div, { variants: fade("in"), children: /* @__PURE__ */ jsx20(Typography2, { sx: contactDescriptionSx, children: contactDescription }) }),
         /* @__PURE__ */ jsx20(motion11.div, { variants: fade("in"), children: /* @__PURE__ */ jsx20(
           Button2,
           {

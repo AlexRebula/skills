@@ -537,6 +537,8 @@ type PhaseCardProps = Omit<BoxProps, 'children'> & {
  * internal toggle state otherwise.
  *
  * Status badge (overdue / active / scenario) is resolved automatically from props.
+ *
+ * **Quality status (02 Sep 2026):** DoD 20/22 · Best practices not re-audited — SonarQube not verified · styles test misses a factory
  */
 declare function PhaseCard({ phase, done, overdue, dateConflict, dateConflictLabel, isExpanded, onRequestExpand, suppressElevation, expandableIcon, isViewed, onMarkViewed, columnSide, onPhasesChange, allPhases, taskDoneStates, onToggleTask, sx, ...other }: PhaseCardProps): react.JSX.Element;
 
@@ -594,6 +596,8 @@ type MilestoneBadgeProps = Omit<PaperProps, 'children'> & {
  * Milestone card — spine-adjacent badge that expands/collapses on click.
  * Expansion is controlled externally (accordion: at most one open per phase).
  * The parent wrapper in TimelineTwoColumn owns z-index and blur animations.
+ *
+ * **Quality status (02 Sep 2026):** DoD 19/22 · Best practices not re-audited — SonarQube not verified · styles test misses a factory · size-constant regression tests missing
  */
 declare function MilestoneBadge({ milestone: m, done, isExpanded, onRequestExpand, suppressElevation, expandableIcon, stableId, isViewed, onMarkViewed, columnSide, taskDoneStates, onToggleTask, sx, ...other }: MilestoneBadgeProps): react.JSX.Element;
 
@@ -651,6 +655,8 @@ type TimelineDotComponentProps = Omit<BoxProps, 'color' | 'onClick'> & {
  * The outer Box has `overflow: visible` so the `::after` ring (which extends 5 px
  * outside via `inset: -5`) is not clipped. An inner clip Box with `overflow: hidden`
  * and `border-radius: 50%` keeps the icon inside the circle shape.
+ *
+ * **Quality status (02 Sep 2026):** DoD 17/22 · Best practices not re-audited — SonarQube not verified · styles test misses a factory · root sx not array-spread · JSDoc prop coverage incomplete · no Responsive story
  */
 declare function TimelineDot({ icon, color, size, active, done, animationKey, dotBg, onClick, onKeyDown, role, 'aria-checked': ariaChecked, 'aria-label': ariaLabel, tabIndex, className, sx, ...other }: TimelineDotComponentProps): react.JSX.Element;
 
@@ -670,7 +676,7 @@ declare function TimelineDot({ icon, color, size, active, done, animationKey, do
  * For hero navigation use, pass `selectedPhaseKey` + `onPhaseSelect` to control
  * which phase dot appears active from the outside.
  *
- * **Quality status (13 May 2026):** DoD 20/20 · Best practices 13/13
+ * **Quality status (02 Sep 2026):** DoD 19/22 · Best practices 13/13 — SonarQube not verified · styles test misses a factory · named size constant still inline
  */
 declare function TimelineTwoColumn({ phases, checklist, onTogglePhaseDone, onToggleMilestoneDone, onToggleTaskDone, selectedPhaseKey, onPhaseSelect, expandableIcon, viewedKeys, onMarkViewed, onPhasesChange, sortOrder, milestoneSlotHeight, phaseCardGap, yearLabelMarginBottom, sx, ...other }: TimelineTwoColumnProps): react.JSX.Element;
 
@@ -739,14 +745,6 @@ interface TimelineCompactProps extends BoxProps {
      */
     onToggleTaskDone?: (phaseKey: number, milestoneIndex: number | null, taskIndex: number, done: boolean) => void;
 }
-interface TaskDetailsRendererProps extends BoxProps {
-    task: Task;
-    checklist?: boolean;
-    /** Index-based done state array — position `i` maps to the task at index `i`. Use `Record<string, boolean>` shape for keyed components like `MilestoneBadge`. */
-    taskDoneState?: boolean[];
-    onTaskToggle?: (taskIdx: number) => void;
-    emptyState?: ReactNode$1;
-}
 
 /**
  * Collapsible accordion view of timeline phases and milestones,
@@ -759,9 +757,18 @@ interface TaskDetailsRendererProps extends BoxProps {
  * Shares the same `TimelinePhase` data model as `TimelineTwoColumn` — the
  * same dataset can render both views from a single source.
  *
- * **Quality status (13 May 2026):** DoD 20/20 · Best practices 13/13
+ * **Quality status (02 Sep 2026):** DoD 20/22 · Best practices 13/13 — SonarQube not verified · size-constant regression tests missing
  */
 declare function TimelineCompact({ phases, checklist, sortOrder, viewedKeys: _viewedKeys, onMarkViewed, onTogglePhaseDone, onToggleMilestoneDone, onToggleTaskDone, sx, ...other }: TimelineCompactProps): react.JSX.Element;
+
+interface TaskDetailsRendererProps extends BoxProps {
+    task: Task;
+    checklist?: boolean;
+    /** Index-based done state array — position `i` maps to the task at index `i`. Use `Record<string, boolean>` shape for keyed components like `MilestoneBadge`. */
+    taskDoneState?: boolean[];
+    onTaskToggle?: (taskIdx: number) => void;
+    emptyState?: ReactNode$1;
+}
 
 /**
  * Renders the detailed content for a single timeline task or milestone.
@@ -774,7 +781,7 @@ declare function TimelineCompact({ phases, checklist, sortOrder, viewedKeys: _vi
  *
  * Falls back to `emptyState` text when no content is present.
  *
- * **Quality status (13 May 2026):** DoD 9/9 · Best practices 13/13
+ * **Quality status (02 Sep 2026):** DoD 17/22 · Best practices 13/13 — SonarQube not verified · companion files incomplete · README missing · JSDoc prop coverage incomplete · no Responsive story
  * @internal — used by `TaskDetailsModal` and `PhaseAccordionRow`.
  */
 declare function TaskDetailsRenderer({ task, checklist, taskDoneState, onTaskToggle, emptyState, sx, ...other }: TaskDetailsRendererProps): react.JSX.Element;
@@ -855,7 +862,7 @@ interface TaskListProps extends BoxProps {
  * Use `indent="milestone"` when the list sits inside a milestone card to
  * add an extra level of left padding relative to the phase-level baseline.
  *
- * **Quality status (13 May 2026):** DoD 20/20 · Best practices 13/13
+ * **Quality status (02 Sep 2026):** DoD 21/22 · Best practices 13/13 — SonarQube not verified
  */
 declare function TaskList({ tasks, checklist, taskDoneState, onTaskToggle, indent, sx, ...other }: TaskListProps): react.JSX.Element;
 

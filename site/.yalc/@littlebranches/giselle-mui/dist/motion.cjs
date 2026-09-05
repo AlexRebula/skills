@@ -592,7 +592,7 @@ function useScrollParallax() {
 }
 
 // src/components/section/hero/interactive-logo/interactive-logo.tsx
-var import_react3 = require("react");
+var import_react6 = require("react");
 var import_framer_motion7 = require("framer-motion");
 var import_Box6 = __toESM(require("@mui/material/Box"), 1);
 
@@ -606,28 +606,12 @@ function preloadImages(srcs) {
   });
 }
 
-// src/components/section/hero/interactive-logo/portrait-layer.tsx
+// src/components/section/hero/interactive-logo/portrait-layer/portrait-layer.tsx
+var import_react2 = __toESM(require("react"), 1);
 var import_framer_motion4 = require("framer-motion");
 var import_Box3 = __toESM(require("@mui/material/Box"), 1);
 
-// src/components/section/hero/interactive-logo/interactive-logo.styles.ts
-var originalLayerSx = {
-  position: "relative",
-  zIndex: 1,
-  width: 1,
-  height: 1,
-  willChange: "transform"
-};
-var artisticLogoSx = {
-  inset: 0,
-  zIndex: 2,
-  width: 1,
-  height: 1,
-  objectFit: "contain",
-  objectPosition: "center center",
-  position: "absolute",
-  pointerEvents: "none"
-};
+// src/components/section/hero/interactive-logo/portrait-layer/portrait-layer.styles.ts
 var portraitWrapperSx = {
   top: "50%",
   left: "50%",
@@ -648,142 +632,139 @@ var portraitImageSx = {
   objectPosition: "center center",
   display: "block"
 };
-var innerContainerSx = {
+
+// src/components/section/hero/interactive-logo/portrait-layer/portrait-layer.tsx
+var import_jsx_runtime3 = require("react/jsx-runtime");
+var PortraitLayer = import_react2.default.forwardRef(
+  function PortraitLayer2({ portraitSrc, portraitAlt, showPortrait, portraitFadeTransition }, ref) {
+    if (!portraitSrc) {
+      return null;
+    }
+    return /* @__PURE__ */ (0, import_jsx_runtime3.jsx)(import_Box3.default, { ref, sx: portraitWrapperSx, children: /* @__PURE__ */ (0, import_jsx_runtime3.jsx)(
+      import_Box3.default,
+      {
+        component: import_framer_motion4.motion.img,
+        alt: portraitAlt,
+        src: portraitSrc,
+        initial: {
+          opacity: 0,
+          scale: 1.035,
+          filter: "blur(10px)"
+        },
+        animate: {
+          opacity: showPortrait ? 1 : 0,
+          scale: showPortrait ? 1 : 1.035,
+          filter: showPortrait ? "blur(0px)" : "blur(10px)"
+        },
+        transition: portraitFadeTransition,
+        sx: portraitImageSx
+      }
+    ) });
+  }
+);
+PortraitLayer.displayName = "PortraitLayer";
+
+// src/components/section/hero/interactive-logo/original-logo-layer/original-logo-layer.tsx
+var import_react3 = __toESM(require("react"), 1);
+var import_framer_motion5 = require("framer-motion");
+var import_Box4 = __toESM(require("@mui/material/Box"), 1);
+
+// src/components/section/hero/interactive-logo/original-logo-layer/original-logo-layer.styles.ts
+var originalLayerSx = {
   position: "relative",
-  display: "inline-flex",
+  zIndex: 1,
   width: 1,
   height: 1,
-  overflow: "visible",
-  transformStyle: "preserve-3d",
-  transition: "filter 240ms ease",
-  mb: { xs: 0 }
+  willChange: "transform"
 };
-var rootBoxSx = (cursor) => () => ({
-  perspective: 1200,
-  cursor,
-  overflow: "visible"
-});
-var logoStack3dWrapperSx = {
-  position: "relative",
+var activeFrameImageSx = {
   width: 1,
   height: 1
 };
 
-// src/components/section/hero/interactive-logo/portrait-layer.tsx
-var import_jsx_runtime3 = require("react/jsx-runtime");
-function PortraitLayer({
-  portraitSrc,
-  portraitAlt,
-  showPortrait,
-  portraitFadeTransition
-}) {
-  if (!portraitSrc) {
-    return null;
-  }
-  return /* @__PURE__ */ (0, import_jsx_runtime3.jsx)(import_Box3.default, { sx: portraitWrapperSx, children: /* @__PURE__ */ (0, import_jsx_runtime3.jsx)(
-    import_Box3.default,
-    {
-      component: import_framer_motion4.motion.img,
-      alt: portraitAlt,
-      src: portraitSrc,
-      initial: {
-        opacity: 0,
-        scale: 1.035,
-        filter: "blur(10px)"
-      },
-      animate: {
-        opacity: showPortrait ? 1 : 0,
-        scale: showPortrait ? 1 : 1.035,
-        filter: showPortrait ? "blur(0px)" : "blur(10px)"
-      },
-      transition: portraitFadeTransition,
-      sx: portraitImageSx
-    }
-  ) });
-}
-
-// src/components/section/hero/interactive-logo/original-logo-layer.tsx
-var import_framer_motion5 = require("framer-motion");
-var import_Box4 = __toESM(require("@mui/material/Box"), 1);
+// src/components/section/hero/interactive-logo/original-logo-layer/original-logo-layer.tsx
 var import_jsx_runtime4 = require("react/jsx-runtime");
-function OriginalLogoLayer({
-  hoverPhase,
-  logoFadeTransition,
-  activeFrame,
-  logoAlt,
-  hasArtisticContent = false,
-  children
-}) {
-  const isArtistic = hoverPhase === "artistic";
-  const animateOpacity = isArtistic || !hasArtisticContent ? 1 : 0;
-  const animateScale = isArtistic || !hasArtisticContent ? 1 : 0.985;
-  const animateFilter = isArtistic || !hasArtisticContent ? "blur(0px)" : "blur(4px)";
-  return /* @__PURE__ */ (0, import_jsx_runtime4.jsx)(
-    import_Box4.default,
-    {
-      component: import_framer_motion5.motion.div,
-      initial: {
-        opacity: 0,
-        scale: 1,
-        filter: "blur(0px)"
-      },
-      animate: {
-        opacity: animateOpacity,
-        scale: animateScale,
-        filter: animateFilter
-      },
-      transition: logoFadeTransition,
-      sx: originalLayerSx,
-      children: activeFrame ? /* @__PURE__ */ (0, import_jsx_runtime4.jsx)(
-        import_Box4.default,
-        {
-          component: "img",
-          alt: logoAlt ?? "Logo",
-          src: activeFrame,
-          sx: { width: 1, height: 1 }
-        }
-      ) : children
-    }
-  );
-}
+var OriginalLogoLayer = import_react3.default.forwardRef(
+  function OriginalLogoLayer2({ hoverPhase, logoFadeTransition, activeFrame, logoAlt, hasArtisticContent = false, children }, ref) {
+    const isArtistic = hoverPhase === "artistic";
+    const animateOpacity = isArtistic || !hasArtisticContent ? 1 : 0;
+    const animateScale = isArtistic || !hasArtisticContent ? 1 : 0.985;
+    const animateFilter = isArtistic || !hasArtisticContent ? "blur(0px)" : "blur(4px)";
+    return /* @__PURE__ */ (0, import_jsx_runtime4.jsx)(
+      import_Box4.default,
+      {
+        ref,
+        component: import_framer_motion5.motion.div,
+        initial: {
+          opacity: 0,
+          scale: 1,
+          filter: "blur(0px)"
+        },
+        animate: {
+          opacity: animateOpacity,
+          scale: animateScale,
+          filter: animateFilter
+        },
+        transition: logoFadeTransition,
+        sx: originalLayerSx,
+        children: activeFrame ? /* @__PURE__ */ (0, import_jsx_runtime4.jsx)(import_Box4.default, { component: "img", alt: logoAlt ?? "Logo", src: activeFrame, sx: activeFrameImageSx }) : children
+      }
+    );
+  }
+);
+OriginalLogoLayer.displayName = "OriginalLogoLayer";
 
-// src/components/section/hero/interactive-logo/artistic-logo-layer.tsx
+// src/components/section/hero/interactive-logo/artistic-logo-layer/artistic-logo-layer.tsx
+var import_react4 = __toESM(require("react"), 1);
 var import_framer_motion6 = require("framer-motion");
 var import_Box5 = __toESM(require("@mui/material/Box"), 1);
+
+// src/components/section/hero/interactive-logo/artistic-logo-layer/artistic-logo-layer.styles.ts
+var artisticLogoSx = {
+  inset: 0,
+  zIndex: 2,
+  width: 1,
+  height: 1,
+  objectFit: "contain",
+  objectPosition: "center center",
+  position: "absolute",
+  pointerEvents: "none"
+};
+
+// src/components/section/hero/interactive-logo/artistic-logo-layer/artistic-logo-layer.tsx
 var import_jsx_runtime5 = require("react/jsx-runtime");
-function ArtisticLogoLayer({
-  artisticLogoSrc,
-  showArtisticLogo,
-  logoFadeTransition,
-  logoAlt
-}) {
-  if (!artisticLogoSrc) {
-    return null;
-  }
-  return /* @__PURE__ */ (0, import_jsx_runtime5.jsx)(
-    import_Box5.default,
-    {
-      component: import_framer_motion6.motion.img,
-      alt: logoAlt ?? "Logo",
-      src: artisticLogoSrc,
-      initial: {
-        opacity: 1,
-        scale: 1.03,
-        filter: "blur(8px)"
-      },
-      animate: {
-        opacity: showArtisticLogo ? 1 : 0,
-        scale: showArtisticLogo ? 1 : 1.03,
-        filter: showArtisticLogo ? "blur(0px)" : "blur(8px)"
-      },
-      transition: logoFadeTransition,
-      sx: artisticLogoSx
+var ArtisticLogoLayer = import_react4.default.forwardRef(
+  function ArtisticLogoLayer2({ artisticLogoSrc, showArtisticLogo, logoFadeTransition, logoAlt }, ref) {
+    if (!artisticLogoSrc) {
+      return null;
     }
-  );
-}
+    return /* @__PURE__ */ (0, import_jsx_runtime5.jsx)(
+      import_Box5.default,
+      {
+        ref,
+        component: import_framer_motion6.motion.img,
+        alt: logoAlt ?? "Logo",
+        src: artisticLogoSrc,
+        initial: {
+          opacity: 1,
+          scale: 1.03,
+          filter: "blur(8px)"
+        },
+        animate: {
+          opacity: showArtisticLogo ? 1 : 0,
+          scale: showArtisticLogo ? 1 : 1.03,
+          filter: showArtisticLogo ? "blur(0px)" : "blur(8px)"
+        },
+        transition: logoFadeTransition,
+        sx: artisticLogoSx
+      }
+    );
+  }
+);
+ArtisticLogoLayer.displayName = "ArtisticLogoLayer";
 
 // src/components/section/hero/interactive-logo/use-hover-phase-transition.ts
-var import_react2 = require("react");
+var import_react5 = require("react");
 
 // src/components/section/hero/interactive-logo/interactive-logo.const.ts
 var DEFAULT_PORTRAIT_DIRECTION = "forward";
@@ -795,11 +776,11 @@ function useHoverPhaseTransition({
   hasPortrait,
   reducedMotion
 }) {
-  const [hoverPhase, setHoverPhase] = (0, import_react2.useState)("idle");
-  const [hasActivatedPortrait, setHasActivatedPortrait] = (0, import_react2.useState)(false);
-  const [activePortraitDirection, setActivePortraitDirection] = (0, import_react2.useState)(DEFAULT_PORTRAIT_DIRECTION);
-  const portraitTimeoutRef = (0, import_react2.useRef)(null);
-  (0, import_react2.useEffect)(() => {
+  const [hoverPhase, setHoverPhase] = (0, import_react5.useState)("idle");
+  const [hasActivatedPortrait, setHasActivatedPortrait] = (0, import_react5.useState)(false);
+  const [activePortraitDirection, setActivePortraitDirection] = (0, import_react5.useState)(DEFAULT_PORTRAIT_DIRECTION);
+  const portraitTimeoutRef = (0, import_react5.useRef)(null);
+  (0, import_react5.useEffect)(() => {
     if (portraitTimeoutRef.current) {
       globalThis.clearTimeout(portraitTimeoutRef.current);
       portraitTimeoutRef.current = null;
@@ -834,6 +815,28 @@ function useHoverPhaseTransition({
   }, [hasActivatedPortrait, hasPortrait, isHovered, reducedMotion]);
   return { hoverPhase, hasActivatedPortrait, activePortraitDirection, setActivePortraitDirection };
 }
+
+// src/components/section/hero/interactive-logo/interactive-logo.styles.ts
+var innerContainerSx = {
+  position: "relative",
+  display: "inline-flex",
+  width: 1,
+  height: 1,
+  overflow: "visible",
+  transformStyle: "preserve-3d",
+  transition: "filter 240ms ease",
+  mb: { xs: 0 }
+};
+var rootBoxSx = (cursor) => () => ({
+  perspective: 1200,
+  cursor,
+  overflow: "visible"
+});
+var logoStack3dWrapperSx = {
+  position: "relative",
+  width: 1,
+  height: 1
+};
 
 // src/components/section/hero/interactive-logo/interactive-logo.utils.ts
 function getRandomPortraitSrc(src) {
@@ -886,7 +889,7 @@ function InteractiveHeroLogo({
   ...other
 }) {
   const reducedMotion = (0, import_framer_motion7.useReducedMotion)();
-  const rootRef = (0, import_react3.useRef)(null);
+  const rootRef = (0, import_react6.useRef)(null);
   const scrub = (0, import_framer_motion7.useMotionValue)(0);
   const scrubSpring = (0, import_framer_motion7.useSpring)(scrub, { stiffness: 240, damping: 28, mass: 0.25 });
   const tiltX = (0, import_framer_motion7.useMotionValue)(0);
@@ -897,31 +900,31 @@ function InteractiveHeroLogo({
   const rotateY = (0, import_framer_motion7.useSpring)(tiltY, { stiffness: 220, damping: 13, mass: 0.24 });
   const x = (0, import_framer_motion7.useSpring)(panX, { stiffness: 230, damping: 13, mass: 0.2 });
   const y = (0, import_framer_motion7.useSpring)(panY, { stiffness: 230, damping: 13, mass: 0.2 });
-  const validFrames = (0, import_react3.useMemo)(() => (frameSources ?? []).filter(Boolean), [frameSources]);
-  const portraitSourceMap = (0, import_react3.useMemo)(
+  const validFrames = (0, import_react6.useMemo)(() => (frameSources ?? []).filter(Boolean), [frameSources]);
+  const portraitSourceMap = (0, import_react6.useMemo)(
     () => buildPortraitSourceMap(portraitSrc, portraitSources),
     [portraitSrc, portraitSources]
   );
-  const hasPortrait = (0, import_react3.useMemo)(
+  const hasPortrait = (0, import_react6.useMemo)(
     () => Object.values(portraitSourceMap).some(Boolean),
     [portraitSourceMap]
   );
-  const allPortraitSrcs = (0, import_react3.useMemo)(
+  const allPortraitSrcs = (0, import_react6.useMemo)(
     () => Object.values(portraitSourceMap).flatMap(
       (src) => typeof src === "string" ? [src] : [...src ?? []]
     ),
     [portraitSourceMap]
   );
-  (0, import_react3.useEffect)(() => {
+  (0, import_react6.useEffect)(() => {
     preloadImages(allPortraitSrcs);
   }, [allPortraitSrcs]);
-  const [activePortraitSrcResolved, setActivePortraitSrcResolved] = (0, import_react3.useState)("");
+  const [activePortraitSrcResolved, setActivePortraitSrcResolved] = (0, import_react6.useState)("");
   const frameCount = validFrames.length;
-  const [frameIndex, setFrameIndex] = (0, import_react3.useState)(0);
-  const [isPointerDown, setIsPointerDown] = (0, import_react3.useState)(false);
-  const [isHovered, setIsHovered] = (0, import_react3.useState)(false);
+  const [frameIndex, setFrameIndex] = (0, import_react6.useState)(0);
+  const [isPointerDown, setIsPointerDown] = (0, import_react6.useState)(false);
+  const [isHovered, setIsHovered] = (0, import_react6.useState)(false);
   const { hoverPhase, hasActivatedPortrait, activePortraitDirection, setActivePortraitDirection } = useHoverPhaseTransition({ isHovered, hasPortrait, reducedMotion });
-  (0, import_react3.useEffect)(() => {
+  (0, import_react6.useEffect)(() => {
     if (hoverPhase !== "portrait") {
       return;
     }
@@ -930,7 +933,7 @@ function InteractiveHeroLogo({
     panX.set(0);
     panY.set(0);
   }, [hoverPhase, panX, panY, tiltX, tiltY]);
-  (0, import_react3.useEffect)(() => {
+  (0, import_react6.useEffect)(() => {
     if (frameCount <= 1 || reducedMotion) {
       setFrameIndex(0);
       return;
@@ -942,11 +945,11 @@ function InteractiveHeroLogo({
     });
     return unsubscribe;
   }, [frameCount, reducedMotion, scrubSpring]);
-  const handlePointerDown = (0, import_react3.useCallback)(() => setIsPointerDown(true), []);
-  const handlePointerUp = (0, import_react3.useCallback)(() => setIsPointerDown(false), []);
-  const handlePointerEnter = (0, import_react3.useCallback)(() => setIsHovered(true), []);
-  const handleInnerPointerLeave = (0, import_react3.useCallback)(() => setIsHovered(false), []);
-  const handlePointerMove = (0, import_react3.useCallback)(
+  const handlePointerDown = (0, import_react6.useCallback)(() => setIsPointerDown(true), []);
+  const handlePointerUp = (0, import_react6.useCallback)(() => setIsPointerDown(false), []);
+  const handlePointerEnter = (0, import_react6.useCallback)(() => setIsHovered(true), []);
+  const handleInnerPointerLeave = (0, import_react6.useCallback)(() => setIsHovered(false), []);
+  const handlePointerMove = (0, import_react6.useCallback)(
     (event) => {
       if (reducedMotion) return;
       const rect = rootRef.current?.getBoundingClientRect();
@@ -984,7 +987,7 @@ function InteractiveHeroLogo({
       tiltY
     ]
   );
-  const handlePointerLeave = (0, import_react3.useCallback)(() => {
+  const handlePointerLeave = (0, import_react6.useCallback)(() => {
     setIsHovered(false);
     setIsPointerDown(false);
     setActivePortraitDirection(DEFAULT_PORTRAIT_DIRECTION);
@@ -994,7 +997,7 @@ function InteractiveHeroLogo({
     panX.set(0);
     panY.set(0);
   }, [panX, panY, scrub, setActivePortraitDirection, tiltX, tiltY]);
-  (0, import_react3.useEffect)(() => {
+  (0, import_react6.useEffect)(() => {
     const rawSrc = portraitSourceMap[activePortraitDirection] ?? portraitSourceMap[DEFAULT_PORTRAIT_DIRECTION];
     if (rawSrc) {
       setActivePortraitSrcResolved(getRandomPortraitSrc(rawSrc));
@@ -1117,44 +1120,11 @@ function HeroButtonsRow({ items, motionProps, sx, ...other }) {
 }
 
 // src/components/material/navigation/floating-sub-nav/floating-sub-nav.tsx
-var import_react5 = require("react");
+var import_react9 = require("react");
 var import_framer_motion10 = require("framer-motion");
 var import_Box9 = __toESM(require("@mui/material/Box"), 1);
 
-// src/utils/theme/theme-utils/theme-utils.ts
-function channelAlpha(channel, alpha) {
-  return `rgba(${channel} / ${alpha})`;
-}
-
-// src/components/material/navigation/floating-sub-nav/floating-sub-nav.const.ts
-var SUB_NAV_BUTTON_SIZE = {
-  xs: 36,
-  sm: 38,
-  md: 42,
-  lg: 44
-};
-var PILL_BUTTON_ROW_SPACING = 0.5;
-
 // src/components/material/navigation/floating-sub-nav/floating-sub-nav.styles.ts
-var grey500Ch = (theme) => theme.vars.palette.grey["500Channel"];
-var blackCh = (theme) => theme.vars.palette.common["blackChannel"];
-var pillSx = (theme) => ({
-  display: "flex",
-  flexDirection: "column",
-  alignItems: "center",
-  p: 0.5,
-  borderRadius: 2,
-  bgcolor: "background.paper",
-  border: `1px solid ${channelAlpha(grey500Ch(theme), 0.14)}`,
-  boxShadow: [
-    `0 2px 8px 0 ${channelAlpha(grey500Ch(theme), 0.1)}`,
-    `0 8px 32px -4px ${channelAlpha(grey500Ch(theme), 0.18)}`
-  ].join(", "),
-  ...theme.applyStyles("dark", {
-    border: `1px solid ${channelAlpha(grey500Ch(theme), 0.08)}`,
-    boxShadow: `0 1px 4px 0 ${channelAlpha(blackCh(theme), 0.12)}`
-  })
-});
 var stickyWrapperSx = (theme) => ({
   position: "sticky",
   bottom: { xs: 32, sm: 32, md: 40 },
@@ -1177,6 +1147,70 @@ var fixedWrapperSx = (theme) => ({
   transform: "translateX(-50%)",
   zIndex: theme.zIndex.speedDial
 });
+
+// src/components/material/navigation/floating-sub-nav/nav-pill/nav-pill.tsx
+var import_react8 = __toESM(require("react"), 1);
+var import_framer_motion9 = require("framer-motion");
+var import_Box8 = __toESM(require("@mui/material/Box"), 1);
+var import_Stack = __toESM(require("@mui/material/Stack"), 1);
+
+// src/components/material/navigation/floating-sub-nav/nav-pill/nav-pill.animations.ts
+var PILL_EASING = [0.4, 0, 0.2, 1];
+var PILL_TRANSITION_DURATION = 0.28;
+var pillTransition = {
+  duration: PILL_TRANSITION_DURATION,
+  ease: PILL_EASING
+};
+var pillVariants = {
+  initial: { opacity: 0, y: 20 },
+  animate: { opacity: 1, y: 0 },
+  exit: { opacity: 0, y: 10 }
+};
+
+// src/components/material/navigation/floating-sub-nav/nav-pill/nav-pill.const.ts
+var PILL_BUTTON_ROW_SPACING = 0.5;
+
+// src/utils/theme/theme-utils/theme-utils.ts
+function channelAlpha(channel, alpha) {
+  return `rgba(${channel} / ${alpha})`;
+}
+
+// src/components/material/navigation/floating-sub-nav/nav-pill/nav-pill.styles.ts
+var grey500Ch = (theme) => theme.vars.palette.grey["500Channel"];
+var blackCh = (theme) => theme.vars.palette.common["blackChannel"];
+var pillSx = (theme) => ({
+  display: "flex",
+  flexDirection: "column",
+  alignItems: "center",
+  p: 0.5,
+  borderRadius: 2,
+  bgcolor: "background.paper",
+  border: `1px solid ${channelAlpha(grey500Ch(theme), 0.14)}`,
+  boxShadow: [
+    `0 2px 8px 0 ${channelAlpha(grey500Ch(theme), 0.1)}`,
+    `0 8px 32px -4px ${channelAlpha(grey500Ch(theme), 0.18)}`
+  ].join(", "),
+  ...theme.applyStyles("dark", {
+    border: `1px solid ${channelAlpha(grey500Ch(theme), 0.08)}`,
+    boxShadow: `0 1px 4px 0 ${channelAlpha(blackCh(theme), 0.12)}`
+  })
+});
+
+// src/components/material/navigation/floating-sub-nav/sub-nav-button/sub-nav-button.tsx
+var import_react7 = __toESM(require("react"), 1);
+var import_Tooltip = __toESM(require("@mui/material/Tooltip"), 1);
+var import_ButtonBase = __toESM(require("@mui/material/ButtonBase"), 1);
+
+// src/components/material/navigation/floating-sub-nav/sub-nav-button/sub-nav-button.const.ts
+var SUB_NAV_BUTTON_SIZE = {
+  xs: 36,
+  sm: 38,
+  md: 42,
+  lg: 44
+};
+
+// src/components/material/navigation/floating-sub-nav/sub-nav-button/sub-nav-button.styles.ts
+var grey500Ch2 = (theme) => theme.vars.palette.grey["500Channel"];
 var subNavButtonSx = (isActive) => (theme) => ({
   display: "flex",
   alignItems: "center",
@@ -1200,11 +1234,11 @@ var subNavButtonSx = (isActive) => (theme) => ({
   "&:hover": {
     opacity: 0.72,
     color: "text.primary",
-    bgcolor: channelAlpha(grey500Ch(theme), 0.08)
+    bgcolor: channelAlpha(grey500Ch2(theme), 0.08)
   },
   "&:active": {
     opacity: 0.56,
-    bgcolor: channelAlpha(grey500Ch(theme), 0.12)
+    bgcolor: channelAlpha(grey500Ch2(theme), 0.12)
   },
   ...isActive && {
     color: "primary.main",
@@ -1221,52 +1255,36 @@ var subNavButtonSx = (isActive) => (theme) => ({
   }
 });
 
-// src/components/material/navigation/floating-sub-nav/nav-pill.tsx
-var import_framer_motion9 = require("framer-motion");
-var import_Box8 = __toESM(require("@mui/material/Box"), 1);
-var import_Stack = __toESM(require("@mui/material/Stack"), 1);
-
-// src/components/material/navigation/floating-sub-nav/floating-sub-nav.animations.ts
-var PILL_EASING = [0.4, 0, 0.2, 1];
-var PILL_TRANSITION_DURATION = 0.28;
-var pillTransition = {
-  duration: PILL_TRANSITION_DURATION,
-  ease: PILL_EASING
-};
-var pillVariants = {
-  initial: { opacity: 0, y: 20 },
-  animate: { opacity: 1, y: 0 },
-  exit: { opacity: 0, y: 10 }
-};
-
-// src/components/material/navigation/floating-sub-nav/sub-nav-button.tsx
-var import_react4 = require("react");
-var import_Tooltip = __toESM(require("@mui/material/Tooltip"), 1);
-var import_ButtonBase = __toESM(require("@mui/material/ButtonBase"), 1);
+// src/components/material/navigation/floating-sub-nav/sub-nav-button/sub-nav-button.tsx
 var import_jsx_runtime8 = require("react/jsx-runtime");
-function SubNavButton({ item, isActive, onPress }) {
-  const handleClick = (0, import_react4.useCallback)(() => onPress(item.id), [onPress, item.id]);
-  return /* @__PURE__ */ (0, import_jsx_runtime8.jsx)(import_Tooltip.default, { title: item.label, placement: "top", arrow: true, children: /* @__PURE__ */ (0, import_jsx_runtime8.jsx)(
-    import_ButtonBase.default,
-    {
-      disableRipple: true,
-      component: "button",
-      type: "button",
-      "aria-label": item.label,
-      "aria-pressed": isActive,
-      onClick: handleClick,
-      sx: subNavButtonSx(isActive),
-      children: item.icon
-    }
-  ) });
-}
+var SubNavButton = import_react7.default.forwardRef(
+  function SubNavButton2({ item, isActive, onPress }, ref) {
+    const handleClick = (0, import_react7.useCallback)(() => onPress(item.id), [onPress, item.id]);
+    return /* @__PURE__ */ (0, import_jsx_runtime8.jsx)(import_Tooltip.default, { title: item.label, placement: "top", arrow: true, children: /* @__PURE__ */ (0, import_jsx_runtime8.jsx)(
+      import_ButtonBase.default,
+      {
+        ref,
+        disableRipple: true,
+        component: "button",
+        type: "button",
+        "aria-label": item.label,
+        "aria-pressed": isActive,
+        onClick: handleClick,
+        sx: subNavButtonSx(isActive),
+        children: item.icon
+      }
+    ) });
+  }
+);
+SubNavButton.displayName = "SubNavButton";
 
-// src/components/material/navigation/floating-sub-nav/nav-pill.tsx
+// src/components/material/navigation/floating-sub-nav/nav-pill/nav-pill.tsx
 var import_jsx_runtime9 = require("react/jsx-runtime");
-function NavPill({ items, activeId, onPress }) {
+var NavPill = import_react8.default.forwardRef(function NavPill2({ items, activeId, onPress }, ref) {
   return /* @__PURE__ */ (0, import_jsx_runtime9.jsx)(
     import_framer_motion9.m.div,
     {
+      ref,
       variants: pillVariants,
       initial: "initial",
       animate: "animate",
@@ -1283,12 +1301,13 @@ function NavPill({ items, activeId, onPress }) {
       )) }) })
     }
   );
-}
+});
+NavPill.displayName = "NavPill";
 
 // src/components/material/navigation/floating-sub-nav/floating-sub-nav.tsx
 var import_jsx_runtime10 = require("react/jsx-runtime");
 function FloatingSubNav({ items, activeId, onSelect, sticky = false }) {
-  const handlePress = (0, import_react5.useCallback)((id) => onSelect(id), [onSelect]);
+  const handlePress = (0, import_react9.useCallback)((id) => onSelect(id), [onSelect]);
   if (sticky) {
     return /* @__PURE__ */ (0, import_jsx_runtime10.jsx)(import_Box9.default, { sx: stickyWrapperSx, children: /* @__PURE__ */ (0, import_jsx_runtime10.jsx)(import_Box9.default, { sx: stickyInnerSx, children: /* @__PURE__ */ (0, import_jsx_runtime10.jsx)(import_framer_motion10.AnimatePresence, { children: activeId !== null && /* @__PURE__ */ (0, import_jsx_runtime10.jsx)(NavPill, { items, activeId, onPress: handlePress }) }) }) });
   }
@@ -1296,7 +1315,7 @@ function FloatingSubNav({ items, activeId, onSelect, sticky = false }) {
 }
 
 // src/components/section/hero/scroll-parallax/scroll-parallax-hero.tsx
-var import_react7 = require("react");
+var import_react11 = require("react");
 var import_framer_motion13 = require("framer-motion");
 var import_Box10 = __toESM(require("@mui/material/Box"), 1);
 var import_Container = __toESM(require("@mui/material/Container"), 1);
@@ -1349,27 +1368,6 @@ var heroStackSx = {
 };
 var parallaxYStyle = (y) => ({ y });
 var parallaxOpacityStyle = (opacity) => ({ opacity });
-var headingH1Sx = (theme) => ({
-  my: 0,
-  mx: "auto",
-  maxWidth: 680,
-  display: "flex",
-  flexWrap: "wrap",
-  typography: "h2",
-  justifyContent: "center",
-  [theme.breakpoints.up("lg")]: {
-    fontSize: theme.typography.pxToRem(72),
-    lineHeight: "90px"
-  }
-});
-var headingHighlightSx = (theme) => ({
-  backgroundImage: `linear-gradient(300deg, ${theme.vars.palette.primary.main} 0%, ${theme.vars.palette.warning.main} 25%, ${theme.vars.palette.primary.main} 50%, ${theme.vars.palette.warning.main} 75%, ${theme.vars.palette.primary.main} 100%)`,
-  backgroundSize: "400%",
-  backgroundClip: "text",
-  WebkitBackgroundClip: "text",
-  WebkitTextFillColor: "transparent",
-  ml: { xs: 0.75, md: 1, xl: 1.5 }
-});
 
 // src/components/section/hero/scroll-parallax/scroll-parallax-hero.const.ts
 var DEFAULT_PARALLAX_MULTIPLIERS = {
@@ -1381,12 +1379,12 @@ var DEFAULT_PARALLAX_MULTIPLIERS = {
 };
 
 // src/components/section/hero/scroll-parallax/use-scroll-percent.ts
-var import_react6 = require("react");
+var import_react10 = require("react");
 var import_framer_motion11 = require("framer-motion");
 function useScrollPercent() {
-  const elementRef = (0, import_react6.useRef)(null);
+  const elementRef = (0, import_react10.useRef)(null);
   const { scrollY } = (0, import_framer_motion11.useScroll)();
-  const [percent, setPercent] = (0, import_react6.useState)(0);
+  const [percent, setPercent] = (0, import_react10.useState)(0);
   (0, import_framer_motion11.useMotionValueEvent)(scrollY, "change", (scrollHeight) => {
     if (!elementRef.current || elementRef.current.offsetHeight === 0) return;
     const heroHeight = elementRef.current.offsetHeight;
@@ -1429,8 +1427,8 @@ function ScrollParallaxHero({
 }) {
   const scrollProgress = useScrollPercent();
   const mdUp = (0, import_useMediaQuery2.default)((theme) => theme.breakpoints.up("md"));
-  const [mounted, setMounted] = (0, import_react7.useState)(false);
-  (0, import_react7.useEffect)(() => {
+  const [mounted, setMounted] = (0, import_react11.useState)(false);
+  (0, import_react11.useEffect)(() => {
     setMounted(true);
   }, []);
   const pm = { ...DEFAULT_PARALLAX_MULTIPLIERS, ...parallax };
@@ -1487,11 +1485,12 @@ function ScrollParallaxHero({
   );
 }
 
-// src/components/section/hero/scroll-parallax/animated-hero-heading.tsx
+// src/components/section/hero/scroll-parallax/animated-hero-heading/animated-hero-heading.tsx
+var import_react12 = __toESM(require("react"), 1);
 var import_framer_motion14 = require("framer-motion");
 var import_Box11 = __toESM(require("@mui/material/Box"), 1);
 
-// src/components/section/hero/scroll-parallax/scroll-parallax-hero.animations.ts
+// src/components/section/hero/scroll-parallax/animated-hero-heading/animated-hero-heading.animations.ts
 var headingMotionProps = {
   variants: fade("inUp", { distance: 24 })
 };
@@ -1503,33 +1502,63 @@ var gradientHighlightTransition = {
   repeatType: "reverse"
 };
 
-// src/components/section/hero/scroll-parallax/animated-hero-heading.tsx
+// src/components/section/hero/scroll-parallax/animated-hero-heading/animated-hero-heading.styles.ts
+var headingH1Sx = (theme) => ({
+  my: 0,
+  mx: "auto",
+  maxWidth: 680,
+  display: "flex",
+  flexWrap: "wrap",
+  typography: "h2",
+  justifyContent: "center",
+  [theme.breakpoints.up("lg")]: {
+    fontSize: theme.typography.pxToRem(72),
+    lineHeight: "90px"
+  }
+});
+var headingHighlightSx = (theme) => ({
+  backgroundImage: `linear-gradient(300deg, ${theme.vars.palette.primary.main} 0%, ${theme.vars.palette.warning.main} 25%, ${theme.vars.palette.primary.main} 50%, ${theme.vars.palette.warning.main} 75%, ${theme.vars.palette.primary.main} 100%)`,
+  backgroundSize: "400%",
+  backgroundClip: "text",
+  WebkitBackgroundClip: "text",
+  WebkitTextFillColor: "transparent",
+  ml: { xs: 0.75, md: 1, xl: 1.5 }
+});
+
+// src/components/section/hero/scroll-parallax/animated-hero-heading/animated-hero-heading.tsx
 var import_jsx_runtime12 = require("react/jsx-runtime");
-function AnimatedHeroHeading({
-  subheading,
-  highlight,
-  motionProps,
-  sx
-}) {
-  const resolvedMotionProps = motionProps ?? headingMotionProps;
-  return /* @__PURE__ */ (0, import_jsx_runtime12.jsx)(import_framer_motion14.motion.div, { ...resolvedMotionProps, children: /* @__PURE__ */ (0, import_jsx_runtime12.jsxs)(import_Box11.default, { component: "h1", sx: [headingH1Sx, ...Array.isArray(sx) ? sx : [sx]], children: [
-    subheading,
-    " ",
-    /* @__PURE__ */ (0, import_jsx_runtime12.jsx)(
+var AnimatedHeroHeading = import_react12.default.forwardRef(
+  function AnimatedHeroHeading2({ subheading, highlight, motionProps, sx, ...other }, ref) {
+    const resolvedMotionProps = motionProps ?? headingMotionProps;
+    return /* @__PURE__ */ (0, import_jsx_runtime12.jsx)(import_framer_motion14.motion.div, { ...resolvedMotionProps, children: /* @__PURE__ */ (0, import_jsx_runtime12.jsxs)(
       import_Box11.default,
       {
-        component: import_framer_motion14.motion.span,
-        animate: gradientHighlightAnimate,
-        transition: gradientHighlightTransition,
-        sx: headingHighlightSx,
-        children: highlight
+        ref,
+        component: "h1",
+        sx: [headingH1Sx, ...Array.isArray(sx) ? sx : [sx]],
+        ...other,
+        children: [
+          subheading,
+          " ",
+          /* @__PURE__ */ (0, import_jsx_runtime12.jsx)(
+            import_Box11.default,
+            {
+              component: import_framer_motion14.motion.span,
+              animate: gradientHighlightAnimate,
+              transition: gradientHighlightTransition,
+              sx: headingHighlightSx,
+              children: highlight
+            }
+          )
+        ]
       }
-    )
-  ] }) });
-}
+    ) });
+  }
+);
+AnimatedHeroHeading.displayName = "AnimatedHeroHeading";
 
 // src/components/section/faq/accordion/faq-accordion.tsx
-var import_react11 = require("react");
+var import_react17 = require("react");
 var import_framer_motion17 = require("framer-motion");
 var import_Box16 = __toESM(require("@mui/material/Box"), 1);
 var import_Stack4 = __toESM(require("@mui/material/Stack"), 1);
@@ -1541,7 +1570,7 @@ var import_AccordionDetails = __toESM(require("@mui/material/AccordionDetails"),
 var import_AccordionSummary = __toESM(require("@mui/material/AccordionSummary"), 1);
 
 // src/components/material/data-display/icon/giselle/giselle-icon.tsx
-var import_react8 = require("@iconify/react");
+var import_react13 = require("@iconify/react");
 var import_Box12 = __toESM(require("@mui/material/Box"), 1);
 
 // src/components/material/data-display/icon/giselle/giselle-icon.styles.ts
@@ -1574,7 +1603,7 @@ function GiselleIcon({
       sx: [giselleIconRootSx(width, h), ...Array.isArray(sx) ? sx : [sx]],
       ...other,
       children: /* @__PURE__ */ (0, import_jsx_runtime13.jsx)(
-        import_react8.Icon,
+        import_react13.Icon,
         {
           icon,
           width: "100%",
@@ -1603,27 +1632,43 @@ var txtGradientSpanSx = (theme) => ({
   backgroundClip: "text",
   color: "transparent"
 });
+var sectionTitleRootSx = {
+  gap: 3,
+  display: "flex",
+  flexDirection: "column"
+};
+var sectionTitleDescriptionSx = {
+  color: "text.secondary",
+  typography: "body1"
+};
 
-// src/components/material/layout/section-title/section-caption.tsx
+// src/components/material/layout/section-title/section-caption/section-caption.tsx
+var import_react14 = __toESM(require("react"), 1);
 var import_Box13 = __toESM(require("@mui/material/Box"), 1);
+
+// src/components/material/layout/section-title/section-caption/section-caption.styles.ts
+var sectionCaptionSx = {
+  typography: "overline",
+  color: "text.disabled"
+};
+
+// src/components/material/layout/section-title/section-caption/section-caption.tsx
 var import_jsx_runtime14 = require("react/jsx-runtime");
-function SectionCaption({ title, sx, ...other }) {
-  return /* @__PURE__ */ (0, import_jsx_runtime14.jsx)(
-    import_Box13.default,
-    {
-      component: "span",
-      sx: [
-        {
-          typography: "overline",
-          color: "text.disabled"
-        },
-        ...Array.isArray(sx) ? sx : [sx]
-      ],
-      ...other,
-      children: title
-    }
-  );
-}
+var SectionCaption = import_react14.default.forwardRef(
+  function SectionCaption2({ title, sx, ...other }, ref) {
+    return /* @__PURE__ */ (0, import_jsx_runtime14.jsx)(
+      import_Box13.default,
+      {
+        ref,
+        component: "span",
+        sx: [sectionCaptionSx, ...Array.isArray(sx) ? sx : [sx]],
+        ...other,
+        children: title
+      }
+    );
+  }
+);
+SectionCaption.displayName = "SectionCaption";
 
 // src/components/material/layout/section-title/section-title.tsx
 var import_jsx_runtime15 = require("react/jsx-runtime");
@@ -1638,38 +1683,24 @@ function SectionTitle({
   titleVariant = "h2",
   ...other
 }) {
-  return /* @__PURE__ */ (0, import_jsx_runtime15.jsxs)(
-    import_Box14.default,
-    {
-      sx: [
-        {
-          gap: 3,
-          display: "flex",
-          flexDirection: "column"
-        },
-        ...Array.isArray(sx) ? sx : [sx]
-      ],
-      ...other,
-      children: [
-        caption && /* @__PURE__ */ (0, import_jsx_runtime15.jsx)(SectionCaption, { title: caption, sx: slotProps?.caption?.sx }),
-        /* @__PURE__ */ (0, import_jsx_runtime15.jsxs)(import_Typography.default, { component: titleComponent, variant: titleVariant, sx: slotProps?.title?.sx, children: [
-          title,
-          " ",
-          txtGradient && /* @__PURE__ */ (0, import_jsx_runtime15.jsx)(import_Box14.default, { component: "span", sx: txtGradientSpanSx, children: txtGradient })
-        ] }),
-        description && /* @__PURE__ */ (0, import_jsx_runtime15.jsx)(
-          import_Box14.default,
-          {
-            sx: [
-              { color: "text.secondary", typography: "body1" },
-              ...Array.isArray(slotProps?.description?.sx) ? slotProps.description.sx : [slotProps?.description?.sx]
-            ],
-            children: description
-          }
-        )
-      ]
-    }
-  );
+  return /* @__PURE__ */ (0, import_jsx_runtime15.jsxs)(import_Box14.default, { sx: [sectionTitleRootSx, ...Array.isArray(sx) ? sx : [sx]], ...other, children: [
+    caption && /* @__PURE__ */ (0, import_jsx_runtime15.jsx)(SectionCaption, { title: caption, sx: slotProps?.caption?.sx }),
+    /* @__PURE__ */ (0, import_jsx_runtime15.jsxs)(import_Typography.default, { component: titleComponent, variant: titleVariant, sx: slotProps?.title?.sx, children: [
+      title,
+      " ",
+      txtGradient && /* @__PURE__ */ (0, import_jsx_runtime15.jsx)(import_Box14.default, { component: "span", sx: txtGradientSpanSx, children: txtGradient })
+    ] }),
+    description && /* @__PURE__ */ (0, import_jsx_runtime15.jsx)(
+      import_Box14.default,
+      {
+        sx: [
+          sectionTitleDescriptionSx,
+          ...Array.isArray(slotProps?.description?.sx) ? slotProps.description.sx : [slotProps?.description?.sx]
+        ],
+        children: description
+      }
+    )
+  ] });
 }
 
 // src/components/section/faq/accordion/faq-accordion.const.ts
@@ -1706,15 +1737,30 @@ var contactSectionSx = {
   textAlign: "center",
   background: `linear-gradient(to left, ${channelAlpha("var(--mui-palette-grey-500Channel)", 0.08)}, transparent)`
 };
+var motionViewportSx = {
+  pt: 10,
+  position: "relative"
+};
+var sectionTitleSx = {
+  textAlign: "center"
+};
+var footerWrapperSx = {
+  position: "relative"
+};
+var contactDescriptionSx = {
+  mt: 2,
+  mb: 3,
+  color: "text.secondary"
+};
 
 // src/components/section/faq/accordion/motion-viewport/faq-motion-viewport.tsx
-var import_react9 = __toESM(require("react"), 1);
+var import_react15 = __toESM(require("react"), 1);
 var import_framer_motion15 = require("framer-motion");
 var import_Box15 = __toESM(require("@mui/material/Box"), 1);
 var import_useMediaQuery3 = __toESM(require("@mui/material/useMediaQuery"), 1);
 var import_jsx_runtime16 = require("react/jsx-runtime");
 var MotionBox = (0, import_framer_motion15.motion)(import_Box15.default);
-var FaqMotionViewport = import_react9.default.forwardRef(
+var FaqMotionViewport = import_react15.default.forwardRef(
   function FaqMotionViewport2({ children, sx }, ref) {
     const smDown = (0, import_useMediaQuery3.default)((theme) => theme.breakpoints.down("sm"));
     if (smDown) {
@@ -1740,7 +1786,7 @@ FaqMotionViewport.displayName = "FaqMotionViewport";
 var import_Stack3 = __toESM(require("@mui/material/Stack"), 1);
 
 // src/components/section/faq/accordion/accordion-svg/faq-accordion-svg.tsx
-var import_react10 = __toESM(require("react"), 1);
+var import_react16 = __toESM(require("react"), 1);
 var import_framer_motion16 = require("framer-motion");
 var import_styles = require("@mui/material/styles");
 
@@ -1766,7 +1812,7 @@ var import_jsx_runtime17 = require("react/jsx-runtime");
 var MotionSvg = (0, import_styles.styled)(import_framer_motion16.motion.svg, {
   shouldForwardProp: (prop) => prop !== "vertical"
 })``;
-var FaqFloatLine = import_react10.default.forwardRef(
+var FaqFloatLine = import_react16.default.forwardRef(
   function FaqFloatLine2({ sx, vertical, ...other }, ref) {
     return /* @__PURE__ */ (0, import_jsx_runtime17.jsx)(
       MotionSvg,
@@ -1814,7 +1860,7 @@ var FaqFloatLine = import_react10.default.forwardRef(
   }
 );
 FaqFloatLine.displayName = "FaqFloatLine";
-var FaqFloatPlusIcon = import_react10.default.forwardRef(function FaqFloatPlusIcon2({ sx, ...other }, ref) {
+var FaqFloatPlusIcon = import_react16.default.forwardRef(function FaqFloatPlusIcon2({ sx, ...other }, ref) {
   return /* @__PURE__ */ (0, import_jsx_runtime17.jsx)(
     MotionSvg,
     {
@@ -1842,7 +1888,7 @@ var FaqFloatPlusIcon = import_react10.default.forwardRef(function FaqFloatPlusIc
   );
 });
 FaqFloatPlusIcon.displayName = "FaqFloatPlusIcon";
-var FaqFloatTriangleDownIcon = import_react10.default.forwardRef(
+var FaqFloatTriangleDownIcon = import_react16.default.forwardRef(
   function FaqFloatTriangleDownIcon2({ sx, ...other }, ref) {
     return /* @__PURE__ */ (0, import_jsx_runtime17.jsx)(
       MotionSvg,
@@ -1890,16 +1936,24 @@ var smallTriangleSx = {
   opacity: 0.24,
   position: "static"
 };
+var primaryTriangleSx = {
+  position: "static",
+  opacity: 0.12
+};
+var verticalFloatLineSx = {
+  top: 0,
+  left: FAQ_FLOAT_LINE_LEFT
+};
 
 // src/components/section/faq/accordion/top-lines/faq-top-lines.tsx
 var import_jsx_runtime18 = require("react/jsx-runtime");
 function FaqTopLines() {
   return /* @__PURE__ */ (0, import_jsx_runtime18.jsxs)(import_jsx_runtime18.Fragment, { children: [
     /* @__PURE__ */ (0, import_jsx_runtime18.jsxs)(import_Stack3.default, { spacing: 8, sx: topTriangleStackSx, children: [
-      /* @__PURE__ */ (0, import_jsx_runtime18.jsx)(FaqFloatTriangleDownIcon, { sx: { position: "static", opacity: 0.12 } }),
+      /* @__PURE__ */ (0, import_jsx_runtime18.jsx)(FaqFloatTriangleDownIcon, { sx: primaryTriangleSx }),
       /* @__PURE__ */ (0, import_jsx_runtime18.jsx)(FaqFloatTriangleDownIcon, { sx: smallTriangleSx })
     ] }),
-    /* @__PURE__ */ (0, import_jsx_runtime18.jsx)(FaqFloatLine, { vertical: true, sx: { top: 0, left: FAQ_FLOAT_LINE_LEFT } })
+    /* @__PURE__ */ (0, import_jsx_runtime18.jsx)(FaqFloatLine, { vertical: true, sx: verticalFloatLineSx })
   ] });
 }
 FaqTopLines.displayName = "FaqTopLines";
@@ -1907,14 +1961,24 @@ FaqTopLines.displayName = "FaqTopLines";
 // src/components/section/faq/accordion/bottom-lines/faq-bottom-lines.const.ts
 var FAQ_PLUS_ICON_LEFT = 72;
 
+// src/components/section/faq/accordion/bottom-lines/faq-bottom-lines.styles.ts
+var floatLineEdgeSx = (edge) => ({
+  ...edge === "top" ? { top: 0 } : { bottom: 0 },
+  left: 0
+});
+var floatPlusIconEdgeSx = (edge) => ({
+  ...edge === "top" ? { top: -8 } : { bottom: -8 },
+  left: FAQ_PLUS_ICON_LEFT
+});
+
 // src/components/section/faq/accordion/bottom-lines/faq-bottom-lines.tsx
 var import_jsx_runtime19 = require("react/jsx-runtime");
 function FaqBottomLines() {
   return /* @__PURE__ */ (0, import_jsx_runtime19.jsxs)(import_jsx_runtime19.Fragment, { children: [
-    /* @__PURE__ */ (0, import_jsx_runtime19.jsx)(FaqFloatLine, { sx: { top: 0, left: 0 } }),
-    /* @__PURE__ */ (0, import_jsx_runtime19.jsx)(FaqFloatLine, { sx: { bottom: 0, left: 0 } }),
-    /* @__PURE__ */ (0, import_jsx_runtime19.jsx)(FaqFloatPlusIcon, { sx: { top: -8, left: FAQ_PLUS_ICON_LEFT } }),
-    /* @__PURE__ */ (0, import_jsx_runtime19.jsx)(FaqFloatPlusIcon, { sx: { bottom: -8, left: FAQ_PLUS_ICON_LEFT } })
+    /* @__PURE__ */ (0, import_jsx_runtime19.jsx)(FaqFloatLine, { sx: floatLineEdgeSx("top") }),
+    /* @__PURE__ */ (0, import_jsx_runtime19.jsx)(FaqFloatLine, { sx: floatLineEdgeSx("bottom") }),
+    /* @__PURE__ */ (0, import_jsx_runtime19.jsx)(FaqFloatPlusIcon, { sx: floatPlusIconEdgeSx("top") }),
+    /* @__PURE__ */ (0, import_jsx_runtime19.jsx)(FaqFloatPlusIcon, { sx: floatPlusIconEdgeSx("bottom") })
   ] });
 }
 FaqBottomLines.displayName = "FaqBottomLines";
@@ -1935,12 +1999,12 @@ function FaqSection({
   sx,
   ...other
 }) {
-  const [expanded, setExpanded] = (0, import_react11.useState)(faqs[0]?.question ?? false);
+  const [expanded, setExpanded] = (0, import_react17.useState)(faqs[0]?.question ?? false);
   const handleChange = (panel) => (_event, isExpanded) => {
     setExpanded(isExpanded ? panel : false);
   };
   const resolvedIcon = typeof contactIcon === "string" ? /* @__PURE__ */ (0, import_jsx_runtime20.jsx)(GiselleIcon, { icon: contactIcon }) : contactIcon;
-  return /* @__PURE__ */ (0, import_jsx_runtime20.jsx)(import_Box16.default, { component: "section", sx: [...Array.isArray(sx) ? sx : [sx]], ...other, children: /* @__PURE__ */ (0, import_jsx_runtime20.jsxs)(FaqMotionViewport, { sx: { pt: 10, position: "relative" }, children: [
+  return /* @__PURE__ */ (0, import_jsx_runtime20.jsx)(import_Box16.default, { component: "section", sx: [...Array.isArray(sx) ? sx : [sx]], ...other, children: /* @__PURE__ */ (0, import_jsx_runtime20.jsxs)(FaqMotionViewport, { sx: motionViewportSx, children: [
     /* @__PURE__ */ (0, import_jsx_runtime20.jsx)(FaqTopLines, {}),
     /* @__PURE__ */ (0, import_jsx_runtime20.jsxs)(import_Container2.default, { children: [
       /* @__PURE__ */ (0, import_jsx_runtime20.jsx)(
@@ -1949,7 +2013,7 @@ function FaqSection({
           caption,
           title,
           txtGradient,
-          sx: { textAlign: "center" }
+          sx: sectionTitleSx
         }
       ),
       /* @__PURE__ */ (0, import_jsx_runtime20.jsx)(import_Box16.default, { sx: contentBoxSx, children: faqs.map((item, index) => /* @__PURE__ */ (0, import_jsx_runtime20.jsxs)(
@@ -1975,11 +2039,11 @@ function FaqSection({
         item.question
       )) })
     ] }),
-    /* @__PURE__ */ (0, import_jsx_runtime20.jsxs)(import_Stack4.default, { sx: { position: "relative" }, children: [
+    /* @__PURE__ */ (0, import_jsx_runtime20.jsxs)(import_Stack4.default, { sx: footerWrapperSx, children: [
       /* @__PURE__ */ (0, import_jsx_runtime20.jsx)(FaqBottomLines, {}),
       contactHref && /* @__PURE__ */ (0, import_jsx_runtime20.jsxs)(import_Box16.default, { sx: contactSectionSx, children: [
         /* @__PURE__ */ (0, import_jsx_runtime20.jsx)(import_framer_motion17.motion.div, { variants: fade("in"), children: /* @__PURE__ */ (0, import_jsx_runtime20.jsx)(import_Typography2.default, { variant: "h4", children: contactTitle }) }),
-        /* @__PURE__ */ (0, import_jsx_runtime20.jsx)(import_framer_motion17.motion.div, { variants: fade("in"), children: /* @__PURE__ */ (0, import_jsx_runtime20.jsx)(import_Typography2.default, { sx: { mt: 2, mb: 3, color: "text.secondary" }, children: contactDescription }) }),
+        /* @__PURE__ */ (0, import_jsx_runtime20.jsx)(import_framer_motion17.motion.div, { variants: fade("in"), children: /* @__PURE__ */ (0, import_jsx_runtime20.jsx)(import_Typography2.default, { sx: contactDescriptionSx, children: contactDescription }) }),
         /* @__PURE__ */ (0, import_jsx_runtime20.jsx)(import_framer_motion17.motion.div, { variants: fade("in"), children: /* @__PURE__ */ (0, import_jsx_runtime20.jsx)(
           import_Button2.default,
           {

@@ -70,7 +70,7 @@ type RadialProgressCardProps = Omit<CardProps, 'title' | 'children'> & {
  * />
  * ```
  *
- * **Quality status (13 May 2026):** DoD 20/20 · Best practices 13/13
+ * **Quality status (02 Sep 2026):** DoD 21/22 · Best practices 13/13 — SonarQube not verified
  */
 declare function RadialProgressCard({ title, subheader, total, totalLabel, chartHeight, series, sx, ...other }: RadialProgressCardProps): react.JSX.Element;
 

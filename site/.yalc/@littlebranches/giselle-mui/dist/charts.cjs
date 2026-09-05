@@ -101,6 +101,9 @@ var chartWrapSx = {
   mx: "auto",
   overflow: "hidden"
 };
+var legendDividerSx = {
+  my: 2
+};
 var legendRowSx = {
   display: "flex",
   flexWrap: "wrap",
@@ -124,6 +127,9 @@ var legendDotSx = (color) => ({
   borderRadius: "50%",
   bgcolor: color,
   flexShrink: 0
+});
+var chartFallbackSx = (chartHeight) => ({
+  height: chartHeight
 });
 
 // src/components/chart/radial-progress/radial-progress-card.tsx
@@ -153,7 +159,7 @@ function RadialProgressCard({
   return /* @__PURE__ */ (0, import_jsx_runtime.jsxs)(import_Card.default, { sx: [...Array.isArray(sx) ? sx : [sx]], ...other, children: [
     (title !== void 0 || subheader !== void 0) && /* @__PURE__ */ (0, import_jsx_runtime.jsx)(import_CardHeader.default, { title, subheader }),
     /* @__PURE__ */ (0, import_jsx_runtime.jsxs)(import_CardContent.default, { children: [
-      /* @__PURE__ */ (0, import_jsx_runtime.jsx)(import_Box.default, { sx: chartWrapSx, children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(import_react.Suspense, { fallback: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(import_Box.default, { sx: { height: chartHeight } }), children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(
+      /* @__PURE__ */ (0, import_jsx_runtime.jsx)(import_Box.default, { sx: chartWrapSx, children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(import_react.Suspense, { fallback: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(import_Box.default, { sx: chartFallbackSx(chartHeight) }), children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(
         ReactApexChart,
         {
           type: "radialBar",
@@ -163,7 +169,7 @@ function RadialProgressCard({
           height: chartHeight
         }
       ) }) }),
-      /* @__PURE__ */ (0, import_jsx_runtime.jsx)(import_Divider.default, { sx: { my: 2 } }),
+      /* @__PURE__ */ (0, import_jsx_runtime.jsx)(import_Divider.default, { sx: legendDividerSx }),
       /* @__PURE__ */ (0, import_jsx_runtime.jsx)(import_Box.default, { sx: legendRowSx, children: series.map((item, i) => /* @__PURE__ */ (0, import_jsx_runtime.jsxs)(import_Box.default, { sx: legendItemSx, children: [
         /* @__PURE__ */ (0, import_jsx_runtime.jsx)(import_Box.default, { sx: legendDotSx(resolvedColors[i] ?? theme.palette.primary.main) }),
         /* @__PURE__ */ (0, import_jsx_runtime.jsx)(import_Typography.default, { variant: "subtitle2", children: item.label }),
