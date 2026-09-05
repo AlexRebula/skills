@@ -6,6 +6,12 @@ disable-model-invocation: true
 
 Implement the work described by the user in the spec or tickets.
 
+## Arguments
+
+`/implement <ticket-or-spec-reference>`: a spec path, an issue number, or a URL. Fetch it and read its full body and comments before starting — never assume the invocation alone (e.g. a bare ticket number passed by `/implement-tickets`) already carries everything the ticket specifies. A ticket's own Definition of Done, acceptance criteria, and any compliance requirements section are load-bearing, not optional context to skip past.
+
+`/implement` (no argument): implement the work already described in the current conversation.
+
 Use /tdd where possible, at pre-agreed seams.
 
 Run typechecking regularly, single test files regularly, and the full test suite once at the end.
