@@ -201,6 +201,7 @@ export function ProvenanceIcon({ slug, provenanceMap = defaultProvenance as Prov
         <DiffModal
           skillName={skillNameFromSlug(slug)}
           upstreamSha={entry.upstreamSha ?? ''}
+          lastUpdated={entry.lastUpdated}
           files={files}
           onClose={() => setDiffOpen(false)}
         />

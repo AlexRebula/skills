@@ -27,6 +27,24 @@ describe('DiffModal', () => {
     expect(screen.getByText(/5b15a47/)).toBeInTheDocument();
   });
 
+  it('renders a formatted last-updated date when provided', () => {
+    render(
+      <DiffModal
+        skillName="ask-matt"
+        upstreamSha="abc1234"
+        lastUpdated="2026-09-05T03:11:08+00:00"
+        files={[SKILL_MD_DIFF]}
+        onClose={() => {}}
+      />,
+    );
+    expect(screen.getByText('updated 5 Sep 2026')).toBeInTheDocument();
+  });
+
+  it('omits the last-updated line entirely when the date is absent', () => {
+    render(<DiffModal skillName="ask-matt" upstreamSha="abc1234" files={[SKILL_MD_DIFF]} onClose={() => {}} />);
+    expect(screen.queryByText(/updated/)).not.toBeInTheDocument();
+  });
+
   it('shows no tabs for a single-file diff', () => {
     render(<DiffModal skillName="ask-matt" upstreamSha="abc1234" files={[SKILL_MD_DIFF]} onClose={() => {}} />);
     expect(screen.queryByRole('tablist')).not.toBeInTheDocument();

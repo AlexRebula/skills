@@ -67,6 +67,11 @@
   color: var(--ifm-color-emphasis-600);
 }
 
+.lastUpdated {
+  font-size: 0.8rem;
+  color: var(--ifm-color-emphasis-600);
+}
+
 .closeButton {
   display: inline-flex;
   align-items: center;
