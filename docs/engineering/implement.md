@@ -6,7 +6,7 @@ It never reopens the plan. There is no interview, no clarifying round, no propos
 
 ## When to reach for it
 
-You invoke this by typing `/implement` yourself: the agent won't reach for it on its own. It ships with `disable-model-invocation: true`, so no other skill can call it either. Wherever [ask-matt](https://aihero.dev/skills-ask-matt) or [to-tickets](https://aihero.dev/skills-to-tickets) says "then `/implement` per ticket", that is an instruction to you, not something the agent will do unprompted.
+You invoke this by typing `/implement` yourself: the agent won't reach for it on its own. It ships with `disable-model-invocation: true`, so no other skill can call it either. Wherever [ask-alex](./ask-alex.md) or [to-tickets](https://aihero.dev/skills-to-tickets) says "then `/implement` per ticket", that is an instruction to you, not something the agent will do unprompted.
 
 Where the work currently lives decides whether this is the right skill:
 
@@ -45,6 +45,14 @@ One run covers one ticket. The tickets [to-tickets](https://aihero.dev/skills-to
 The idea the skill runs on is the **seam**: the public boundary you observe behaviour at, without reaching inside. Tests live at seams. Working at a seam agreed before any code is written is what keeps the tests durable, because the implementation underneath can be rewritten without the tests moving.
 
 The word "pre-agreed" is doing real work, and it is also the skill's weakest joint. Nothing inside `implement` agrees the seams. `tdd` is the skill that asks, and it refuses to write a test at an unconfirmed seam. So in practice the agreement happens either upstream in the spec, or in the first exchange of the run. If it happens nowhere, the precondition never fires and the run quietly becomes "just write the code". Naming the seams in the spec is what stops that.
+
+## What's different from upstream
+
+Three things here don't exist in [Matt Pocock's original `implement`](https://github.com/mattpocock/skills/tree/3cca18b368ae95cdbdebbff572ccafa662551015/skills/engineering/implement), and all three landed the same day, off the back of one real bug: [implement-tickets](https://aihero.dev/skills-implement-tickets) calls `/implement <ticket-number>` with a bare number, not the ticket's full body, and upstream's `implement` had no instruction telling it to go fetch the rest.
+
+- **Fetch the ticket in full.** This fork's `## Arguments` section makes the fetch explicit: given a spec path, an issue number, or a URL, read its full body and comments before writing any code, and treat its Definition of Done, acceptance criteria, and any compliance section as load-bearing, not optional context to skip past. Upstream hands the reference straight to the agent and trusts whatever's already in context — fine when a human pastes the whole ticket in, silent data loss when another skill passes only a number.
+- **Defer to a ticket-named build skill.** If a ticket's own body says to use something other than generic `/implement` — `/create-giselle-component`, say — this fork defers to that instruction instead of building it the generic way. Upstream has no such escape hatch.
+- **Three pre-flight checks**, run before any code gets written: a ready-state check (stop if the ticket's still `to-grill` or `needs-info`), a blocker check (verify every `## Blocked by` reference is actually closed), and an existing-work check (look for a branch or open PR already covering this ticket before starting fresh). These absorb what [start-issue](https://aihero.dev/skills-start-issue) used to do on this fork. `start-issue` is now deprecated: its only real value beyond what these three checks and the fetch-in-full step already cover was a triage-routing decision, and the user who'd have used it for that was routing through `/implement` directly anyway.
 
 ## Common questions
 
@@ -96,4 +104,4 @@ Its neighbours are [to-tickets](https://aihero.dev/skills-to-tickets), which pro
 
 That trust is why [wayfinder](https://aihero.dev/skills-wayfinder) merges onto the chain at [to-spec](https://aihero.dev/skills-to-spec) rather than looping its map straight into `implement`. Go straight to `implement` from a map only when the effort turned out genuinely small.
 
-[ask-matt](https://aihero.dev/skills-ask-matt) is the router over the whole set when you are not sure which flow you are in.
+[ask-alex](./ask-alex.md) is the router over the whole set when you are not sure which flow you are in.
