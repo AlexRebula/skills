@@ -62,7 +62,6 @@ export const FLOW_STAGES = [
   ]),
   stage('Build it', [
     { category: 'engineering', name: 'setup-engineering-skills' },
-    { category: 'engineering', name: 'start-issue' },
     { category: 'engineering', name: 'implement' },
     { category: 'engineering', name: 'implement-tickets' },
     { category: 'engineering', name: 'tdd' },

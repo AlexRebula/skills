@@ -76,13 +76,13 @@ Show counts and a one-line summary per item. Let the maintainer pick.
 
 3. **Verify the claim.** Before any grilling, check that the claim holds up. For a bug, reproduce it from the reporter's steps. For a PR, confirm the diff does what it claims: check it out, run the relevant tests or commands. Report what happened: confirmed (with code path), failed, or insufficient detail (a strong `needs-info` signal). A confirmed verification makes a much stronger agent brief.
 
-4. **Design exploration (if needed).** If the issue has enough information to understand the problem but the solution is not yet specified, apply the `to-grill` state role. The maintainer then invokes `/start-issue` to route to `/grill-me` for design exploration before implementation begins. Do not run `/grill-with-docs` inline during triage for this case.
+4. **Design exploration (if needed).** If the issue has enough information to understand the problem but the solution is not yet specified, apply the `to-grill` state role. The maintainer then invokes `/grill-me` directly for design exploration before implementation begins. Do not run `/grill-with-docs` inline during triage for this case.
 
 5. **Apply the outcome:**
    - `ready-for-agent`: post an agent brief comment ([AGENT-BRIEF.md](AGENT-BRIEF.md)).
    - `ready-for-human`: same structure as an agent brief, but note why it can't be delegated (judgment calls, external access, design decisions, manual testing).
    - `needs-info`: post triage notes (template below).
-   - `to-grill`: apply the role. Tell the maintainer the issue is queued for design exploration via `/start-issue` then `/grill-me`.
+   - `to-grill`: apply the role. Tell the maintainer the issue is queued for design exploration via `/grill-me`.
    - For `wontfix`, close the issue, with the comment depending on *why*:
      - **Already implemented**: the change already exists in the codebase. Point to where it lives; do **not** write to `.out-of-scope/` (that KB is for *rejected* requests, not built ones).
      - **Rejected (bug)**: give a polite explanation, then close.

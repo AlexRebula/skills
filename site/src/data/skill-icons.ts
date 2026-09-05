@@ -15,7 +15,6 @@
 export const SKILL_ICON_NAMES: Record<string, string> = {
   'engineering/deslopify': 'broom',
   'engineering/setup-engineering-skills': 'tuning-2',
-  'engineering/start-issue': 'flag',
   'engineering/ask-alex': 'chat-round-line',
   'engineering/codebase-design': 'structure',
   'engineering/diagnosing-bugs': 'bug-minimalistic',

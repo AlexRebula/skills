@@ -115,12 +115,6 @@
       "skillPath": "skills/engineering/setup-engineering-skills/SKILL.md",
       "computedHash": "f686b246e95afeaeeb3ff21b0f9f2c1ab29b02958468170cc9802fb477508488"
     },
-    "start-issue": {
-      "source": "AlexRebula/skills",
-      "sourceType": "github",
-      "skillPath": "skills/engineering/start-issue/SKILL.md",
-      "computedHash": "51b98f7c36a404db877432a02cc95b74e44eab364d2d016f653977a702afd192"
-    },
     "sync-branches": {
       "source": "AlexRebula/skills",
       "sourceType": "github",
