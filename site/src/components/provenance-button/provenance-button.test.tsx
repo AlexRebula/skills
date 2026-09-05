@@ -10,6 +10,7 @@ const FIXTURE: ProvenanceMap = {
   'engineering/ask-matt': {
     status: 'modified',
     upstreamSha: '5b15a47f2d7150f545fbcacbfe381787fc0230dc',
+    lastUpdated: '2026-09-05T03:11:08+00:00',
     diffs: [
       {
         file: 'SKILL.md',
@@ -61,6 +62,7 @@ describe('ProvenanceButton', () => {
     const dialog = screen.getByRole('dialog');
     expect(dialog).toHaveAccessibleName(/ask-matt/);
     expect(screen.getByText('old wording')).toBeInTheDocument();
+    expect(screen.getByText('updated 5 Sep 2026')).toBeInTheDocument();
 
     await user.click(button);
     expect(screen.queryByRole('dialog')).not.toBeInTheDocument();

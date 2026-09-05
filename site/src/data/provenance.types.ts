@@ -58,6 +58,15 @@ export interface ProvenanceEntry {
    * name even once its real status is correctly resolved.
    */
   renamedFrom?: string;
+  /**
+   * ISO 8601 author date of the most recent commit that touched this skill's
+   * local SKILL.md at HEAD, regardless of status: even an "upstream" or
+   * "original" skill has its own local edit history worth showing. Absent
+   * only if git has no history at all for the path (shouldn't happen for a
+   * real skill folder, but the generator degrades gracefully rather than
+   * failing the whole build over it).
+   */
+  lastUpdated?: string;
 }
 
 export type ProvenanceMap = Record<string, ProvenanceEntry>;

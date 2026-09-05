@@ -9,6 +9,21 @@ function shortSha(sha: string): string {
   return sha.slice(0, 7);
 }
 
+const SHORT_MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+
+/**
+ * Pure: an ISO 8601 date, rendered as e.g. "5 Sep 2026". Invalid input renders
+ * as-is rather than "Invalid Date". A fixed month-name table rather than
+ * `Intl.DateTimeFormat` deliberately: ICU's "en-GB" short month for September
+ * is "Sept", not "Sep" - a locale detail not worth chasing across every
+ * viewer's browser when a plain lookup renders identically everywhere.
+ */
+function formatLastUpdated(isoDate: string): string {
+  const parsed = new Date(isoDate);
+  if (Number.isNaN(parsed.getTime())) return isoDate;
+  return `${parsed.getUTCDate()} ${SHORT_MONTHS[parsed.getUTCMonth()]} ${parsed.getUTCFullYear()}`;
+}
+
 /** The file whose tab is open by default: SKILL.md when present, otherwise whichever file is first. */
 function defaultFile(files: DiffModalProps['files']): string {
   return files.some((f) => f.file === 'SKILL.md') ? 'SKILL.md' : files[0].file;
@@ -95,7 +110,7 @@ function focusableElements(panel: HTMLElement): HTMLElement[] {
  * tab/tabpanel linked via aria-controls), not just the tablist/tab roles
  * with none of the accompanying behavior.
  */
-export function DiffModal({ skillName, upstreamSha, files, onClose }: DiffModalProps): ReactNode {
+export function DiffModal({ skillName, upstreamSha, lastUpdated, files, onClose }: DiffModalProps): ReactNode {
   const [activeFile, setActiveFile] = useState(() => defaultFile(files));
   const panelRef = useRef<HTMLDivElement>(null);
   const closeButtonRef = useRef<HTMLButtonElement>(null);
@@ -198,6 +213,7 @@ export function DiffModal({ skillName, upstreamSha, files, onClose }: DiffModalP
         <div className={styles.header}>
           <span className={styles.skillName}>{skillName}</span>
           <span className={styles.sha}>upstream @ {shortSha(upstreamSha)}</span>
+          {lastUpdated && <span className={styles.lastUpdated}>updated {formatLastUpdated(lastUpdated)}</span>}
           <button type="button" ref={closeButtonRef} className={styles.closeButton} aria-label="Close" onClick={onClose}>
             <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" aria-hidden="true">
               <path d="M3 3l10 10M13 3L3 13" />

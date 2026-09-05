@@ -387,6 +387,23 @@ function readFileAtRef(ref: string, path: string): string | null {
   }
 }
 
+/**
+ * IO: the ISO 8601 author date of the most recent commit that touched this
+ * path at HEAD (local history, not upstream's). `%aI` already yields ISO
+ * 8601 directly, so there is no parsing step to make pure/testable here,
+ * unlike the numstat/log-with-name-only parsers above. Returns null rather
+ * than throwing when the path has no history at all, so one skill's git
+ * quirk doesn't fail the whole provenance build.
+ */
+function lastCommitDate(path: string): string | null {
+  try {
+    const date = git(['log', '-1', '--format=%aI', '--', path]);
+    return date === '' ? null : date;
+  } catch {
+    return null;
+  }
+}
+
 function skillFolders(category: string): string[] {
   const dir = join(REPO_ROOT, 'skills', category);
   if (!existsSync(dir)) return [];
@@ -455,6 +472,10 @@ function classify(category: string, name: string, upstreamSha: string): Provenan
 
   const renamedFrom = SKILL_RENAMES[name];
   if (renamedFrom) entry.renamedFrom = renamedFrom;
+
+  const lastUpdated = lastCommitDate(`${localPath}/SKILL.md`);
+  if (lastUpdated) entry.lastUpdated = lastUpdated;
+
   return entry;
 }
 

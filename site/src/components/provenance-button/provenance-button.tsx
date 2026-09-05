@@ -127,6 +127,7 @@ export function ProvenanceButton({
         <DiffModal
           skillName={skillNameFromSlug(slug)}
           upstreamSha={entry.upstreamSha ?? ''}
+          lastUpdated={entry.lastUpdated}
           files={files}
           onClose={() => setOpen(false)}
         />
