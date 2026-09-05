@@ -6,6 +6,22 @@ disable-model-invocation: true
 
 Implement the work described by the user in the spec or tickets.
 
+## Arguments
+
+`/implement <ticket-or-spec-reference>`: a spec path, an issue number, or a URL. Fetch it and read its full body and comments before starting — never assume the invocation alone (e.g. a bare ticket number passed by `/implement-tickets`) already carries everything the ticket specifies. A ticket's own Definition of Done, acceptance criteria, and any compliance requirements section are load-bearing, not optional context to skip past.
+
+**If the ticket's own body names a different build skill to use** (e.g. "scaffold and implement via `/create-giselle-component`, not generic `/implement`"), defer to that skill instead — the ticket's own instruction takes priority over this one.
+
+`/implement` (no argument): implement the work already described in the current conversation.
+
+### Pre-flight checks (when invoked with a ticket/spec reference)
+
+Run these before writing any code, not after:
+
+1. **Ready-state check**: if the tracker has a triage/state label and it is not in a ready-to-implement state (e.g. still `to-grill`, `needs-info`, `needs-triage`), stop and tell the user rather than proceeding on an unsettled ticket.
+2. **Blocker check**: if the ticket has a `## Blocked by` section, verify every referenced blocker is actually closed/completed before starting. `/implement-tickets` already does this at batch scale for its own children; a standalone `/implement <ticket>` invocation needs the same check for the single-ticket case.
+3. **Existing work check**: check whether a branch or open PR already exists for this ticket before starting fresh, to avoid quietly duplicating in-progress work.
+
 Use /tdd where possible, at pre-agreed seams.
 
 Run typechecking regularly, single test files regularly, and the full test suite once at the end.

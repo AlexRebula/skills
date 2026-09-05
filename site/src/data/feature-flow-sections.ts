@@ -37,7 +37,7 @@ export const FLOW_STAGE_LONG_DESCRIPTIONS: Record<string, string> = {
   'Shape it':
     "Before code gets written, the idea itself gets pressure-tested. This stage covers interview-style skills that surface assumptions, force a decision tree into the open, and turn a rough plan into a written spec or a set of tickets ready for implementation. The goal isn't speed here - it's catching the wrong assumption while it's still cheap to fix.",
   'Build it':
-    'The actual implementation work: scaffolding a new component, building a feature test-first, or prototyping a design question before committing to an approach. `/start-issue` bootstraps a session directly from a tracked issue; `/tdd` and the framework-specific `/create-*` skills carry the red-green-refactor discipline through to the end.',
+    'The actual implementation work: scaffolding a new component, building a feature test-first, or prototyping a design question before committing to an approach. `/implement` fetches a tracked ticket directly and builds it, deferring to a ticket-specified build skill when one is named; `/tdd` and the framework-specific `/create-*` skills carry the red-green-refactor discipline through to the end.',
   'Words for the codebase':
     'Code communicates as much through its names and structure as through what it executes. This stage is about the vocabulary of a codebase: designing deep modules with the right seams, building and sharpening a shared domain model, and writing documentation an AI agent, not just a human, can actually act on.',
   'Land it':
