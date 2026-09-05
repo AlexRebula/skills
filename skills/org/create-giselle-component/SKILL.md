@@ -15,6 +15,8 @@ Some components are really a parent plus several internal sub-components (`HeroS
 
 **Before the alignment questions below**: does this component have an associated ticket or spec in whatever tracker/planning-store this project uses? If so, read it in full first — its acceptance criteria and already-settled decisions take priority over guessing answers to the questions below. If you don't know where such specs are tracked for this project, ask the user rather than assuming there is or isn't one.
 
+**Also before the alignment questions**: search the codebase for an existing folder or stub matching this component's likely name (the exact name, common synonyms, and any prior-art naming already used for similar concepts nearby) — a partially-scaffolded stub with no `.tsx` yet still counts as already existing, and its folder is where this component belongs, not a freshly derived path. If one is found, questions 2 and 3 below (layer folder, category subfolder) are already answered by that existing path — don't re-derive them from scratch.
+
 Ask the user:
 
 1. Component name: PascalCase (derives all file names from this)

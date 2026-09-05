@@ -22,6 +22,8 @@ If you have not already explored the codebase, do so to understand the current s
 
 Look for opportunities to prefactor the code to make the implementation easier. "Make the change easy, then make the easy change."
 
+**When a ticket references a specific named component or module, this exploration is not optional.** Check its current disk state directly — does a stub or partial implementation already exist, and under exactly what path — rather than assuming. A stub with no real implementation yet still counts as "already exists": the ticket must point at it, not leave the next reader to independently derive a fresh location and risk creating a duplicate alongside it.
+
 ### 3. Draft vertical slices
 
 Break the work into **tracer bullet** tickets.
@@ -124,6 +126,8 @@ The end-to-end behaviour this ticket makes work, from the user's perspective, no
 </issue-template>
 
 In either form, avoid specific file paths or code snippets: they go stale fast. Exception: if a prototype produced a snippet that encodes a decision more precisely than prose can (state machine, reducer, schema, type shape), inline it and note briefly that it came from a prototype. Trim to the decision-rich parts, not a working demo, just the important bits.
+
+A second exception: if a ticket references a component that already has a stub or partial implementation on disk, state its exact literal path and instruct the implementer not to create a duplicate elsewhere — the risk of a silent duplicate is worse than this one path fact going stale, since it's the component's existence being pointed at, not its internals. If checked and genuinely nothing exists yet, say so explicitly too (what was searched, when), so that check isn't left implicit for the next reader to wonder about.
 
 ## Parent issue lifecycle
 
