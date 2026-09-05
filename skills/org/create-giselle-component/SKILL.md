@@ -13,6 +13,8 @@ Some components are really a parent plus several internal sub-components (`HeroS
 
 ## Before writing any code: alignment (9 required answers)
 
+**Before the alignment questions below**: does this component have an associated ticket or spec in whatever tracker/planning-store this project uses? If so, read it in full first — its acceptance criteria and already-settled decisions take priority over guessing answers to the questions below. If you don't know where such specs are tracked for this project, ask the user rather than assuming there is or isn't one.
+
 Ask the user:
 
 1. Component name: PascalCase (derives all file names from this)
