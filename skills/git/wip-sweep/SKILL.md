@@ -19,7 +19,7 @@ description: "Sweep dirty repos for uncommitted work and create OSS §2.1-compli
 
 A sweep-group may proceed through T2/T3/T4 without stopping for approval only when **both**:
 
-1. **The repo is private.** Check live, every time, never assumed or cached: `gh repo view --json isPrivate --jq '.isPrivate' -R <owner>/<repo>`.
+1. **The repo is private.** Check live, every time, never assumed or cached: `gh repo view <owner>/<repo> --json isPrivate --jq '.isPrivate'` (the repo is a positional argument, not a `-R` flag — `gh repo view` has no such flag).
 2. **Every file in this specific group** — not the whole repo, this group — is under the caller's `SESSIONS_ROOT` (if the caller supplied one) or matches a docs-only extension (`.md`, `.mdx`). One non-doc file anywhere in the group disqualifies the whole group, even if the repo is private and even if every other file in the group is docs.
 
 A group failing either check falls back to that repo's normal interactive T2/T3/T4 prompts, exactly as today — `auto` mode never skips a prompt for a non-qualifying group, only for a qualifying one.
@@ -147,7 +147,7 @@ After T3, ask:
 
 > "Open pull requests for the pushed branches? Default: NO. [y/n/select]"
 
-**In `auto` mode, for an auto-eligible group:** skip this question — proceed straight to delegating to the PR skill below, and pass `auto-approve` in addition to `skip-hygiene` (see routing table), so `/create-pr`'s own green-light gate doesn't stop and ask a second time for the same decision. A group that isn't auto-eligible still asks as above, and if opened, only ever gets `skip-hygiene` — never `auto-approve` for a non-eligible or public group.
+**In `auto` mode, for an auto-eligible group:** skip this question — proceed straight to delegating to the PR skill below, and pass `auto-approve` in addition to `skip-hygiene`/`draft` (see routing table), so `/create-pr`'s own green-light gate doesn't stop and ask a second time for the same decision. A group that isn't auto-eligible still asks as above, and if opened, only ever gets `skip-hygiene`/`draft` — never `auto-approve` for a non-eligible or public group.
 
 If yes (interactive) or auto-eligible (auto), for each pushed branch, **delegate to the correct PR skill**. Do not construct a `--body` string inline. Delegating ensures the repo's PR template is read and filled correctly, and that all quality checks and companion-doc conventions are applied.
 
@@ -156,14 +156,14 @@ If yes (interactive) or auto-eligible (auto), for each pushed branch, **delegate
 | Repo               | Skill to invoke                                                    |
 | ------------------ | ------------------------------------------------------------------- |
 | Custom org variant | Your org-specific PR creation skill (if one exists)                 |
-| Default (interactive, or auto but not eligible) | `/create-pr <branch> skip-hygiene`             |
-| Default (auto, eligible group)                  | `/create-pr <branch> skip-hygiene auto-approve` |
+| Default (interactive, or auto but not eligible) | `/create-pr <branch> skip-hygiene draft`             |
+| Default (auto, eligible group)                  | `/create-pr <branch> skip-hygiene draft auto-approve` |
 
-The `skip-hygiene` flag is always passed: T2/T3 already created and pushed the branch cleanly; there is nothing to re-check.
+The `skip-hygiene` flag is always passed: T2/T3 already created and pushed the branch cleanly; there is nothing to re-check. The `draft` flag is likewise always passed, in every routing row without exception — see below.
 
 **Do not** call `gh pr create --body` or `gh pr create --body-file` directly in this step. Those bypass the repo's pull request template and produce non-conforming PR descriptions. The `create-pr` skill (or your org's custom variant) reads the template from `.github/pull_request_template.md`, fills every section, and opens the PR correctly.
 
-PRs are created as **drafts**. The delegated PR creation skill must pass `--draft` to `gh pr create`. If for any reason it does not, append `--draft` explicitly. A WIP-sweep PR must never be opened as a ready-for-review PR.
+PRs are created as **drafts, unconditionally** — this holds regardless of interactive/auto mode or auto-eligibility, none of which affect it. Pass `draft` to `/create-pr` (its own `Arguments` section adds `--draft` to `gh pr create` when this is passed) rather than hoping the delegated skill defaults to draft on its own. If the delegated skill doesn't support a `draft` argument at all, verify the result afterward (`gh pr view <N> --json isDraft`) and convert it if needed (`gh pr ready <N> --undo`) — a WIP-sweep PR must never end up ready-for-review, whichever path gets it there.
 
 ---
 
@@ -171,7 +171,7 @@ PRs are created as **drafts**. The delegated PR creation skill must pass `--draf
 
 **NEVER call `gh pr create` directly in T4. Not even once. Not even for "simple" PRs.**
 
-The only permitted action is invoking `/create-pr <branch> skip-hygiene` (interactive, or auto but not eligible) or `/create-pr <branch> skip-hygiene auto-approve` (auto, eligible group) as a skill — never any other combination, and never `gh pr create` inline. Delegating reads `.github/pull_request_template.md`, fills every section, and creates the PR correctly. Calling `gh pr create` inline bypasses the template and produces non-conforming PR descriptions.
+The only permitted action is invoking `/create-pr <branch> skip-hygiene draft` (interactive, or auto but not eligible) or `/create-pr <branch> skip-hygiene draft auto-approve` (auto, eligible group) as a skill — never any other combination, and never `gh pr create` inline. Delegating reads `.github/pull_request_template.md`, fills every section, and creates the PR correctly. Calling `gh pr create` inline bypasses the template and produces non-conforming PR descriptions.
 
 If `/create-pr` is unavailable or broken, stop and tell the user rather than falling back to an inline `gh pr create` call.
 
@@ -185,3 +185,4 @@ If `/create-pr` is unavailable or broken, stop and tell the user rather than fal
 | 2026-05-30 | T3 now requires a PR description update whenever a push lands on a branch that already has an open PR | Stale PR descriptions accumulate silently when multiple commits are pushed; every push must reflect the current branch state |
 | 2026-06-13 | Added ⛔ non-negotiable block prohibiting inline `gh pr create` in T4 | Prose-level prohibition was ignored; caused non-conforming PR descriptions |
 | 2026-09-07 | Added `auto` argument and per-group Auto-eligibility check (private repo + docs-only files); T2/T3/T4 skip their confirmation prompt for eligible groups, T4 also passes `auto-approve` through to `/create-pr` for eligible groups | Repeated interactive round-trips for `/session-wrap`'s own low-stakes docs commits had no real decision to make each time; scoped narrowly (private + docs-only, per group, never whole-repo) so public repos and mixed-content groups are unaffected |
+| 2026-09-07 | T4 now also passes a `draft` flag to `/create-pr` in every routing row (not just `auto-approve` for eligible groups); fixed the `gh repo view` syntax example in Auto-eligibility (repo is positional, not a `-R` flag) | The "must pass `--draft`" instruction had no actual mechanism behind it — `/create-pr` had no `draft` argument to receive, so a WIP-sweep PR could open ready-for-review with nothing catching it; caught live on this skill's own first `auto`-mode run |
