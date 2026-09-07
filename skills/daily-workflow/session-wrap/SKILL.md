@@ -1,10 +1,16 @@
 ---
 name: session-wrap
-description: Write a session wrap document summarising completed work, open blockers, and next steps. Saves to the configured sessions folder, updates the session index, and hands off to /wip-sweep to commit the session's own artifacts. Use at context >55%, after completing major work, or before ending a session.
-argument-hint: 'Optional: focus hint for the next session (e.g. "continue stat-card TDD")'
+description: Write a session wrap document summarising completed work, open blockers, and next steps. Saves to the configured sessions folder, updates the session index, and hands off to /wip-sweep to commit the session's own artifacts — unattended by default, or fully interactive with --pause. Use at context >55%, after completing major work, or before ending a session.
+argument-hint: 'Optional: focus hint for the next session (e.g. "continue stat-card TDD"), and/or --pause for the old fully-interactive hand-off'
 ---
 
 # Session Wrap
+
+## Arguments
+
+`/session-wrap`: default. Writes the wrap file and index update as always (this skill never asked for confirmation on those), then hands off to `/wip-sweep auto` (see Step 7b) scoped to exactly the repos this session touched — no confirmation for the commit, push, or PR-open of any repo/group `/wip-sweep` itself judges eligible (private + docs-only; see its own SKILL.md). Anything `/wip-sweep` doesn't consider eligible — a public repo, or a group with non-doc files — still stops and asks, exactly as before this argument existed.
+
+`/session-wrap --pause`: reverts the hand-off to today's fully interactive behavior — calls plain `/wip-sweep` (no `auto`), which asks its full A/B/C scope question and confirms every commit, push, and PR-open, for every repo, regardless of visibility or content.
 
 > **Prerequisites:** This skill requires two template variables defined in your environment (e.g. `settings.json` `env` block, `.env` file, or shell profile):
 >
@@ -483,13 +489,21 @@ Before handing off to `/wip-sweep`, verify every file in the session folder has 
 
 After saving the wrap files and updating the index, the sessions repo has new or modified `.md` artifacts. Source repos touched during the session may also have uncommitted changes.
 
-Call `/wip-sweep` now. When wip-sweep asks which repos to sweep, answer:
+**Compute the session's touched-repo list** from this run's own evidence — the FILES EDITED and GITHUB WRITES categories already built in Step 2a. This exact list is what scopes the hand-off below and what "outside the session" means for `/wip-sweep`'s own out-of-scope check.
+
+**If `--pause` was passed to this invocation:** call `/wip-sweep` exactly as before this argument existed — no argument, fully interactive — and answer its scope-selection prompt with:
 
 > "Sweep only the repos dirtied during this session: [list repos and what changed in each]"
 
+**If `--pause` was NOT passed (default):** call `/wip-sweep auto` with the computed list:
+
+> "/wip-sweep auto — repos in scope: [list]. Sweep only these; any other dirty repo found is out of scope and must be surfaced, never swept."
+
+`/wip-sweep`'s own `auto` mode (see its SKILL.md) decides, per repo/group, whether it's eligible to proceed unattended (private + docs-only) or must fall back to its normal interactive prompts — this skill does not make that per-group judgment itself, only supplies the scope. Either way, every action `/wip-sweep` takes is still printed as it happens — automatic is never silent.
+
 **Loop safety:** wip-sweep commits existing dirty files and creates no new ones. There is nothing new to wrap after it completes. The dependency is strictly one-way: `session-wrap → wip-sweep`.
 
-wip-sweep's T2/T3/T4 tier gates are where the user reviews branch names and approves pushes. This skill does not propose branches. That is wip-sweep's responsibility.
+wip-sweep's tier gates (`--pause`) or its `auto` narration (default) are where the user sees branch names, pushes, and PR-opens happen. This skill does not propose branches. That is wip-sweep's responsibility, in both modes.
 
 ---
 
