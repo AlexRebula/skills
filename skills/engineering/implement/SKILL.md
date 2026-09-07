@@ -27,6 +27,12 @@ Use /tdd where possible, at pre-agreed seams.
 
 Run typechecking regularly, single test files regularly, and the full test suite once at the end.
 
+## Visual verification is never agent-performed
+
+If a ticket's acceptance criteria include a visual check against a reference — screenshots, "renders/behaves identically to X," side-by-side comparison, "looks right" — that check belongs to the human, always. Never open a browser, take a screenshot, or judge visual/rendered fidelity yourself for this purpose, even when browser tooling is available to you. This was tried directly and found unreliable and slower than the human doing it themselves (recorded 2026-09-07, during a `ServicesThemeDemo` implementation session).
+
+Implement everything mechanically verifiable (types, lint, tests, build) to completion. Then stop and hand off explicitly: tell the user what to look at and where (a dev-preview route, a Storybook story, a running dev server). Do not mark the ticket done, check off its visual-verification criterion, or claim success on it until the human confirms — a ticket cannot close on that criterion without their explicit sign-off.
+
 ## Independent-review gate (required, not optional)
 
 Before this work can be reported done, run `/review-pr --branch`, passing the current branch's name. This is a hard gate, not an advisory step: self-review by the same session that wrote the code has already been shown to miss real structural issues (duplicated logic, oversized files, scope creep) even when the quality gate passes cleanly — passing tests and lint is not evidence the structure is sound.
