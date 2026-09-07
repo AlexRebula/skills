@@ -31,6 +31,7 @@ Six points in this workflow are opinionated. They are called out inline with **�
 `/create-pr <branch> skip-hygiene`: skip Phase 0 (use when hygiene was already done in this session).  
 `/create-pr <branch> request-review`: trigger a review bot after PR creation.  
 `/create-pr <branch> auto-approve`: skip the green-light gate in Phase 1 Step 4 and create the PR immediately.  
+`/create-pr <branch> draft`: create the PR as a draft (adds `--draft` to Step 6's `gh pr create`) rather than ready-for-review. Used by `/wip-sweep`'s T4, which always passes this — a WIP-sweep PR must never open ready-for-review.  
 `/create-pr <branch> <owner>/<repo>`: if the repo cannot be inferred from context.
 
 ---
@@ -228,6 +229,8 @@ gh pr create \
   --head <branch>
 ```
 
+**If `draft` was passed**, add `--draft` to the command above. Verify the result rather than trusting the flag silently worked — `gh pr view <N> --json isDraft` — and if it's somehow `false` anyway, convert it explicitly (`gh pr ready <N> --undo`) before reporting back. A caller that asked for a draft (most notably `/wip-sweep`'s T4, which always does) must never receive a ready-for-review PR instead.
+
 > **⚙️ Configurable (base branch):** `DEFAULT_BRANCH` is detected automatically in Phase 0. If detection fails it falls back to `main`. Override as needed (`master`, `develop`, `trunk`, etc.).
 
 Save the PR number from the command output.
@@ -261,4 +264,5 @@ Report back with:
 - Phase 0 result: any commits moved or flag to skip hygiene next time
 - Quality gate result: pass / fail (if fail: what failed)
 - PR URL and number
+- Draft or ready-for-review — always state which, not just when `draft` was passed
 - Whether a review was triggered
