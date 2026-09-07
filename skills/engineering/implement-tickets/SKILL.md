@@ -33,6 +33,8 @@ A child is **advanceable** once every one of its blockers is satisfied:
 
 By construction, no two tickets in the same frontier round depend on each other — every in-batch blocker either sits in an earlier, already-implemented round or isn't a blocker for this round's members. That's what makes the whole round safe to dispatch **concurrently**, each into its own isolated git worktree, rather than one ticket at a time.
 
+**The rule, stated plainly: every ticket that CAN run concurrently MUST — never fall back to one-at-a-time dispatch for a ticket sitting in the current frontier round.** Frontier membership *is* the concurrency test — a ticket only sits outside the current round because a real, declared blocker (checked in Step 1 and this step) isn't satisfied yet, never because of caution, a hunch about file overlap, or wanting to "be safe." A shared file between two same-round tickets is an acceptable, expected risk (resolved as an ordinary merge conflict at PR-merge time, per Step 2 step 3b) — it is not a reason to serialize them. The "if possible" in "run concurrently if possible" is answered entirely by whether a ticket is in the frontier, not by a fresh judgment call each round.
+
 Repeat until every child has been implemented:
 
 1. **Compute the frontier**: every not-yet-implemented child whose blockers are all satisfied.
