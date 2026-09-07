@@ -261,7 +261,7 @@ The scaffolding around every session: starting the day, keeping Asana in sync, a
 
 - **[standup-prep](./skills/daily-workflow/standup-prep/SKILL.md)**: Daily session startup coordinator. Runs preflight → session context → repo status + WIP sweep → open PR sweep → morning brief → file write → Asana sync.
 - **[standup-prep-preflight](./skills/daily-workflow/standup-prep-preflight/SKILL.md)**: Composite pre-flight: runs `/check-prior-work`, `/load-oss-standards`, and `/load-dependency-chain` in sequence.
-- **[session-wrap](./skills/daily-workflow/session-wrap/SKILL.md)**: Write a session wrap doc, update the session index, and hand off to `/wip-sweep`. More powerful sibling of `/handoff`. Use at context >55% or after completing major work.
+- **[session-wrap](./skills/daily-workflow/session-wrap/SKILL.md)**: Write a session wrap doc, update the session index, and hand off to `/wip-sweep`. Unlike Mat Pocock's `/handoff` — one ephemeral doc in your OS temp folder — this tracks the whole session flow and stores permanent, searchable history in your own wiki. Use at context >55% or after completing major work.
 - **[check-prior-work](./skills/daily-workflow/check-prior-work/SKILL.md)**: Scans context for a `<conversation-summary>` block and extracts earlier session work for continuity.
 - **[load-session-context](./skills/daily-workflow/load-session-context/SKILL.md)**: Load the session index and latest wrap file; check for an existing morning brief for today.
 - **[load-session-guidelines](./skills/daily-workflow/load-session-guidelines/SKILL.md)**: Load all session guidelines in one go: Karpathy coding rules, OSS quality standards, and PR/branch conventions. Run at the start of every session before any user task.
