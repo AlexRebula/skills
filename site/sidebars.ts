@@ -82,6 +82,7 @@ export const FLOW_STAGES = [
     { category: 'git', name: 'wip-sweep' },
     { category: 'git', name: 'create-pr' },
     { category: 'git', name: 'pr-merged' },
+    { category: 'git', name: 'canary-publish' },
     { category: 'git', name: 'review-pr' },
     { category: 'git', name: 'respond-pr-review' },
     { category: 'git', name: 'sync-branches' },
