@@ -2,6 +2,7 @@
 
 Skills for the full git and PR lifecycle, from discovering what needs committing to sweeping review debt across all repos.
 
+- **[canary-publish](./canary-publish/SKILL.md)**: Publish a giselle-mui-poc canary snapshot to GitHub Packages and bump a consuming app onto it, verifying the app still resolves cleanly. Two phases (publish, bump) so either can run alone once CI auto-publishing is back on.
 - **[commit-wip](./commit-wip/SKILL.md)**: Scan all workspace repos for uncommitted changes, group files by topic, match each group to an existing remote branch (or create a categorised new one), and commit there. Keeps WIP on the semantically correct branch from the start.
 - **[create-pr](./create-pr/SKILL.md)**: Verify branch hygiene, run the quality gate, and open a PR with a complete description via `gh pr create`. Optionally triggers a review bot.
 - **[morning-pr-sweep](./morning-pr-sweep/SKILL.md)**: Clear all open PR review debt across your repos in one session. Triages all threads before touching any code, batches fixes into one commit per PR, posts SHA confirmations, and reports which PRs are merge-ready.
