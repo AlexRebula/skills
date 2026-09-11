@@ -98,6 +98,7 @@ export const FLOW_STAGES = [
     { category: 'engineering', name: 'improve-codebase-architecture' },
     { category: 'engineering', name: 'research' },
     { category: 'engineering', name: 'deslopify' },
+    { category: 'git', name: 'dependabot-sweep' },
     { category: 'git', name: 'morning-pr-sweep' },
     { category: 'git', name: 'open-pr-sweep' },
     { category: 'git', name: 'repo-status' },
