@@ -235,6 +235,14 @@ gh pr create \
 
 Save the PR number from the command output.
 
+### Step 6b: Link the PR to its issue (automatic)
+
+Call `/link-pr-to-issue <PR-number> <owner>/<repo>` now, unconditionally — don't wait for merge.
+It resolves the issue from the branch name and either writes a native `Closes #N` keyword
+(same-repo) or posts a linking comment on the issue itself (cross-repo); see its own SKILL.md for
+the full resolution and linking logic, not duplicated here. If it reports no ticket number found,
+that's expected for ticket-less PRs (chores, docs fixes) — nothing further to do.
+
 ### Step 7: Trigger a review (optional)
 
 > **Only run this step if `request-review` was passed.** Requires a GitHub Copilot subscription with the code review feature enabled. If you use a different review bot (e.g. CodeRabbit, Graphite), adapt this step accordingly.
