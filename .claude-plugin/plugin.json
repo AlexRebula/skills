@@ -46,6 +46,7 @@
     "./skills/git/check-pr-link",
     "./skills/git/commit-wip",
     "./skills/git/create-pr",
+    "./skills/git/dependabot-sweep",
     "./skills/git/link-pr-to-issue",
     "./skills/git/morning-pr-sweep",
     "./skills/git/open-pr-sweep",
