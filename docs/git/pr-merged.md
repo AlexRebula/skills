@@ -2,6 +2,8 @@
 
 `pr-merged` runs the local half of closing out a PR after you've already merged it on GitHub and deleted its remote branch yourself: it verifies the PR actually shows `MERGED` (never acts on an unconfirmed claim), closes any issue the PR referenced with a summary comment if one isn't already there, deletes the local branch (and its worktree, if it lived in one), prunes the now-stale remote-tracking ref, and fast-forwards the base branch if it's checked out.
 
+Resolving *whether* a linked issue exists and closing it are two different concerns: [check-pr-link](./check-pr-link.md) does the resolution/verification (reused, not reimplemented, here), and [link-pr-to-issue](./link-pr-to-issue.md) establishes a missing link before this skill closes it out.
+
 It exists as its own skill so it can be triggered standalone, in a fresh session, without `create-pr` having opened the PR earlier in the same conversation — the common case being you merge on GitHub after the session that opened the PR has already ended. [create-pr](./create-pr.md) points here once a PR it opened is confirmed merged, rather than inlining the same cleanup steps itself.
 
 ## When to reach for it
