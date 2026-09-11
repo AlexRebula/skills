@@ -14,9 +14,9 @@ skill flags that as **not linked**, not as a false positive.
 
 `pr-merged` calls this automatically before closing a linked issue, to decide whether
 `link-pr-to-issue` needs to run first. Run it by hand to audit an already-merged PR you suspect
-was never properly linked — which is exactly how the gap in `wiki#659` (closed the same day its
-PR merged, with zero reference back to that PR and every acceptance-criteria box left unchecked)
-was found and fixed.
+was never properly linked: a PR closed manually the same day it merged, with zero reference back
+to it and its issue's acceptance-criteria boxes still unchecked, is exactly the pattern this skill
+is built to catch.
 
 ## Two independent checks, not one
 
