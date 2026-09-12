@@ -51,6 +51,7 @@
     "./skills/git/morning-pr-sweep",
     "./skills/git/open-pr-sweep",
     "./skills/git/pr-merged",
+    "./skills/git/preview-package-branch",
     "./skills/git/query-issues",
     "./skills/git/repo-status",
     "./skills/git/respond-pr-review",
