@@ -108,8 +108,7 @@ This is built into [`/grill-with-docs`](./skills/engineering/grill-with-docs/SKI
 
 It's hard to explain how powerful this is. It might be the single coolest technique in this repo. Try it, and see.
 
-> [!TIP]
-> A shared language has many other benefits than reducing verbosity:
+> [!TIP] A shared language has many other benefits than reducing verbosity:
 >
 > - **Variables, functions and files are named consistently**, using the shared language
 > - As a result, the **codebase is easier to navigate** for the agent
@@ -217,6 +216,7 @@ Skills for the full git and PR lifecycle, from discovering what needs committing
 - **[morning-pr-sweep](./skills/git/morning-pr-sweep/SKILL.md)**: Clear all open PR review debt across your repos in one session. Triages all threads before touching any code, batches fixes into one commit per PR, and reports which PRs are merge-ready.
 - **[open-pr-sweep](./skills/git/open-pr-sweep/SKILL.md)**: Discover all non-draft open PRs across one or more GitHub orgs or users. Pure discovery, no writes.
 - **[pr-merged](./skills/git/pr-merged/SKILL.md)**: Post-merge cleanup for one PR already merged on GitHub with its remote branch already deleted: verify it shows `MERGED`, close the linked issue with a summary comment, delete the local branch/worktree, prune the remote-tracking ref, fast-forward the base branch.
+- **[preview-package-branch](./skills/git/preview-package-branch/SKILL.md)**: Keep a live, running preview of a package/library's feature branch inside its consumer app via yalc, refreshed after every commit. Consumer path, sync script name, and port come from a bootstrapped config, not hardcoded — reusable for any package/consumer pair, not one specific project.
 - **[query-issues](./skills/git/query-issues/SKILL.md)**: Query GitHub issues for a repo filtered by one or more labels (AND logic) and print a formatted list in chat. Pure discovery, no writes. Run at session start to find pending cross-repo work.
 - **[repo-status](./skills/git/repo-status/SKILL.md)**: Discover all workspace repos dynamically and produce a dirty-state table (repo, branch, dirty file count, clean/uncommitted status).
 - **[respond-pr-review](./skills/git/respond-pr-review/SKILL.md)**: Respond to an existing Copilot PR review in any repo: gather every thread, reply inline before fixing, batch valid fixes into one commit, and post SHA follow-ups.
