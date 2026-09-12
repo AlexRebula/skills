@@ -84,6 +84,14 @@ Once every child has been implemented (a PR opened for each), report:
 - The board artifact's URL, if `--board` was used.
 - Any ticket where a repo-local guardrail blocked the fully-qualified closing keyword (Step 5a) — name which PRs, so the human knows which tracker issues need a manual close rather than assuming GitHub handled it.
 
+## Step 5: Batch-closing CI check (`-poc`-suffixed repos only)
+
+If a `-poc`-suffixed repo (e.g. `giselle-mui-poc`) is where this batch's PRs were opened: its CI intentionally runs a smart, not full, quality gate per ticket, to keep Actions minutes/time from scaling with batch size (see that repo's own quality-gate script for the reasoning). That means no PR in this batch ever got a full, non-smart CI run on its own, only the local pre-push hook's smart check and CI's own smart check, both real but partial, not comprehensive.
+
+Once the human has merged every PR in the stack (bottom first, per Step 4), say so explicitly as part of your completion report: one full CI run against `main` is still owed before the round can be considered fully verified, via `gh workflow run "CI" --ref main` (or just waiting for the next natural push to `main`, which triggers it too). This is a manual step; nothing here automates it yet, since the pattern is still being piloted rather than locked in. Do not let "every PR merged" read as "the round is verified": reporting the merge alone, without naming this still-outstanding step, would leave the impression a full gate already ran over the combined result when only per-ticket smart checks have.
+
+If that final full run fails, there is no established policy yet for what happens next (a fix-forward ticket, blocking the next round, or a case-by-case call). Surface the failure and ask, rather than picking one silently.
+
 ## Out of scope for v1
 
 - Non-GitHub trackers (local ticket files, Linear, etc.)
