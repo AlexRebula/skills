@@ -86,6 +86,7 @@ export const FLOW_STAGES = [
     { category: 'git', name: 'reap-ticket-branches' },
     { category: 'git', name: 'canary-publish' },
     { category: 'git', name: 'preview-package-branch' },
+    { category: 'git', name: 'manual-vercel-deploy' },
     { category: 'git', name: 'check-pr-link' },
     { category: 'git', name: 'review-pr' },
     { category: 'git', name: 'respond-pr-review' },
