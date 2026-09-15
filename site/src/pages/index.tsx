@@ -4,6 +4,7 @@ import useBaseUrl from '@docusaurus/useBaseUrl';
 
 import { HomeHeroSection } from '../components/home-hero-section';
 import { LandingStatsSection } from '../components/landing-stats-section';
+import { HarnessComparisonSection } from '../components/harness-comparison-section';
 import { PersonaPickerSection } from '../components/persona-picker-section';
 import { FlowSection } from '../components/flow-section';
 import { OverviewLinkSection } from '../components/overview-link-section';
@@ -72,6 +73,8 @@ export default function Home(): ReactNode {
         <HomeHeroSection totalSkills={totalSkills} categoriesCount={categories.length} />
 
         <LandingStatsSection items={landingStats} />
+
+        <HarnessComparisonSection />
 
         <PersonaPickerSection activePersonas={activePersonas} onTogglePersona={togglePersona} />
 

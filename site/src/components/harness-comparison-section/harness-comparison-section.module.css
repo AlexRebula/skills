@@ -1,0 +1,4 @@
+.body {
+  max-width: 60ch;
+  color: var(--ifm-color-emphasis-700);
+}

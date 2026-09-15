@@ -21,6 +21,13 @@ export const STATS_CAPTION = 'By the numbers';
 export const STATS_TITLE = 'This fork, at a glance';
 export const STATS_DESCRIPTION = 'Generated straight from the repo, so these numbers never go stale.';
 
+export const HARNESS_COMPARISON_CAPTION = 'How this fits together';
+export const HARNESS_COMPARISON_TITLE = 'Skills, flows, and one honest comparison';
+export const HARNESS_COMPARISON_BODY =
+  'This fork installs into your agent harness — Claude Code, Codex, or anything else built on the Agent Skills standard — rather than replacing it. See how that differs from a hard harness like SwarmForge or T3 Code, and what "skill," "flow," and "harness" actually mean here.';
+export const HARNESS_COMPARISON_LINK_TEXT = 'Read Skills, flows, and harnesses';
+export const HARNESS_COMPARISON_LINK_HREF = '/skills-flows-harnesses';
+
 export const FLOW_SECTION_TITLE = 'The Flow';
 
 export const OVERVIEW_LINK_PREFIX = 'You just saw the shape.';
