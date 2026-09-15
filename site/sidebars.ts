@@ -83,6 +83,7 @@ export const FLOW_STAGES = [
     { category: 'git', name: 'create-pr' },
     { category: 'git', name: 'link-pr-to-issue' },
     { category: 'git', name: 'pr-merged' },
+    { category: 'git', name: 'reap-ticket-branches' },
     { category: 'git', name: 'canary-publish' },
     { category: 'git', name: 'preview-package-branch' },
     { category: 'git', name: 'check-pr-link' },
