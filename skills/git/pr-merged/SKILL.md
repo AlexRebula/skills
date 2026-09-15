@@ -8,7 +8,9 @@ argument-hint: '<PR-number> [<owner>/<repo>]'
 
 Runs after you've already merged a PR on GitHub's side and deleted its remote branch yourself. This skill only does the _local_ half: verify, close the linked issue, delete the local branch/worktree, prune the stale remote-tracking ref, fast-forward the base branch.
 
-`create-pr`'s own Step 8 delegates to this skill rather than duplicating this logic — if you're editing the cleanup routine, edit it here, not there.
+`create-pr`'s own Step 8 delegates to this skill rather than duplicating this logic. If you're editing the cleanup routine, edit it here, not there.
+
+Step 4's own branch/worktree cleanup delegates to `reap-ticket-branches` rather than reimplementing it, so this path and the "issue closed without a merged PR" path share one implementation. See that skill's `SKILL.md` if you're editing the discovery or classification logic itself.
 
 ---
 
@@ -77,29 +79,15 @@ When closing a cross-repo reference, use the fully-qualified PR link in the comm
 
 ## Step 4: Clean up the branch and worktree
 
-Check whether the branch lives in a dedicated worktree:
+Run the reaper in direct-branch mode, since the branch is already known from Step 1:
 
 ```sh
-git worktree list | grep <headRefName>
+npx tsx "{{SKILLS_ROOT}}/scripts/reap-ticket-branches.ts" --branch <headRefName> --repo <path-to-this-repo>
 ```
 
-**If it's the currently checked-out branch** in the repo you're operating in: switch to the base branch first (`git checkout <baseRefName>`) — you cannot delete a branch you're standing on.
+It reports whether the branch lives in a dedicated worktree, whether it is the branch currently checked out (in which case switch to `<baseRefName>` first with `git checkout <baseRefName>`: you cannot delete a branch you're standing on), and its classification against GitHub. Since Step 2 already confirmed this PR is `MERGED`, run the reported `git worktree remove` command if one is listed, then the safe `git branch -d` command. The reaper's own force-delete fallback is for the unmerged case and should not be needed here; if `-d` refuses anyway, that is a real signal worth investigating (most often a squash-merge rewriting history so the safe-delete check can't see the ancestry) before falling back to `-D`.
 
-**If it lived in a worktree:**
-
-```sh
-git worktree remove <worktree-path>
-```
-
-**Delete the local branch:**
-
-```sh
-git branch -d <headRefName>
-```
-
-Use `-d` (safe delete, refuses if unmerged), never `-D`, unless `git branch -d` refuses _and_ you've independently confirmed via Step 2 that the PR really did merge (in which case the safe-delete check is almost certainly confused by a squash-merge rewriting history — confirm this reasoning explicitly to the user before falling back to `-D`, don't do it silently).
-
-If the branch doesn't exist locally at all (already cleaned up, or this session never had it checked out), skip this step — not an error.
+If the branch doesn't exist locally at all (already cleaned up, or this session never had it checked out), skip this step. Not an error.
 
 ---
 
