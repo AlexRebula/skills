@@ -48,6 +48,7 @@
     "./skills/git/create-pr",
     "./skills/git/dependabot-sweep",
     "./skills/git/link-pr-to-issue",
+    "./skills/git/manual-vercel-deploy",
     "./skills/git/morning-pr-sweep",
     "./skills/git/open-pr-sweep",
     "./skills/git/pr-merged",
