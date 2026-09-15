@@ -190,16 +190,23 @@ describe('formatReport', () => {
 // so PR classification is exercised in its graceful "unavailable" path).
 // ---------------------------------------------------------------------------
 
+// A test process invoked from a git hook (e.g. this repo's own pre-push) inherits GIT_DIR /
+// GIT_WORK_TREE / GIT_INDEX_FILE etc. in its environment. Those env vars override `cwd`/`-C`
+// entirely, so a child `git` call below would silently operate on the real repo instead of the
+// isolated tmpdir fixture. Stripping every GIT_* var keeps these fixtures genuinely isolated.
+const CLEAN_GIT_ENV = Object.fromEntries(Object.entries(process.env).filter(([key]) => !key.startsWith('GIT_')));
+
 describe('findBranchesInRepo (integration, real git, no GitHub remote)', () => {
   let repoPath: string;
 
   beforeEach(() => {
     repoPath = mkdtempSync(join(tmpdir(), 'reap-ticket-branches-fixture-'));
-    const git = (...args: string[]) => execFileSync('git', args, { cwd: repoPath, encoding: 'utf8' });
+    const git = (...args: string[]) =>
+      execFileSync('git', args, { cwd: repoPath, encoding: 'utf8', env: CLEAN_GIT_ENV });
     git('init', '--quiet', '--initial-branch=main');
     git('config', 'user.email', 'test@example.com');
     git('config', 'user.name', 'Test');
-    execFileSync('git', ['-C', repoPath, 'commit', '--allow-empty', '-m', 'initial'], { encoding: 'utf8' });
+    git('commit', '--allow-empty', '-m', 'initial');
     git('branch', 'fix/841-hero-background');
     git('branch', 'fix/8410-unrelated');
   });
@@ -218,8 +225,10 @@ describe('findBranchesInRepo (integration, real git, no GitHub remote)', () => {
   });
 
   it('flags the currently checked out branch and excludes it from delete recommendations', () => {
-    const git = (...args: string[]) => execFileSync('git', ['-C', repoPath, ...args], { encoding: 'utf8' });
-    git('checkout', 'fix/841-hero-background');
+    execFileSync('git', ['-C', repoPath, 'checkout', 'fix/841-hero-background'], {
+      encoding: 'utf8',
+      env: CLEAN_GIT_ENV,
+    });
 
     const findings = findBranchesInRepo(repoPath, (name: string) => branchMatchesTicket(name, '841'));
     expect(findings[0].isCurrentlyCheckedOut).toBe(true);
