@@ -41,6 +41,8 @@ const config: Config = {
           sidebarPath: './sidebars.ts',
           include: [
             'overview.md',
+            'skills-flows-harnesses.md',
+            'vocabulary/**/*.{md,mdx}',
             'engineering/**/*.{md,mdx}',
             'wiki/**/*.{md,mdx}',
             'daily-workflow/**/*.{md,mdx}',

@@ -6,7 +6,7 @@
 
 [![skills.sh](https://skills.sh/b/mattpocock/skills)](https://skills.sh/mattpocock/skills)
 
-[Browse the docs](https://skills-two-cyan.vercel.app) for a reference page on every skill in this fork.
+[Browse the docs](https://skills.alexrebula.com) for a reference page on every skill in this fork.
 
 This is a fork of [mattpocock/skills](https://github.com/mattpocock/skills) by [Matt Pocock](https://github.com/mattpocock). I try my best to keep it in sync with Matt's upstream, so every one of his skills is included here. Most are byte-for-byte identical, with a handful carrying my own edits (some functional, some only repo-wide Prettier formatting).
 
@@ -19,6 +19,22 @@ This fork extends Matt's skills with:
 - **Apprentice mentoring**: issue auditing, learner-history tracking, and next-issue sequencing for a student or apprentice contributor
 
 > **Before you install.** I maintain this fork solo, use it daily, and write it with AI assistance. It is not a polished product, and some skills ship with shell scripts in an area where my own experience is limited. Please read [Quality, maintenance and risk](#quality-maintenance-and-risk) before relying on it.
+
+## What this is, in short
+
+This fork ships **skills and flows**: markdown procedures and scripts that install into an existing agent harness (Claude Code, Codex, or any other Agent-Skills-standard runtime) rather than replacing it. Isolation (git worktrees), durable handoffs (wrap files, `/handoff`), and gates (`/wip-sweep`, `/create-pr`, `/tdd`) are all real, they just live as skills the agent follows, not as an independent process supervising it.
+
+Two public projects sit at the other end of that spectrum — a **hard harness**: an independent supervisor that can advance or block work on its own, whether or not the model cooperates.
+
+| | This fork | [SwarmForge](https://github.com/unclebob/swarm-forge) (Robert C. Martin) | [T3 Code](https://github.com/pingdotgg/t3code) (Theo + Julius) |
+|---|---|---|---|
+| What it is | Skills + flows + scripts | An independent multi-role agent supervisor | A GUI/control plane wrapping other agent CLIs |
+| Isolation | Worktrees, because a skill says so | Worktrees, assigned per role by the launcher | Worktrees, assigned per task/thread |
+| Handoff | Wrap files, session index, `/handoff` docs | Committed handoffs between roles via a daemon | Diffs and PRs surfaced in its own dashboard |
+| Gates | Skill text + scripts the agent must invoke | Dashboard approval gates the process enforces independently | Permission modes that delegate to the wrapped agent's own checks |
+| Best at | One engineer's day: shape, build, land, wrap, resume | A multi-role production line on a large task | A single control surface over several agent CLIs at once |
+
+The full reasoning — what "skill," "flow," and "harness" mean here, and why this fork stays a soft control plane rather than becoming a supervisor in its own right — is on [Skills, flows, and harnesses](https://skills.alexrebula.com/skills-flows-harnesses).
 
 ## Install
 
@@ -350,3 +366,11 @@ If I've missed something, [please open an issue](https://github.com/AlexRebula/s
 ## About the upstream repo
 
 The original `mattpocock/skills` covers the core engineering philosophy: grilling sessions to align with the agent before writing a line of code, TDD loops for consistent feedback, architecture reviews to prevent entropy. For the full motivation and background, see [mattpocock/skills](https://github.com/mattpocock/skills).
+
+## Skills, flows, and harnesses
+
+"Agent harness" gets used loosely in public discussion to mean anything from a slash command to a multi-role supervisor, and that looseness makes it hard to compare tools honestly. This fork draws the line explicitly across four layers: **session bootstrap** (`CLAUDE.md`, `AGENTS.md`, memory — loading identity and repo law before any real work starts), a **skill** (one packaged procedure — a `SKILL.md` plus optional scripts), a **flow** (a composed, ordered sequence of skills with gates and human decision points, like `/standup-prep` or `/implement-tickets`), and a **harness** (the runtime around the model — the loop, the tools, process supervision, and anything that can advance or block work independent of whether the model cooperates).
+
+This fork is the first three layers: a **soft control plane** of user-invoked skills that orchestrate, model-invoked skills that carry reusable discipline, and deterministic scripts where a prompt alone isn't enough. It installs into a harness (Claude Code, Codex, or any other Agent-Skills-standard runtime); it does not ship one. Isolation (`/extract-session-worktree`, `/implement-tickets`), durable handoffs (`/session-wrap`, `/handoff`), and gates (`/wip-sweep`, `/create-pr`, `/tdd`, `/triage`) are all real mechanisms here, but they depend on the agent actually invoking the relevant skill — a documented tradeoff against a **hard harness** like [SwarmForge](https://github.com/unclebob/swarm-forge) or [T3 Code](https://github.com/pingdotgg/t3code), where an independent supervisor process can enforce a gate whether or not the model wants to cooperate.
+
+Neither shape is strictly better: a hard harness suits a multi-role production line on a large task, running independently of any one context window; this fork suits one engineer's day — shape it, build it, land it, wrap it, and resume — inside whichever harness you already use. The full four-layer breakdown, the mechanisms this fork already has, and a fuller comparison table live on [Skills, flows, and harnesses](https://skills.alexrebula.com/skills-flows-harnesses); the individual terms (skill, flow, harness, router, bootstrap, handoff, wrap) each get their own short page in the [vocabulary index](https://skills.alexrebula.com/vocabulary).

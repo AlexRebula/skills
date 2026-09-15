@@ -168,6 +168,7 @@ const FLOW_SECTION: SidebarItem = {
   collapsed: false,
   items: [
     { type: 'doc', id: 'overview', label: 'Overview' },
+    { type: 'doc', id: 'skills-flows-harnesses', label: 'Skills, flows, and harnesses' },
     ...FLOW_STAGES,
     skillItem(ROUTER_SKILL),
   ],
