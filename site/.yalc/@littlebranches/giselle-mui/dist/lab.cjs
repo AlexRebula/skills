@@ -2412,7 +2412,7 @@ function Accordion({
     e.stopPropagation();
   };
   const hasLeadingElement = checklist || leadingIcon !== void 0 || leadingAction !== void 0;
-  let leadingElement = null;
+  let leadingElement;
   if (checklist) {
     leadingElement = checkIcon === void 0 ? /* @__PURE__ */ (0, import_jsx_runtime19.jsx)(
       import_Checkbox.default,

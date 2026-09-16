@@ -31,15 +31,22 @@ var __toCommonJS = (mod) => __copyProps(__defProp({}, "__esModule", { value: tru
 // src/motion-index.ts
 var motion_index_exports = {};
 __export(motion_index_exports, {
+  AboutHeroSection: () => AboutHeroSection,
   AnimatedHeroHeading: () => AnimatedHeroHeading,
   FaqAccordion: () => FaqSection,
   FaqSection: () => FaqSection,
+  FloatingIconCloud: () => FloatingIconCloud,
+  FloatingSideNav: () => FloatingSideNav,
   FloatingSubNav: () => FloatingSubNav,
+  HeroBackground: () => HeroBackground,
   HeroButtonsRow: () => HeroButtonsRow,
   InteractiveHeroLogo: () => InteractiveHeroLogo,
   MotionContainer: () => MotionContainer,
   MotionViewport: () => MotionViewport,
   ScrollParallaxHero: () => ScrollParallaxHero,
+  ScrollProgress: () => ScrollProgress,
+  SectionTitleAnimated: () => SectionTitleAnimated,
+  ServicesShell: () => ServicesShell,
   bounce: () => bounce,
   container: () => container,
   fade: () => fade,
@@ -55,6 +62,7 @@ __export(motion_index_exports, {
   transitionTap: () => transitionTap,
   useScrollParallax: () => useScrollParallax,
   useScrollPercent: () => useScrollPercent,
+  useScrollProgress: () => useScrollProgress,
   useTransformY: () => useTransformY,
   zoom: () => zoom
 });
@@ -556,9 +564,666 @@ function MotionViewport({
   );
 }
 
-// src/components/motion/use-scroll-parallax/use-scroll-parallax.ts
-var import_react = require("react");
+// src/components/motion/hero-background/hero-background.tsx
+var import_react3 = __toESM(require("react"), 1);
+var import_framer_motion5 = require("framer-motion");
+var import_Box4 = __toESM(require("@mui/material/Box"), 1);
+
+// src/components/motion/hero-background/svg-primitives/hero-background-svg.tsx
+var import_react = __toESM(require("react"), 1);
 var import_framer_motion3 = require("framer-motion");
+var import_styles = require("@mui/material/styles");
+
+// src/components/motion/hero-background/svg-primitives/hero-background-svg.styles.ts
+var heroSvgDecorationBase = (_theme) => ({
+  position: "absolute",
+  color: "text.disabled",
+  pointerEvents: "none",
+  "& line, & circle, & path": { stroke: "currentColor" }
+});
+
+// src/components/motion/hero-background/svg-primitives/hero-background-svg.utils.ts
+var heroSvgTransition = {
+  duration: 1.2,
+  ease: [0.43, 0.13, 0.23, 0.96]
+};
+var heroSvgPulseTransition = {
+  duration: 3,
+  ease: "easeInOut",
+  repeat: Infinity,
+  repeatType: "reverse"
+};
+
+// src/components/motion/hero-background/svg-primitives/hero-background-svg.tsx
+var import_jsx_runtime3 = require("react/jsx-runtime");
+var MotionSvg = (0, import_styles.styled)(import_framer_motion3.motion.svg)``;
+var HeroFloatLine = import_react.default.forwardRef(
+  function HeroFloatLine2({ sx, vertical, ...other }, ref) {
+    return /* @__PURE__ */ (0, import_jsx_runtime3.jsx)(
+      MotionSvg,
+      {
+        ref,
+        width: vertical ? "1" : "64",
+        height: vertical ? "64" : "1",
+        sx: [
+          (theme) => ({
+            ...heroSvgDecorationBase(theme),
+            "& line": { strokeDasharray: 3 }
+          }),
+          ...Array.isArray(sx) ? sx : [sx]
+        ],
+        ...other,
+        children: vertical ? /* @__PURE__ */ (0, import_jsx_runtime3.jsx)(
+          import_framer_motion3.motion.line,
+          {
+            x1: "0.5",
+            x2: "0.5",
+            y1: "0",
+            y2: "0%",
+            variants: {
+              initial: { y2: "0%", opacity: 0 },
+              animate: { y2: "100%", opacity: 1, transition: heroSvgTransition }
+            }
+          }
+        ) : /* @__PURE__ */ (0, import_jsx_runtime3.jsx)(
+          import_framer_motion3.motion.line,
+          {
+            x1: "0",
+            x2: "0%",
+            y1: "0.5",
+            y2: "0.5",
+            variants: {
+              initial: { x2: "0%", opacity: 0 },
+              animate: { x2: "100%", opacity: 1, transition: heroSvgTransition }
+            }
+          }
+        )
+      }
+    );
+  }
+);
+HeroFloatLine.displayName = "HeroFloatLine";
+var HeroFloatTriangle = import_react.default.forwardRef(
+  function HeroFloatTriangle2({ sx, ...other }, ref) {
+    return /* @__PURE__ */ (0, import_jsx_runtime3.jsx)(
+      MotionSvg,
+      {
+        ref,
+        width: "20",
+        height: "10",
+        viewBox: "0 0 20 10",
+        fill: "none",
+        variants: {
+          initial: { scaleX: 0, opacity: 0 },
+          animate: { scaleX: 1, opacity: 1, transition: heroSvgTransition }
+        },
+        sx: [heroSvgDecorationBase, ...Array.isArray(sx) ? sx : [sx]],
+        ...other,
+        children: /* @__PURE__ */ (0, import_jsx_runtime3.jsx)("path", { d: "M10 10L0 0H20L10 10Z" })
+      }
+    );
+  }
+);
+HeroFloatTriangle.displayName = "HeroFloatTriangle";
+var HeroFloatDot = import_react.default.forwardRef(function HeroFloatDot2({ sx, ...other }, ref) {
+  return /* @__PURE__ */ (0, import_jsx_runtime3.jsx)(
+    MotionSvg,
+    {
+      ref,
+      width: "8",
+      height: "8",
+      viewBox: "0 0 8 8",
+      variants: {
+        initial: { opacity: 0 },
+        animate: { opacity: 1, transition: heroSvgTransition }
+      },
+      sx: [heroSvgDecorationBase, ...Array.isArray(sx) ? sx : [sx]],
+      ...other,
+      children: /* @__PURE__ */ (0, import_jsx_runtime3.jsx)(
+        import_framer_motion3.motion.circle,
+        {
+          cx: "4",
+          cy: "4",
+          r: "4",
+          fill: "currentColor",
+          stroke: "none",
+          animate: { scale: [0.6, 1] },
+          transition: heroSvgPulseTransition
+        }
+      )
+    }
+  );
+});
+HeroFloatDot.displayName = "HeroFloatDot";
+var HeroCircleDot = import_react.default.forwardRef(function HeroCircleDot2({ sx, ...other }, ref) {
+  return /* @__PURE__ */ (0, import_jsx_runtime3.jsx)(
+    MotionSvg,
+    {
+      ref,
+      width: "40",
+      height: "40",
+      viewBox: "0 0 40 40",
+      fill: "none",
+      sx: [heroSvgDecorationBase, ...Array.isArray(sx) ? sx : [sx]],
+      ...other,
+      children: /* @__PURE__ */ (0, import_jsx_runtime3.jsx)(
+        import_framer_motion3.motion.circle,
+        {
+          cx: "20",
+          cy: "20",
+          r: "19",
+          variants: {
+            initial: { pathLength: 0, opacity: 0 },
+            animate: { pathLength: 1, opacity: 1, transition: heroSvgTransition }
+          }
+        }
+      )
+    }
+  );
+});
+HeroCircleDot.displayName = "HeroCircleDot";
+var HeroPlusSign = import_react.default.forwardRef(function HeroPlusSign2({ sx, ...other }, ref) {
+  return /* @__PURE__ */ (0, import_jsx_runtime3.jsx)(
+    MotionSvg,
+    {
+      ref,
+      width: "16",
+      height: "16",
+      viewBox: "0 0 16 16",
+      fill: "none",
+      sx: [heroSvgDecorationBase, ...Array.isArray(sx) ? sx : [sx]],
+      ...other,
+      children: /* @__PURE__ */ (0, import_jsx_runtime3.jsx)(
+        import_framer_motion3.motion.path,
+        {
+          d: "M8 0V16M16 8.08889H0",
+          variants: {
+            initial: { pathLength: 0, opacity: 0 },
+            animate: { pathLength: 1, opacity: 1, transition: heroSvgTransition }
+          }
+        }
+      )
+    }
+  );
+});
+HeroPlusSign.displayName = "HeroPlusSign";
+
+// src/components/motion/hero-background/floating-dot/floating-dot.tsx
+var import_react2 = __toESM(require("react"), 1);
+var import_framer_motion4 = require("framer-motion");
+var import_Box3 = __toESM(require("@mui/material/Box"), 1);
+
+// src/components/motion/hero-background/floating-dot/floating-dot.const.ts
+var HERO_FLOATING_DOT_SIZE = 14;
+var HERO_FLOATING_DOT_FLOAT_DISTANCE = 24;
+var HERO_FLOATING_DOT_FLOAT_DURATION = 6;
+
+// src/components/motion/hero-background/floating-dot/floating-dot.styles.ts
+var heroFloatingDotOuterSx = {
+  position: "absolute",
+  width: HERO_FLOATING_DOT_SIZE,
+  height: HERO_FLOATING_DOT_SIZE,
+  pointerEvents: "none"
+};
+var heroFloatingDotInnerSx = (theme, color) => ({
+  width: "100%",
+  height: "100%",
+  borderRadius: "50%",
+  backgroundColor: theme.vars.palette[color].main
+});
+
+// src/components/motion/hero-background/floating-dot/floating-dot.tsx
+var import_jsx_runtime4 = require("react/jsx-runtime");
+var HeroFloatingDot = import_react2.default.forwardRef(
+  function HeroFloatingDot2({ color, floatAxis, sx, ...other }, ref) {
+    return /* @__PURE__ */ (0, import_jsx_runtime4.jsx)(
+      import_Box3.default,
+      {
+        ref,
+        component: import_framer_motion4.motion.div,
+        variants: fade("in"),
+        "aria-hidden": "true",
+        sx: [heroFloatingDotOuterSx, ...Array.isArray(sx) ? sx : [sx]],
+        ...other,
+        children: /* @__PURE__ */ (0, import_jsx_runtime4.jsx)(
+          import_Box3.default,
+          {
+            component: import_framer_motion4.motion.div,
+            animate: { [floatAxis]: [0, HERO_FLOATING_DOT_FLOAT_DISTANCE, 0] },
+            transition: {
+              duration: HERO_FLOATING_DOT_FLOAT_DURATION,
+              ease: "linear",
+              repeat: Infinity,
+              repeatType: "reverse"
+            },
+            sx: (theme) => heroFloatingDotInnerSx(theme, color)
+          }
+        )
+      }
+    );
+  }
+);
+HeroFloatingDot.displayName = "HeroFloatingDot";
+
+// src/utils/theme/theme-utils/theme-utils.ts
+function channelAlpha(channel, alpha2) {
+  return `rgba(${channel} / ${alpha2})`;
+}
+
+// src/components/motion/hero-background/hero-background.styles.ts
+var heroBackgroundRootSx = (theme) => ({
+  position: "absolute",
+  inset: 0,
+  overflow: "hidden",
+  zIndex: -1,
+  pointerEvents: "none",
+  "--hero-background-tint": channelAlpha(theme.vars.palette.primary.mainChannel, 0.16)
+});
+var heroBackgroundGradientSx = (theme) => ({
+  position: "absolute",
+  inset: 0,
+  background: `radial-gradient(circle at 50% 40%, var(--hero-background-tint) 0%, ${theme.vars.palette.background.default} 70%)`
+});
+var heroBackgroundImageBaseSx = {
+  position: "absolute",
+  inset: 0,
+  width: "100%",
+  height: "100%",
+  objectFit: "cover",
+  opacity: 0.24
+};
+var heroBackgroundImageSx = heroBackgroundImageBaseSx;
+var heroBackgroundImageLightWithDarkVariantSx = (theme) => ({
+  ...heroBackgroundImageBaseSx,
+  ...theme.applyStyles("dark", { display: "none" })
+});
+var heroBackgroundImageDarkSx = (theme) => ({
+  ...heroBackgroundImageBaseSx,
+  display: "none",
+  ...theme.applyStyles("dark", { display: "block" })
+});
+var heroBackgroundSvgLayerSx = {
+  position: "absolute",
+  inset: 0,
+  maskImage: "radial-gradient(ellipse 60% 50% at 50% 50%, black 40%, transparent 85%)",
+  WebkitMaskImage: "radial-gradient(ellipse 60% 50% at 50% 50%, black 40%, transparent 85%)"
+};
+var heroBackgroundPrimitivePlacementSx = {
+  lineHorizontal1: { top: "10%", left: "4%" },
+  lineHorizontal2: { top: "18%", left: "8%" },
+  lineHorizontal3: { top: "34%", left: "2%" },
+  lineHorizontal4: { top: "58%", right: "4%" },
+  lineHorizontal5: { top: "78%", left: "10%" },
+  lineVertical1: { top: "4%", left: "20%" },
+  lineVertical2: { top: "22%", right: "14%" },
+  lineVertical3: { top: "40%", left: "62%" },
+  lineVertical4: { bottom: "6%", left: "30%" },
+  lineVertical5: { top: "10%", right: "30%" },
+  triangle: { bottom: "22%", left: "18%" },
+  circleDot: { top: "14%", right: "24%" },
+  floatDotAccent: { bottom: "30%", left: "46%" },
+  dotError: { top: "20%", left: "12%" },
+  dotWarning: { bottom: "28%", left: "22%" },
+  dotInfo: { top: "32%", right: "18%" },
+  dotSecondary: { top: "12%", right: "8%" },
+  dotSuccess: { bottom: "16%", right: "30%" },
+  plusSignA: { bottom: "16%", right: "10%" },
+  plusSignB: { top: "40%", left: "34%" }
+};
+
+// src/components/motion/hero-background/hero-background.tsx
+var import_jsx_runtime5 = require("react/jsx-runtime");
+var HeroBackground = import_react3.default.forwardRef(
+  function HeroBackground2({ backgroundImageSrc, backgroundImageSrcDark, sx, ...other }, ref) {
+    return /* @__PURE__ */ (0, import_jsx_runtime5.jsxs)(import_Box4.default, { ref, sx: [heroBackgroundRootSx, ...Array.isArray(sx) ? sx : [sx]], ...other, children: [
+      /* @__PURE__ */ (0, import_jsx_runtime5.jsx)(import_Box4.default, { sx: heroBackgroundGradientSx }),
+      backgroundImageSrc && /* @__PURE__ */ (0, import_jsx_runtime5.jsx)(
+        import_Box4.default,
+        {
+          component: "img",
+          src: backgroundImageSrc,
+          alt: "",
+          "aria-hidden": "true",
+          sx: backgroundImageSrcDark ? heroBackgroundImageLightWithDarkVariantSx : heroBackgroundImageSx
+        }
+      ),
+      backgroundImageSrc && backgroundImageSrcDark && /* @__PURE__ */ (0, import_jsx_runtime5.jsx)(
+        import_Box4.default,
+        {
+          component: "img",
+          src: backgroundImageSrcDark,
+          alt: "",
+          "aria-hidden": "true",
+          sx: heroBackgroundImageDarkSx
+        }
+      ),
+      /* @__PURE__ */ (0, import_jsx_runtime5.jsxs)(
+        import_Box4.default,
+        {
+          component: import_framer_motion5.motion.div,
+          initial: "initial",
+          animate: "animate",
+          variants: container(),
+          "aria-hidden": "true",
+          sx: heroBackgroundSvgLayerSx,
+          children: [
+            /* @__PURE__ */ (0, import_jsx_runtime5.jsx)(HeroFloatLine, { sx: heroBackgroundPrimitivePlacementSx.lineHorizontal1 }),
+            /* @__PURE__ */ (0, import_jsx_runtime5.jsx)(HeroFloatLine, { sx: heroBackgroundPrimitivePlacementSx.lineHorizontal2 }),
+            /* @__PURE__ */ (0, import_jsx_runtime5.jsx)(HeroFloatLine, { sx: heroBackgroundPrimitivePlacementSx.lineHorizontal3 }),
+            /* @__PURE__ */ (0, import_jsx_runtime5.jsx)(HeroFloatLine, { sx: heroBackgroundPrimitivePlacementSx.lineHorizontal4 }),
+            /* @__PURE__ */ (0, import_jsx_runtime5.jsx)(HeroFloatLine, { sx: heroBackgroundPrimitivePlacementSx.lineHorizontal5 }),
+            /* @__PURE__ */ (0, import_jsx_runtime5.jsx)(HeroFloatLine, { vertical: true, sx: heroBackgroundPrimitivePlacementSx.lineVertical1 }),
+            /* @__PURE__ */ (0, import_jsx_runtime5.jsx)(HeroFloatLine, { vertical: true, sx: heroBackgroundPrimitivePlacementSx.lineVertical2 }),
+            /* @__PURE__ */ (0, import_jsx_runtime5.jsx)(HeroFloatLine, { vertical: true, sx: heroBackgroundPrimitivePlacementSx.lineVertical3 }),
+            /* @__PURE__ */ (0, import_jsx_runtime5.jsx)(HeroFloatLine, { vertical: true, sx: heroBackgroundPrimitivePlacementSx.lineVertical4 }),
+            /* @__PURE__ */ (0, import_jsx_runtime5.jsx)(HeroFloatLine, { vertical: true, sx: heroBackgroundPrimitivePlacementSx.lineVertical5 }),
+            /* @__PURE__ */ (0, import_jsx_runtime5.jsx)(HeroFloatTriangle, { sx: heroBackgroundPrimitivePlacementSx.triangle }),
+            /* @__PURE__ */ (0, import_jsx_runtime5.jsx)(HeroCircleDot, { sx: heroBackgroundPrimitivePlacementSx.circleDot }),
+            /* @__PURE__ */ (0, import_jsx_runtime5.jsx)(HeroFloatDot, { sx: heroBackgroundPrimitivePlacementSx.floatDotAccent }),
+            /* @__PURE__ */ (0, import_jsx_runtime5.jsx)(
+              HeroFloatingDot,
+              {
+                color: "error",
+                floatAxis: "x",
+                sx: heroBackgroundPrimitivePlacementSx.dotError
+              }
+            ),
+            /* @__PURE__ */ (0, import_jsx_runtime5.jsx)(
+              HeroFloatingDot,
+              {
+                color: "warning",
+                floatAxis: "y",
+                sx: heroBackgroundPrimitivePlacementSx.dotWarning
+              }
+            ),
+            /* @__PURE__ */ (0, import_jsx_runtime5.jsx)(
+              HeroFloatingDot,
+              {
+                color: "info",
+                floatAxis: "x",
+                sx: heroBackgroundPrimitivePlacementSx.dotInfo
+              }
+            ),
+            /* @__PURE__ */ (0, import_jsx_runtime5.jsx)(
+              HeroFloatingDot,
+              {
+                color: "secondary",
+                floatAxis: "x",
+                sx: heroBackgroundPrimitivePlacementSx.dotSecondary
+              }
+            ),
+            /* @__PURE__ */ (0, import_jsx_runtime5.jsx)(
+              HeroFloatingDot,
+              {
+                color: "success",
+                floatAxis: "y",
+                sx: heroBackgroundPrimitivePlacementSx.dotSuccess
+              }
+            ),
+            /* @__PURE__ */ (0, import_jsx_runtime5.jsx)(HeroPlusSign, { sx: heroBackgroundPrimitivePlacementSx.plusSignA }),
+            /* @__PURE__ */ (0, import_jsx_runtime5.jsx)(HeroPlusSign, { sx: heroBackgroundPrimitivePlacementSx.plusSignB })
+          ]
+        }
+      )
+    ] });
+  }
+);
+HeroBackground.displayName = "HeroBackground";
+
+// src/components/motion/floating-icon-cloud/floating-icon-cloud.tsx
+var import_react4 = __toESM(require("react"), 1);
+var import_framer_motion6 = require("framer-motion");
+var import_Box5 = __toESM(require("@mui/material/Box"), 1);
+var import_Tooltip = __toESM(require("@mui/material/Tooltip"), 1);
+
+// src/components/motion/floating-icon-cloud/floating-icon-cloud.const.ts
+var ICON_CLOUD_ICON_SIZE = 40;
+var ICON_CLOUD_ICON_SIZE_COMPACT = 28;
+var ICON_CLOUD_MIN_RADIUS_PERCENT = 20;
+var ICON_CLOUD_MAX_RADIUS_PERCENT = 46;
+var ICON_CLOUD_VERTICAL_SQUASH = 0.55;
+var ICON_CLOUD_ANGLE_JITTER_FACTOR = 0.6;
+var ICON_CLOUD_MAX_DELAY = 1.2;
+var ICON_CLOUD_FLOAT_DURATION = 5;
+var ICON_CLOUD_FLOAT_RANGE = 14;
+
+// src/components/motion/floating-icon-cloud/floating-icon-cloud.utils.ts
+var TWO_PI = Math.PI * 2;
+function seededFraction(seed) {
+  const value = Math.sin(seed) * 43758.5453;
+  return value - Math.floor(value);
+}
+function computeFloatingIconCloudPositions(count, seed = 1) {
+  if (count <= 0) return [];
+  return Array.from({ length: count }, (_, index) => {
+    const baseAngle = index / count * TWO_PI;
+    const slotHalfWidth = Math.PI / count;
+    const angleJitter = (seededFraction(seed + index * 12.9898) - 0.5) * 2 * ICON_CLOUD_ANGLE_JITTER_FACTOR * slotHalfWidth;
+    const angle = baseAngle + angleJitter;
+    const radiusFraction = seededFraction(seed + index * 78.233 + 4.1414);
+    const radius = ICON_CLOUD_MIN_RADIUS_PERCENT + radiusFraction * (ICON_CLOUD_MAX_RADIUS_PERCENT - ICON_CLOUD_MIN_RADIUS_PERCENT);
+    const delayFraction = seededFraction(seed + index * 39.346);
+    return {
+      xPercent: Math.cos(angle) * radius,
+      yPercent: Math.sin(angle) * radius * ICON_CLOUD_VERTICAL_SQUASH,
+      delay: delayFraction * ICON_CLOUD_MAX_DELAY
+    };
+  });
+}
+
+// src/components/motion/floating-icon-cloud/floating-icon-cloud.animations.ts
+function buildFloatTransition(delay) {
+  return {
+    duration: ICON_CLOUD_FLOAT_DURATION,
+    ease: "easeInOut",
+    repeat: Infinity,
+    delay
+  };
+}
+
+// src/components/motion/floating-icon-cloud/floating-icon-cloud.styles.ts
+var COMMON_BLACK_CHANNEL = "var(--mui-palette-common-blackChannel)";
+var floatingIconCloudRootSx = {
+  position: "relative",
+  width: "100%",
+  height: { xs: 200, sm: 260, md: 320 }
+};
+var floatingIconCloudItemSx = (xPercent, yPercent) => ({
+  position: "absolute",
+  top: `calc(50% + ${yPercent}%)`,
+  left: `calc(50% + ${xPercent}%)`,
+  transform: "translate(-50%, -50%)"
+});
+var floatingIconCloudImageSx = {
+  display: "block",
+  width: {
+    xs: ICON_CLOUD_ICON_SIZE_COMPACT,
+    sm: ICON_CLOUD_ICON_SIZE_COMPACT,
+    md: ICON_CLOUD_ICON_SIZE
+  },
+  height: {
+    xs: ICON_CLOUD_ICON_SIZE_COMPACT,
+    sm: ICON_CLOUD_ICON_SIZE_COMPACT,
+    md: ICON_CLOUD_ICON_SIZE
+  },
+  objectFit: "contain",
+  filter: `drop-shadow(0 2px 4px ${channelAlpha(COMMON_BLACK_CHANNEL, 0.18)})`
+};
+
+// src/components/motion/floating-icon-cloud/floating-icon-cloud.tsx
+var import_jsx_runtime6 = require("react/jsx-runtime");
+var FloatingIconCloud = import_react4.default.forwardRef(
+  function FloatingIconCloud2({ items, seed = 1, sx, ...other }, ref) {
+    const positions = (0, import_react4.useMemo)(
+      () => computeFloatingIconCloudPositions(items.length, seed),
+      [items.length, seed]
+    );
+    return /* @__PURE__ */ (0, import_jsx_runtime6.jsx)(import_Box5.default, { ref, sx: [floatingIconCloudRootSx, ...Array.isArray(sx) ? sx : [sx]], ...other, children: items.map((item, index) => {
+      const { xPercent, yPercent, delay } = positions[index];
+      return /* @__PURE__ */ (0, import_jsx_runtime6.jsx)(import_Box5.default, { sx: floatingIconCloudItemSx(xPercent, yPercent), children: /* @__PURE__ */ (0, import_jsx_runtime6.jsx)(
+        import_Box5.default,
+        {
+          component: import_framer_motion6.motion.div,
+          animate: { y: [0, -ICON_CLOUD_FLOAT_RANGE, 0] },
+          transition: buildFloatTransition(delay),
+          children: /* @__PURE__ */ (0, import_jsx_runtime6.jsx)(import_Tooltip.default, { title: item.label, arrow: true, placement: "top", children: /* @__PURE__ */ (0, import_jsx_runtime6.jsx)(
+            import_Box5.default,
+            {
+              component: "img",
+              src: item.src,
+              alt: item.label,
+              sx: floatingIconCloudImageSx
+            }
+          ) })
+        }
+      ) }, `${item.label}-${index}`);
+    }) });
+  }
+);
+FloatingIconCloud.displayName = "FloatingIconCloud";
+
+// src/components/motion/section-title-animated/section-title-animated.tsx
+var import_react6 = __toESM(require("react"), 1);
+var import_framer_motion7 = require("framer-motion");
+var import_Box7 = __toESM(require("@mui/material/Box"), 1);
+var import_Typography = __toESM(require("@mui/material/Typography"), 1);
+
+// src/components/material/layout/section-title/section-caption/section-caption.tsx
+var import_react5 = __toESM(require("react"), 1);
+var import_Box6 = __toESM(require("@mui/material/Box"), 1);
+
+// src/components/material/layout/section-title/section-caption/section-caption.styles.ts
+var sectionCaptionSx = {
+  typography: "overline",
+  color: "text.disabled"
+};
+
+// src/components/material/layout/section-title/section-caption/section-caption.tsx
+var import_jsx_runtime7 = require("react/jsx-runtime");
+var SectionCaption = import_react5.default.forwardRef(
+  function SectionCaption2({ title, sx, ...other }, ref) {
+    return /* @__PURE__ */ (0, import_jsx_runtime7.jsx)(
+      import_Box6.default,
+      {
+        ref,
+        component: "span",
+        sx: [sectionCaptionSx, ...Array.isArray(sx) ? sx : [sx]],
+        ...other,
+        children: title
+      }
+    );
+  }
+);
+SectionCaption.displayName = "SectionCaption";
+
+// src/components/motion/section-title-animated/section-title-animated.utils.ts
+var DEFAULT_ANIMATION_DIRECTION = {
+  fade: "inUp",
+  zoom: "inUp",
+  scale: "in"
+};
+function buildItemVariants(animationVariant, animationDirection, animationDistance, transitionIn) {
+  const direction = animationDirection ?? DEFAULT_ANIMATION_DIRECTION[animationVariant];
+  switch (animationVariant) {
+    case "scale":
+      return scale(direction, { transitionIn });
+    case "zoom":
+      return zoom(direction, {
+        distance: animationDistance,
+        transitionIn
+      });
+    case "fade":
+    default:
+      return fade(direction, {
+        distance: animationDistance,
+        transitionIn
+      });
+  }
+}
+
+// src/components/motion/section-title-animated/section-title-animated.styles.ts
+var sectionTitleAnimatedRootSx = {
+  gap: 3,
+  display: "flex",
+  flexDirection: "column"
+};
+var sectionTitleAnimatedDescriptionSx = {
+  color: "text.secondary",
+  typography: "body1"
+};
+var txtGradientAnimatedSpanSx = (theme) => ({
+  opacity: 0.4,
+  display: "inline-block",
+  background: `linear-gradient(to right, ${theme.vars.palette.text.primary}, ${channelAlpha(theme.vars.palette.text.primaryChannel, 0.2)})`,
+  WebkitBackgroundClip: "text",
+  WebkitTextFillColor: "transparent",
+  backgroundClip: "text",
+  color: "transparent"
+});
+
+// src/components/motion/section-title-animated/section-title-animated.tsx
+var import_jsx_runtime8 = require("react/jsx-runtime");
+var SectionTitleAnimated = import_react6.default.forwardRef(
+  function SectionTitleAnimated2({
+    sx,
+    title,
+    caption,
+    slotProps,
+    txtGradient,
+    description,
+    titleComponent = "h2",
+    titleVariant = "h2",
+    animationVariant = "fade",
+    animationDirection,
+    animationDistance,
+    transitionIn,
+    viewport,
+    ...other
+  }, ref) {
+    const itemVariants = buildItemVariants(
+      animationVariant,
+      animationDirection,
+      animationDistance,
+      transitionIn
+    );
+    return /* @__PURE__ */ (0, import_jsx_runtime8.jsxs)(
+      import_Box7.default,
+      {
+        ref,
+        component: import_framer_motion7.motion.div,
+        initial: "initial",
+        whileInView: "animate",
+        viewport: { once: true, amount: 0.3, ...viewport },
+        variants: container(),
+        sx: [sectionTitleAnimatedRootSx, ...Array.isArray(sx) ? sx : [sx]],
+        ...other,
+        children: [
+          caption && /* @__PURE__ */ (0, import_jsx_runtime8.jsx)(import_Box7.default, { component: import_framer_motion7.motion.div, variants: itemVariants, children: /* @__PURE__ */ (0, import_jsx_runtime8.jsx)(SectionCaption, { title: caption, sx: slotProps?.caption?.sx }) }),
+          /* @__PURE__ */ (0, import_jsx_runtime8.jsx)(import_Box7.default, { component: import_framer_motion7.motion.div, variants: itemVariants, children: /* @__PURE__ */ (0, import_jsx_runtime8.jsxs)(import_Typography.default, { component: titleComponent, variant: titleVariant, sx: slotProps?.title?.sx, children: [
+            title,
+            " ",
+            txtGradient && /* @__PURE__ */ (0, import_jsx_runtime8.jsx)(import_Box7.default, { component: "span", sx: txtGradientAnimatedSpanSx, children: txtGradient })
+          ] }) }),
+          description && /* @__PURE__ */ (0, import_jsx_runtime8.jsx)(import_Box7.default, { component: import_framer_motion7.motion.div, variants: itemVariants, children: /* @__PURE__ */ (0, import_jsx_runtime8.jsx)(
+            import_Box7.default,
+            {
+              sx: [
+                sectionTitleAnimatedDescriptionSx,
+                ...Array.isArray(slotProps?.description?.sx) ? slotProps.description.sx : [slotProps?.description?.sx]
+              ],
+              children: description
+            }
+          ) })
+        ]
+      }
+    );
+  }
+);
+SectionTitleAnimated.displayName = "SectionTitleAnimated";
+
+// src/components/motion/use-scroll-parallax/use-scroll-parallax.ts
+var import_react7 = require("react");
+var import_framer_motion8 = require("framer-motion");
 
 // src/components/motion/use-scroll-parallax/use-scroll-parallax.const.ts
 var LAYER_MULTIPLIERS = [40, 80, 120, 160, 200];
@@ -568,8 +1233,8 @@ var USE_SCROLL_PARALLAX_SPRING_STIFFNESS = 300;
 
 // src/components/motion/use-scroll-parallax/use-scroll-parallax.ts
 function useScrollParallax() {
-  const ref = (0, import_react.useRef)(null);
-  const { scrollYProgress } = (0, import_framer_motion3.useScroll)({
+  const ref = (0, import_react7.useRef)(null);
+  const { scrollYProgress } = (0, import_framer_motion8.useScroll)({
     target: ref,
     offset: ["start end", "end start"]
   });
@@ -578,23 +1243,23 @@ function useScrollParallax() {
     damping: USE_SCROLL_PARALLAX_SPRING_DAMPING,
     stiffness: USE_SCROLL_PARALLAX_SPRING_STIFFNESS
   };
-  const t0 = (0, import_framer_motion3.useTransform)(scrollYProgress, [0, 1], [-LAYER_MULTIPLIERS[0], LAYER_MULTIPLIERS[0]]);
-  const t1 = (0, import_framer_motion3.useTransform)(scrollYProgress, [0, 1], [-LAYER_MULTIPLIERS[1], LAYER_MULTIPLIERS[1]]);
-  const t2 = (0, import_framer_motion3.useTransform)(scrollYProgress, [0, 1], [-LAYER_MULTIPLIERS[2], LAYER_MULTIPLIERS[2]]);
-  const t3 = (0, import_framer_motion3.useTransform)(scrollYProgress, [0, 1], [-LAYER_MULTIPLIERS[3], LAYER_MULTIPLIERS[3]]);
-  const t4 = (0, import_framer_motion3.useTransform)(scrollYProgress, [0, 1], [-LAYER_MULTIPLIERS[4], LAYER_MULTIPLIERS[4]]);
-  const l0 = (0, import_framer_motion3.useSpring)(t0, springConfig);
-  const l1 = (0, import_framer_motion3.useSpring)(t1, springConfig);
-  const l2 = (0, import_framer_motion3.useSpring)(t2, springConfig);
-  const l3 = (0, import_framer_motion3.useSpring)(t3, springConfig);
-  const l4 = (0, import_framer_motion3.useSpring)(t4, springConfig);
+  const t0 = (0, import_framer_motion8.useTransform)(scrollYProgress, [0, 1], [-LAYER_MULTIPLIERS[0], LAYER_MULTIPLIERS[0]]);
+  const t1 = (0, import_framer_motion8.useTransform)(scrollYProgress, [0, 1], [-LAYER_MULTIPLIERS[1], LAYER_MULTIPLIERS[1]]);
+  const t2 = (0, import_framer_motion8.useTransform)(scrollYProgress, [0, 1], [-LAYER_MULTIPLIERS[2], LAYER_MULTIPLIERS[2]]);
+  const t3 = (0, import_framer_motion8.useTransform)(scrollYProgress, [0, 1], [-LAYER_MULTIPLIERS[3], LAYER_MULTIPLIERS[3]]);
+  const t4 = (0, import_framer_motion8.useTransform)(scrollYProgress, [0, 1], [-LAYER_MULTIPLIERS[4], LAYER_MULTIPLIERS[4]]);
+  const l0 = (0, import_framer_motion8.useSpring)(t0, springConfig);
+  const l1 = (0, import_framer_motion8.useSpring)(t1, springConfig);
+  const l2 = (0, import_framer_motion8.useSpring)(t2, springConfig);
+  const l3 = (0, import_framer_motion8.useSpring)(t3, springConfig);
+  const l4 = (0, import_framer_motion8.useSpring)(t4, springConfig);
   return { ref, layers: [l0, l1, l2, l3, l4] };
 }
 
 // src/components/section/hero/interactive-logo/interactive-logo.tsx
-var import_react6 = require("react");
-var import_framer_motion7 = require("framer-motion");
-var import_Box6 = __toESM(require("@mui/material/Box"), 1);
+var import_react12 = require("react");
+var import_framer_motion12 = require("framer-motion");
+var import_Box11 = __toESM(require("@mui/material/Box"), 1);
 
 // src/utils/hooks/use-image-preloader/use-image-preloader.ts
 function preloadImages(srcs) {
@@ -607,9 +1272,9 @@ function preloadImages(srcs) {
 }
 
 // src/components/section/hero/interactive-logo/portrait-layer/portrait-layer.tsx
-var import_react2 = __toESM(require("react"), 1);
-var import_framer_motion4 = require("framer-motion");
-var import_Box3 = __toESM(require("@mui/material/Box"), 1);
+var import_react8 = __toESM(require("react"), 1);
+var import_framer_motion9 = require("framer-motion");
+var import_Box8 = __toESM(require("@mui/material/Box"), 1);
 
 // src/components/section/hero/interactive-logo/portrait-layer/portrait-layer.styles.ts
 var portraitWrapperSx = {
@@ -634,16 +1299,16 @@ var portraitImageSx = {
 };
 
 // src/components/section/hero/interactive-logo/portrait-layer/portrait-layer.tsx
-var import_jsx_runtime3 = require("react/jsx-runtime");
-var PortraitLayer = import_react2.default.forwardRef(
+var import_jsx_runtime9 = require("react/jsx-runtime");
+var PortraitLayer = import_react8.default.forwardRef(
   function PortraitLayer2({ portraitSrc, portraitAlt, showPortrait, portraitFadeTransition }, ref) {
     if (!portraitSrc) {
       return null;
     }
-    return /* @__PURE__ */ (0, import_jsx_runtime3.jsx)(import_Box3.default, { ref, sx: portraitWrapperSx, children: /* @__PURE__ */ (0, import_jsx_runtime3.jsx)(
-      import_Box3.default,
+    return /* @__PURE__ */ (0, import_jsx_runtime9.jsx)(import_Box8.default, { ref, sx: portraitWrapperSx, children: /* @__PURE__ */ (0, import_jsx_runtime9.jsx)(
+      import_Box8.default,
       {
-        component: import_framer_motion4.motion.img,
+        component: import_framer_motion9.motion.img,
         alt: portraitAlt,
         src: portraitSrc,
         initial: {
@@ -665,9 +1330,9 @@ var PortraitLayer = import_react2.default.forwardRef(
 PortraitLayer.displayName = "PortraitLayer";
 
 // src/components/section/hero/interactive-logo/original-logo-layer/original-logo-layer.tsx
-var import_react3 = __toESM(require("react"), 1);
-var import_framer_motion5 = require("framer-motion");
-var import_Box4 = __toESM(require("@mui/material/Box"), 1);
+var import_react9 = __toESM(require("react"), 1);
+var import_framer_motion10 = require("framer-motion");
+var import_Box9 = __toESM(require("@mui/material/Box"), 1);
 
 // src/components/section/hero/interactive-logo/original-logo-layer/original-logo-layer.styles.ts
 var originalLayerSx = {
@@ -683,18 +1348,18 @@ var activeFrameImageSx = {
 };
 
 // src/components/section/hero/interactive-logo/original-logo-layer/original-logo-layer.tsx
-var import_jsx_runtime4 = require("react/jsx-runtime");
-var OriginalLogoLayer = import_react3.default.forwardRef(
+var import_jsx_runtime10 = require("react/jsx-runtime");
+var OriginalLogoLayer = import_react9.default.forwardRef(
   function OriginalLogoLayer2({ hoverPhase, logoFadeTransition, activeFrame, logoAlt, hasArtisticContent = false, children }, ref) {
     const isArtistic = hoverPhase === "artistic";
     const animateOpacity = isArtistic || !hasArtisticContent ? 1 : 0;
     const animateScale = isArtistic || !hasArtisticContent ? 1 : 0.985;
     const animateFilter = isArtistic || !hasArtisticContent ? "blur(0px)" : "blur(4px)";
-    return /* @__PURE__ */ (0, import_jsx_runtime4.jsx)(
-      import_Box4.default,
+    return /* @__PURE__ */ (0, import_jsx_runtime10.jsx)(
+      import_Box9.default,
       {
         ref,
-        component: import_framer_motion5.motion.div,
+        component: import_framer_motion10.motion.div,
         initial: {
           opacity: 0,
           scale: 1,
@@ -707,7 +1372,7 @@ var OriginalLogoLayer = import_react3.default.forwardRef(
         },
         transition: logoFadeTransition,
         sx: originalLayerSx,
-        children: activeFrame ? /* @__PURE__ */ (0, import_jsx_runtime4.jsx)(import_Box4.default, { component: "img", alt: logoAlt ?? "Logo", src: activeFrame, sx: activeFrameImageSx }) : children
+        children: activeFrame ? /* @__PURE__ */ (0, import_jsx_runtime10.jsx)(import_Box9.default, { component: "img", alt: logoAlt ?? "Logo", src: activeFrame, sx: activeFrameImageSx }) : children
       }
     );
   }
@@ -715,9 +1380,9 @@ var OriginalLogoLayer = import_react3.default.forwardRef(
 OriginalLogoLayer.displayName = "OriginalLogoLayer";
 
 // src/components/section/hero/interactive-logo/artistic-logo-layer/artistic-logo-layer.tsx
-var import_react4 = __toESM(require("react"), 1);
-var import_framer_motion6 = require("framer-motion");
-var import_Box5 = __toESM(require("@mui/material/Box"), 1);
+var import_react10 = __toESM(require("react"), 1);
+var import_framer_motion11 = require("framer-motion");
+var import_Box10 = __toESM(require("@mui/material/Box"), 1);
 
 // src/components/section/hero/interactive-logo/artistic-logo-layer/artistic-logo-layer.styles.ts
 var artisticLogoSx = {
@@ -732,17 +1397,17 @@ var artisticLogoSx = {
 };
 
 // src/components/section/hero/interactive-logo/artistic-logo-layer/artistic-logo-layer.tsx
-var import_jsx_runtime5 = require("react/jsx-runtime");
-var ArtisticLogoLayer = import_react4.default.forwardRef(
+var import_jsx_runtime11 = require("react/jsx-runtime");
+var ArtisticLogoLayer = import_react10.default.forwardRef(
   function ArtisticLogoLayer2({ artisticLogoSrc, showArtisticLogo, logoFadeTransition, logoAlt }, ref) {
     if (!artisticLogoSrc) {
       return null;
     }
-    return /* @__PURE__ */ (0, import_jsx_runtime5.jsx)(
-      import_Box5.default,
+    return /* @__PURE__ */ (0, import_jsx_runtime11.jsx)(
+      import_Box10.default,
       {
         ref,
-        component: import_framer_motion6.motion.img,
+        component: import_framer_motion11.motion.img,
         alt: logoAlt ?? "Logo",
         src: artisticLogoSrc,
         initial: {
@@ -764,7 +1429,7 @@ var ArtisticLogoLayer = import_react4.default.forwardRef(
 ArtisticLogoLayer.displayName = "ArtisticLogoLayer";
 
 // src/components/section/hero/interactive-logo/use-hover-phase-transition.ts
-var import_react5 = require("react");
+var import_react11 = require("react");
 
 // src/components/section/hero/interactive-logo/interactive-logo.const.ts
 var DEFAULT_PORTRAIT_DIRECTION = "forward";
@@ -776,11 +1441,11 @@ function useHoverPhaseTransition({
   hasPortrait,
   reducedMotion
 }) {
-  const [hoverPhase, setHoverPhase] = (0, import_react5.useState)("idle");
-  const [hasActivatedPortrait, setHasActivatedPortrait] = (0, import_react5.useState)(false);
-  const [activePortraitDirection, setActivePortraitDirection] = (0, import_react5.useState)(DEFAULT_PORTRAIT_DIRECTION);
-  const portraitTimeoutRef = (0, import_react5.useRef)(null);
-  (0, import_react5.useEffect)(() => {
+  const [hoverPhase, setHoverPhase] = (0, import_react11.useState)("idle");
+  const [hasActivatedPortrait, setHasActivatedPortrait] = (0, import_react11.useState)(false);
+  const [activePortraitDirection, setActivePortraitDirection] = (0, import_react11.useState)(DEFAULT_PORTRAIT_DIRECTION);
+  const portraitTimeoutRef = (0, import_react11.useRef)(null);
+  (0, import_react11.useEffect)(() => {
     if (portraitTimeoutRef.current) {
       globalThis.clearTimeout(portraitTimeoutRef.current);
       portraitTimeoutRef.current = null;
@@ -875,7 +1540,7 @@ function getCursorStyle(reducedMotion, isPointerDown) {
 }
 
 // src/components/section/hero/interactive-logo/interactive-logo.tsx
-var import_jsx_runtime6 = require("react/jsx-runtime");
+var import_jsx_runtime12 = require("react/jsx-runtime");
 function InteractiveHeroLogo({
   sx,
   rootSx,
@@ -888,43 +1553,43 @@ function InteractiveHeroLogo({
   children,
   ...other
 }) {
-  const reducedMotion = (0, import_framer_motion7.useReducedMotion)();
-  const rootRef = (0, import_react6.useRef)(null);
-  const scrub = (0, import_framer_motion7.useMotionValue)(0);
-  const scrubSpring = (0, import_framer_motion7.useSpring)(scrub, { stiffness: 240, damping: 28, mass: 0.25 });
-  const tiltX = (0, import_framer_motion7.useMotionValue)(0);
-  const tiltY = (0, import_framer_motion7.useMotionValue)(0);
-  const panX = (0, import_framer_motion7.useMotionValue)(0);
-  const panY = (0, import_framer_motion7.useMotionValue)(0);
-  const rotateX = (0, import_framer_motion7.useSpring)(tiltX, { stiffness: 220, damping: 13, mass: 0.24 });
-  const rotateY = (0, import_framer_motion7.useSpring)(tiltY, { stiffness: 220, damping: 13, mass: 0.24 });
-  const x = (0, import_framer_motion7.useSpring)(panX, { stiffness: 230, damping: 13, mass: 0.2 });
-  const y = (0, import_framer_motion7.useSpring)(panY, { stiffness: 230, damping: 13, mass: 0.2 });
-  const validFrames = (0, import_react6.useMemo)(() => (frameSources ?? []).filter(Boolean), [frameSources]);
-  const portraitSourceMap = (0, import_react6.useMemo)(
+  const reducedMotion = (0, import_framer_motion12.useReducedMotion)();
+  const rootRef = (0, import_react12.useRef)(null);
+  const scrub = (0, import_framer_motion12.useMotionValue)(0);
+  const scrubSpring = (0, import_framer_motion12.useSpring)(scrub, { stiffness: 240, damping: 28, mass: 0.25 });
+  const tiltX = (0, import_framer_motion12.useMotionValue)(0);
+  const tiltY = (0, import_framer_motion12.useMotionValue)(0);
+  const panX = (0, import_framer_motion12.useMotionValue)(0);
+  const panY = (0, import_framer_motion12.useMotionValue)(0);
+  const rotateX = (0, import_framer_motion12.useSpring)(tiltX, { stiffness: 220, damping: 13, mass: 0.24 });
+  const rotateY = (0, import_framer_motion12.useSpring)(tiltY, { stiffness: 220, damping: 13, mass: 0.24 });
+  const x = (0, import_framer_motion12.useSpring)(panX, { stiffness: 230, damping: 13, mass: 0.2 });
+  const y = (0, import_framer_motion12.useSpring)(panY, { stiffness: 230, damping: 13, mass: 0.2 });
+  const validFrames = (0, import_react12.useMemo)(() => (frameSources ?? []).filter(Boolean), [frameSources]);
+  const portraitSourceMap = (0, import_react12.useMemo)(
     () => buildPortraitSourceMap(portraitSrc, portraitSources),
     [portraitSrc, portraitSources]
   );
-  const hasPortrait = (0, import_react6.useMemo)(
+  const hasPortrait = (0, import_react12.useMemo)(
     () => Object.values(portraitSourceMap).some(Boolean),
     [portraitSourceMap]
   );
-  const allPortraitSrcs = (0, import_react6.useMemo)(
+  const allPortraitSrcs = (0, import_react12.useMemo)(
     () => Object.values(portraitSourceMap).flatMap(
       (src) => typeof src === "string" ? [src] : [...src ?? []]
     ),
     [portraitSourceMap]
   );
-  (0, import_react6.useEffect)(() => {
+  (0, import_react12.useEffect)(() => {
     preloadImages(allPortraitSrcs);
   }, [allPortraitSrcs]);
-  const [activePortraitSrcResolved, setActivePortraitSrcResolved] = (0, import_react6.useState)("");
+  const [activePortraitSrcResolved, setActivePortraitSrcResolved] = (0, import_react12.useState)("");
   const frameCount = validFrames.length;
-  const [frameIndex, setFrameIndex] = (0, import_react6.useState)(0);
-  const [isPointerDown, setIsPointerDown] = (0, import_react6.useState)(false);
-  const [isHovered, setIsHovered] = (0, import_react6.useState)(false);
+  const [frameIndex, setFrameIndex] = (0, import_react12.useState)(0);
+  const [isPointerDown, setIsPointerDown] = (0, import_react12.useState)(false);
+  const [isHovered, setIsHovered] = (0, import_react12.useState)(false);
   const { hoverPhase, hasActivatedPortrait, activePortraitDirection, setActivePortraitDirection } = useHoverPhaseTransition({ isHovered, hasPortrait, reducedMotion });
-  (0, import_react6.useEffect)(() => {
+  (0, import_react12.useEffect)(() => {
     if (hoverPhase !== "portrait") {
       return;
     }
@@ -933,7 +1598,7 @@ function InteractiveHeroLogo({
     panX.set(0);
     panY.set(0);
   }, [hoverPhase, panX, panY, tiltX, tiltY]);
-  (0, import_react6.useEffect)(() => {
+  (0, import_react12.useEffect)(() => {
     if (frameCount <= 1 || reducedMotion) {
       setFrameIndex(0);
       return;
@@ -945,11 +1610,11 @@ function InteractiveHeroLogo({
     });
     return unsubscribe;
   }, [frameCount, reducedMotion, scrubSpring]);
-  const handlePointerDown = (0, import_react6.useCallback)(() => setIsPointerDown(true), []);
-  const handlePointerUp = (0, import_react6.useCallback)(() => setIsPointerDown(false), []);
-  const handlePointerEnter = (0, import_react6.useCallback)(() => setIsHovered(true), []);
-  const handleInnerPointerLeave = (0, import_react6.useCallback)(() => setIsHovered(false), []);
-  const handlePointerMove = (0, import_react6.useCallback)(
+  const handlePointerDown = (0, import_react12.useCallback)(() => setIsPointerDown(true), []);
+  const handlePointerUp = (0, import_react12.useCallback)(() => setIsPointerDown(false), []);
+  const handlePointerEnter = (0, import_react12.useCallback)(() => setIsHovered(true), []);
+  const handleInnerPointerLeave = (0, import_react12.useCallback)(() => setIsHovered(false), []);
+  const handlePointerMove = (0, import_react12.useCallback)(
     (event) => {
       if (reducedMotion) return;
       const rect = rootRef.current?.getBoundingClientRect();
@@ -987,7 +1652,7 @@ function InteractiveHeroLogo({
       tiltY
     ]
   );
-  const handlePointerLeave = (0, import_react6.useCallback)(() => {
+  const handlePointerLeave = (0, import_react12.useCallback)(() => {
     setIsHovered(false);
     setIsPointerDown(false);
     setActivePortraitDirection(DEFAULT_PORTRAIT_DIRECTION);
@@ -997,7 +1662,7 @@ function InteractiveHeroLogo({
     panX.set(0);
     panY.set(0);
   }, [panX, panY, scrub, setActivePortraitDirection, tiltX, tiltY]);
-  (0, import_react6.useEffect)(() => {
+  (0, import_react12.useEffect)(() => {
     const rawSrc = portraitSourceMap[activePortraitDirection] ?? portraitSourceMap[DEFAULT_PORTRAIT_DIRECTION];
     if (rawSrc) {
       setActivePortraitSrcResolved(getRandomPortraitSrc(rawSrc));
@@ -1006,37 +1671,37 @@ function InteractiveHeroLogo({
   const activeFrame = validFrames[Math.min(frameIndex, Math.max(0, frameCount - 1))];
   const showArtisticLogo = artisticLogoSrc && hoverPhase === "idle";
   const showPortrait = activePortraitSrcResolved && hoverPhase === "portrait";
-  const shadowX = (0, import_framer_motion7.useTransform)(panX, (value) => value * -0.3);
-  const shadowY = (0, import_framer_motion7.useTransform)(panY, (value) => 10 + value * 0.45);
+  const shadowX = (0, import_framer_motion12.useTransform)(panX, (value) => value * -0.3);
+  const shadowY = (0, import_framer_motion12.useTransform)(panY, (value) => 10 + value * 0.45);
   const shadowBlur = isHovered ? 24 : 16;
   const shadowAlpha = isHovered ? 0.34 : 0.22;
-  const logoStackFilter = import_framer_motion7.useMotionTemplate`brightness(0.9) drop-shadow(${shadowX}px ${shadowY}px ${shadowBlur}px rgb(var(--mui-palette-grey-900Channel) / ${shadowAlpha}))`;
+  const logoStackFilter = import_framer_motion12.useMotionTemplate`brightness(0.9) drop-shadow(${shadowX}px ${shadowY}px ${shadowBlur}px rgb(var(--mui-palette-grey-900Channel) / ${shadowAlpha}))`;
   const logoFadeTransition = reducedMotion ? { duration: 0 } : { duration: 0.55, ease: [0.22, 1, 0.36, 1] };
   const portraitFadeTransition = reducedMotion ? { duration: 0 } : { duration: 0.9, ease: [0.22, 1, 0.36, 1] };
   const cursorStyle = getCursorStyle(reducedMotion, isPointerDown);
-  return /* @__PURE__ */ (0, import_jsx_runtime6.jsx)(
-    import_Box6.default,
+  return /* @__PURE__ */ (0, import_jsx_runtime12.jsx)(
+    import_Box11.default,
     {
       ...other,
       ref: rootRef,
-      component: import_framer_motion7.motion.div,
+      component: import_framer_motion12.motion.div,
       onPointerMove: handlePointerMove,
       onPointerLeave: handlePointerLeave,
       onPointerDown: handlePointerDown,
       onPointerUp: handlePointerUp,
       onPointerCancel: handlePointerUp,
       sx: [rootBoxSx(cursorStyle), ...Array.isArray(rootSx) ? rootSx : [rootSx]],
-      children: /* @__PURE__ */ (0, import_jsx_runtime6.jsxs)(
-        import_Box6.default,
+      children: /* @__PURE__ */ (0, import_jsx_runtime12.jsxs)(
+        import_Box11.default,
         {
           onPointerEnter: handlePointerEnter,
           onPointerLeave: handleInnerPointerLeave,
           sx: [innerContainerSx, ...Array.isArray(sx) ? sx : [sx]],
           children: [
-            /* @__PURE__ */ (0, import_jsx_runtime6.jsxs)(
-              import_Box6.default,
+            /* @__PURE__ */ (0, import_jsx_runtime12.jsxs)(
+              import_Box11.default,
               {
-                component: import_framer_motion7.motion.div,
+                component: import_framer_motion12.motion.div,
                 style: reducedMotion ? void 0 : {
                   rotateX,
                   rotateY,
@@ -1046,7 +1711,7 @@ function InteractiveHeroLogo({
                 },
                 sx: logoStack3dWrapperSx,
                 children: [
-                  /* @__PURE__ */ (0, import_jsx_runtime6.jsx)(
+                  /* @__PURE__ */ (0, import_jsx_runtime12.jsx)(
                     OriginalLogoLayer,
                     {
                       hoverPhase,
@@ -1057,7 +1722,7 @@ function InteractiveHeroLogo({
                       children
                     }
                   ),
-                  /* @__PURE__ */ (0, import_jsx_runtime6.jsx)(
+                  /* @__PURE__ */ (0, import_jsx_runtime12.jsx)(
                     ArtisticLogoLayer,
                     {
                       artisticLogoSrc,
@@ -1069,7 +1734,7 @@ function InteractiveHeroLogo({
                 ]
               }
             ),
-            /* @__PURE__ */ (0, import_jsx_runtime6.jsx)(
+            /* @__PURE__ */ (0, import_jsx_runtime12.jsx)(
               PortraitLayer,
               {
                 portraitSrc: activePortraitSrcResolved,
@@ -1086,8 +1751,8 @@ function InteractiveHeroLogo({
 }
 
 // src/components/section/hero/buttons-row/hero-buttons-row.tsx
-var import_framer_motion8 = require("framer-motion");
-var import_Box7 = __toESM(require("@mui/material/Box"), 1);
+var import_framer_motion13 = require("framer-motion");
+var import_Box12 = __toESM(require("@mui/material/Box"), 1);
 var import_Button = __toESM(require("@mui/material/Button"), 1);
 
 // src/components/section/hero/buttons-row/hero-buttons-row.styles.ts
@@ -1104,12 +1769,14 @@ var buttonSx = {
 };
 
 // src/components/section/hero/buttons-row/hero-buttons-row.tsx
-var import_jsx_runtime7 = require("react/jsx-runtime");
+var import_jsx_runtime13 = require("react/jsx-runtime");
 function HeroButtonsRow({ items, motionProps, sx, ...other }) {
-  return /* @__PURE__ */ (0, import_jsx_runtime7.jsx)(import_Box7.default, { sx: [rowSx, ...Array.isArray(sx) ? sx : [sx]], ...other, children: items.map((item) => /* @__PURE__ */ (0, import_jsx_runtime7.jsx)(import_framer_motion8.motion.div, { ...motionProps, children: /* @__PURE__ */ (0, import_jsx_runtime7.jsx)(
+  return /* @__PURE__ */ (0, import_jsx_runtime13.jsx)(import_Box12.default, { sx: [rowSx, ...Array.isArray(sx) ? sx : [sx]], ...other, children: items.map((item) => /* @__PURE__ */ (0, import_jsx_runtime13.jsx)(import_framer_motion13.motion.div, { ...motionProps, children: /* @__PURE__ */ (0, import_jsx_runtime13.jsx)(
     import_Button.default,
     {
       href: item.href,
+      target: item.target,
+      rel: item.rel,
       color: "inherit",
       size: "large",
       variant: item.variant ?? "contained",
@@ -1120,9 +1787,9 @@ function HeroButtonsRow({ items, motionProps, sx, ...other }) {
 }
 
 // src/components/material/navigation/floating-sub-nav/floating-sub-nav.tsx
-var import_react9 = require("react");
-var import_framer_motion10 = require("framer-motion");
-var import_Box9 = __toESM(require("@mui/material/Box"), 1);
+var import_react15 = require("react");
+var import_framer_motion15 = require("framer-motion");
+var import_Box14 = __toESM(require("@mui/material/Box"), 1);
 
 // src/components/material/navigation/floating-sub-nav/floating-sub-nav.styles.ts
 var stickyWrapperSx = (theme) => ({
@@ -1149,9 +1816,9 @@ var fixedWrapperSx = (theme) => ({
 });
 
 // src/components/material/navigation/floating-sub-nav/nav-pill/nav-pill.tsx
-var import_react8 = __toESM(require("react"), 1);
-var import_framer_motion9 = require("framer-motion");
-var import_Box8 = __toESM(require("@mui/material/Box"), 1);
+var import_react14 = __toESM(require("react"), 1);
+var import_framer_motion14 = require("framer-motion");
+var import_Box13 = __toESM(require("@mui/material/Box"), 1);
 var import_Stack = __toESM(require("@mui/material/Stack"), 1);
 
 // src/components/material/navigation/floating-sub-nav/nav-pill/nav-pill.animations.ts
@@ -1169,11 +1836,6 @@ var pillVariants = {
 
 // src/components/material/navigation/floating-sub-nav/nav-pill/nav-pill.const.ts
 var PILL_BUTTON_ROW_SPACING = 0.5;
-
-// src/utils/theme/theme-utils/theme-utils.ts
-function channelAlpha(channel, alpha) {
-  return `rgba(${channel} / ${alpha})`;
-}
 
 // src/components/material/navigation/floating-sub-nav/nav-pill/nav-pill.styles.ts
 var grey500Ch = (theme) => theme.vars.palette.grey["500Channel"];
@@ -1197,8 +1859,8 @@ var pillSx = (theme) => ({
 });
 
 // src/components/material/navigation/floating-sub-nav/sub-nav-button/sub-nav-button.tsx
-var import_react7 = __toESM(require("react"), 1);
-var import_Tooltip = __toESM(require("@mui/material/Tooltip"), 1);
+var import_react13 = __toESM(require("react"), 1);
+var import_Tooltip2 = __toESM(require("@mui/material/Tooltip"), 1);
 var import_ButtonBase = __toESM(require("@mui/material/ButtonBase"), 1);
 
 // src/components/material/navigation/floating-sub-nav/sub-nav-button/sub-nav-button.const.ts
@@ -1256,11 +1918,11 @@ var subNavButtonSx = (isActive) => (theme) => ({
 });
 
 // src/components/material/navigation/floating-sub-nav/sub-nav-button/sub-nav-button.tsx
-var import_jsx_runtime8 = require("react/jsx-runtime");
-var SubNavButton = import_react7.default.forwardRef(
+var import_jsx_runtime14 = require("react/jsx-runtime");
+var SubNavButton = import_react13.default.forwardRef(
   function SubNavButton2({ item, isActive, onPress }, ref) {
-    const handleClick = (0, import_react7.useCallback)(() => onPress(item.id), [onPress, item.id]);
-    return /* @__PURE__ */ (0, import_jsx_runtime8.jsx)(import_Tooltip.default, { title: item.label, placement: "top", arrow: true, children: /* @__PURE__ */ (0, import_jsx_runtime8.jsx)(
+    const handleClick = (0, import_react13.useCallback)(() => onPress(item.id), [onPress, item.id]);
+    return /* @__PURE__ */ (0, import_jsx_runtime14.jsx)(import_Tooltip2.default, { title: item.label, placement: "top", arrow: true, children: /* @__PURE__ */ (0, import_jsx_runtime14.jsx)(
       import_ButtonBase.default,
       {
         ref,
@@ -1279,10 +1941,10 @@ var SubNavButton = import_react7.default.forwardRef(
 SubNavButton.displayName = "SubNavButton";
 
 // src/components/material/navigation/floating-sub-nav/nav-pill/nav-pill.tsx
-var import_jsx_runtime9 = require("react/jsx-runtime");
-var NavPill = import_react8.default.forwardRef(function NavPill2({ items, activeId, onPress }, ref) {
-  return /* @__PURE__ */ (0, import_jsx_runtime9.jsx)(
-    import_framer_motion9.m.div,
+var import_jsx_runtime15 = require("react/jsx-runtime");
+var NavPill = import_react14.default.forwardRef(function NavPill2({ items, activeId, onPress }, ref) {
+  return /* @__PURE__ */ (0, import_jsx_runtime15.jsx)(
+    import_framer_motion14.m.div,
     {
       ref,
       variants: pillVariants,
@@ -1290,7 +1952,7 @@ var NavPill = import_react8.default.forwardRef(function NavPill2({ items, active
       animate: "animate",
       exit: "exit",
       transition: pillTransition,
-      children: /* @__PURE__ */ (0, import_jsx_runtime9.jsx)(import_Box8.default, { component: "nav", "aria-label": "Section navigation", sx: pillSx, children: /* @__PURE__ */ (0, import_jsx_runtime9.jsx)(import_Stack.default, { direction: "row", spacing: PILL_BUTTON_ROW_SPACING, children: items.map((item) => /* @__PURE__ */ (0, import_jsx_runtime9.jsx)(
+      children: /* @__PURE__ */ (0, import_jsx_runtime15.jsx)(import_Box13.default, { component: "nav", "aria-label": "Section navigation", sx: pillSx, children: /* @__PURE__ */ (0, import_jsx_runtime15.jsx)(import_Stack.default, { direction: "row", spacing: PILL_BUTTON_ROW_SPACING, children: items.map((item) => /* @__PURE__ */ (0, import_jsx_runtime15.jsx)(
         SubNavButton,
         {
           item,
@@ -1305,21 +1967,745 @@ var NavPill = import_react8.default.forwardRef(function NavPill2({ items, active
 NavPill.displayName = "NavPill";
 
 // src/components/material/navigation/floating-sub-nav/floating-sub-nav.tsx
-var import_jsx_runtime10 = require("react/jsx-runtime");
+var import_jsx_runtime16 = require("react/jsx-runtime");
 function FloatingSubNav({ items, activeId, onSelect, sticky = false }) {
-  const handlePress = (0, import_react9.useCallback)((id) => onSelect(id), [onSelect]);
+  const handlePress = (0, import_react15.useCallback)((id) => onSelect(id), [onSelect]);
   if (sticky) {
-    return /* @__PURE__ */ (0, import_jsx_runtime10.jsx)(import_Box9.default, { sx: stickyWrapperSx, children: /* @__PURE__ */ (0, import_jsx_runtime10.jsx)(import_Box9.default, { sx: stickyInnerSx, children: /* @__PURE__ */ (0, import_jsx_runtime10.jsx)(import_framer_motion10.AnimatePresence, { children: activeId !== null && /* @__PURE__ */ (0, import_jsx_runtime10.jsx)(NavPill, { items, activeId, onPress: handlePress }) }) }) });
+    return /* @__PURE__ */ (0, import_jsx_runtime16.jsx)(import_Box14.default, { sx: stickyWrapperSx, children: /* @__PURE__ */ (0, import_jsx_runtime16.jsx)(import_Box14.default, { sx: stickyInnerSx, children: /* @__PURE__ */ (0, import_jsx_runtime16.jsx)(import_framer_motion15.AnimatePresence, { children: activeId !== null && /* @__PURE__ */ (0, import_jsx_runtime16.jsx)(NavPill, { items, activeId, onPress: handlePress }) }) }) });
   }
-  return /* @__PURE__ */ (0, import_jsx_runtime10.jsx)(import_framer_motion10.AnimatePresence, { children: activeId !== null && /* @__PURE__ */ (0, import_jsx_runtime10.jsx)(import_Box9.default, { sx: fixedWrapperSx, children: /* @__PURE__ */ (0, import_jsx_runtime10.jsx)(NavPill, { items, activeId, onPress: handlePress }) }) });
+  return /* @__PURE__ */ (0, import_jsx_runtime16.jsx)(import_framer_motion15.AnimatePresence, { children: activeId !== null && /* @__PURE__ */ (0, import_jsx_runtime16.jsx)(import_Box14.default, { sx: fixedWrapperSx, children: /* @__PURE__ */ (0, import_jsx_runtime16.jsx)(NavPill, { items, activeId, onPress: handlePress }) }) });
 }
 
-// src/components/section/hero/scroll-parallax/scroll-parallax-hero.tsx
-var import_react11 = require("react");
-var import_framer_motion13 = require("framer-motion");
-var import_Box10 = __toESM(require("@mui/material/Box"), 1);
-var import_Container = __toESM(require("@mui/material/Container"), 1);
+// src/components/motion/floating-side-nav/floating-side-nav.tsx
+var import_react16 = __toESM(require("react"), 1);
+var import_framer_motion16 = require("framer-motion");
+var import_Box15 = __toESM(require("@mui/material/Box"), 1);
+var import_ButtonBase2 = __toESM(require("@mui/material/ButtonBase"), 1);
+var import_Typography2 = __toESM(require("@mui/material/Typography"), 1);
+
+// src/components/motion/floating-side-nav/floating-side-nav.animations.ts
+var SIDE_NAV_EASING = [0.4, 0, 0.2, 1];
+var SIDE_NAV_TRANSITION_DURATION = 0.28;
+var sideNavTransition = {
+  duration: SIDE_NAV_TRANSITION_DURATION,
+  ease: SIDE_NAV_EASING
+};
+var sideNavVariants = {
+  initial: { opacity: 0, x: -20 },
+  animate: { opacity: 1, x: 0 },
+  exit: { opacity: 0, x: -10 }
+};
+
+// src/components/motion/floating-side-nav/floating-side-nav.const.ts
+var SIDE_NAV_ITEM_MIN_HEIGHT = 44;
+
+// src/components/motion/floating-side-nav/floating-side-nav.styles.ts
+var grey500Ch3 = (theme) => theme.vars.palette.grey["500Channel"];
+var primaryAlpha = (theme, alpha2) => channelAlpha(theme.vars.palette.primary.mainChannel, alpha2);
+var floatingSideNavWrapperSx = (theme) => ({
+  position: "fixed",
+  left: { xs: 16, md: 24 },
+  top: "50%",
+  transform: "translateY(-50%)",
+  zIndex: theme.zIndex.speedDial
+});
+var floatingSideNavPillSx = (theme) => ({
+  display: "flex",
+  flexDirection: "column",
+  gap: 1,
+  p: 1,
+  borderRadius: 2,
+  bgcolor: "background.paper",
+  boxShadow: theme.shadows[8]
+});
+var floatingSideNavItemSx = (isActive) => (theme) => ({
+  display: "flex",
+  flexDirection: "column",
+  alignItems: "center",
+  justifyContent: "center",
+  gap: 0.5,
+  minHeight: SIDE_NAV_ITEM_MIN_HEIGHT,
+  px: 1.5,
+  py: 1,
+  borderRadius: 1.5,
+  color: "text.disabled",
+  outline: "none",
+  transition: theme.transitions.create(["background-color", "color"], {
+    duration: theme.transitions.duration.shorter
+  }),
+  "&:focus-visible": {
+    outline: `2px dashed ${theme.vars.palette.primary.main}`,
+    outlineOffset: 2
+  },
+  "&:hover": {
+    color: "text.primary",
+    bgcolor: channelAlpha(grey500Ch3(theme), 0.08)
+  },
+  ...isActive && {
+    color: "primary.main",
+    bgcolor: primaryAlpha(theme, 0.08),
+    "&:hover": {
+      bgcolor: primaryAlpha(theme, 0.12)
+    }
+  }
+});
+var floatingSideNavIconSx = {
+  display: "flex",
+  fontSize: 20
+};
+var floatingSideNavLabelSx = {
+  fontSize: 10,
+  lineHeight: 1.2,
+  textAlign: "center"
+};
+
+// src/components/motion/floating-side-nav/floating-side-nav.tsx
+var import_jsx_runtime17 = require("react/jsx-runtime");
+var FloatingSideNav = import_react16.default.forwardRef(
+  function FloatingSideNav2({ items, isVisible, activeId, onSelect, sx, ...other }, ref) {
+    return /* @__PURE__ */ (0, import_jsx_runtime17.jsx)(import_framer_motion16.AnimatePresence, { children: isVisible && /* @__PURE__ */ (0, import_jsx_runtime17.jsx)(import_Box15.default, { sx: floatingSideNavWrapperSx, children: /* @__PURE__ */ (0, import_jsx_runtime17.jsx)(
+      import_framer_motion16.motion.div,
+      {
+        variants: sideNavVariants,
+        initial: "initial",
+        animate: "animate",
+        exit: "exit",
+        transition: sideNavTransition,
+        children: /* @__PURE__ */ (0, import_jsx_runtime17.jsx)(
+          import_Box15.default,
+          {
+            ref,
+            component: "nav",
+            "aria-label": "Section navigation",
+            sx: [floatingSideNavPillSx, ...Array.isArray(sx) ? sx : [sx]],
+            ...other,
+            children: items.map((item) => {
+              const isActive = activeId === item.id;
+              return /* @__PURE__ */ (0, import_jsx_runtime17.jsxs)(
+                import_ButtonBase2.default,
+                {
+                  component: "button",
+                  type: "button",
+                  "aria-pressed": isActive,
+                  onClick: () => onSelect(item.id),
+                  sx: floatingSideNavItemSx(isActive),
+                  children: [
+                    /* @__PURE__ */ (0, import_jsx_runtime17.jsx)(import_Box15.default, { "aria-hidden": "true", sx: floatingSideNavIconSx, children: item.icon }),
+                    /* @__PURE__ */ (0, import_jsx_runtime17.jsx)(import_Typography2.default, { variant: "caption", component: "span", sx: floatingSideNavLabelSx, children: item.label })
+                  ]
+                },
+                item.id
+              );
+            })
+          }
+        )
+      }
+    ) }) });
+  }
+);
+FloatingSideNav.displayName = "FloatingSideNav";
+
+// src/components/motion/scroll-progress/scroll-progress.tsx
+var import_react18 = __toESM(require("react"), 1);
+var import_framer_motion18 = require("framer-motion");
+var import_Box16 = __toESM(require("@mui/material/Box"), 1);
+
+// src/components/motion/scroll-progress/use-scroll-progress.ts
+var import_react17 = require("react");
+var import_framer_motion17 = require("framer-motion");
+function useScrollProgress(target = "document") {
+  const elementRef = (0, import_react17.useRef)(null);
+  const { scrollYProgress } = (0, import_framer_motion17.useScroll)(
+    target === "container" ? { container: elementRef } : void 0
+  );
+  return { scrollYProgress, elementRef };
+}
+
+// src/components/motion/scroll-progress/scroll-progress.styles.ts
+var scrollProgressRootSx = (thickness, color) => (theme) => ({
+  top: 0,
+  left: 0,
+  right: 0,
+  position: "fixed",
+  height: thickness,
+  transformOrigin: "0%",
+  zIndex: theme.zIndex.appBar + 1,
+  background: `linear-gradient(135deg, ${theme.vars.palette[color].light}, ${theme.vars.palette[color].main})`
+});
+var scrollProgressBarStyle = (scaleX) => ({ scaleX });
+
+// src/components/motion/scroll-progress/scroll-progress.const.ts
+var SCROLL_PROGRESS_DEFAULT_THICKNESS = 4;
+var SCROLL_PROGRESS_SPRING_STIFFNESS = 100;
+var SCROLL_PROGRESS_SPRING_DAMPING = 30;
+var SCROLL_PROGRESS_SPRING_REST_DELTA = 1e-3;
+
+// src/components/motion/scroll-progress/scroll-progress.tsx
+var import_jsx_runtime18 = require("react/jsx-runtime");
+var ScrollProgress = import_react18.default.forwardRef(
+  function ScrollProgress2({ thickness = SCROLL_PROGRESS_DEFAULT_THICKNESS, color = "primary", progress, sx, ...other }, ref) {
+    const { scrollYProgress: internalProgress } = useScrollProgress();
+    const scrollYProgress = progress ?? internalProgress;
+    const scaleX = (0, import_framer_motion18.useSpring)(scrollYProgress, {
+      stiffness: SCROLL_PROGRESS_SPRING_STIFFNESS,
+      damping: SCROLL_PROGRESS_SPRING_DAMPING,
+      restDelta: SCROLL_PROGRESS_SPRING_REST_DELTA
+    });
+    return /* @__PURE__ */ (0, import_jsx_runtime18.jsx)(
+      import_Box16.default,
+      {
+        ref,
+        component: import_framer_motion18.motion.div,
+        style: scrollProgressBarStyle(scaleX),
+        sx: [scrollProgressRootSx(thickness, color), ...Array.isArray(sx) ? sx : [sx]],
+        ...other
+      }
+    );
+  }
+);
+ScrollProgress.displayName = "ScrollProgress";
+
+// src/components/section/about-hero/about-hero-section.tsx
+var import_react22 = __toESM(require("react"), 1);
+var import_framer_motion19 = require("framer-motion");
+var import_Box22 = __toESM(require("@mui/material/Box"), 1);
 var import_Stack2 = __toESM(require("@mui/material/Stack"), 1);
+var import_Button2 = __toESM(require("@mui/material/Button"), 1);
+
+// src/components/material/data-display/icon/client-logo-strip/client-logo-strip.tsx
+var import_Box18 = __toESM(require("@mui/material/Box"), 1);
+
+// src/components/material/data-display/icon/icon-strip/icon-strip.tsx
+var import_react19 = __toESM(require("react"), 1);
+var import_Box17 = __toESM(require("@mui/material/Box"), 1);
+var import_Tooltip3 = __toESM(require("@mui/material/Tooltip"), 1);
+var import_Typography3 = __toESM(require("@mui/material/Typography"), 1);
+
+// src/components/material/data-display/icon/icon-strip/icon-strip.const.ts
+var ICON_STRIP_DEFAULT_GAP = 3;
+var ICON_STRIP_LABEL_FONT_SIZE = "0.75rem";
+
+// src/components/material/data-display/icon/icon-strip/icon-strip.styles.ts
+var iconStripRootSx = {
+  display: "flex",
+  flexDirection: "column"
+};
+var iconStripHeadingSx = {
+  display: "block",
+  mb: 2,
+  color: "text.secondary",
+  letterSpacing: "0.08em",
+  textTransform: "uppercase"
+};
+var iconStripListSx = (centeredWrap, gap) => ({
+  display: "flex",
+  flexWrap: "wrap",
+  alignItems: "center",
+  gap,
+  justifyContent: centeredWrap ? "center" : "flex-start"
+});
+var iconStripLabeledItemSx = {
+  display: "flex",
+  flexDirection: "column",
+  alignItems: "center",
+  gap: 0.5,
+  minWidth: 56
+};
+var iconStripIconSlotSx = {
+  display: "flex",
+  alignItems: "center",
+  justifyContent: "center"
+};
+var iconStripItemLabelSx = {
+  fontSize: ICON_STRIP_LABEL_FONT_SIZE
+};
+var iconStripTooltipWrapperSx = {
+  display: "inline-flex"
+};
+
+// src/components/material/data-display/icon/icon-strip/icon-strip.tsx
+var import_jsx_runtime19 = require("react/jsx-runtime");
+function IconStrip({
+  items,
+  heading,
+  centeredWrap = false,
+  gap = ICON_STRIP_DEFAULT_GAP,
+  sx,
+  listSx,
+  ...other
+}) {
+  return /* @__PURE__ */ (0, import_jsx_runtime19.jsxs)(import_Box17.default, { sx: [iconStripRootSx, ...Array.isArray(sx) ? sx : [sx]], ...other, children: [
+    heading && /* @__PURE__ */ (0, import_jsx_runtime19.jsx)(import_Typography3.default, { component: "span", variant: "overline", sx: iconStripHeadingSx, children: heading }),
+    /* @__PURE__ */ (0, import_jsx_runtime19.jsx)(
+      import_Box17.default,
+      {
+        sx: [iconStripListSx(centeredWrap, gap), ...Array.isArray(listSx) ? listSx : [listSx]],
+        children: items.map((item) => {
+          const content = item.label ? /* @__PURE__ */ (0, import_jsx_runtime19.jsxs)(import_Box17.default, { sx: iconStripLabeledItemSx, children: [
+            /* @__PURE__ */ (0, import_jsx_runtime19.jsx)(import_Box17.default, { "aria-hidden": true, sx: iconStripIconSlotSx, children: item.icon }),
+            /* @__PURE__ */ (0, import_jsx_runtime19.jsx)(import_Typography3.default, { sx: iconStripItemLabelSx, variant: "caption", children: item.label })
+          ] }) : item.icon;
+          return /* @__PURE__ */ (0, import_jsx_runtime19.jsx)(import_react19.default.Fragment, { children: item.tooltip ? /* @__PURE__ */ (0, import_jsx_runtime19.jsx)(import_Tooltip3.default, { title: item.tooltip, children: /* @__PURE__ */ (0, import_jsx_runtime19.jsx)(import_Box17.default, { component: "span", sx: iconStripTooltipWrapperSx, children: content }) }) : content }, item.key);
+        })
+      }
+    )
+  ] });
+}
+
+// src/components/material/data-display/icon/client-logo-strip/client-logo-strip.const.ts
+var CLIENT_LOGO_STRIP_HEIGHT = 20;
+var CLIENT_LOGO_STRIP_GAP = 1.5;
+
+// src/components/material/data-display/icon/client-logo-strip/client-logo-strip.styles.ts
+var clientLogoStripImageSx = {
+  height: CLIENT_LOGO_STRIP_HEIGHT,
+  width: "auto",
+  objectFit: "contain",
+  filter: "brightness(0) invert(1)"
+};
+
+// src/components/material/data-display/icon/client-logo-strip/client-logo-strip.tsx
+var import_jsx_runtime20 = require("react/jsx-runtime");
+function ClientLogoStrip({ logos, sx, listSx, ...other }) {
+  const items = logos.map((logo) => ({
+    key: logo.src,
+    icon: /* @__PURE__ */ (0, import_jsx_runtime20.jsx)(import_Box18.default, { component: "img", src: logo.src, alt: logo.alt, sx: clientLogoStripImageSx })
+  }));
+  return /* @__PURE__ */ (0, import_jsx_runtime20.jsx)(IconStrip, { items, gap: CLIENT_LOGO_STRIP_GAP, sx, listSx, ...other });
+}
+
+// src/components/material/data-display/icon/giselle/giselle-icon.tsx
+var import_react20 = require("@iconify/react");
+var import_Box19 = __toESM(require("@mui/material/Box"), 1);
+
+// src/components/material/data-display/icon/giselle/giselle-icon.styles.ts
+var giselleIconRootSx = (width, height) => ({
+  lineHeight: 0,
+  display: "inline-flex",
+  flexShrink: 0,
+  width,
+  height
+});
+
+// src/components/material/data-display/icon/giselle/giselle-icon.tsx
+var import_jsx_runtime21 = require("react/jsx-runtime");
+function GiselleIcon({
+  icon,
+  width = 20,
+  height,
+  sx,
+  className,
+  style,
+  flip: flip2,
+  rotate: rotate2,
+  ...other
+}) {
+  const h = height ?? width;
+  return /* @__PURE__ */ (0, import_jsx_runtime21.jsx)(
+    import_Box19.default,
+    {
+      component: "span",
+      sx: [giselleIconRootSx(width, h), ...Array.isArray(sx) ? sx : [sx]],
+      ...other,
+      children: /* @__PURE__ */ (0, import_jsx_runtime21.jsx)(
+        import_react20.Icon,
+        {
+          icon,
+          width: "100%",
+          height: "100%",
+          flip: flip2,
+          rotate: rotate2,
+          className,
+          style
+        }
+      )
+    }
+  );
+}
+
+// src/components/material/layout/page-section/page-section.tsx
+var import_react21 = __toESM(require("react"), 1);
+var import_Box20 = __toESM(require("@mui/material/Box"), 1);
+
+// src/components/material/layout/section-container/section-container.tsx
+var import_Container = __toESM(require("@mui/material/Container"), 1);
+
+// src/components/material/layout/section-container/section-container.styles.ts
+var sectionContainerSx = (py) => ({
+  py
+});
+
+// src/components/material/layout/section-container/section-container.tsx
+var import_jsx_runtime22 = require("react/jsx-runtime");
+function SectionContainer({
+  children,
+  maxWidth = "lg",
+  py = { xs: 8, md: 12 },
+  sx,
+  ...other
+}) {
+  return /* @__PURE__ */ (0, import_jsx_runtime22.jsx)(
+    import_Container.default,
+    {
+      maxWidth,
+      sx: [sectionContainerSx(py), ...Array.isArray(sx) ? sx : [sx]],
+      ...other,
+      children
+    }
+  );
+}
+
+// src/components/material/layout/page-section/page-section.styles.ts
+var DECORATION_MIN_WIDTH = 1440;
+var CORNER_MARK_INSET = 72;
+var HORIZONTAL_LINE_INSET = 80;
+var VERTICAL_LINE_INSET = 80;
+var CANONICAL_FRAME = [
+  { kind: "corner-plus", sx: { top: CORNER_MARK_INSET, left: CORNER_MARK_INSET } },
+  { kind: "corner-plus", sx: { bottom: CORNER_MARK_INSET, left: CORNER_MARK_INSET } },
+  { kind: "border-line", sx: { top: HORIZONTAL_LINE_INSET, left: 0 } },
+  { kind: "border-line", sx: { bottom: HORIZONTAL_LINE_INSET, left: 0 } },
+  { kind: "border-line", vertical: true, sx: { top: 0, left: VERTICAL_LINE_INSET } }
+];
+var pageSectionRootSx = {
+  position: "relative",
+  overflowX: "clip"
+};
+var decorationBaseSx = (theme) => ({
+  position: "absolute",
+  display: "none",
+  color: "grey.500",
+  pointerEvents: "none",
+  [theme.breakpoints.up(DECORATION_MIN_WIDTH)]: { display: "block" }
+});
+var cornerPlusSx = (theme) => ({
+  ...decorationBaseSx(theme),
+  width: 16,
+  height: 16
+});
+var cornerXSx = (theme) => ({
+  ...decorationBaseSx(theme),
+  width: 16,
+  height: 16
+});
+var borderLineSx = (vertical = false) => (theme) => ({
+  ...decorationBaseSx(theme),
+  opacity: 0.24,
+  borderColor: "currentColor",
+  ...vertical ? { width: 0, height: 1, borderLeft: "1px dashed" } : { width: 1, height: 0, borderTop: "1px dashed" }
+});
+var triangleLeftSx = (theme) => ({
+  ...decorationBaseSx(theme),
+  width: 10,
+  height: 20
+});
+var triangleDownSx = (theme) => ({
+  ...decorationBaseSx(theme),
+  width: 20,
+  height: 10
+});
+var dotSx = (theme) => ({
+  ...decorationBaseSx(theme),
+  width: 12,
+  height: 12,
+  borderRadius: "50%",
+  bgcolor: "currentColor"
+});
+
+// src/components/material/layout/page-section/page-section.tsx
+var import_jsx_runtime23 = require("react/jsx-runtime");
+function Decoration({ kind, vertical, sx }) {
+  switch (kind) {
+    case "corner-plus":
+      return /* @__PURE__ */ (0, import_jsx_runtime23.jsx)(
+        import_Box20.default,
+        {
+          "aria-hidden": "true",
+          sx: [cornerPlusSx, ...Array.isArray(sx) ? sx : [sx]],
+          component: "svg",
+          viewBox: "0 0 16 16",
+          fill: "none",
+          xmlns: "http://www.w3.org/2000/svg",
+          children: /* @__PURE__ */ (0, import_jsx_runtime23.jsx)("path", { d: "M8 0V16M16 8H0", stroke: "currentColor" })
+        }
+      );
+    case "corner-x":
+      return /* @__PURE__ */ (0, import_jsx_runtime23.jsx)(
+        import_Box20.default,
+        {
+          "aria-hidden": "true",
+          sx: [cornerXSx, ...Array.isArray(sx) ? sx : [sx]],
+          component: "svg",
+          viewBox: "0 0 16 16",
+          fill: "none",
+          xmlns: "http://www.w3.org/2000/svg",
+          children: /* @__PURE__ */ (0, import_jsx_runtime23.jsx)(
+            "path",
+            {
+              d: "M14 2L7.96685 8.03315M7.96685 8.03315L2.0663 13.9337M7.96685 8.03315L13.9337 14M7.96685 8.03315L2 2.0663",
+              stroke: "currentColor"
+            }
+          )
+        }
+      );
+    case "border-line":
+      return /* @__PURE__ */ (0, import_jsx_runtime23.jsx)(import_Box20.default, { "aria-hidden": "true", sx: [borderLineSx(vertical), ...Array.isArray(sx) ? sx : [sx]] });
+    case "triangle-left":
+      return /* @__PURE__ */ (0, import_jsx_runtime23.jsx)(
+        import_Box20.default,
+        {
+          "aria-hidden": "true",
+          sx: [triangleLeftSx, ...Array.isArray(sx) ? sx : [sx]],
+          component: "svg",
+          viewBox: "0 0 10 20",
+          fill: "none",
+          xmlns: "http://www.w3.org/2000/svg",
+          children: /* @__PURE__ */ (0, import_jsx_runtime23.jsx)("path", { d: "M10 10L8.74228e-07 20L0 0L10 10Z", fill: "currentColor" })
+        }
+      );
+    case "triangle-down":
+      return /* @__PURE__ */ (0, import_jsx_runtime23.jsx)(
+        import_Box20.default,
+        {
+          "aria-hidden": "true",
+          sx: [triangleDownSx, ...Array.isArray(sx) ? sx : [sx]],
+          component: "svg",
+          viewBox: "0 0 20 10",
+          fill: "none",
+          xmlns: "http://www.w3.org/2000/svg",
+          children: /* @__PURE__ */ (0, import_jsx_runtime23.jsx)("path", { d: "M10 10L0 0H20L10 10Z", fill: "currentColor" })
+        }
+      );
+    case "dot":
+      return /* @__PURE__ */ (0, import_jsx_runtime23.jsx)(import_Box20.default, { "aria-hidden": "true", sx: [dotSx, ...Array.isArray(sx) ? sx : [sx]] });
+  }
+}
+function resolveDecoration(decoration) {
+  if (decoration === true) return CANONICAL_FRAME;
+  if (decoration === false) return [];
+  return decoration;
+}
+var PageSection = import_react21.default.forwardRef(function PageSection2({
+  children,
+  decoration = true,
+  containerMaxWidth,
+  containerPy,
+  containerSx,
+  containerComponent,
+  unconstrainedChildren,
+  sx,
+  ...other
+}, ref) {
+  const elements = resolveDecoration(decoration);
+  return /* @__PURE__ */ (0, import_jsx_runtime23.jsxs)(
+    import_Box20.default,
+    {
+      ref,
+      component: "section",
+      sx: [pageSectionRootSx, ...Array.isArray(sx) ? sx : [sx]],
+      ...other,
+      children: [
+        elements.map((element, index) => /* @__PURE__ */ (0, import_jsx_runtime23.jsx)(Decoration, { ...element }, index)),
+        /* @__PURE__ */ (0, import_jsx_runtime23.jsx)(
+          SectionContainer,
+          {
+            maxWidth: containerMaxWidth,
+            py: containerPy,
+            sx: containerSx,
+            component: containerComponent,
+            children
+          }
+        ),
+        unconstrainedChildren
+      ]
+    }
+  );
+});
+PageSection.displayName = "PageSection";
+
+// src/components/material/layout/section-title/section-title.tsx
+var import_Box21 = __toESM(require("@mui/material/Box"), 1);
+var import_Typography4 = __toESM(require("@mui/material/Typography"), 1);
+
+// src/components/material/layout/section-title/section-title.styles.ts
+var txtGradientSpanSx = (theme) => ({
+  opacity: 0.4,
+  display: "inline-block",
+  background: `linear-gradient(to right, ${theme.vars.palette.text.primary}, ${channelAlpha(theme.vars.palette.text.primaryChannel, 0.2)})`,
+  WebkitBackgroundClip: "text",
+  WebkitTextFillColor: "transparent",
+  backgroundClip: "text",
+  color: "transparent"
+});
+var sectionTitleRootSx = {
+  gap: 3,
+  display: "flex",
+  flexDirection: "column"
+};
+var sectionTitleDescriptionSx = {
+  color: "text.secondary",
+  typography: "body1"
+};
+
+// src/components/material/layout/section-title/section-title.tsx
+var import_jsx_runtime24 = require("react/jsx-runtime");
+function SectionTitle({
+  sx,
+  title,
+  caption,
+  slotProps,
+  txtGradient,
+  description,
+  titleComponent = "h2",
+  titleVariant = "h2",
+  ...other
+}) {
+  return /* @__PURE__ */ (0, import_jsx_runtime24.jsxs)(import_Box21.default, { sx: [sectionTitleRootSx, ...Array.isArray(sx) ? sx : [sx]], ...other, children: [
+    caption && /* @__PURE__ */ (0, import_jsx_runtime24.jsx)(SectionCaption, { title: caption, sx: slotProps?.caption?.sx }),
+    /* @__PURE__ */ (0, import_jsx_runtime24.jsxs)(import_Typography4.default, { component: titleComponent, variant: titleVariant, sx: slotProps?.title?.sx, children: [
+      title,
+      " ",
+      txtGradient && /* @__PURE__ */ (0, import_jsx_runtime24.jsx)(import_Box21.default, { component: "span", sx: txtGradientSpanSx, children: txtGradient })
+    ] }),
+    description && /* @__PURE__ */ (0, import_jsx_runtime24.jsx)(
+      import_Box21.default,
+      {
+        sx: [
+          sectionTitleDescriptionSx,
+          ...Array.isArray(slotProps?.description?.sx) ? slotProps.description.sx : [slotProps?.description?.sx]
+        ],
+        children: description
+      }
+    )
+  ] });
+}
+
+// src/components/section/about-hero/about-hero-section.const.ts
+var ABOUT_HERO_HEIGHT = 660;
+var ABOUT_HERO_MAX_HEIGHT = 1440;
+var ABOUT_HERO_CONTENT_BOTTOM_OFFSET = 80;
+var ABOUT_HERO_MOTION_DISTANCE = 24;
+var ABOUT_HERO_LOGO_STRIP_MT = 2;
+var ABOUT_HERO_CTA_SHADOW_ALPHA = 0.24;
+
+// src/components/section/about-hero/about-hero-section.styles.ts
+var import_styles2 = require("@mui/material/styles");
+var DEFAULT_OVERLAY = { startAlpha: 0.9, endAlpha: 0.35 };
+var aboutHeroSectionRootSx = (backgroundImageUrl, overlay = DEFAULT_OVERLAY) => {
+  return (theme) => {
+    const grey900 = theme.palette.grey[900];
+    const gradient = `linear-gradient(0deg, ${(0, import_styles2.alpha)(grey900, overlay.startAlpha)}, ${(0, import_styles2.alpha)(grey900, overlay.endAlpha)})`;
+    return {
+      position: "relative",
+      overflow: "hidden",
+      py: { xs: 10, md: 0 },
+      height: { md: ABOUT_HERO_HEIGHT },
+      maxHeight: { md: ABOUT_HERO_MAX_HEIGHT },
+      backgroundImage: `${gradient}, url(${backgroundImageUrl})`,
+      backgroundSize: "cover",
+      backgroundPosition: {
+        xs: "center, center",
+        md: "center, center top",
+        xl: "center, center 10%"
+      }
+    };
+  };
+};
+var aboutHeroContainerSx = {
+  position: "relative",
+  height: { md: 1 }
+};
+var aboutHeroContentSx = {
+  color: "common.white",
+  textAlign: { xs: "center", md: "left" },
+  width: { xs: "100%", md: "50%", lg: "45%", xl: "35%" },
+  mx: { xs: "auto", md: 0 },
+  display: "flex",
+  flexDirection: "column",
+  gap: 3,
+  position: { md: "absolute" },
+  bottom: { md: ABOUT_HERO_CONTENT_BOTTOM_OFFSET },
+  left: { md: 0 }
+};
+var aboutHeroLogoStripSx = {
+  justifyContent: { xs: "center", md: "flex-start" },
+  mt: ABOUT_HERO_LOGO_STRIP_MT
+};
+var aboutHeroCtaSx = (theme) => {
+  const shadow = `0 8px 16px 0 ${(0, import_styles2.alpha)(theme.palette.primary.main, ABOUT_HERO_CTA_SHADOW_ALPHA)}`;
+  return {
+    boxShadow: shadow,
+    "&:hover": { boxShadow: shadow }
+  };
+};
+var aboutHeroCtaIconSx = { mr: 1 };
+
+// src/components/section/about-hero/about-hero-section.tsx
+var import_jsx_runtime25 = require("react/jsx-runtime");
+var fadeUp = fade("inUp", { distance: ABOUT_HERO_MOTION_DISTANCE });
+var fadeRight = fade("inRight", { distance: ABOUT_HERO_MOTION_DISTANCE });
+var AboutHeroSection = import_react22.default.forwardRef(
+  function AboutHeroSection2({
+    title,
+    intro,
+    statement,
+    experience,
+    logos,
+    cta,
+    backgroundImageUrl,
+    backgroundOverlay,
+    sx,
+    ...other
+  }, ref) {
+    return /* @__PURE__ */ (0, import_jsx_runtime25.jsx)(
+      PageSection,
+      {
+        ref,
+        decoration: false,
+        containerComponent: MotionContainer,
+        containerPy: 0,
+        containerSx: aboutHeroContainerSx,
+        sx: [
+          aboutHeroSectionRootSx(backgroundImageUrl, backgroundOverlay),
+          ...Array.isArray(sx) ? sx : [sx]
+        ],
+        ...other,
+        children: /* @__PURE__ */ (0, import_jsx_runtime25.jsxs)(import_Box22.default, { sx: aboutHeroContentSx, children: [
+          /* @__PURE__ */ (0, import_jsx_runtime25.jsx)(import_framer_motion19.motion.div, { variants: fadeRight, children: /* @__PURE__ */ (0, import_jsx_runtime25.jsx)(SectionTitle, { title, titleComponent: "h1" }) }),
+          intro && /* @__PURE__ */ (0, import_jsx_runtime25.jsx)(import_framer_motion19.motion.div, { variants: fadeUp, children: intro }),
+          statement && /* @__PURE__ */ (0, import_jsx_runtime25.jsx)(import_framer_motion19.motion.div, { variants: fadeUp, children: statement }),
+          (experience || logos && logos.length > 0) && /* @__PURE__ */ (0, import_jsx_runtime25.jsx)(import_framer_motion19.motion.div, { variants: fadeUp, children: /* @__PURE__ */ (0, import_jsx_runtime25.jsxs)(import_Stack2.default, { spacing: 2.5, children: [
+            experience,
+            logos && logos.length > 0 && /* @__PURE__ */ (0, import_jsx_runtime25.jsx)(ClientLogoStrip, { logos, listSx: aboutHeroLogoStripSx })
+          ] }) }),
+          cta && /* @__PURE__ */ (0, import_jsx_runtime25.jsx)(import_framer_motion19.motion.div, { variants: fadeUp, children: /* @__PURE__ */ (0, import_jsx_runtime25.jsxs)(
+            import_Button2.default,
+            {
+              ...cta.href ? { href: cta.href, target: cta.target, rel: cta.rel } : {},
+              variant: cta.variant ?? "contained",
+              color: "primary",
+              size: "medium",
+              onClick: cta.onClick,
+              sx: aboutHeroCtaSx,
+              children: [
+                /* @__PURE__ */ (0, import_jsx_runtime25.jsx)(GiselleIcon, { icon: "solar:letter-outline", sx: aboutHeroCtaIconSx }),
+                cta.label
+              ]
+            }
+          ) })
+        ] })
+      }
+    );
+  }
+);
+AboutHeroSection.displayName = "AboutHeroSection";
+
+// src/components/section/hero/scroll-parallax/scroll-parallax-hero.tsx
+var import_react24 = require("react");
+var import_framer_motion22 = require("framer-motion");
+var import_Box23 = __toESM(require("@mui/material/Box"), 1);
+var import_Container2 = __toESM(require("@mui/material/Container"), 1);
+var import_Stack3 = __toESM(require("@mui/material/Stack"), 1);
 var import_useMediaQuery2 = __toESM(require("@mui/material/useMediaQuery"), 1);
 
 // src/components/section/hero/scroll-parallax/scroll-parallax-hero.styles.ts
@@ -1379,13 +2765,13 @@ var DEFAULT_PARALLAX_MULTIPLIERS = {
 };
 
 // src/components/section/hero/scroll-parallax/use-scroll-percent.ts
-var import_react10 = require("react");
-var import_framer_motion11 = require("framer-motion");
+var import_react23 = require("react");
+var import_framer_motion20 = require("framer-motion");
 function useScrollPercent() {
-  const elementRef = (0, import_react10.useRef)(null);
-  const { scrollY } = (0, import_framer_motion11.useScroll)();
-  const [percent, setPercent] = (0, import_react10.useState)(0);
-  (0, import_framer_motion11.useMotionValueEvent)(scrollY, "change", (scrollHeight) => {
+  const elementRef = (0, import_react23.useRef)(null);
+  const { scrollY } = (0, import_framer_motion20.useScroll)();
+  const [percent, setPercent] = (0, import_react23.useState)(0);
+  (0, import_framer_motion20.useMotionValueEvent)(scrollY, "change", (scrollHeight) => {
     if (!elementRef.current || elementRef.current.offsetHeight === 0) return;
     const heroHeight = elementRef.current.offsetHeight;
     const scrollPercent = Math.floor(scrollHeight / heroHeight * 100);
@@ -1395,13 +2781,13 @@ function useScrollPercent() {
 }
 
 // src/components/section/hero/scroll-parallax/use-transform-y.ts
-var import_framer_motion12 = require("framer-motion");
+var import_framer_motion21 = require("framer-motion");
 function useTransformY(value, elementRef, distance) {
-  return (0, import_framer_motion12.useSpring)(
-    (0, import_framer_motion12.useTransform)(value, (scrollY) => {
+  return (0, import_framer_motion21.useSpring)(
+    (0, import_framer_motion21.useTransform)(value, (scrollY) => {
       const heroHeight = elementRef.current?.offsetHeight;
       if (!heroHeight) return 0;
-      return scrollY / heroHeight * distance;
+      return scrollY / heroHeight * 100 * distance;
     }),
     {
       mass: 0.1,
@@ -1413,7 +2799,7 @@ function useTransformY(value, elementRef, distance) {
 }
 
 // src/components/section/hero/scroll-parallax/scroll-parallax-hero.tsx
-var import_jsx_runtime11 = require("react/jsx-runtime");
+var import_jsx_runtime26 = require("react/jsx-runtime");
 function ScrollParallaxHero({
   logo,
   heading,
@@ -1427,8 +2813,8 @@ function ScrollParallaxHero({
 }) {
   const scrollProgress = useScrollPercent();
   const mdUp = (0, import_useMediaQuery2.default)((theme) => theme.breakpoints.up("md"));
-  const [mounted, setMounted] = (0, import_react11.useState)(false);
-  (0, import_react11.useEffect)(() => {
+  const [mounted, setMounted] = (0, import_react24.useState)(false);
+  (0, import_react24.useEffect)(() => {
     setMounted(true);
   }, []);
   const pm = { ...DEFAULT_PARALLAX_MULTIPLIERS, ...parallax };
@@ -1456,39 +2842,39 @@ function ScrollParallaxHero({
     scrollProgress.elementRef,
     multiplier * pm.icons
   );
-  const opacity = (0, import_framer_motion13.useTransform)(scrollProgress.scrollY, (scrollY) => {
+  const opacity = (0, import_framer_motion22.useTransform)(scrollProgress.scrollY, (scrollY) => {
     if (!mdUp) return 1;
     const heroHeight = scrollProgress.elementRef.current?.offsetHeight;
     if (!heroHeight) return 1;
     return Math.max(0, 1 - scrollY / heroHeight);
   });
-  return /* @__PURE__ */ (0, import_jsx_runtime11.jsx)(
-    import_Box10.default,
+  return /* @__PURE__ */ (0, import_jsx_runtime26.jsx)(
+    import_Box23.default,
     {
       ref: scrollProgress.elementRef,
       component: "section",
       sx: [heroRootSx, ...Array.isArray(sx) ? sx : [sx]],
       ...other,
-      children: /* @__PURE__ */ (0, import_jsx_runtime11.jsx)(import_framer_motion13.motion.div, { style: parallaxOpacityStyle(opacity), children: /* @__PURE__ */ (0, import_jsx_runtime11.jsxs)(import_Box10.default, { sx: heroInnerWrapSx, children: [
-        /* @__PURE__ */ (0, import_jsx_runtime11.jsx)(import_framer_motion13.motion.div, { initial: "initial", animate: "animate", children: /* @__PURE__ */ (0, import_jsx_runtime11.jsxs)(import_Container.default, { sx: heroContainerSx, children: [
-          logo && /* @__PURE__ */ (0, import_jsx_runtime11.jsx)(import_framer_motion13.motion.div, { style: parallaxYStyle(y1), children: /* @__PURE__ */ (0, import_jsx_runtime11.jsx)(import_Box10.default, { sx: heroLogoBoxSx, children: logo }) }),
-          /* @__PURE__ */ (0, import_jsx_runtime11.jsxs)(import_Stack2.default, { spacing: 1, sx: heroStackSx, children: [
-            heading && /* @__PURE__ */ (0, import_jsx_runtime11.jsx)(import_framer_motion13.motion.div, { style: parallaxYStyle(y2), children: heading }),
-            text && /* @__PURE__ */ (0, import_jsx_runtime11.jsx)(import_framer_motion13.motion.div, { style: parallaxYStyle(y3), children: text })
+      children: /* @__PURE__ */ (0, import_jsx_runtime26.jsxs)(import_Box23.default, { component: import_framer_motion22.motion.div, style: parallaxOpacityStyle(opacity), sx: heroInnerWrapSx, children: [
+        /* @__PURE__ */ (0, import_jsx_runtime26.jsxs)(import_Container2.default, { component: import_framer_motion22.motion.div, initial: "initial", animate: "animate", sx: heroContainerSx, children: [
+          logo && /* @__PURE__ */ (0, import_jsx_runtime26.jsx)(import_framer_motion22.motion.div, { style: parallaxYStyle(y1), children: /* @__PURE__ */ (0, import_jsx_runtime26.jsx)(import_Box23.default, { sx: heroLogoBoxSx, children: logo }) }),
+          /* @__PURE__ */ (0, import_jsx_runtime26.jsxs)(import_Stack3.default, { spacing: 1, sx: heroStackSx, children: [
+            heading && /* @__PURE__ */ (0, import_jsx_runtime26.jsx)(import_framer_motion22.motion.div, { style: parallaxYStyle(y2), children: heading }),
+            text && /* @__PURE__ */ (0, import_jsx_runtime26.jsx)(import_framer_motion22.motion.div, { style: parallaxYStyle(y3), children: text })
           ] }),
-          actions && /* @__PURE__ */ (0, import_jsx_runtime11.jsx)(import_framer_motion13.motion.div, { style: parallaxYStyle(y4), children: actions }),
-          icons && /* @__PURE__ */ (0, import_jsx_runtime11.jsx)(import_framer_motion13.motion.div, { style: parallaxYStyle(y5), children: icons })
-        ] }) }),
-        background
-      ] }) })
+          actions && /* @__PURE__ */ (0, import_jsx_runtime26.jsx)(import_framer_motion22.motion.div, { style: parallaxYStyle(y4), children: actions }),
+          icons && /* @__PURE__ */ (0, import_jsx_runtime26.jsx)(import_framer_motion22.motion.div, { style: parallaxYStyle(y5), children: icons })
+        ] }),
+        /* @__PURE__ */ (0, import_jsx_runtime26.jsx)(import_react24.Fragment, { children: background }, "scroll-parallax-hero-background")
+      ] })
     }
   );
 }
 
 // src/components/section/hero/scroll-parallax/animated-hero-heading/animated-hero-heading.tsx
-var import_react12 = __toESM(require("react"), 1);
-var import_framer_motion14 = require("framer-motion");
-var import_Box11 = __toESM(require("@mui/material/Box"), 1);
+var import_react25 = __toESM(require("react"), 1);
+var import_framer_motion23 = require("framer-motion");
+var import_Box24 = __toESM(require("@mui/material/Box"), 1);
 
 // src/components/section/hero/scroll-parallax/animated-hero-heading/animated-hero-heading.animations.ts
 var headingMotionProps = {
@@ -1526,12 +2912,12 @@ var headingHighlightSx = (theme) => ({
 });
 
 // src/components/section/hero/scroll-parallax/animated-hero-heading/animated-hero-heading.tsx
-var import_jsx_runtime12 = require("react/jsx-runtime");
-var AnimatedHeroHeading = import_react12.default.forwardRef(
+var import_jsx_runtime27 = require("react/jsx-runtime");
+var AnimatedHeroHeading = import_react25.default.forwardRef(
   function AnimatedHeroHeading2({ subheading, highlight, motionProps, sx, ...other }, ref) {
     const resolvedMotionProps = motionProps ?? headingMotionProps;
-    return /* @__PURE__ */ (0, import_jsx_runtime12.jsx)(import_framer_motion14.motion.div, { ...resolvedMotionProps, children: /* @__PURE__ */ (0, import_jsx_runtime12.jsxs)(
-      import_Box11.default,
+    return /* @__PURE__ */ (0, import_jsx_runtime27.jsx)(import_framer_motion23.motion.div, { ...resolvedMotionProps, children: /* @__PURE__ */ (0, import_jsx_runtime27.jsxs)(
+      import_Box24.default,
       {
         ref,
         component: "h1",
@@ -1540,10 +2926,10 @@ var AnimatedHeroHeading = import_react12.default.forwardRef(
         children: [
           subheading,
           " ",
-          /* @__PURE__ */ (0, import_jsx_runtime12.jsx)(
-            import_Box11.default,
+          /* @__PURE__ */ (0, import_jsx_runtime27.jsx)(
+            import_Box24.default,
             {
-              component: import_framer_motion14.motion.span,
+              component: import_framer_motion23.motion.span,
               animate: gradientHighlightAnimate,
               transition: gradientHighlightTransition,
               sx: headingHighlightSx,
@@ -1557,151 +2943,31 @@ var AnimatedHeroHeading = import_react12.default.forwardRef(
 );
 AnimatedHeroHeading.displayName = "AnimatedHeroHeading";
 
+// src/components/section/services-shell/services-shell.tsx
+var import_react26 = __toESM(require("react"), 1);
+var import_Box25 = __toESM(require("@mui/material/Box"), 1);
+var import_jsx_runtime28 = require("react/jsx-runtime");
+var ServicesShell = import_react26.default.forwardRef(
+  function ServicesShell2({ children, sx, ...other }, ref) {
+    const sxArray = Array.isArray(sx) ? sx : [sx];
+    return /* @__PURE__ */ (0, import_jsx_runtime28.jsx)(import_Box25.default, { ref, component: "section", sx: sxArray, ...other, children: /* @__PURE__ */ (0, import_jsx_runtime28.jsx)(MotionViewport, { children: /* @__PURE__ */ (0, import_jsx_runtime28.jsx)(SectionContainer, { children }) }) });
+  }
+);
+ServicesShell.displayName = "ServicesShell";
+
 // src/components/section/faq/accordion/faq-accordion.tsx
-var import_react17 = require("react");
-var import_framer_motion17 = require("framer-motion");
-var import_Box16 = __toESM(require("@mui/material/Box"), 1);
-var import_Stack4 = __toESM(require("@mui/material/Stack"), 1);
-var import_Button2 = __toESM(require("@mui/material/Button"), 1);
-var import_Container2 = __toESM(require("@mui/material/Container"), 1);
-var import_Typography2 = __toESM(require("@mui/material/Typography"), 1);
-var import_Accordion = __toESM(require("@mui/material/Accordion"), 1);
+var import_react29 = require("react");
+var import_framer_motion26 = require("framer-motion");
+var import_Box27 = __toESM(require("@mui/material/Box"), 1);
+var import_Stack5 = __toESM(require("@mui/material/Stack"), 1);
+var import_Button3 = __toESM(require("@mui/material/Button"), 1);
+var import_Typography5 = __toESM(require("@mui/material/Typography"), 1);
+var import_Accordion2 = __toESM(require("@mui/material/Accordion"), 1);
 var import_AccordionDetails = __toESM(require("@mui/material/AccordionDetails"), 1);
 var import_AccordionSummary = __toESM(require("@mui/material/AccordionSummary"), 1);
 
-// src/components/material/data-display/icon/giselle/giselle-icon.tsx
-var import_react13 = require("@iconify/react");
-var import_Box12 = __toESM(require("@mui/material/Box"), 1);
-
-// src/components/material/data-display/icon/giselle/giselle-icon.styles.ts
-var giselleIconRootSx = (width, height) => ({
-  lineHeight: 0,
-  display: "inline-flex",
-  flexShrink: 0,
-  width,
-  height
-});
-
-// src/components/material/data-display/icon/giselle/giselle-icon.tsx
-var import_jsx_runtime13 = require("react/jsx-runtime");
-function GiselleIcon({
-  icon,
-  width = 20,
-  height,
-  sx,
-  className,
-  style,
-  flip: flip2,
-  rotate: rotate2,
-  ...other
-}) {
-  const h = height ?? width;
-  return /* @__PURE__ */ (0, import_jsx_runtime13.jsx)(
-    import_Box12.default,
-    {
-      component: "span",
-      sx: [giselleIconRootSx(width, h), ...Array.isArray(sx) ? sx : [sx]],
-      ...other,
-      children: /* @__PURE__ */ (0, import_jsx_runtime13.jsx)(
-        import_react13.Icon,
-        {
-          icon,
-          width: "100%",
-          height: "100%",
-          flip: flip2,
-          rotate: rotate2,
-          className,
-          style
-        }
-      )
-    }
-  );
-}
-
-// src/components/material/layout/section-title/section-title.tsx
-var import_Box14 = __toESM(require("@mui/material/Box"), 1);
-var import_Typography = __toESM(require("@mui/material/Typography"), 1);
-
-// src/components/material/layout/section-title/section-title.styles.ts
-var txtGradientSpanSx = (theme) => ({
-  opacity: 0.4,
-  display: "inline-block",
-  background: `linear-gradient(to right, ${theme.vars.palette.text.primary}, ${channelAlpha(theme.vars.palette.text.primaryChannel, 0.2)})`,
-  WebkitBackgroundClip: "text",
-  WebkitTextFillColor: "transparent",
-  backgroundClip: "text",
-  color: "transparent"
-});
-var sectionTitleRootSx = {
-  gap: 3,
-  display: "flex",
-  flexDirection: "column"
-};
-var sectionTitleDescriptionSx = {
-  color: "text.secondary",
-  typography: "body1"
-};
-
-// src/components/material/layout/section-title/section-caption/section-caption.tsx
-var import_react14 = __toESM(require("react"), 1);
-var import_Box13 = __toESM(require("@mui/material/Box"), 1);
-
-// src/components/material/layout/section-title/section-caption/section-caption.styles.ts
-var sectionCaptionSx = {
-  typography: "overline",
-  color: "text.disabled"
-};
-
-// src/components/material/layout/section-title/section-caption/section-caption.tsx
-var import_jsx_runtime14 = require("react/jsx-runtime");
-var SectionCaption = import_react14.default.forwardRef(
-  function SectionCaption2({ title, sx, ...other }, ref) {
-    return /* @__PURE__ */ (0, import_jsx_runtime14.jsx)(
-      import_Box13.default,
-      {
-        ref,
-        component: "span",
-        sx: [sectionCaptionSx, ...Array.isArray(sx) ? sx : [sx]],
-        ...other,
-        children: title
-      }
-    );
-  }
-);
-SectionCaption.displayName = "SectionCaption";
-
-// src/components/material/layout/section-title/section-title.tsx
-var import_jsx_runtime15 = require("react/jsx-runtime");
-function SectionTitle({
-  sx,
-  title,
-  caption,
-  slotProps,
-  txtGradient,
-  description,
-  titleComponent = "h2",
-  titleVariant = "h2",
-  ...other
-}) {
-  return /* @__PURE__ */ (0, import_jsx_runtime15.jsxs)(import_Box14.default, { sx: [sectionTitleRootSx, ...Array.isArray(sx) ? sx : [sx]], ...other, children: [
-    caption && /* @__PURE__ */ (0, import_jsx_runtime15.jsx)(SectionCaption, { title: caption, sx: slotProps?.caption?.sx }),
-    /* @__PURE__ */ (0, import_jsx_runtime15.jsxs)(import_Typography.default, { component: titleComponent, variant: titleVariant, sx: slotProps?.title?.sx, children: [
-      title,
-      " ",
-      txtGradient && /* @__PURE__ */ (0, import_jsx_runtime15.jsx)(import_Box14.default, { component: "span", sx: txtGradientSpanSx, children: txtGradient })
-    ] }),
-    description && /* @__PURE__ */ (0, import_jsx_runtime15.jsx)(
-      import_Box14.default,
-      {
-        sx: [
-          sectionTitleDescriptionSx,
-          ...Array.isArray(slotProps?.description?.sx) ? slotProps.description.sx : [slotProps?.description?.sx]
-        ],
-        children: description
-      }
-    )
-  ] });
-}
+// src/components/section/faq/accordion/faq-accordion.styles.ts
+var import_Accordion = require("@mui/material/Accordion");
 
 // src/components/section/faq/accordion/faq-accordion.const.ts
 var FAQ_CONTENT_MAX_WIDTH = 720;
@@ -1727,7 +2993,7 @@ var accordionItemSx = (theme) => ({
   "&:hover": {
     bgcolor: channelAlpha("var(--mui-palette-grey-500Channel)", 0.08)
   },
-  "&.MuiAccordion-expanded": {
+  [`&.${import_Accordion.accordionClasses.expanded}`]: {
     bgcolor: channelAlpha("var(--mui-palette-grey-500Channel)", 0.08)
   }
 });
@@ -1754,19 +3020,19 @@ var contactDescriptionSx = {
 };
 
 // src/components/section/faq/accordion/motion-viewport/faq-motion-viewport.tsx
-var import_react15 = __toESM(require("react"), 1);
-var import_framer_motion15 = require("framer-motion");
-var import_Box15 = __toESM(require("@mui/material/Box"), 1);
+var import_react27 = __toESM(require("react"), 1);
+var import_framer_motion24 = require("framer-motion");
+var import_Box26 = __toESM(require("@mui/material/Box"), 1);
 var import_useMediaQuery3 = __toESM(require("@mui/material/useMediaQuery"), 1);
-var import_jsx_runtime16 = require("react/jsx-runtime");
-var MotionBox = (0, import_framer_motion15.motion)(import_Box15.default);
-var FaqMotionViewport = import_react15.default.forwardRef(
+var import_jsx_runtime29 = require("react/jsx-runtime");
+var MotionBox = (0, import_framer_motion24.motion)(import_Box26.default);
+var FaqMotionViewport = import_react27.default.forwardRef(
   function FaqMotionViewport2({ children, sx }, ref) {
     const smDown = (0, import_useMediaQuery3.default)((theme) => theme.breakpoints.down("sm"));
     if (smDown) {
-      return /* @__PURE__ */ (0, import_jsx_runtime16.jsx)(import_Box15.default, { ref, sx, children });
+      return /* @__PURE__ */ (0, import_jsx_runtime29.jsx)(import_Box26.default, { ref, sx, children });
     }
-    return /* @__PURE__ */ (0, import_jsx_runtime16.jsx)(
+    return /* @__PURE__ */ (0, import_jsx_runtime29.jsx)(
       MotionBox,
       {
         ref,
@@ -1783,12 +3049,12 @@ var FaqMotionViewport = import_react15.default.forwardRef(
 FaqMotionViewport.displayName = "FaqMotionViewport";
 
 // src/components/section/faq/accordion/top-lines/faq-top-lines.tsx
-var import_Stack3 = __toESM(require("@mui/material/Stack"), 1);
+var import_Stack4 = __toESM(require("@mui/material/Stack"), 1);
 
 // src/components/section/faq/accordion/accordion-svg/faq-accordion-svg.tsx
-var import_react16 = __toESM(require("react"), 1);
-var import_framer_motion16 = require("framer-motion");
-var import_styles = require("@mui/material/styles");
+var import_react28 = __toESM(require("react"), 1);
+var import_framer_motion25 = require("framer-motion");
+var import_styles3 = require("@mui/material/styles");
 
 // src/components/section/faq/accordion/accordion-svg/faq-accordion-svg.styles.ts
 var floatDecorationBase = (theme) => ({
@@ -1808,14 +3074,14 @@ var svgLineTransition = {
 };
 
 // src/components/section/faq/accordion/accordion-svg/faq-accordion-svg.tsx
-var import_jsx_runtime17 = require("react/jsx-runtime");
-var MotionSvg = (0, import_styles.styled)(import_framer_motion16.motion.svg, {
+var import_jsx_runtime30 = require("react/jsx-runtime");
+var MotionSvg2 = (0, import_styles3.styled)(import_framer_motion25.motion.svg, {
   shouldForwardProp: (prop) => prop !== "vertical"
 })``;
-var FaqFloatLine = import_react16.default.forwardRef(
+var FaqFloatLine = import_react28.default.forwardRef(
   function FaqFloatLine2({ sx, vertical, ...other }, ref) {
-    return /* @__PURE__ */ (0, import_jsx_runtime17.jsx)(
-      MotionSvg,
+    return /* @__PURE__ */ (0, import_jsx_runtime30.jsx)(
+      MotionSvg2,
       {
         ref,
         sx: [
@@ -1830,8 +3096,8 @@ var FaqFloatLine = import_react16.default.forwardRef(
           ...Array.isArray(sx) ? sx : [sx]
         ],
         ...other,
-        children: vertical ? /* @__PURE__ */ (0, import_jsx_runtime17.jsx)(
-          import_framer_motion16.motion.line,
+        children: vertical ? /* @__PURE__ */ (0, import_jsx_runtime30.jsx)(
+          import_framer_motion25.motion.line,
           {
             x1: "0.5",
             x2: "0.5",
@@ -1842,8 +3108,8 @@ var FaqFloatLine = import_react16.default.forwardRef(
               animate: { y2: "100%", transition: svgLineTransition }
             }
           }
-        ) : /* @__PURE__ */ (0, import_jsx_runtime17.jsx)(
-          import_framer_motion16.motion.line,
+        ) : /* @__PURE__ */ (0, import_jsx_runtime30.jsx)(
+          import_framer_motion25.motion.line,
           {
             x1: "0",
             x2: "100%",
@@ -1860,9 +3126,9 @@ var FaqFloatLine = import_react16.default.forwardRef(
   }
 );
 FaqFloatLine.displayName = "FaqFloatLine";
-var FaqFloatPlusIcon = import_react16.default.forwardRef(function FaqFloatPlusIcon2({ sx, ...other }, ref) {
-  return /* @__PURE__ */ (0, import_jsx_runtime17.jsx)(
-    MotionSvg,
+var FaqFloatPlusIcon = import_react28.default.forwardRef(function FaqFloatPlusIcon2({ sx, ...other }, ref) {
+  return /* @__PURE__ */ (0, import_jsx_runtime30.jsx)(
+    MotionSvg2,
     {
       ref,
       variants: {
@@ -1883,15 +3149,15 @@ var FaqFloatPlusIcon = import_react16.default.forwardRef(function FaqFloatPlusIc
         ...Array.isArray(sx) ? sx : [sx]
       ],
       ...other,
-      children: /* @__PURE__ */ (0, import_jsx_runtime17.jsx)("path", { d: "M8 0V16M16 8.08889H0" })
+      children: /* @__PURE__ */ (0, import_jsx_runtime30.jsx)("path", { d: "M8 0V16M16 8.08889H0" })
     }
   );
 });
 FaqFloatPlusIcon.displayName = "FaqFloatPlusIcon";
-var FaqFloatTriangleDownIcon = import_react16.default.forwardRef(
+var FaqFloatTriangleDownIcon = import_react28.default.forwardRef(
   function FaqFloatTriangleDownIcon2({ sx, ...other }, ref) {
-    return /* @__PURE__ */ (0, import_jsx_runtime17.jsx)(
-      MotionSvg,
+    return /* @__PURE__ */ (0, import_jsx_runtime30.jsx)(
+      MotionSvg2,
       {
         ref,
         variants: {
@@ -1912,7 +3178,7 @@ var FaqFloatTriangleDownIcon = import_react16.default.forwardRef(
           ...Array.isArray(sx) ? sx : [sx]
         ],
         ...other,
-        children: /* @__PURE__ */ (0, import_jsx_runtime17.jsx)("path", { d: "M10 10L0 0H20L10 10Z" })
+        children: /* @__PURE__ */ (0, import_jsx_runtime30.jsx)("path", { d: "M10 10L0 0H20L10 10Z" })
       }
     );
   }
@@ -1946,14 +3212,14 @@ var verticalFloatLineSx = {
 };
 
 // src/components/section/faq/accordion/top-lines/faq-top-lines.tsx
-var import_jsx_runtime18 = require("react/jsx-runtime");
+var import_jsx_runtime31 = require("react/jsx-runtime");
 function FaqTopLines() {
-  return /* @__PURE__ */ (0, import_jsx_runtime18.jsxs)(import_jsx_runtime18.Fragment, { children: [
-    /* @__PURE__ */ (0, import_jsx_runtime18.jsxs)(import_Stack3.default, { spacing: 8, sx: topTriangleStackSx, children: [
-      /* @__PURE__ */ (0, import_jsx_runtime18.jsx)(FaqFloatTriangleDownIcon, { sx: primaryTriangleSx }),
-      /* @__PURE__ */ (0, import_jsx_runtime18.jsx)(FaqFloatTriangleDownIcon, { sx: smallTriangleSx })
+  return /* @__PURE__ */ (0, import_jsx_runtime31.jsxs)(import_jsx_runtime31.Fragment, { children: [
+    /* @__PURE__ */ (0, import_jsx_runtime31.jsxs)(import_Stack4.default, { spacing: 8, sx: topTriangleStackSx, children: [
+      /* @__PURE__ */ (0, import_jsx_runtime31.jsx)(FaqFloatTriangleDownIcon, { sx: primaryTriangleSx }),
+      /* @__PURE__ */ (0, import_jsx_runtime31.jsx)(FaqFloatTriangleDownIcon, { sx: smallTriangleSx })
     ] }),
-    /* @__PURE__ */ (0, import_jsx_runtime18.jsx)(FaqFloatLine, { vertical: true, sx: verticalFloatLineSx })
+    /* @__PURE__ */ (0, import_jsx_runtime31.jsx)(FaqFloatLine, { vertical: true, sx: verticalFloatLineSx })
   ] });
 }
 FaqTopLines.displayName = "FaqTopLines";
@@ -1972,20 +3238,20 @@ var floatPlusIconEdgeSx = (edge) => ({
 });
 
 // src/components/section/faq/accordion/bottom-lines/faq-bottom-lines.tsx
-var import_jsx_runtime19 = require("react/jsx-runtime");
+var import_jsx_runtime32 = require("react/jsx-runtime");
 function FaqBottomLines() {
-  return /* @__PURE__ */ (0, import_jsx_runtime19.jsxs)(import_jsx_runtime19.Fragment, { children: [
-    /* @__PURE__ */ (0, import_jsx_runtime19.jsx)(FaqFloatLine, { sx: floatLineEdgeSx("top") }),
-    /* @__PURE__ */ (0, import_jsx_runtime19.jsx)(FaqFloatLine, { sx: floatLineEdgeSx("bottom") }),
-    /* @__PURE__ */ (0, import_jsx_runtime19.jsx)(FaqFloatPlusIcon, { sx: floatPlusIconEdgeSx("top") }),
-    /* @__PURE__ */ (0, import_jsx_runtime19.jsx)(FaqFloatPlusIcon, { sx: floatPlusIconEdgeSx("bottom") })
+  return /* @__PURE__ */ (0, import_jsx_runtime32.jsxs)(import_jsx_runtime32.Fragment, { children: [
+    /* @__PURE__ */ (0, import_jsx_runtime32.jsx)(FaqFloatLine, { sx: floatLineEdgeSx("top") }),
+    /* @__PURE__ */ (0, import_jsx_runtime32.jsx)(FaqFloatLine, { sx: floatLineEdgeSx("bottom") }),
+    /* @__PURE__ */ (0, import_jsx_runtime32.jsx)(FaqFloatPlusIcon, { sx: floatPlusIconEdgeSx("top") }),
+    /* @__PURE__ */ (0, import_jsx_runtime32.jsx)(FaqFloatPlusIcon, { sx: floatPlusIconEdgeSx("bottom") })
   ] });
 }
 FaqBottomLines.displayName = "FaqBottomLines";
 
 // src/components/section/faq/accordion/faq-accordion.tsx
-var import_jsx_runtime20 = require("react/jsx-runtime");
-var MotionAccordion = (0, import_framer_motion17.motion)(import_Accordion.default);
+var import_jsx_runtime33 = require("react/jsx-runtime");
+var MotionAccordion = (0, import_framer_motion26.motion)(import_Accordion2.default);
 function FaqSection({
   caption = "FAQs",
   title = "Frequently Asked",
@@ -1999,76 +3265,92 @@ function FaqSection({
   sx,
   ...other
 }) {
-  const [expanded, setExpanded] = (0, import_react17.useState)(faqs[0]?.question ?? false);
+  const [expanded, setExpanded] = (0, import_react29.useState)(faqs[0]?.question ?? false);
   const handleChange = (panel) => (_event, isExpanded) => {
     setExpanded(isExpanded ? panel : false);
   };
-  const resolvedIcon = typeof contactIcon === "string" ? /* @__PURE__ */ (0, import_jsx_runtime20.jsx)(GiselleIcon, { icon: contactIcon }) : contactIcon;
-  return /* @__PURE__ */ (0, import_jsx_runtime20.jsx)(import_Box16.default, { component: "section", sx: [...Array.isArray(sx) ? sx : [sx]], ...other, children: /* @__PURE__ */ (0, import_jsx_runtime20.jsxs)(FaqMotionViewport, { sx: motionViewportSx, children: [
-    /* @__PURE__ */ (0, import_jsx_runtime20.jsx)(FaqTopLines, {}),
-    /* @__PURE__ */ (0, import_jsx_runtime20.jsxs)(import_Container2.default, { children: [
-      /* @__PURE__ */ (0, import_jsx_runtime20.jsx)(
-        SectionTitle,
-        {
-          caption,
-          title,
-          txtGradient,
-          sx: sectionTitleSx
-        }
-      ),
-      /* @__PURE__ */ (0, import_jsx_runtime20.jsx)(import_Box16.default, { sx: contentBoxSx, children: faqs.map((item, index) => /* @__PURE__ */ (0, import_jsx_runtime20.jsxs)(
-        MotionAccordion,
-        {
-          disableGutters: true,
-          variants: fade("inUp", { distance: 24 }),
-          expanded: expanded === item.question,
-          onChange: handleChange(item.question),
-          sx: accordionItemSx,
-          children: [
-            /* @__PURE__ */ (0, import_jsx_runtime20.jsx)(
-              import_AccordionSummary.default,
+  const resolvedIcon = typeof contactIcon === "string" ? /* @__PURE__ */ (0, import_jsx_runtime33.jsx)(GiselleIcon, { icon: contactIcon }) : contactIcon;
+  return /* @__PURE__ */ (0, import_jsx_runtime33.jsx)(FaqMotionViewport, { sx: motionViewportSx, children: /* @__PURE__ */ (0, import_jsx_runtime33.jsxs)(
+    PageSection,
+    {
+      decoration: false,
+      containerPy: 0,
+      unconstrainedChildren: /* @__PURE__ */ (0, import_jsx_runtime33.jsxs)(import_jsx_runtime33.Fragment, { children: [
+        /* @__PURE__ */ (0, import_jsx_runtime33.jsx)(FaqTopLines, {}),
+        /* @__PURE__ */ (0, import_jsx_runtime33.jsxs)(import_Stack5.default, { sx: footerWrapperSx, children: [
+          /* @__PURE__ */ (0, import_jsx_runtime33.jsx)(FaqBottomLines, {}),
+          contactHref && /* @__PURE__ */ (0, import_jsx_runtime33.jsxs)(import_Box27.default, { sx: contactSectionSx, children: [
+            /* @__PURE__ */ (0, import_jsx_runtime33.jsx)(import_framer_motion26.motion.div, { variants: fade("in"), children: /* @__PURE__ */ (0, import_jsx_runtime33.jsx)(import_Typography5.default, { variant: "h4", children: contactTitle }) }),
+            /* @__PURE__ */ (0, import_jsx_runtime33.jsx)(import_framer_motion26.motion.div, { variants: fade("in"), children: /* @__PURE__ */ (0, import_jsx_runtime33.jsx)(import_Typography5.default, { sx: contactDescriptionSx, children: contactDescription }) }),
+            /* @__PURE__ */ (0, import_jsx_runtime33.jsx)(import_framer_motion26.motion.div, { variants: fade("in"), children: /* @__PURE__ */ (0, import_jsx_runtime33.jsx)(
+              import_Button3.default,
               {
-                id: `faq-panel${index}-header`,
-                "aria-controls": `faq-panel${index}-content`,
-                children: /* @__PURE__ */ (0, import_jsx_runtime20.jsx)(import_Typography2.default, { component: "span", variant: "h6", children: item.question })
+                color: "inherit",
+                variant: "contained",
+                href: contactHref,
+                startIcon: resolvedIcon,
+                children: contactLabel
               }
-            ),
-            /* @__PURE__ */ (0, import_jsx_runtime20.jsx)(import_AccordionDetails.default, { children: item.answer })
-          ]
-        },
-        item.question
-      )) })
-    ] }),
-    /* @__PURE__ */ (0, import_jsx_runtime20.jsxs)(import_Stack4.default, { sx: footerWrapperSx, children: [
-      /* @__PURE__ */ (0, import_jsx_runtime20.jsx)(FaqBottomLines, {}),
-      contactHref && /* @__PURE__ */ (0, import_jsx_runtime20.jsxs)(import_Box16.default, { sx: contactSectionSx, children: [
-        /* @__PURE__ */ (0, import_jsx_runtime20.jsx)(import_framer_motion17.motion.div, { variants: fade("in"), children: /* @__PURE__ */ (0, import_jsx_runtime20.jsx)(import_Typography2.default, { variant: "h4", children: contactTitle }) }),
-        /* @__PURE__ */ (0, import_jsx_runtime20.jsx)(import_framer_motion17.motion.div, { variants: fade("in"), children: /* @__PURE__ */ (0, import_jsx_runtime20.jsx)(import_Typography2.default, { sx: contactDescriptionSx, children: contactDescription }) }),
-        /* @__PURE__ */ (0, import_jsx_runtime20.jsx)(import_framer_motion17.motion.div, { variants: fade("in"), children: /* @__PURE__ */ (0, import_jsx_runtime20.jsx)(
-          import_Button2.default,
+            ) })
+          ] })
+        ] })
+      ] }),
+      sx: [...Array.isArray(sx) ? sx : [sx]],
+      ...other,
+      children: [
+        /* @__PURE__ */ (0, import_jsx_runtime33.jsx)(
+          SectionTitle,
           {
-            color: "inherit",
-            variant: "contained",
-            href: contactHref,
-            startIcon: resolvedIcon,
-            children: contactLabel
+            caption,
+            title,
+            txtGradient,
+            sx: sectionTitleSx
           }
-        ) })
-      ] })
-    ] })
-  ] }) });
+        ),
+        /* @__PURE__ */ (0, import_jsx_runtime33.jsx)(import_Box27.default, { sx: contentBoxSx, children: faqs.map((item, index) => /* @__PURE__ */ (0, import_jsx_runtime33.jsxs)(
+          MotionAccordion,
+          {
+            disableGutters: true,
+            variants: fade("inUp", { distance: 24 }),
+            expanded: expanded === item.question,
+            onChange: handleChange(item.question),
+            sx: accordionItemSx,
+            children: [
+              /* @__PURE__ */ (0, import_jsx_runtime33.jsx)(
+                import_AccordionSummary.default,
+                {
+                  id: `faq-panel${index}-header`,
+                  "aria-controls": `faq-panel${index}-content`,
+                  children: /* @__PURE__ */ (0, import_jsx_runtime33.jsx)(import_Typography5.default, { component: "span", variant: "h6", children: item.question })
+                }
+              ),
+              /* @__PURE__ */ (0, import_jsx_runtime33.jsx)(import_AccordionDetails.default, { children: item.answer })
+            ]
+          },
+          item.question
+        )) })
+      ]
+    }
+  ) });
 }
 // Annotate the CommonJS export names for ESM import in node:
 0 && (module.exports = {
+  AboutHeroSection,
   AnimatedHeroHeading,
   FaqAccordion,
   FaqSection,
+  FloatingIconCloud,
+  FloatingSideNav,
   FloatingSubNav,
+  HeroBackground,
   HeroButtonsRow,
   InteractiveHeroLogo,
   MotionContainer,
   MotionViewport,
   ScrollParallaxHero,
+  ScrollProgress,
+  SectionTitleAnimated,
+  ServicesShell,
   bounce,
   container,
   fade,
@@ -2084,6 +3366,7 @@ function FaqSection({
   transitionTap,
   useScrollParallax,
   useScrollPercent,
+  useScrollProgress,
   useTransformY,
   zoom
 });

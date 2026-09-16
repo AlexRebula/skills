@@ -36,7 +36,8 @@
     }
   },
   "publishConfig": {
-    "access": "public"
+    "access": "restricted",
+    "registry": "https://npm.pkg.github.com"
   },
   "files": [
     "dist",
@@ -58,13 +59,16 @@
     "test:visual": "vitest run --project=storybook",
     "storybook": "storybook dev -p 6006",
     "build-storybook": "storybook build",
-    "check": "node scripts/quality-gate.ts --fix",
-    "check:verify": "node scripts/quality-gate.ts --verify",
-    "check:verify:fast": "node scripts/quality-gate.ts --verify --no-storybook",
-    "check:verify:smart": "node scripts/quality-gate.ts --verify --smart --storybook",
-    "check:verify:full": "node scripts/quality-gate.ts --verify --storybook",
+    "check": "node scripts/quality-gate/quality-gate/quality-gate.ts --fix",
+    "check:verify": "node scripts/quality-gate/quality-gate/quality-gate.ts --verify",
+    "check:verify:fast": "node scripts/quality-gate/quality-gate/quality-gate.ts --verify --smart --no-storybook",
+    "check:verify:smart": "node scripts/quality-gate/quality-gate/quality-gate.ts --verify --smart --storybook",
+    "check:verify:full": "node scripts/quality-gate/quality-gate/quality-gate.ts --verify --storybook",
+    "generate:dod-docs": "node scripts/dod-docs/generate-dod-docs/generate-dod-docs.ts",
+    "generate:dod-docs:check": "node scripts/dod-docs/generate-dod-docs/generate-dod-docs.ts --check",
+    "preview:sync": "node scripts/preview-sync/preview-sync.ts",
     "clean": "rm -rf dist storybook-static",
-    "postinstall": "node --input-type=module -e \"import('./scripts/setup-hooks.js').catch((error)=>{const msg=String(error?.message??'');const isMissingSetupHooks=error?.code==='ERR_MODULE_NOT_FOUND'&&(msg.includes('scripts/setup-hooks.js')||msg.includes('scripts\\\\setup-hooks.js'));if(!isMissingSetupHooks){console.error('Failed to run scripts/setup-hooks.js during postinstall.');console.error(error);process.exitCode=1;}})\""
+    "postinstall": "node --input-type=module -e \"import('./scripts/setup-hooks/setup-hooks.js').catch((error)=>{const msg=String(error?.message??'');const isMissingSetupHooks=error?.code==='ERR_MODULE_NOT_FOUND'&&(msg.includes('scripts/setup-hooks/setup-hooks.js')||msg.includes('scripts\\\\setup-hooks\\\\setup-hooks.js'));if(!isMissingSetupHooks){console.error('Failed to run scripts/setup-hooks/setup-hooks.js during postinstall.');console.error(error);process.exitCode=1;}})\""
   },
   "repository": {
     "type": "git",
@@ -92,11 +96,16 @@
     "@iconify/react": "^5.0.0 || ^6.0.0",
     "@mui/lab": "^7.0.0 || ^9.0.0-beta.3",
     "@mui/material": "^7.0.0 || ^9.0.0",
+    "@mui/x-date-pickers": "^7.0.0 || ^9.0.0",
     "apexcharts": "^5.10.1",
+    "dayjs": "^1.11.0",
     "framer-motion": "^11.0.0 || ^12.0.0",
+    "mui-one-time-password-input": "^7.0.0",
     "react": "^18.0.0 || ^19.0.0",
     "react-apexcharts": "^2.1.1",
-    "react-dom": "^18.0.0 || ^19.0.0"
+    "react-dom": "^18.0.0 || ^19.0.0",
+    "react-hook-form": "^7.0.0",
+    "zod": "^4.0.0"
   },
   "peerDependenciesMeta": {
     "apexcharts": {
@@ -110,7 +119,26 @@
     },
     "@mui/lab": {
       "optional": true
+    },
+    "@mui/x-date-pickers": {
+      "optional": true
+    },
+    "dayjs": {
+      "optional": true
+    },
+    "mui-one-time-password-input": {
+      "optional": true
+    },
+    "react-hook-form": {
+      "optional": true
+    },
+    "zod": {
+      "optional": true
     }
   },
-  "yalcSig": "35c0d799bb688adf5486441fe2d364f2"
+  "dependencies": {
+    "minimal-shared": "^1.1.6",
+    "react-phone-number-input": "^3.4.18"
+  },
+  "yalcSig": "7869fdc93dbf95054c2ed4a83d360118"
 }

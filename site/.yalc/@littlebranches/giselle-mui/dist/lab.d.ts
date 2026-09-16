@@ -676,7 +676,7 @@ declare function TimelineDot({ icon, color, size, active, done, animationKey, do
  * For hero navigation use, pass `selectedPhaseKey` + `onPhaseSelect` to control
  * which phase dot appears active from the outside.
  *
- * **Quality status (02 Sep 2026):** DoD 19/22 · Best practices 13/13 — SonarQube not verified · styles test misses a factory · named size constant still inline
+ * **Quality status (07 Sep 2026):** DoD 19/27 · Best practices 13/13
  */
 declare function TimelineTwoColumn({ phases, checklist, onTogglePhaseDone, onToggleMilestoneDone, onToggleTaskDone, selectedPhaseKey, onPhaseSelect, expandableIcon, viewedKeys, onMarkViewed, onPhasesChange, sortOrder, milestoneSlotHeight, phaseCardGap, yearLabelMarginBottom, sx, ...other }: TimelineTwoColumnProps): react.JSX.Element;
 
@@ -862,7 +862,7 @@ interface TaskListProps extends BoxProps {
  * Use `indent="milestone"` when the list sits inside a milestone card to
  * add an extra level of left padding relative to the phase-level baseline.
  *
- * **Quality status (02 Sep 2026):** DoD 21/22 · Best practices 13/13 — SonarQube not verified
+ * **Quality status (07 Sep 2026):** DoD 23/27 · Best practices 13/13
  */
 declare function TaskList({ tasks, checklist, taskDoneState, onTaskToggle, indent, sx, ...other }: TaskListProps): react.JSX.Element;
 

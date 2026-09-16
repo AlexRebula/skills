@@ -316,7 +316,7 @@ npm test
 npm run build
 ```
 
-**Developing alongside a consumer app (e.g. the alexrebula portfolio)?**
+**Developing alongside a consumer app (e.g. a private consuming app)?**
 Use [yalc](https://github.com/wclr/yalc) — a local package registry that installs your
 built dist as a real package (no symlinks, no junctions, Turbopack compatible):
 

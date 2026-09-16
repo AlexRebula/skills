@@ -2,6 +2,7 @@ import * as React from 'react';
 import { TimelineDotProps } from '@mui/lab/TimelineDot';
 import * as _mui_material_styles from '@mui/material/styles';
 import { CssVarsThemeOptions } from '@mui/material/styles';
+import * as z from 'zod';
 
 /**
  * Theme utility helpers for MUI v7 CSS Variables mode.
@@ -638,4 +639,80 @@ declare const BREAKPOINTS_GRID: BreakpointGridEntry[];
  */
 declare function preloadImages(srcs: readonly string[]): void;
 
-export { BREAKPOINTS, BREAKPOINTS_GRID, type BreakpointEntry, type BreakpointGridEntry, GISELLE_PRIMARY_DARK_MAIN, GISELLE_PRIMARY_MAIN, GISELLE_SECONDARY_MAIN, type SetCookieOptions, assignMilestoneSidesByDone, channelAlpha, getCookieValue, giselleTheme, giselleThemeOptions, hexToChannel, isDeepEqual, preloadImages, pxToRem, remToPx, resolveMaturityColor, resolveMaturityLabel, setCookieValue };
+/**
+ * Custom error messages for a `schemaUtils` field validator.
+ */
+type SchemaErrorMessages = {
+    /** Shown when the field is empty/missing. */
+    required?: string;
+    /** Shown when the field is present but fails the format check. */
+    invalid?: string;
+};
+declare const schemaUtils: {
+    /**
+     * A zod schema for a required, valid email address — the validator
+     * react-hook-form's `Controller`/`useForm` resolver calls on every
+     * change/blur/submit for an email input.
+     *
+     * zod's own `error` callback is how a schema tells "empty" apart from
+     * "present but malformed": an empty/missing input reports a `zod_invalid_type`
+     * (or similar "nothing there") issue, while a non-empty value that fails
+     * the email format check reports one whose code starts with `invalid` —
+     * that's what the branch below keys on.
+     *
+     * @param props.error - Override the default required/invalid messages.
+     *
+     * @example
+     * const schema = z.object({ email: schemaUtils.email() });
+     */
+    email: (props?: {
+        error?: SchemaErrorMessages;
+    }) => z.ZodEmail;
+};
+
+/** Slices `data` to the rows that belong on `page` at `rowsPerPage` rows per page. */
+declare function rowInPage<T>(data: T[], page: number, rowsPerPage: number): T[];
+/** Number of trailing empty rows needed to keep every page the same height. */
+declare function emptyRows(page: number, rowsPerPage: number, arrayLength: number): number;
+/** Returns a `[].sort()` comparator for `order` direction over `orderBy` (dot-path supported). */
+declare function getComparator<Key extends PropertyKey>(order: 'asc' | 'desc', orderBy: Key): (a: {
+    [key in Key]: number | string;
+}, b: {
+    [key in Key]: number | string;
+}) => number;
+
+/**
+ * One ISO 3166-1 alpha-2 country entry — name, dial code, and ISO code.
+ *
+ * Shared across every phone/country picker in this library — `RHFPhoneInput`
+ * today (see `../../components/material/input/rhf-phone-input/`), and the
+ * planned `RHFCountrySelect` next — so they never drift into two
+ * differently-sorted or differently-labelled country lists.
+ */
+type Country = {
+    /** ISO 3166-1 alpha-2 code, e.g. `'US'`. Matches `react-phone-number-input`'s own `CountryCode` type. */
+    code: string;
+    /** English display name, e.g. `'United States'`. */
+    label: string;
+    /** E.164 calling code including the leading `+`, e.g. `'+1'`. */
+    phone: string;
+};
+/**
+ * Every country `react-phone-number-input` (and the `libphonenumber-js`
+ * metadata it bundles) recognises, as `{ code, label, phone }`, sorted
+ * alphabetically by `label`.
+ *
+ * Built from `react-phone-number-input`'s own `getCountries()` /
+ * `getCountryCallingCode()` (ISO codes + dial codes — already a dependency
+ * of this library, see `RHFPhoneInput`'s README for why it was added) and
+ * the runtime's own `Intl.DisplayNames` (English names). No hand-maintained
+ * country list to keep in sync, and no extra dependency beyond
+ * `react-phone-number-input` itself.
+ *
+ * A handful of `libphonenumber-js` codes are region groupings rather than
+ * countries `Intl.DisplayNames` can name — those are dropped rather than
+ * shown with a raw ISO code standing in for their label.
+ */
+declare const COUNTRIES: Country[];
+
+export { BREAKPOINTS, BREAKPOINTS_GRID, type BreakpointEntry, type BreakpointGridEntry, COUNTRIES, type Country, GISELLE_PRIMARY_DARK_MAIN, GISELLE_PRIMARY_MAIN, GISELLE_SECONDARY_MAIN, type SchemaErrorMessages, type SetCookieOptions, assignMilestoneSidesByDone, channelAlpha, emptyRows, getComparator, getCookieValue, giselleTheme, giselleThemeOptions, hexToChannel, isDeepEqual, preloadImages, pxToRem, remToPx, resolveMaturityColor, resolveMaturityLabel, rowInPage, schemaUtils, setCookieValue };
