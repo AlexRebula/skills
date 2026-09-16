@@ -14,6 +14,8 @@
     "test": "vitest run",
     "lint:provenance-script": "eslint scripts/generate-provenance.ts scripts/generate-provenance.test.ts scripts/generate-skill-icons.ts",
     "check:docs-completeness": "tsx scripts/check-docs-completeness.ts",
+    "check": "node scripts/quality-gate.js --fix",
+    "check:verify": "node scripts/quality-gate.js --verify",
     "changeset": "changeset",
     "version": "changeset version && node scripts/sync-plugin-version.mjs",
     "check-plugin-version": "node scripts/sync-plugin-version.mjs --check"
