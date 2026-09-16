@@ -42,6 +42,7 @@
     "./skills/framework/create-react-component",
     "./skills/framework/create-vue-component",
     "./skills/framework/migrate-react-subcomponent",
+    "./skills/framework/port-mui-theme-override",
     "./skills/git/canary-publish",
     "./skills/git/check-pr-link",
     "./skills/git/commit-wip",

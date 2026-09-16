@@ -216,6 +216,7 @@ Framework-specific scaffolding. Each skill follows a consistent two-phase workfl
 - **[create-react-component](./skills/framework/create-react-component/SKILL.md)**: Scaffold and TDD a new React component from scratch. Framework-agnostic, no MUI dependency.
 - **[create-vue-component](./skills/framework/create-vue-component/SKILL.md)**: Scaffold and TDD a new Vue 3 single-file component. Uses Composition API with `<script setup>`, `defineProps` generics, and `@testing-library/vue`.
 - **[migrate-react-subcomponent](./skills/framework/migrate-react-subcomponent/SKILL.md)**: Migrate an existing, already-implemented flat sub-component into its own subfolder — a mechanical move of working code, not a scaffold-from-scratch rebuild.
+- **[port-mui-theme-override](./skills/framework/port-mui-theme-override/SKILL.md)**: Independently re-author a draft MUI theme override into a clean, spec-compliant one that copies no literal source values, using a three-source method (functional target, official MUI docs, live computed-style verification).
 
 ---
 
