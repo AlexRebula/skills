@@ -1,11 +1,14 @@
 #!/usr/bin/env sh
 # .githooks/pre-push
 #
-# Runs the quality gate before every push: root tests, the provenance
-# script's lint, and the docs site's full check (typecheck, lint,
-# stylelint, tests). If any check fails the push is blocked: fix the
-# issues and push again.
+# Runs the quality gate before every push: scripts/quality-gate.js, which
+# covers root tests, the provenance script's lint, the docs site's full
+# check (typecheck, lint, stylelint, tests), and the docs site build. Runs
+# in smart mode locally (skips untriggered site/root-test steps based on
+# the changed-file diff); CI always runs the full gate regardless. If any
+# check fails the push is blocked: fix the issues and push again.
 #
+# To force the full gate locally: npm run check:verify:full
 # To bypass in exceptional circumstances (use sparingly):
 #   git push --no-verify
 
@@ -25,17 +28,8 @@ if [ -z "$NODE" ]; then
   done
 fi
 if [ -z "$NODE" ]; then
-  echo "pre-push: node not found, skipping quality gate. Install Node.js or run: npm test && npm run lint:provenance-script && (cd site && npm run check)"
+  echo "pre-push: node not found, skipping quality gate. Install Node.js or run: npm run check:verify:smart"
   exit 0
 fi
 
-set -e
-
-echo "pre-push: running root tests..."
-npm test
-
-echo "pre-push: linting scripts/generate-provenance.ts..."
-npm run lint:provenance-script
-
-echo "pre-push: running docs site check (typecheck, lint, stylelint, tests)..."
-(cd site && npm run check)
+npm run check:verify:smart
