@@ -185,12 +185,21 @@ if (RUN_SMART && !runRootTests) {
 
 // 3-7. Site checks — smart: skipped as a group when nothing site-relevant changed.
 if (RUN_SMART && !runSite) {
+  skip('Site data generation', 'no site-relevant changes');
   skip('Site typecheck (tsc)', 'no site-relevant changes');
   skip('Site ESLint', 'no site-relevant changes');
   skip('Site stylelint', 'no site-relevant changes');
   skip('Site tests (vitest)', 'no site-relevant changes');
   skip('Site build (docusaurus build)', 'no site-relevant changes');
 } else {
+  // typecheck/lint/stylelint/test all import generated data files
+  // (solar-icons.json, provenance.json, skills-landing.json,
+  // skill-summaries.json) that `npm run check`'s own `precheck` hook
+  // normally creates first. Calling the sub-scripts directly here skips
+  // that hook, so generate explicitly — a fresh CI checkout has none of
+  // these files on disk yet.
+  run('Site data generation', 'npm run precheck', { cwd: siteDir, fatal: true });
+
   if (!run('Site typecheck (tsc)', 'npm run typecheck', { cwd: siteDir })) {
     failures.push('Site typecheck — fix type errors above');
   }
