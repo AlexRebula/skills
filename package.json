@@ -16,6 +16,8 @@
     "check:docs-completeness": "tsx scripts/check-docs-completeness.ts",
     "check": "node scripts/quality-gate.js --fix",
     "check:verify": "node scripts/quality-gate.js --verify",
+    "check:verify:smart": "node scripts/quality-gate.js --verify --smart",
+    "check:verify:full": "node scripts/quality-gate.js --verify --full",
     "changeset": "changeset",
     "version": "changeset version && node scripts/sync-plugin-version.mjs",
     "check-plugin-version": "node scripts/sync-plugin-version.mjs --check"

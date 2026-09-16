@@ -3,9 +3,12 @@
 #
 # Runs the quality gate before every push: scripts/quality-gate.js, which
 # covers root tests, the provenance script's lint, the docs site's full
-# check (typecheck, lint, stylelint, tests), and the docs site build. If
-# any check fails the push is blocked: fix the issues and push again.
+# check (typecheck, lint, stylelint, tests), and the docs site build. Runs
+# in smart mode locally (skips untriggered site/root-test steps based on
+# the changed-file diff); CI always runs the full gate regardless. If any
+# check fails the push is blocked: fix the issues and push again.
 #
+# To force the full gate locally: npm run check:verify:full
 # To bypass in exceptional circumstances (use sparingly):
 #   git push --no-verify
 
@@ -25,8 +28,8 @@ if [ -z "$NODE" ]; then
   done
 fi
 if [ -z "$NODE" ]; then
-  echo "pre-push: node not found, skipping quality gate. Install Node.js or run: npm run check:verify"
+  echo "pre-push: node not found, skipping quality gate. Install Node.js or run: npm run check:verify:smart"
   exit 0
 fi
 
-npm run check:verify
+npm run check:verify:smart

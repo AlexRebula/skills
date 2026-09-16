@@ -7,3 +7,6 @@ node_modules/
 
 .obsidian/
 .sync-state.json
+
+# Smart gate telemetry log — local only
+scripts/gate-timing.log
