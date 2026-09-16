@@ -22,9 +22,9 @@ export const STATS_TITLE = 'This fork, at a glance';
 export const STATS_DESCRIPTION = 'Generated straight from the repo, so these numbers never go stale.';
 
 export const HARNESS_COMPARISON_CAPTION = 'How this fits together';
-export const HARNESS_COMPARISON_TITLE = 'Skills, flows, and one honest comparison';
+export const HARNESS_COMPARISON_TITLE = 'Skills, flows, and the harness comparison';
 export const HARNESS_COMPARISON_BODY =
-  'This fork installs into your agent harness — Claude Code, Codex, or anything else built on the Agent Skills standard — rather than replacing it. See how that differs from a hard harness like SwarmForge or T3 Code, and what "skill," "flow," and "harness" actually mean here.';
+  "This fork installs into your agent harness, whether that's Claude Code, Codex, or anything else built on the Agent Skills standard, rather than replacing it. See how that differs from a hard harness like SwarmForge or T3 Code, and what \"skill,\" \"flow,\" and \"harness\" actually mean here.";
 export const HARNESS_COMPARISON_LINK_TEXT = 'Read Skills, flows, and harnesses';
 export const HARNESS_COMPARISON_LINK_HREF = '/skills-flows-harnesses';
 
@@ -42,4 +42,4 @@ export const PERSONA_PICKER_DESCRIPTION =
 
 export const PERSONA_PICKER_ROUTER_PREFIX = "Don't know where to start? Skip the picker and run";
 export const PERSONA_PICKER_ROUTER_SUFFIX =
-  "instead — works like Matt Pocock's ask-matt, scoped to this fork: describe your situation and it'll name the skill or sequence that fits.";
+  "instead. It works like Matt Pocock's ask-matt, scoped to this fork, and names the skill or sequence that fits your situation.";
