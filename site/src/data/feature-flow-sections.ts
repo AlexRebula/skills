@@ -10,8 +10,8 @@ import type { FlowSkill, FlowStageSection } from './flow-sections.types';
  */
 export const FLOW_STAGE_DESCRIPTIONS: Record<string, string> = {
   'Start the day': 'Pick up where the last session left off before writing anything new.',
-  'Shape it': 'Stress-test the idea and pin down the spec before code gets written.',
-  'Build it': 'Scaffold, implement, and test-drive the actual feature.',
+  'Shape it': 'Stress-test the idea and pin down the spec before you write code.',
+  'Build it': 'Scaffold, implement, and test-drive the feature.',
   'Words for the codebase': 'Name things well and write down decisions future readers will need.',
   'Land it': 'Commit, open the PR, and get it reviewed and merged.',
   'When it breaks': 'Triage, diagnose, and resolve the problem in front of you.',
@@ -33,29 +33,29 @@ export const FLOW_STAGE_DESCRIPTIONS: Record<string, string> = {
  */
 export const FLOW_STAGE_LONG_DESCRIPTIONS: Record<string, string> = {
   'Start the day':
-    "Every session starts by re-establishing context, not by writing code. This stage surfaces what's already been done, what's still open, and what state your repos are actually in - dirty files, open PRs, prior session notes - before you touch anything new. The five skills here run as a fixed sequence: preflight loads context, then a repo-wide sweep, then a morning brief you can act on immediately.",
+    "Every session starts by re-establishing context, not by writing code. This stage surfaces what's already been done, what's still open, and what state your repos are actually in, including dirty files, open PRs, and prior session notes, before you touch anything new. The five skills here run as a fixed sequence: preflight loads context, then a repo-wide sweep, then a morning brief you can act on immediately.",
   'Shape it':
-    "Before code gets written, the idea itself gets pressure-tested. This stage covers interview-style skills that surface assumptions, force a decision tree into the open, and turn a rough plan into a written spec or a set of tickets ready for implementation. The goal isn't speed here - it's catching the wrong assumption while it's still cheap to fix.",
+    "Before you write code, you pressure-test the idea. This stage covers interview-style skills that surface assumptions, force a decision tree into the open, and turn a rough plan into a written spec or a set of tickets ready for implementation. The goal isn't speed. It's catching the wrong assumption while it's still cheap to fix.",
   'Build it':
-    'The actual implementation work: scaffolding a new component, building a feature test-first, or prototyping a design question before committing to an approach. `/implement` fetches a tracked ticket directly and builds it, deferring to a ticket-specified build skill when one is named; `/tdd` and the framework-specific `/create-*` skills carry the red-green-refactor discipline through to the end.',
+    'The implementation work: scaffolding a new component, building a feature test-first, or prototyping a design question before committing to an approach. `/implement` fetches a tracked ticket directly and builds it, deferring to a ticket-specified build skill when one is named; `/tdd` and the framework-specific `/create-*` skills carry the red-green-refactor discipline through to the end.',
   'Words for the codebase':
-    'Code communicates as much through its names and structure as through what it executes. This stage is about the vocabulary of a codebase: designing deep modules with the right seams, building and sharpening a shared domain model, and writing documentation an AI agent, not just a human, can actually act on.',
+    'Code communicates as much through its names and structure as through what it executes. This stage is about the vocabulary of a codebase: designing deep modules with the right seams, building and sharpening a shared domain model, and writing documentation an AI agent, not just a human, can act on.',
   'Land it':
     "Getting finished work merged: committing cleanly, opening a well-formed PR, and working through review feedback until it's mergeable. `/wip-sweep` catches uncommitted work across every repo before it's lost; `/review-pr` and `/respond-pr-review` cover both sides of the review cycle.",
   'When it breaks':
-    "Something is broken and you need to find out why before you can fix it. This stage covers triaging an incoming report, the actual diagnosis loop for a hard bug or performance regression, and resolving an in-progress merge or rebase conflict without losing anyone's work.",
+    "Something is broken and you need to find out why before you can fix it. This stage covers triaging an incoming report, the diagnosis loop for a hard bug or performance regression, and resolving an in-progress merge or rebase conflict without losing anyone's work.",
   'Sweep for debt':
-    "The maintenance work that a fast-moving codebase leaves behind: stale PRs waiting on review, dirty repos nobody's swept, prose that reads like it was never edited by a human, and architecture that's drifted from what the codebase actually needs. These skills are meant to run on a cadence, not just when something's on fire.",
+    "The maintenance work that a fast-moving codebase leaves behind: stale PRs waiting on review, dirty repos nobody's swept, prose that reads like it was never edited by a human, and architecture that's drifted from what the codebase needs. These skills are meant to run on a cadence, not just when something's on fire.",
   'Run the wiki':
-    "Keeping a personal knowledge base current and honest: ingesting a new source, querying what's already been captured, health-checking the wiki for contradictions and stale claims, and logging behavioral incidents so the same mistake doesn't get repeated by the next session.",
+    "Keeping a personal knowledge base current and honest: ingesting a new source, querying what's already been captured, health-checking the wiki for contradictions and stale claims, and logging behavioral incidents so the next session doesn't repeat the same mistake.",
   'Close the session':
-    "Ending a session in a state the next one, yours or someone else's, can actually pick up from: a written wrap-up, a clean handoff document, uncommitted work captured before it's lost, and any task-tracker sync kept current rather than left to drift.",
+    "Ending a session in a state the next one, yours or someone else's, can pick up from: a written wrap-up, a clean handoff document, uncommitted work captured before it's lost, and any task-tracker sync kept current rather than left to drift.",
   'Grow a contributor':
-    "Mentoring is a distinct skill from doing the work yourself. This stage is about growing a junior engineer's or apprentice's own contribution - auditing an issue before handing it off, tracking what a learner has already tried, picking the next issue that actually stretches them, and teaching a concept in a way that sticks.",
+    "Mentoring is a distinct skill from doing the work yourself. This stage is about growing a junior engineer's or apprentice's own contribution: auditing an issue before handing it off, tracking what a learner has already tried, picking the next issue that stretches them, and teaching a concept in a way that sticks.",
   'LittleBranches specifics':
     "House rules specific to the LittleBranches organisation's own repos: giselle-mui's own component-scaffolding conventions, its test-quality bar, its PR review workflow, and the org-wide quality standards and critical-path context every session there should load first.",
   'Reach for on their own':
-    "A grab-bag of skills tied to one person's own setup or used rarely enough that they're not part of the daily flow above - redacting sensitive data, an ultra-compressed communication mode, guardrails against destructive git commands, and a handful of narrow one-off migrations and scaffolds. Kept around because they're still useful, not because they're used every day.",
+    "A grab-bag of skills tied to one person's own setup or used rarely enough that they're not part of the daily flow above: redacting sensitive data, an ultra-compressed communication mode, guardrails against destructive git commands, and a handful of narrow one-off migrations and scaffolds. Kept around because they're still useful, not because they're used every day.",
 };
 
 /**
