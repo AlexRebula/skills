@@ -112,6 +112,8 @@ var GISELLE_PRIMARY_MAIN = "#2E7D32";
 var GISELLE_PRIMARY_DARK_MAIN = "#76C442";
 var GISELLE_SECONDARY_MAIN = "#F5A623";
 var GREY_500_CHANNEL = hexToChannel(grey[500]);
+var COMMON_BLACK_CHANNEL = hexToChannel("#000000");
+var COMMON_WHITE_CHANNEL = hexToChannel("#ffffff");
 var giselleThemeOptions = {
   // `extendTheme()` defaults an unset `colorSchemeSelector` to `'media'`, under
   // which MUI's `useColorScheme().setMode` — what `GiselleThemeProvider`'s
@@ -137,7 +139,13 @@ var giselleThemeOptions = {
         // shades, not custom channel tokens — cast, same as every existing
         // *read* of `theme.vars.palette.grey['500Channel']` elsewhere in this
         // codebase (e.g. `floating-sub-nav.styles.ts`).
-        grey: { "500Channel": GREY_500_CHANNEL }
+        grey: { "500Channel": GREY_500_CHANNEL },
+        // `common.black`/`white` are mode-independent (same value in both
+        // schemes) — see `COMMON_BLACK_CHANNEL`/`COMMON_WHITE_CHANNEL` above.
+        common: {
+          blackChannel: COMMON_BLACK_CHANNEL,
+          whiteChannel: COMMON_WHITE_CHANNEL
+        }
       }
     },
     dark: {
@@ -148,7 +156,11 @@ var giselleThemeOptions = {
         success: { main: "#66BB6A" },
         warning: { main: "#FFA726" },
         error: { main: "#F44336" },
-        grey: { "500Channel": GREY_500_CHANNEL }
+        grey: { "500Channel": GREY_500_CHANNEL },
+        common: {
+          blackChannel: COMMON_BLACK_CHANNEL,
+          whiteChannel: COMMON_WHITE_CHANNEL
+        }
       }
     }
   }
