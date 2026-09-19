@@ -51,19 +51,38 @@
  *     or is a root-level doc file with no bearing on root tests (see
  *     ROOT_TEST_SKIP_ONLY) — anything under skills/ or scripts/ always
  *     triggers them, since those are exactly what the root suite covers.
+ *
+ * Yalc dependency-resolution leniency (local only, never in CI):
+ *   The five site checks (typecheck/lint/stylelint/tests/build) all resolve
+ *   modules and can fail because of an unrelated, in-progress breaking
+ *   change in a yalc-linked dependency (e.g. giselle-mui-poc) rather than a
+ *   real regression in this repo. When one of those steps fails locally and
+ *   its output implicates a package currently linked via site/yalc.lock,
+ *   the gate warns instead of blocking the push. CI always treats the same
+ *   failure as blocking. See LittleBranches/wiki#929 and #855 for the
+ *   incident and design that motivated this.
  */
 
 import { appendFileSync } from 'fs';
-import { execSync } from 'child_process';
+import { execSync, spawn } from 'child_process';
 import path from 'path';
 import { fileURLToPath } from 'url';
-import { resolveChangedFiles, evaluateTriggers } from './smart-gate-core.js';
+import {
+  resolveChangedFiles,
+  evaluateTriggers,
+  loadYalcLinkedPackages,
+  isLikelyYalcFailure,
+} from './smart-gate-core.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 const repoRoot = path.resolve(__dirname, '..');
 const siteDir = path.join(repoRoot, 'site');
+
+// Package names currently linked via yalc under site/ — used to recognize a
+// dependency-resolution failure in a site check that isn't this repo's own regression.
+const yalcLinkedPackages = loadYalcLinkedPackages([siteDir]);
 
 // ── Flags ──────────────────────────────────────────────────────────────────
 
@@ -99,7 +118,8 @@ const telemetry = {
   startTime: Date.now(),
   basis: 'full',
   changedFileCount: 0,
-  steps: /** @type {Array<{name:string,status:string,duration?:number,result?:string,reason?:string}>} */ ([]),
+  steps:
+    /** @type {Array<{name:string,status:string,duration?:number,result?:string,reason?:string}>} */ ([]),
   result: 'unknown',
 };
 
@@ -128,6 +148,53 @@ function run(label, cmd, { cwd = repoRoot, fatal = false } = {}) {
 function skip(label, reason) {
   console.log(`\n⏭  ${label} — skipped: ${reason}`);
   telemetry.steps.push({ name: label, status: 'skipped', reason });
+}
+
+/**
+ * Like `run`, but tees the child process's combined output to the console
+ * live (same experience as `run`) while also buffering it, so a failure can
+ * be checked against `yalcLinkedPackages`. Used only for the five site
+ * checks, where an unresolved import from a yalc-linked package is a
+ * plausible cause of failure.
+ *
+ * @param {string} label @param {string} cmd @param {{ cwd?: string, fatal?: boolean }} [opts]
+ * @returns {Promise<boolean>}
+ */
+function runCheckedForYalc(label, cmd, { cwd = repoRoot, fatal = false } = {}) {
+  return new Promise((resolve) => {
+    const start = Date.now();
+    console.log(`\n→ ${label}…`);
+    const child = spawn(cmd, { cwd, shell: true });
+    let output = '';
+    const tee = (stream) => (chunk) => {
+      stream.write(chunk);
+      output += chunk.toString();
+    };
+    child.stdout.on('data', tee(process.stdout));
+    child.stderr.on('data', tee(process.stderr));
+    child.on('close', (code) => {
+      const duration = Date.now() - start;
+      if (code === 0) {
+        console.log(`✓ ${label} passed (${duration}ms)`);
+        telemetry.steps.push({ name: label, status: 'executed', duration, result: 'pass' });
+        resolve(true);
+        return;
+      }
+      if (!IS_CI && isLikelyYalcFailure(output, yalcLinkedPackages)) {
+        console.warn(
+          `\n⚠  ${label} failed, but the output implicates a yalc-linked package — ` +
+            `treating this as an unrelated dependency issue, not a regression. Not blocking this push.`
+        );
+        telemetry.steps.push({ name: label, status: 'executed', duration, result: 'yalc-warning' });
+        resolve(true);
+        return;
+      }
+      console.error(`\n❌  ${label} failed (${duration}ms)`);
+      telemetry.steps.push({ name: label, status: 'executed', duration, result: 'fail' });
+      if (fatal) process.exit(1);
+      resolve(false);
+    });
+  });
 }
 
 // ── Resolve diff ───────────────────────────────────────────────────────────
@@ -164,7 +231,9 @@ console.log(' Quality gate — AlexRebula/skills');
 if (FIX_MODE) {
   console.log(' Mode: auto-fix + verify');
 } else if (RUN_SMART) {
-  console.log(` Mode: smart pre-push (basis: ${telemetry.basis}, ${telemetry.changedFileCount} file(s) changed)`);
+  console.log(
+    ` Mode: smart pre-push (basis: ${telemetry.basis}, ${telemetry.changedFileCount} file(s) changed)`
+  );
 } else {
   console.log(' Mode: verify only (use --fix to auto-fix)');
 }
@@ -200,31 +269,35 @@ if (RUN_SMART && !runSite) {
   // these files on disk yet.
   run('Site data generation', 'npm run precheck', { cwd: siteDir, fatal: true });
 
-  if (!run('Site typecheck (tsc)', 'npm run typecheck', { cwd: siteDir })) {
+  if (!(await runCheckedForYalc('Site typecheck (tsc)', 'npm run typecheck', { cwd: siteDir }))) {
     failures.push('Site typecheck — fix type errors above');
   }
 
   if (FIX_MODE) {
     run('Site ESLint auto-fix', 'npm run lint:fix', { cwd: siteDir });
   }
-  if (!run('Site ESLint', 'npm run lint', { cwd: siteDir })) {
+  if (!(await runCheckedForYalc('Site ESLint', 'npm run lint', { cwd: siteDir }))) {
     failures.push('Site ESLint — run `npm run lint:fix` in site/ to auto-fix, then fix the rest');
   }
 
   if (FIX_MODE) {
     run('Site stylelint auto-fix', 'npm run stylelint:fix', { cwd: siteDir });
   }
-  if (!run('Site stylelint', 'npm run stylelint', { cwd: siteDir })) {
-    failures.push('Site stylelint — run `npm run stylelint:fix` in site/ to auto-fix, then fix the rest');
+  if (!(await runCheckedForYalc('Site stylelint', 'npm run stylelint', { cwd: siteDir }))) {
+    failures.push(
+      'Site stylelint — run `npm run stylelint:fix` in site/ to auto-fix, then fix the rest'
+    );
   }
 
-  if (!run('Site tests (vitest)', 'npm run test', { cwd: siteDir })) {
+  if (!(await runCheckedForYalc('Site tests (vitest)', 'npm run test', { cwd: siteDir }))) {
     failures.push('Site tests — fix failing tests above');
   }
 
-  if (!run('Site build (docusaurus build)', 'npm run build', { cwd: siteDir })) {
+  if (
+    !(await runCheckedForYalc('Site build (docusaurus build)', 'npm run build', { cwd: siteDir }))
+  ) {
     failures.push(
-      'Site build — the docs site failed to compile; fix build errors above (often a missing dependency for a yalc-linked package — see npm run build output for "Module not found")',
+      'Site build — the docs site failed to compile; fix build errors above (often a missing dependency for a yalc-linked package — see npm run build output for "Module not found")'
     );
   }
 }
@@ -259,7 +332,10 @@ if (RUN_SMART || LOG_METRICS) {
 if (LOG_METRICS) {
   const logPath = path.resolve(__dirname, 'gate-timing.log');
   try {
-    appendFileSync(logPath, JSON.stringify({ ...telemetry, timestamp: new Date().toISOString() }) + '\n');
+    appendFileSync(
+      logPath,
+      JSON.stringify({ ...telemetry, timestamp: new Date().toISOString() }) + '\n'
+    );
   } catch {
     // Non-fatal: a log write failure must never block a push.
   }
