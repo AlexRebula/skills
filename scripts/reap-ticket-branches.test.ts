@@ -2,7 +2,7 @@ import { execFileSync } from 'node:child_process';
 import { mkdtempSync, rmSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
-import { afterEach, beforeEach, describe, expect, it } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import {
   branchMatchesTicket,
   extractTicketNumber,
@@ -233,5 +233,54 @@ describe('findBranchesInRepo (integration, real git, no GitHub remote)', () => {
     const findings = findBranchesInRepo(repoPath, (name: string) => branchMatchesTicket(name, '841'));
     expect(findings[0].isCurrentlyCheckedOut).toBe(true);
     expect(recommendedCommands(findings[0])[0]).toContain('switch away first');
+  });
+});
+
+// ---------------------------------------------------------------------------
+// Regression: this module must not inherit ambient GIT_* env vars (e.g. from
+// the real git hook that invokes it) into its own `-C <repoPath>` git calls,
+// or it silently inspects the wrong repository. See the module's own
+// CLEAN_GIT_ENV comment for the full scenario this guards against.
+// ---------------------------------------------------------------------------
+
+describe('findBranchesInRepo (regression: does not leak ambient GIT_* env into its own git calls)', () => {
+  let repoPath: string;
+  const originalGitDir = process.env.GIT_DIR;
+  const originalGitWorkTree = process.env.GIT_WORK_TREE;
+
+  beforeEach(() => {
+    repoPath = mkdtempSync(join(tmpdir(), 'reap-ticket-branches-fixture-'));
+    const git = (...args: string[]) =>
+      execFileSync('git', args, { cwd: repoPath, encoding: 'utf8', env: CLEAN_GIT_ENV });
+    git('init', '--quiet', '--initial-branch=main');
+    git('config', 'user.email', 'test@example.com');
+    git('config', 'user.name', 'Test');
+    git('commit', '--allow-empty', '-m', 'initial');
+    git('branch', 'fix/841-hero-background');
+  });
+
+  afterEach(() => {
+    rmSync(repoPath, { recursive: true, force: true });
+    if (originalGitDir === undefined) delete process.env.GIT_DIR;
+    else process.env.GIT_DIR = originalGitDir;
+    if (originalGitWorkTree === undefined) delete process.env.GIT_WORK_TREE;
+    else process.env.GIT_WORK_TREE = originalGitWorkTree;
+    vi.resetModules();
+  });
+
+  it('still finds the fixture repo\'s own branch when GIT_DIR/GIT_WORK_TREE point elsewhere in the ambient environment', async () => {
+    // Poison the environment the way a real git hook invocation would, THEN
+    // (re-)import the module — CLEAN_GIT_ENV is captured once at module load,
+    // matching how a real short-lived CLI process actually runs.
+    process.env.GIT_DIR = '/nonexistent/poisoned-git-dir';
+    process.env.GIT_WORK_TREE = '/nonexistent/poisoned-work-tree';
+    vi.resetModules();
+    const { findBranchesInRepo: freshFindBranchesInRepo, branchMatchesTicket: freshBranchMatchesTicket } =
+      await import('./reap-ticket-branches');
+
+    const findings = freshFindBranchesInRepo(repoPath, (name: string) => freshBranchMatchesTicket(name, '841'));
+
+    expect(findings).toHaveLength(1);
+    expect(findings[0].branch).toBe('fix/841-hero-background');
   });
 });
