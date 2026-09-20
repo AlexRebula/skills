@@ -137,8 +137,16 @@ export function branchMatchesTicket(branchName: string, ticketNumber: string): b
 // Git discovery (I/O)
 // ---------------------------------------------------------------------------
 
+// Invoked from this repo's own pre-push hook (among other contexts), which sets GIT_DIR /
+// GIT_WORK_TREE / GIT_INDEX_FILE etc. in the environment for its own git process. Those vars
+// override `-C <repoPath>` for any child git command that inherits them, silently pointing this
+// script at the wrong repository. Stripping every GIT_* var keeps `-C` authoritative regardless
+// of the calling context. (Mirrors this file's own test's CLEAN_GIT_ENV — that one isolates the
+// test's tmpdir fixture; this is the same fix applied to the production code path it exercises.)
+const CLEAN_GIT_ENV = Object.fromEntries(Object.entries(process.env).filter(([key]) => !key.startsWith('GIT_')));
+
 function runGit(repoPath: string, args: string[]): string {
-  return execFileSync('git', ['-C', repoPath, ...args], { encoding: 'utf8' }).trim();
+  return execFileSync('git', ['-C', repoPath, ...args], { encoding: 'utf8', env: CLEAN_GIT_ENV }).trim();
 }
 
 function tryRunGit(repoPath: string, args: string[]): string | null {
