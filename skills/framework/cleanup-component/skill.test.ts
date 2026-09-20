@@ -111,6 +111,33 @@ describe('cleanup-component', () => {
     expect(SKILL).toMatch(/independently unit-tested/i);
   });
 
+  it('performs the folder-per-component move itself when no delegate skill covers a standalone target', () => {
+    // A real run found the diagnosis correctly flagged "not living in its own
+    // folder-per-component" but the skill then left the violation unfixed, reasoning
+    // (incorrectly) from local flat-file precedent instead of the actual standard — since
+    // this repo's own structural-migration skill is scoped to internal-only sub-components
+    // and explicitly excludes standalone/exported ones, nothing covered the case. This
+    // guards against repeating that gap: the skill must say explicitly that it performs the
+    // move itself when no delegate skill's own stated scope actually covers the target.
+    expect(SKILL).toMatch(/perform the move yourself unless a[\s\S]{0,20}delegate skill/i);
+    expect(SKILL).toMatch(/exclude a standalone or independently-exported component/i);
+    expect(SKILL).toMatch(/do not[\s\S]{0,5}delegate to a skill whose own documented scope excludes it/i);
+    expect(SKILL).toContain('index.ts');
+    expect(SKILL).toMatch(/Update every import site across the repo/i);
+  });
+
+  it('gates README/roadmap/stories scaffolding on the standalone-vs-sub-component test, not a blanket rule', () => {
+    // The full library-scaffolding ceremony (README, roadmap, stories) exists to document
+    // and preview a reusable published component for other consumers; a single-caller
+    // app-local component doesn't need it. This must be an explicit, checkable rule, not
+    // left to inference — otherwise every folder-per-component move risks over-scaffolding
+    // a one-off page section as if it were a new library component.
+    expect(SKILL).toMatch(/§5\.6/);
+    expect(SKILL).toMatch(/standalone-vs-sub-component test/i);
+    expect(SKILL).toMatch(/exactly one caller/i);
+    expect(SKILL).not.toMatch(/giselle/i);
+  });
+
   it('states its own out-of-scope boundaries: no real-component run, no organization awareness', () => {
     expect(SKILL).toMatch(/## Out of scope/);
     expect(SKILL).toMatch(/Running this skill against any real component/i);

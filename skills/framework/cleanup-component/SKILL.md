@@ -150,6 +150,41 @@ other framework.
   (§15.1) → unit tests for each one, independent of any framework/rendering dependency,
   exactly as that section's own rule already requires.
 
+**Not living in its own folder-per-component (§5.1): perform the move yourself unless a
+delegate skill already covers this exact case.** Check whether this target repo has a
+project-specific structural-migration skill (the kind this skill disambiguates itself from,
+above) and whether that skill's own stated scope actually covers this target — most such
+skills are scoped to *internal-only* sub-components (used by exactly one sibling file in
+their own folder) and explicitly exclude a standalone or independently-exported component.
+Delegate only when the delegate skill's own scope genuinely covers this target; do not
+delegate to a skill whose own documented scope excludes it, and do not leave the violation
+unfixed just because a same-named skill exists somewhere in the repo. When no delegate skill
+covers this exact case, do the move yourself:
+
+1. Create `<name>/`, move `<name>.tsx` into it unchanged (only import specifiers that need
+   an extra `./` level change), and move every already-extracted or newly-extracted
+   `<name>.styles.ts`/`.const.ts`/`.utils.ts`/`.defaults.tsx` (with their tests) into the
+   same folder, dropping the now-redundant `<name>.` file-name prefix as they land inside
+   `<name>/` (e.g. `<name>.styles.ts` becomes `styles.ts`) unless this repo's own existing
+   convention for a comparable component already keeps the prefix — check one real sibling
+   example first, the same reconnaissance step 3 already does for test framework/pattern.
+2. Extract the props interface into `<name>/types.ts` if it isn't already in one.
+3. Create `<name>/index.ts`, re-exporting the component and its props type — this is the
+   only import path every external caller should use afterward.
+4. Move the component's existing test file into the folder alongside it.
+5. Update every import site across the repo that referenced the old flat path (grep for it;
+   don't rely on the type checker alone to surface every call site, since a JS-only consumer
+   or a dynamic import won't fail typecheck).
+
+**Whether to also add `README.md`, `roadmap.md`, or a `.stories.tsx`**: use §5.6's own
+standalone-vs-sub-component test, not a blanket rule. These three exist to document and
+preview a *reusable, published* component for other consumers — add them only when §5.6's
+signals say this target is standalone (exported from a public barrel, listed in a component
+inventory/tracking doc). A component with exactly one caller inside one application gets the
+folder, `types.ts`, barrel, and tests above, and nothing more; treating every folder-per-
+component move as if it were scaffolding a new library component adds ceremony the target
+never asked for and this skill has no standing to impose.
+
 ### 4. Run the target repo's own quality gate
 
 Confirm nothing broke: run whatever this target repo's own quality gate script is (e.g.
