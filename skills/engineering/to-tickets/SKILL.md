@@ -28,6 +28,8 @@ Look for opportunities to prefactor the code to make the implementation easier. 
 
 Break the work into **tracer bullet** tickets.
 
+**Every ticket must be self-sufficient for a fresh session with no memory of this conversation.** Do not assume the implementing agent will read the parent issue, this conversation, or any linked doc before starting — write each ticket as if it won't be read. This is not a hypothetical risk: a real batch of four frontier tickets was once published with only a bare "Parent: #N" text reference, and a later session found none of them actually carried enough context for a fresh start — it had to retrofit a "Context for whoever picks this up" section into all four by hand after the gap was noticed live. See Step 5's `<issue-template>`/`<local-ticket-template>` for the section this now requires on every ticket.
+
 <vertical-slice-rules>
 
 - Each slice cuts a narrow but COMPLETE path through every layer (schema, API, UI, tests): vertical, NOT a horizontal slice of one layer
@@ -69,7 +71,7 @@ Publish the approved tickets. **How** depends on the tracker `/setup-engineering
 - When creating a new child issue: `gh issue create --parent <parent-number> ...`
 - When linking an already-created child: `gh issue edit <parent-number> --add-sub-issue <child-number>`
 
-A "Parent: #N" line in the body (as in `<issue-template>` below) is still useful prose context, but it is not a substitute for the native link — the native link is what drives GitHub's own progress tracking on the parent, and is what this convention requires.
+A "Parent: #N" line in the body (as in `<issue-template>` below) is still useful prose context, but it is not a substitute for the native link — the native link is what drives GitHub's own progress tracking on the parent, and is what this convention requires. Neither the native link nor the "Parent: #N" line is a substitute for the "Context for whoever picks this up" section below, either: the native link communicates the *relationship*, not the *content* — an agent grabbing the child issue still needs the substance inline, not a pointer it has to go fetch and interpret cold.
 
 Work the **frontier**: any ticket whose blockers are all done. For a purely linear chain that means top to bottom.
 
@@ -78,6 +80,8 @@ Do NOT close or modify any parent issue **at this publish step**. This is not a 
 <local-ticket-template>
 
 # <NN>: <Ticket title>
+
+**Context for whoever picks this up:** a numbered reading order for the deeper source material this ticket draws from (the parent spec, a design doc, an ADR, a prior session wrap — link or name each one concretely, not "see the spec"), followed by a condensed, ticket-specific summary of the decisions/rules/situation this ticket actually depends on. Write it for a fresh session with no memory of how this ticket came to be — assume the reading-order material won't be opened, and give it what it needs anyway.
 
 **What to build:** the end-to-end behaviour this ticket makes work, from the user's perspective, not a layer-by-layer implementation list.
 
@@ -102,6 +106,10 @@ Do NOT close or modify any parent issue **at this publish step**. This is not a 
 ## Parent
 
 A reference to the parent issue on the tracker (if the source was an existing issue, otherwise omit this section).
+
+## Context for whoever picks this up
+
+A numbered reading order for the deeper source material this ticket draws from (the parent spec issue, a design doc, an ADR, a prior session wrap — link or name each one concretely, not "see the spec"), followed by a condensed, ticket-specific summary of the decisions/rules/situation this ticket actually depends on — not a restatement of the whole parent, just the slice this ticket needs. Write it for a fresh session with no memory of the conversation that produced this ticket: assume the parent issue and every linked doc won't be opened, and give this ticket everything required anyway. This section is required on every ticket, not optional context — see Step 3's note on why.
 
 ## What to build
 
