@@ -244,6 +244,16 @@ Use it only when the component actually needs the provider, not as a blanket def
 
 ---
 
+### Naming/decomposition: delegate to `cleanup-component`
+
+Once the component passes its TDD loop, run `cleanup-component` against it for its
+diagnostic-and-fix pass instead of re-deriving those checks here: it independently
+decides whether naming/decomposition work (element-first handler naming, prop-bag
+naming, cascading-state decomposition), structural work, both, or neither is actually
+needed, and applies only what it finds.
+
+---
+
 ## Stories: `<name>.stories.tsx`
 
 Only create if the project has Storybook. Match the title to the folder path.
@@ -274,6 +284,15 @@ No real names, emails, or client data in stories: use generic placeholders.
 
 ---
 
+## Final pass: `cleanup-component`
+
+Once Phase 2 is complete and the quality gate is green, run `cleanup-component` once more
+against the finished component as a final diagnostic-and-fix pass, before considering the
+component done. This guards against a newly-scaffolded component quietly shipping the
+kind of debt this skill exists to prevent from accumulating in the first place.
+
+---
+
 ## Checklist before PR
 
 - [ ] All `it.todo` stubs replaced with passing tests
@@ -284,4 +303,5 @@ No real names, emails, or client data in stories: use generic placeholders.
 - [ ] No `dangerouslySetInnerHTML`
 - [ ] No hardcoded colours
 - [ ] No real personal data in tests or stories
+- [ ] `cleanup-component` run as a final pass (see "Final pass" above)
 - [ ] Quality gate green

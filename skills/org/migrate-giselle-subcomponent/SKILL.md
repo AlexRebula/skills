@@ -99,6 +99,18 @@ real defect (an inline `type`, a duplicated JSX block, dead conditional logic), 
 part of this move since Scenario A's Definition of Done requires it anyway, but do not
 let it grow into an unrelated refactor.
 
+**Naming/decomposition: delegate to `cleanup-component`, don't assume.** The
+reconnaissance checks above verify structural completeness only: they don't check
+whether the file is already correctly named or decomposed (element-first handler naming,
+`Inputs` prop-bag naming, cascading-state decomposition). Run `cleanup-component` against
+the file for its naming/decomposition diagnostic-and-fix pass before continuing to Step 5,
+instead of re-deriving those checks here — `cleanup-component` is a generic, org-agnostic
+skill with no knowledge of Giselle or this repo; it only runs its own two-axis diagnosis
+and fix. This skill's own Giselle-specific phase (DoD scoring, brand tokens, taxonomy,
+`yalc`-validate, see Step 8 below) is not something `cleanup-component` triggers or knows
+about: it stays this skill's own remaining step, run directly, right after
+`cleanup-component`'s pass completes.
+
 ## Step 5 — Name the new subfolder
 
 The folder/file basename is **kebab-case of the exported component name**, not
