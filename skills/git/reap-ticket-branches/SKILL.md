@@ -1,6 +1,6 @@
 ---
 name: reap-ticket-branches
-description: Find local git branches and worktrees left behind by a ticket that was closed or abandoned without a merged PR of its own, and report what is safe to remove. Read-only: prints findings and the exact git commands to run, never deletes anything itself. Classifies each match via a GitHub PR lookup (merged / open / no PR found) when a GitHub remote is available. Use when told something like "check for stale branches for ticket 841", "clean up leftover worktrees from issue 840", or via "/reap-ticket-branches 841".
+description: "Find local git branches and worktrees left behind by a ticket that was closed or abandoned without a merged PR of its own, and report what is safe to remove. Read-only: prints findings and the exact git commands to run, never deletes anything itself. Classifies each match via a GitHub PR lookup (merged / open / no PR found) when a GitHub remote is available. Use when told something like \"check for stale branches for ticket 841\", \"clean up leftover worktrees from issue 840\", or via \"/reap-ticket-branches 841\"."
 argument-hint: '(--ticket <ref> | --branch <name>) --repo <path> [--repo <path> ...]'
 ---
 
