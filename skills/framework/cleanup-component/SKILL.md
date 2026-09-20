@@ -1,6 +1,6 @@
 ---
 name: cleanup-component
-description: Diagnose and fix component quality debt across two independent axes, structural (OSS Quality Standards §5 Component Structure Rules / §6 Component API Contract: inline `sx`, un-extracted constants/utils, missing `types.ts`, folder-per-component) and naming/decomposition (`naming-conventions.md`'s element-first handler naming and `Inputs` prop-bag sections, `component-refactor-conventions.md`'s cascading-state-decomposition and one-group-at-a-time sequencing sections), applying only the fixes a target actually needs, since a real component may need one axis, the other, both, or neither. Not `migrate-giselle-subcomponent` or `migrate-react-subcomponent`: those are structural-only mechanical moves that assume the component is already correctly named and decomposed and only relocate it. For `giselle-mui`/`giselle-mui-poc` targets only, additionally delegates to `migrate-giselle-subcomponent`'s remaining Giselle-specific phase (DoD scoring, brand tokens, taxonomy, yalc-validate); every other target skips that phase entirely. Use when asked to "cleanup component X" or "refactor component X" for any target file or folder.
+description: "Diagnose and fix component quality debt across two independent axes, structural (OSS Quality Standards §5 Component Structure Rules / §6 Component API Contract: inline `sx`, un-extracted constants/utils, missing `types.ts`, folder-per-component) and naming/decomposition (`naming-conventions.md`'s element-first handler naming and `Inputs` prop-bag sections, `component-refactor-conventions.md`'s cascading-state-decomposition and one-group-at-a-time sequencing sections), applying only the fixes a target actually needs, since a real component may need one axis, the other, both, or neither. Not `migrate-giselle-subcomponent` or `migrate-react-subcomponent`: those are structural-only mechanical moves that assume the component is already correctly named and decomposed and only relocate it. For `giselle-mui` and its private internal working copy only, additionally delegates to `migrate-giselle-subcomponent`'s remaining Giselle-specific phase (DoD scoring, brand tokens, taxonomy, yalc-validate); every other target skips that phase entirely. Use when asked to \"cleanup component X\" or \"refactor component X\" for any target file or folder."
 ---
 
 # Cleanup Component
@@ -101,11 +101,11 @@ and its "Inputs prop-bag naming" section, plus `component-refactor-conventions.m
 the other, both, or neither. Never assume: two confirmed real-world cases show why both
 checks must always run, independently, every time:
 
-- `TimelineTwoColumn` (`giselle-mui-poc#223`): already fully compliant on folder/file
-  structure (**zero structural debt**) but needed element-first handler renames,
-  `Ctx`→`Inputs` renames, and cascading-logic decomposition. Structural fixes here would
-  have been a no-op; skipping the naming/decomposition check would have missed the actual
-  problem entirely.
+- `TimelineTwoColumn`, from a recent complex-component refactor: already fully compliant
+  on folder/file structure (**zero structural debt**) but needed element-first handler
+  renames, `Ctx`→`Inputs` renames, and cascading-logic decomposition. Structural fixes
+  here would have been a no-op; skipping the naming/decomposition check would have missed
+  the actual problem entirely.
 - A private consumer app's home-page component: an async Next.js Server Component with
   zero handlers, zero prop-bags, zero state (**zero naming/decomposition debt**) but with
   inline `sx={{}}` blocks, un-extracted padding constants, and a utility function all
@@ -125,19 +125,19 @@ zero findings stays untouched.
 
 ### 4. Conditional org-layer delegation: Giselle repos only
 
-**If, and only if, the target's repo is `giselle-mui` or `giselle-mui-poc`**: after the
+**If, and only if, the target's repo is `giselle-mui` or its private internal working copy**: after the
 fixes in step 3 land, delegate to `migrate-giselle-subcomponent`'s remaining
 Giselle-specific phase: DoD scoring, brand tokens, taxonomy, and yalc-validate. That
 phase is Giselle/`giselle-mui`-specific tooling (component-inventory DoD scoring, brand
 token compliance, the `material/`/`chart/`/`motion/`/`lab/`/`section/` layer taxonomy, and
 `yalc`-linked consumer validation) with no equivalent in a non-Giselle codebase.
 
-**Every other target repo skips that phase entirely.** A non-Giselle consumer app (for
-example `alexrebula-portfolio-poc`) has no component-inventory DoD score, no Giselle brand
-tokens, no Giselle layer taxonomy, and nothing yalc-linked to validate against, so running
-that phase there would either no-op against nonexistent tooling or fail outright. Do not
-run it, and do not ask the user whether to run it, for any repo other than `giselle-mui` or
-`giselle-mui-poc`.
+**Every other target repo skips that phase entirely.** A non-Giselle consumer app has no
+component-inventory DoD score, no Giselle brand tokens, no Giselle layer taxonomy, and
+nothing yalc-linked to validate against, so running that phase there would either no-op
+against nonexistent tooling or fail outright. Do not run it, and do not ask the user
+whether to run it, for any repo other than `giselle-mui` or its private internal working
+copy.
 
 ### 5. Run the target repo's own quality gate
 

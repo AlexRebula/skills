@@ -39,11 +39,12 @@ describe('cleanup-component', () => {
     // These two contrasting cases are what actually prove the diagnose-both-axes
     // requirement is necessary rather than theoretical: a naming/decomposition-only
     // target and a structural-only target, confirmed during the spec's grilling session.
-    // The second case is deliberately de-identified (no private repo/file name) per this
-    // repo's own public-repository rule against naming private projects in skill content;
-    // giselle-mui-poc is an org repo and is named directly under that rule's own carve-out.
+    // Both are deliberately de-identified (no private repo/file name) per this repo's own
+    // public-repository rule against naming private projects in skill content — the org's
+    // internal working copies of its libraries are private, not public, so no carve-out
+    // applies here.
     expect(SKILL).toContain('TimelineTwoColumn');
-    expect(SKILL).toContain('giselle-mui-poc#223');
+    expect(SKILL).toMatch(/complex-component refactor/i);
     expect(SKILL).toMatch(/zero structural debt/i);
     expect(SKILL).toMatch(/private consumer app's home-page component/i);
     expect(SKILL).toMatch(/zero\s*\n?\s*naming\/decomposition debt/i);
@@ -53,10 +54,13 @@ describe('cleanup-component', () => {
     // The delegation to migrate-giselle-subcomponent's Giselle-specific phase must be
     // conditional on the target's repo, not run unconditionally: running Giselle-only
     // tooling (DoD scoring, brand tokens, taxonomy, yalc-validate) against a non-Giselle
-    // consumer app has nothing to check against.
+    // consumer app has nothing to check against. The second trigger repo is a private
+    // internal working copy, so it's referenced generically rather than by name.
     expect(SKILL).toContain('giselle-mui');
-    expect(SKILL).toContain('giselle-mui-poc');
-    expect(SKILL).toMatch(/if, and only if, the target's repo is `giselle-mui` or `giselle-mui-poc`/i);
+    expect(SKILL).toMatch(/private internal working copy/i);
+    expect(SKILL).toMatch(
+      /if, and only if, the target's repo is `giselle-mui` or its private internal working copy/i,
+    );
     expect(SKILL).toMatch(/every other target repo skips that phase entirely/i);
     expect(SKILL).toMatch(/DoD scoring/);
     expect(SKILL).toMatch(/brand tokens/);

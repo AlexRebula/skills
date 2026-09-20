@@ -9,7 +9,7 @@ one-group-at-a-time sequencing rules), then fixes only what the diagnosis actual
 It never assumes a target needs one axis, the other, both, or neither; it checks both,
 every time, before writing a single fix.
 
-For a `giselle-mui`/`giselle-mui-poc` target, it additionally delegates to
+For a `giselle-mui` target, or its private internal working copy, it additionally delegates to
 `migrate-giselle-subcomponent`'s remaining Giselle-specific phase (DoD scoring, brand
 tokens, taxonomy, `yalc`-validate) after its own fixes land. Every other target repo skips
 that phase entirely: there's no Giselle tooling to run it against.
@@ -41,8 +41,8 @@ diagnosis comes back structural-only on a flat Giselle sub-component, it delegat
 mechanical move to `migrate-giselle-subcomponent` rather than re-implementing it.
 
 Two confirmed real-world targets are why both checks always run, independently, every
-time: `TimelineTwoColumn` (`giselle-mui-poc#223`) had zero structural debt but needed
-naming/decomposition work; a private consumer app's home-page component had zero
+time: `TimelineTwoColumn`, from a recent complex-component refactor, had zero structural
+debt but needed naming/decomposition work; a private consumer app's home-page component had zero
 naming/decomposition debt but needed structural extraction. A skill that assumed either
 axis would have missed the real problem on one of the two.
 
@@ -67,7 +67,7 @@ fail outright.
   one kind of work.
 - Only the axis(es) the diagnosis actually flagged got fixed; an axis with zero findings
   stayed untouched.
-- For a `giselle-mui`/`giselle-mui-poc` target, the Giselle-specific phase ran after the
+- For a `giselle-mui` target, or its private internal working copy, the Giselle-specific phase ran after the
   generic fixes landed; for every other target, it didn't run at all.
 - The target repo's own quality gate is green after the fixes.
 
