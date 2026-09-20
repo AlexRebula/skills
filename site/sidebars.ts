@@ -71,6 +71,7 @@ export const FLOW_STAGES = [
     { category: 'framework', name: 'create-vue-component' },
     { category: 'framework', name: 'create-angular-component' },
     { category: 'framework', name: 'migrate-react-subcomponent' },
+    { category: 'framework', name: 'cleanup-component' },
     { category: 'framework', name: 'port-mui-theme-override' },
   ]),
   stage('Words for the codebase', [
