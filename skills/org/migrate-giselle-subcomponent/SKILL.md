@@ -104,10 +104,12 @@ reconnaissance checks above verify structural completeness only: they don't chec
 whether the file is already correctly named or decomposed (element-first handler naming,
 `Inputs` prop-bag naming, cascading-state decomposition). Run `cleanup-component` against
 the file for its naming/decomposition diagnostic-and-fix pass before continuing to Step 5,
-instead of re-deriving those checks here. This skill's own Giselle-specific phase (DoD
-scoring, brand tokens, taxonomy, `yalc`-validate, see Step 8 below) stays exactly as it
-is: `cleanup-component` delegates back into this skill for that phase when its own target
-is a Giselle repo (see its own Step 4), not the other way around.
+instead of re-deriving those checks here — `cleanup-component` is a generic, org-agnostic
+skill with no knowledge of Giselle or this repo; it only runs its own two-axis diagnosis
+and fix. This skill's own Giselle-specific phase (DoD scoring, brand tokens, taxonomy,
+`yalc`-validate, see Step 8 below) is not something `cleanup-component` triggers or knows
+about: it stays this skill's own remaining step, run directly, right after
+`cleanup-component`'s pass completes.
 
 ## Step 5 — Name the new subfolder
 

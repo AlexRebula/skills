@@ -449,10 +449,11 @@ it('returns correct padding from theme spacing', () => {
 Once the component (and, for a multi-component feature, every sub-component) passes its
 TDD loop, run `cleanup-component` against it for its naming/decomposition
 diagnostic-and-fix pass (element-first handler naming, `Inputs` prop-bag naming,
-cascading-state decomposition) instead of re-deriving those checks here. This skill's own
-Giselle-specific tracking (DoD scoring, `docs/component-inventory.md`, the layer/category
-taxonomy) stays exactly as it is in the checklist below: `cleanup-component` only
-delegates back into `migrate-giselle-subcomponent` for that phase, never into this skill.
+cascading-state decomposition) instead of re-deriving those checks here —
+`cleanup-component` is a generic, org-agnostic skill with no knowledge of Giselle or this
+repo. This skill's own Giselle-specific tracking (DoD scoring, `docs/component-inventory.md`,
+the layer/category taxonomy) is unrelated to it and stays exactly as it is in the
+checklist below, run directly by this skill.
 
 ---
 
