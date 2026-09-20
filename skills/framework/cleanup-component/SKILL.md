@@ -117,12 +117,38 @@ both checks must always run, independently, every time:
 If neither check finds a violation, the target is already compliant: report that and stop
 without changing anything.
 
-### 3. Apply only the diagnosed fixes
+### 3. Apply only the diagnosed fixes, including the test coverage each one requires
 
 Fix only what step 2 actually flagged. A structural-only violation gets only structural
 fixes; a naming/decomposition-only violation gets only naming/decomposition fixes. Never
 apply the other axis's fixes speculatively "while you're in there"; an untouched axis with
 zero findings stays untouched.
+
+**Test coverage is part of applying a fix, not a separate step to remember afterward.**
+Both standards already say so directly: AGENTS.md §5.4 lists `<name>.styles.test.ts` as a
+real sibling file the naming convention expects, and `component-refactor-conventions.md`
+§15.1 requires cascading-state decomposition's extracted derivation functions to be
+"independently unit-tested" as part of the pattern itself, not an optional follow-up.
+Before writing any test, find this target repo's own existing test framework and pattern
+by reading one real sibling example (a neighboring `*.styles.test.ts`, `*.utils.test.ts`,
+or component `*.test.ts`) — the same reconnaissance step 4 already does for the quality
+gate script, applied here to testing conventions instead of assuming Vitest, Jest, or any
+other framework.
+
+- **Extracted `<name>.styles.ts`** → a `<name>.styles.test.ts` asserting each exported `sx`
+  object or factory's shape directly (property/shape assertions), matching whatever
+  rendering-vs-plain-object convention this repo's own existing style tests already use.
+- **Extracted `<name>.const.ts`** → not a separate `<name>.const.test.ts` file. Add a test
+  only for a constant that carries a real invariant worth guarding (a minimum size, a
+  required format) as a describe block inside the component's own existing `<name>.test.ts`
+  — a plain configuration or tuning value with no invariant to violate needs no test.
+- **Extracted `<name>.utils.ts`** → a real `<name>.utils.test.ts` unit-testing each pure
+  function's actual behavior, not merely that it exists. Verify the correct behavior
+  yourself (e.g. by running the function directly) before asserting it — do not guess at a
+  language edge case and write an assertion for the guess.
+- **Pure derivation functions extracted while decomposing cascading state-sync logic**
+  (§15.1) → unit tests for each one, independent of any framework/rendering dependency,
+  exactly as that section's own rule already requires.
 
 ### 4. Run the target repo's own quality gate
 
