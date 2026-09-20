@@ -78,6 +78,12 @@ mechanical move of working code, most of this should already be true. If reconna
 does surface a real defect, fix it as part of the move rather than letting it grow into
 an unrelated refactor.
 
+**Delegate to `cleanup-component` instead of re-deriving these checks.** Run
+`cleanup-component` against the file for its diagnostic-and-fix pass before continuing to
+Step 5: it independently diagnoses both structural debt and naming/decomposition debt
+(element-first handler naming, prop-bag naming, cascading-state decomposition) and fixes
+only what it actually finds, so this step doesn't need its own copy of that logic.
+
 ## Step 5 — Name the new subfolder
 
 The folder (and file, if your convention uses `<name>.tsx`) is named from the **exported

@@ -444,6 +444,18 @@ it('returns correct padding from theme spacing', () => {
 
 ---
 
+### Naming/decomposition: delegate to `cleanup-component`
+
+Once the component (and, for a multi-component feature, every sub-component) passes its
+TDD loop, run `cleanup-component` against it for its naming/decomposition
+diagnostic-and-fix pass (element-first handler naming, `Inputs` prop-bag naming,
+cascading-state decomposition) instead of re-deriving those checks here. This skill's own
+Giselle-specific tracking (DoD scoring, `docs/component-inventory.md`, the layer/category
+taxonomy) stays exactly as it is in the checklist below: `cleanup-component` only
+delegates back into `migrate-giselle-subcomponent` for that phase, never into this skill.
+
+---
+
 ## Stories: `<name>.stories.tsx`
 
 **CRITICAL: The `title` must mirror the `src/components/` folder path exactly.**
@@ -533,6 +545,16 @@ src/components/<layer>/<category>/<name>/
 
 ---
 
+## Final pass: `cleanup-component`
+
+Once Phase 2 is complete and the quality gate is green, run `cleanup-component` once more
+against the finished component (and, for a multi-component feature, once against each
+sub-component) as a final diagnostic-and-fix pass, before opening the PR. This guards
+against a newly-scaffolded component quietly shipping the kind of debt this skill exists
+to prevent from accumulating in the first place.
+
+---
+
 ## Commit convention (oss-quality-standards §2.2)
 
 Format: `<type>(<scope>): <description>`: scope is the component name in kebab-case.
@@ -595,6 +617,7 @@ One component = one branch = one PR. Do not mix multiple components in a single 
 - [ ] No commented-out code, `console.log`, `TODO`, or `FIXME`
 - [ ] No new undisclosed dependencies
 - [ ] No secrets in committed files
+- [ ] `cleanup-component` run as a final pass over the finished component (see "Final pass" above)
 
 ### Accessibility
 

@@ -44,4 +44,11 @@ describe('migrate-react-subcomponent', () => {
     expect(SKILL).toContain('rg -n');
     expect(SKILL).toMatch(/completion criterion/i);
   });
+
+  it('delegates diagnostic-and-fix work to cleanup-component instead of re-deriving it', () => {
+    // wiki#948: this skill assumes a flat sub-component is already correctly named,
+    // decomposed, and structurally sound, but that assumption isn't always true, so it
+    // must delegate the actual check to cleanup-component rather than silently skipping it.
+    expect(SKILL).toContain('cleanup-component');
+  });
 });
