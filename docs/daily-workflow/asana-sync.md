@@ -1,6 +1,8 @@
 ## What it does
 
-`asana-sync` takes a finished morning brief and pushes it into Asana: it finds or bootstraps `.asana-config.json`, checks that you actually have write access to the project you are about to write into, creates a "Morning Briefs" section if one does not exist yet, files a task for every open PR, WIP commit, and critical-path item in the brief, posts the brief's narrative as a project Status Update, and appends a log of exactly what it wrote back into the brief file itself.
+`asana-sync` takes a finished morning brief and pushes it into Asana as one three-level task tree: it finds or bootstraps `.asana-config.json`, checks that you actually have write access to the project you are about to write into, creates a "Morning Briefs" section if one does not exist yet, then files a parent task (`Brief — YYYY-MM-DD #N`, its `html_notes` carrying the condensed narrative) with one subtask per brief section (Critical path today, What to skip today, Recent sessions, Suggested first task, Open PRs, WIP commits), and — for the four list-type sections — one further sub-subtask per individual item (a PR, a critical-path bullet, a past session). It posts the brief's narrative as a project Status Update, and appends a log of exactly what it wrote back into the brief file itself.
+
+This replaces an earlier flat, one-task-per-item structure that the skill briefly (and silently) drifted to between 2026-08-27 and 2026-09-19 — check your own incident log, if you keep one, if you're wondering why an old brief's Asana tasks don't look like this.
 
 It is opt-in on every run. The skill does not decide on its own that today's brief should go to Asana; it asks first, and a "no" ends the skill immediately with nothing written anywhere.
 
@@ -21,7 +23,7 @@ Most of what this skill does is refuse to write somewhere unsafe, before it writ
 
 ## The impact plan
 
-Before a single task is created, the skill shows you exactly what it is about to do: which project, which tasks, with what titles and priorities. You confirm, edit, or decline. Nothing lands in Asana on the strength of the brief alone.
+Before a single task is created, the skill shows you exactly what it is about to do: which project, the parent task's name, and the item counts for each of the 6 section subtasks. You confirm, edit, or decline. Nothing lands in Asana on the strength of the brief alone.
 
 ## Common questions
 
@@ -35,7 +37,7 @@ No. If `.asana-config.json` cannot be found, the skill walks you through getting
 Only if that project isn't in the `projects` repo-link map and you explicitly choose it despite the shared-project warning. The one thing it will never do is write into a project the config has tied to a specific repo.
 
 **Where does the log of what was synced go?**
-Back into the same morning brief file, under an "Asana Sync Log" heading, with links to every task and the Status Update it posted.
+Back into the same morning brief file, under an "Asana Sync Log" heading, with links to the parent task, each of the 6 section subtasks (with its item count), and the Status Update it posted.
 
 ## Where it fits
 
