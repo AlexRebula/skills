@@ -149,7 +149,7 @@ before finishing.
 
 ## Out of scope
 
-- Wiring the four caller skills (`create-giselle-component`, `create-react-component`,
-  `audit-giselle-tests`, and a fourth) to call this skill: that is a separate, later
-  piece of work.
 - Running this skill against any real component as part of authoring it.
+
+The four caller skills (`migrate-giselle-subcomponent`, `create-giselle-component`,
+`create-react-component`, `migrate-react-subcomponent`) now delegate to this skill.
