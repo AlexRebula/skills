@@ -38,6 +38,7 @@
     "./skills/engineering/resolving-merge-conflicts",
     "./skills/engineering/deslopify",
     "./skills/engineering/wizard",
+    "./skills/framework/cleanup-component",
     "./skills/framework/create-angular-component",
     "./skills/framework/create-react-component",
     "./skills/framework/create-vue-component",

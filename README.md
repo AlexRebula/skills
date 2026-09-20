@@ -212,6 +212,7 @@ Skills I use daily for code work.
 
 Framework-specific scaffolding. Each skill follows a consistent two-phase workflow: scaffold first (types, test stubs, README), then implement (TDD vertical slices).
 
+- **[cleanup-component](./skills/framework/cleanup-component/SKILL.md)**: Diagnose and fix a component's structural debt (OSS §5/§6) and naming/decomposition debt (naming-conventions.md, component-refactor-conventions.md) independently, applying only the fixes it actually needs; never assumes either axis applies.
 - **[create-angular-component](./skills/framework/create-angular-component/SKILL.md)**: Scaffold and TDD a new Angular 17+ standalone component. Uses signal-based inputs/outputs and Angular Testing Library.
 - **[create-react-component](./skills/framework/create-react-component/SKILL.md)**: Scaffold and TDD a new React component from scratch. Framework-agnostic, no MUI dependency.
 - **[create-vue-component](./skills/framework/create-vue-component/SKILL.md)**: Scaffold and TDD a new Vue 3 single-file component. Uses Composition API with `<script setup>`, `defineProps` generics, and `@testing-library/vue`.
