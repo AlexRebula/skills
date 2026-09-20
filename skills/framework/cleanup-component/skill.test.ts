@@ -14,16 +14,18 @@ describe('cleanup-component', () => {
     expect(SKILL).toMatch(/refactor component X/);
   });
 
-  it('disambiguates from migrate-giselle-subcomponent and migrate-react-subcomponent as structural-only', () => {
-    // Both sibling skills mechanically move an already-correctly-named,
-    // already-correctly-decomposed component into its own folder; they never inspect
+  it('disambiguates from migrate-react-subcomponent and structural-only migration skills in general', () => {
+    // A structural-only migration skill mechanically moves an already-correctly-named,
+    // already-correctly-decomposed component into its own folder; it never inspects
     // handler names, prop-bag naming, or cascading state logic. This skill's entire
     // reason to exist is that it diagnoses both axes instead of assuming one is already
-    // done, so it must say so explicitly, not just imply it.
-    expect(SKILL).toContain('migrate-giselle-subcomponent');
+    // done, so it must say so explicitly, not just imply it. This skill is generic and
+    // org-agnostic: it must not name any specific organization's own structural-migration
+    // skill (e.g. an org-scoped variant of migrate-react-subcomponent) by name.
     expect(SKILL).toContain('migrate-react-subcomponent');
-    expect(SKILL).toMatch(/structural-only mechanical moves/i);
+    expect(SKILL).toMatch(/structural-only mechanical/i);
     expect(SKILL).toMatch(/already correctly named/i);
+    expect(SKILL).not.toMatch(/giselle/i);
   });
 
   it('states the diagnose-before-fix ordering explicitly', () => {
@@ -35,37 +37,33 @@ describe('cleanup-component', () => {
     expect(SKILL).toMatch(/Apply only the fixes the diagnosis actually found/i);
   });
 
-  it('cites both real-world validation cases for the disambiguation', () => {
+  it('cites two fully generic contrasting cases for the disambiguation, naming no real project', () => {
     // These two contrasting cases are what actually prove the diagnose-both-axes
     // requirement is necessary rather than theoretical: a naming/decomposition-only
-    // target and a structural-only target, confirmed during the spec's grilling session.
-    // Both are deliberately de-identified (no private repo/file name) per this repo's own
-    // public-repository rule against naming private projects in skill content — the org's
-    // internal working copies of its libraries are private, not public, so no carve-out
-    // applies here.
-    expect(SKILL).toContain('TimelineTwoColumn');
-    expect(SKILL).toMatch(/complex-component refactor/i);
+    // target and a structural-only target. Both must be entirely invented/generic —
+    // this is a public skill for any React component in any project, so it must not
+    // reference any specific real component, repo, or organization at all, not even a
+    // de-identified paraphrase of one.
     expect(SKILL).toMatch(/zero structural debt/i);
-    expect(SKILL).toMatch(/private consumer app's home-page component/i);
-    expect(SKILL).toMatch(/zero\s*\n?\s*naming\/decomposition debt/i);
+    expect(SKILL).toMatch(/zero[\s\S]{0,40}naming\/decomposition debt/i);
+    expect(SKILL).not.toMatch(/giselle/i);
+    expect(SKILL).not.toMatch(/TimelineTwoColumn/);
   });
 
-  it('names the conditional org-layer trigger repos and states every other target skips it', () => {
-    // The delegation to migrate-giselle-subcomponent's Giselle-specific phase must be
-    // conditional on the target's repo, not run unconditionally: running Giselle-only
-    // tooling (DoD scoring, brand tokens, taxonomy, yalc-validate) against a non-Giselle
-    // consumer app has nothing to check against. The second trigger repo is a private
-    // internal working copy, so it's referenced generically rather than by name.
-    expect(SKILL).toContain('giselle-mui');
-    expect(SKILL).toMatch(/private internal working copy/i);
-    expect(SKILL).toMatch(
-      /if, and only if, the target's repo is `giselle-mui` or its private internal working copy/i,
-    );
-    expect(SKILL).toMatch(/every other target repo skips that phase entirely/i);
-    expect(SKILL).toMatch(/DoD scoring/);
-    expect(SKILL).toMatch(/brand tokens/);
-    expect(SKILL).toMatch(/taxonomy/);
-    expect(SKILL).toMatch(/yalc-validate/);
+  it('never references any specific organization, private repo, or delegates to an org-specific skill', () => {
+    // This is the core regression this test guards against: an earlier version of this
+    // skill named a specific organization ("Giselle"), two of that organization's private
+    // repos, and delegated back into an org-specific sibling skill for a conditional
+    // extra phase. All of that is architecturally wrong for a skill meant to be generic
+    // and installable by anyone: an org that wants extra org-specific behavior should
+    // build that into their OWN org-scoped caller skill (which calls this one), never the
+    // other way around. This skill itself must stay completely silent on any organization.
+    expect(SKILL).not.toMatch(/giselle/i);
+    expect(SKILL).not.toMatch(/migrate-giselle-subcomponent/);
+    expect(SKILL).not.toMatch(/create-giselle-component/);
+    expect(SKILL).not.toMatch(/DoD scoring/);
+    expect(SKILL).not.toMatch(/brand tokens/);
+    expect(SKILL).not.toMatch(/yalc/i);
   });
 
   it('references the specific OSS Quality Standards doc/section names by name', () => {
@@ -99,11 +97,10 @@ describe('cleanup-component', () => {
     expect(SKILL).toMatch(/target repo's own quality gate/i);
   });
 
-  it('states running against a real component and wiring caller skills are both out of scope', () => {
-    // wiki#947's Definition of Done explicitly excludes both: this skill's own scope
-    // note should match, so a future reader doesn't assume either was silently done.
+  it('states its own out-of-scope boundaries: no real-component run, no organization awareness', () => {
     expect(SKILL).toMatch(/## Out of scope/);
-    expect(SKILL).toMatch(/four caller skills/i);
     expect(SKILL).toMatch(/Running this skill against any real component/i);
+    expect(SKILL).toMatch(/any specific organization's own repos/i);
+    expect(SKILL).toMatch(/never[\s\S]{0,10}the other way around/i);
   });
 });
