@@ -210,7 +210,7 @@ Skills I use daily for code work.
 
 ## Framework
 
-Framework-specific scaffolding. Each skill follows a consistent two-phase workflow: scaffold first (types, test stubs, README), then implement (TDD vertical slices).
+Framework-specific component-authoring skills, at different stages of a component's life: scaffolding a new one from scratch (`create-*`), restructuring an existing one (`migrate-react-subcomponent`), or diagnosing and fixing debt on any existing one (`cleanup-component`) — not every skill here follows the same two-phase scaffold workflow, see each one's own description. If you're working inside a LittleBranches/`giselle-mui` repo, see [Components](#components) for the org-specific counterparts to the create/migrate pair.
 
 - **[cleanup-component](./skills/framework/cleanup-component/SKILL.md)**: Diagnose and fix a component's structural debt (OSS §5/§6) and naming/decomposition debt (naming-conventions.md, component-refactor-conventions.md) independently, applying only the fixes it actually needs; never assumes either axis applies.
 - **[create-angular-component](./skills/framework/create-angular-component/SKILL.md)**: Scaffold and TDD a new Angular 17+ standalone component. Uses signal-based inputs/outputs and Angular Testing Library.
@@ -260,6 +260,18 @@ Skills specific to the [LittleBranches](https://github.com/LittleBranches) organ
 - **[migrate-giselle-subcomponent](./skills/org/migrate-giselle-subcomponent/SKILL.md)**: Migrate an existing, already-implemented flat sub-component into its own Scenario A subfolder per `cleanup-workflow.md` — a mechanical move of working code, not a scaffold-from-scratch rebuild.
 - **[respond-giselle-pr-review](./skills/org/respond-giselle-pr-review/SKILL.md)**: Respond to an existing Copilot PR review in a LittleBranches repo: pre-load AGENTS.md + workflow rules, triage every thread, reply inline before fixing, batch valid fixes, and post SHA follow-ups.
 - **[sync-roadmap](./skills/org/sync-roadmap/SKILL.md)**: Pull current task statuses from Asana and write them back into each repo's `docs/roadmap.md` and `data.tsx` `done` flags. Asana is the master; this skill flows changes downstream.
+
+---
+
+## Components
+
+A cross-cutting view over the whole component-authoring family, spanning [Framework](#framework) and [Organisation](#organisation-littlebranches) above: five skills covering scaffold-new, restructure-existing, and diagnose-and-fix-debt, split by whether they need LittleBranches' own `giselle-mui` repo tooling. Each entry below links to its one real folder — nothing here is a physical copy. `cleanup-component` is the shared engine: the other four delegate their naming/decomposition check to it instead of re-deriving it.
+
+- **[create-react-component](./skills/framework/create-react-component/SKILL.md)**: Scaffold and TDD a new React component from scratch. Framework-agnostic, no MUI dependency.
+- **[create-giselle-component](./skills/org/create-giselle-component/SKILL.md)**: Scaffold and TDD a new `giselle-mui` component following OSS Quality Standards rules, two-phase: scaffold (types, test stubs, README), then implement (TDD vertical slices with real ThemeProvider).
+- **[migrate-react-subcomponent](./skills/framework/migrate-react-subcomponent/SKILL.md)**: Migrate an existing, already-implemented flat sub-component into its own subfolder — a mechanical move of working code, not a scaffold-from-scratch rebuild.
+- **[migrate-giselle-subcomponent](./skills/org/migrate-giselle-subcomponent/SKILL.md)**: Migrate an existing, already-implemented flat sub-component into its own Scenario A subfolder per `cleanup-workflow.md` — a mechanical move of working code, not a scaffold-from-scratch rebuild.
+- **[cleanup-component](./skills/framework/cleanup-component/SKILL.md)**: Diagnose and fix a component's structural debt (OSS §5/§6) and naming/decomposition debt (naming-conventions.md, component-refactor-conventions.md) independently, applying only the fixes it actually needs; never assumes either axis applies, and never behaves differently for any specific organization.
 
 ---
 
