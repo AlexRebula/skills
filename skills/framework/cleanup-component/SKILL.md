@@ -1,6 +1,6 @@
 ---
 name: cleanup-component
-description: Diagnose and fix component quality debt across two independent axes, structural (OSS Quality Standards §5 Component Structure Rules / §6 Component API Contract: inline `sx`, un-extracted constants/utils, missing `types.ts`, folder-per-component) and naming/decomposition (`naming-conventions.md`'s element-first handler naming and `Inputs` prop-bag sections, `component-refactor-conventions.md`'s cascading-state-decomposition and one-group-at-a-time sequencing sections), applying only the fixes a target actually needs, since a real component may need one axis, the other, both, or neither. Not `migrate-giselle-subcomponent` or `migrate-react-subcomponent`: those are structural-only mechanical moves that assume the component is already correctly named and decomposed and only relocate it. For `giselle-mui`/`giselle-mui-poc` targets only, additionally delegates to `migrate-giselle-subcomponent`'s remaining Giselle-specific phase (DoD scoring, brand tokens, taxonomy, yalc-validate); every other target skips that phase entirely. Use when asked to "cleanup component X" or "refactor component X" for any target file or folder.
+description: "Diagnose and fix component quality debt across two independent axes, structural (OSS Quality Standards §5 Component Structure Rules / §6 Component API Contract: inline `sx`, un-extracted constants/utils, missing `types.ts`, folder-per-component) and naming/decomposition (`naming-conventions.md`'s element-first handler naming and `Inputs` prop-bag sections, `component-refactor-conventions.md`'s cascading-state-decomposition and one-group-at-a-time sequencing sections), applying only the fixes a target actually needs, since a real component may need one axis, the other, both, or neither. Not `migrate-react-subcomponent` or any similar structural-only migration skill: those assume the component is already correctly named and decomposed and only relocate it. Use when asked to \"cleanup component X\" or \"refactor component X\" for any target file or folder, in any project."
 ---
 
 # Cleanup Component
@@ -11,26 +11,26 @@ never assumes a target has structural debt, naming/decomposition debt, both, or 
 It checks each axis independently against the loaded standards, then applies only the
 fixes the diagnosis actually found.
 
-## Not `migrate-giselle-subcomponent` or `migrate-react-subcomponent`
+## Not `migrate-react-subcomponent` or any similar structural-only migration skill
 
-Both of those skills are **structural-only mechanical moves**: they take a component that
-is already correctly named, already correctly decomposed, and already working (its only
-problem is that it's a flat sibling file instead of living in its own folder), and move it,
-extracting `types.ts`/styles/tests along the way. Neither skill inspects handler names,
-prop-bag naming, or cascading state logic; both explicitly assume that work is already
-done.
+A structural-only mechanical-move skill takes a component that is already correctly
+named, already correctly decomposed, and already working (its only problem is that it's a
+flat sibling file instead of living in its own folder), and moves it, extracting
+`types.ts`/styles/tests along the way. It never inspects handler names, prop-bag naming,
+or cascading state logic; it explicitly assumes that work is already done.
 
 This skill makes no such assumption. It runs a diagnostic pass over **both** the
-structural axis (the same folder-per-component/`types.ts`/`sx`-extraction territory those
-two skills mechanically fix) **and** the naming/decomposition axis (handler naming,
-`Inputs` prop-bag naming, cascading-logic decomposition, refactor sequencing) that neither
-of those skills ever looks at. A target this skill is asked to clean up may turn out to
-need exactly what `migrate-giselle-subcomponent`/`migrate-react-subcomponent` already
-handle, need only naming/decomposition work, need both, or need neither: this skill is the
-one that figures out which, before touching anything. Where a target's diagnosis comes back
-structural-only and the target is a flat Giselle sub-component, this skill's fix step
-delegates the mechanical move to `migrate-giselle-subcomponent` instead of re-implementing
-it (see step 4), so it never duplicates that logic.
+structural axis (the same folder-per-component/`types.ts`/`sx`-extraction territory a
+structural-only skill mechanically fixes) **and** the naming/decomposition axis (handler
+naming, `Inputs` prop-bag naming, cascading-logic decomposition, refactor sequencing) that
+a structural-only skill never looks at. A target this skill is asked to clean up may turn
+out to need exactly what a structural-only migration skill already handles, need only
+naming/decomposition work, need both, or need neither: this skill is the one that figures
+out which, before touching anything. Where a target's diagnosis comes back structural-only
+and a project-specific structural-migration skill already exists for that case, prefer
+delegating the mechanical move to it instead of re-implementing that logic here — this
+skill's own job is diagnosis plus the naming/decomposition fix, not reinventing every
+project's own structural tooling.
 
 ## Arguments
 
@@ -98,48 +98,59 @@ and its "Inputs prop-bag naming" section, plus `component-refactor-conventions.m
   instead of one tightly-coupled group at a time
 
 **Apply only the fixes the diagnosis actually found.** A real target may need one axis,
-the other, both, or neither. Never assume: two confirmed real-world cases show why both
-checks must always run, independently, every time:
+the other, both, or neither. Never assume: consider two contrasting cases that show why
+both checks must always run, independently, every time:
 
-- `TimelineTwoColumn` (`giselle-mui-poc#223`): already fully compliant on folder/file
-  structure (**zero structural debt**) but needed element-first handler renames,
-  `Ctx`→`Inputs` renames, and cascading-logic decomposition. Structural fixes here would
-  have been a no-op; skipping the naming/decomposition check would have missed the actual
-  problem entirely.
-- A private consumer app's home-page component: an async Next.js Server Component with
-  zero handlers, zero prop-bags, zero state (**zero naming/decomposition debt**) but with
-  inline `sx={{}}` blocks, un-extracted padding constants, and a utility function all
-  defined directly in the `.tsx`, needing extraction per §5/§6. Naming/decomposition fixes
-  here would have been a no-op; skipping the structural check would have missed the actual
-  problem entirely.
+- A component already living in its own folder with `types.ts`, `.styles.ts`, and tests
+  all correctly extracted (**zero structural debt**), but whose handlers are named
+  `handleClick`/`handleChange` instead of element-first, whose shared prop-bag type is
+  called `Ctx` instead of `<Component>Inputs`, and whose parent-child toggle logic is
+  written inline instead of decomposed into named, tested sync steps. Structural fixes
+  here would have been a no-op; skipping the naming/decomposition check would have missed
+  the actual problem entirely.
+- A page-composition component with zero handlers, zero prop-bags, zero state (**zero
+  naming/decomposition debt**) but with inline `sx={{}}` blocks, un-extracted layout
+  constants, and a small utility function all defined directly in the file, needing
+  extraction per §5/§6. Naming/decomposition fixes here would have been a no-op; skipping
+  the structural check would have missed the actual problem entirely.
 
 If neither check finds a violation, the target is already compliant: report that and stop
 without changing anything.
 
-### 3. Apply only the diagnosed fixes
+### 3. Apply only the diagnosed fixes, including the test coverage each one requires
 
 Fix only what step 2 actually flagged. A structural-only violation gets only structural
 fixes; a naming/decomposition-only violation gets only naming/decomposition fixes. Never
 apply the other axis's fixes speculatively "while you're in there"; an untouched axis with
 zero findings stays untouched.
 
-### 4. Conditional org-layer delegation: Giselle repos only
+**Test coverage is part of applying a fix, not a separate step to remember afterward.**
+Both standards already say so directly: AGENTS.md §5.4 lists `<name>.styles.test.ts` as a
+real sibling file the naming convention expects, and `component-refactor-conventions.md`
+§15.1 requires cascading-state decomposition's extracted derivation functions to be
+"independently unit-tested" as part of the pattern itself, not an optional follow-up.
+Before writing any test, find this target repo's own existing test framework and pattern
+by reading one real sibling example (a neighboring `*.styles.test.ts`, `*.utils.test.ts`,
+or component `*.test.ts`) — the same reconnaissance step 4 already does for the quality
+gate script, applied here to testing conventions instead of assuming Vitest, Jest, or any
+other framework.
 
-**If, and only if, the target's repo is `giselle-mui` or `giselle-mui-poc`**: after the
-fixes in step 3 land, delegate to `migrate-giselle-subcomponent`'s remaining
-Giselle-specific phase: DoD scoring, brand tokens, taxonomy, and yalc-validate. That
-phase is Giselle/`giselle-mui`-specific tooling (component-inventory DoD scoring, brand
-token compliance, the `material/`/`chart/`/`motion/`/`lab/`/`section/` layer taxonomy, and
-`yalc`-linked consumer validation) with no equivalent in a non-Giselle codebase.
+- **Extracted `<name>.styles.ts`** → a `<name>.styles.test.ts` asserting each exported `sx`
+  object or factory's shape directly (property/shape assertions), matching whatever
+  rendering-vs-plain-object convention this repo's own existing style tests already use.
+- **Extracted `<name>.const.ts`** → not a separate `<name>.const.test.ts` file. Add a test
+  only for a constant that carries a real invariant worth guarding (a minimum size, a
+  required format) as a describe block inside the component's own existing `<name>.test.ts`
+  — a plain configuration or tuning value with no invariant to violate needs no test.
+- **Extracted `<name>.utils.ts`** → a real `<name>.utils.test.ts` unit-testing each pure
+  function's actual behavior, not merely that it exists. Verify the correct behavior
+  yourself (e.g. by running the function directly) before asserting it — do not guess at a
+  language edge case and write an assertion for the guess.
+- **Pure derivation functions extracted while decomposing cascading state-sync logic**
+  (§15.1) → unit tests for each one, independent of any framework/rendering dependency,
+  exactly as that section's own rule already requires.
 
-**Every other target repo skips that phase entirely.** A non-Giselle consumer app (for
-example `alexrebula-portfolio-poc`) has no component-inventory DoD score, no Giselle brand
-tokens, no Giselle layer taxonomy, and nothing yalc-linked to validate against, so running
-that phase there would either no-op against nonexistent tooling or fail outright. Do not
-run it, and do not ask the user whether to run it, for any repo other than `giselle-mui` or
-`giselle-mui-poc`.
-
-### 5. Run the target repo's own quality gate
+### 4. Run the target repo's own quality gate
 
 Confirm nothing broke: run whatever this target repo's own quality gate script is (e.g.
 `npm run check` / `npm run check:verify`; check `package.json`). Fix anything it flags
@@ -149,7 +160,15 @@ before finishing.
 
 ## Out of scope
 
-- Wiring the four caller skills (`create-giselle-component`, `create-react-component`,
-  `audit-giselle-tests`, and a fourth) to call this skill: that is a separate, later
-  piece of work.
 - Running this skill against any real component as part of authoring it.
+- Knowing about, or behaving differently for, any specific organization's own repos,
+  branding, or tooling. Any project that wants extra project-specific checks layered on
+  top (its own additional structural conventions, its own scoring or tracking system, its
+  own extra validation step) should build that into its own project-scoped caller skill,
+  which calls this one for the generic pass and then continues with its own steps — never
+  the other way around. This skill stays silent on every specific project it's ever used
+  in, by design.
+
+Other component-authoring skills in a given repository may delegate to this skill for its
+diagnostic-and-fix pass; see their own `SKILL.md` files for which ones do, in that
+repository.
