@@ -97,6 +97,20 @@ describe('cleanup-component', () => {
     expect(SKILL).toMatch(/target repo's own quality gate/i);
   });
 
+  it('requires test coverage for whatever it extracts, per artifact type, discovered from the target repo', () => {
+    // A real run against a live component created .styles.ts/.const.ts/.utils.ts with zero
+    // accompanying tests, even though both loaded standards (AGENTS.md §5.4's
+    // <name>.styles.test.ts convention and component-refactor-conventions.md §15.1's
+    // "independently unit-tested derivation functions" requirement) already say tests are
+    // part of the fix, not a separate step. This guards against repeating that gap.
+    expect(SKILL).toMatch(/[Tt]est coverage is part of applying a fix/);
+    expect(SKILL).toMatch(/styles\.test\.ts/);
+    expect(SKILL).toMatch(/not a separate `<name>\.const\.test\.ts` file/);
+    expect(SKILL).toMatch(/utils\.test\.ts/);
+    expect(SKILL).toMatch(/find this target repo's own existing test framework and pattern/i);
+    expect(SKILL).toMatch(/independently unit-tested/i);
+  });
+
   it('states its own out-of-scope boundaries: no real-component run, no organization awareness', () => {
     expect(SKILL).toMatch(/## Out of scope/);
     expect(SKILL).toMatch(/Running this skill against any real component/i);

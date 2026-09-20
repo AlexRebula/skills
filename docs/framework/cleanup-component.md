@@ -65,12 +65,26 @@ whatever project-specific checks (a scoring system, a branded token audit, an ex
 validation step) that project needs. This skill itself stays silent on every project it's
 ever used in.
 
+**Does it write tests for what it extracts?**
+
+Yes — this is part of applying a fix, not a separate step. An extracted `.styles.ts` gets a
+`.styles.test.ts` asserting each exported value's shape; an extracted `.utils.ts` gets a
+real `.utils.test.ts` unit-testing actual behavior; a pure derivation function extracted
+while decomposing cascading state-sync logic gets a unit test too, per
+`component-refactor-conventions.md` §15.1's own requirement. An extracted `.const.ts` does
+**not** get its own test file — a constant only gets a test (as a describe block in the
+component's existing test file) if it carries a real invariant worth guarding, not for a
+plain configuration value. The test framework and pattern to use is discovered from a real
+sibling example already in the target repo, the same way the quality-gate command is.
+
 ## It's working if
 
 - Both axes were checked independently, even when the target "looked like" it only needed
   one kind of work.
 - Only the axis(es) the diagnosis actually flagged got fixed; an axis with zero findings
   stayed untouched.
+- Every extracted `.styles.ts`/`.utils.ts` file has real test coverage, in this repo's own
+  existing test framework and pattern.
 - The target repo's own quality gate is green after the fixes.
 - Nothing in the diagnosis or fix step referenced a specific organization, repo, or brand.
 
