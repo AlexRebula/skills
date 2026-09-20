@@ -73,6 +73,8 @@ export const FLOW_STAGES = [
     { category: 'framework', name: 'migrate-react-subcomponent' },
     { category: 'framework', name: 'cleanup-component' },
     { category: 'framework', name: 'port-mui-theme-override' },
+    { category: 'org', name: 'create-giselle-component' },
+    { category: 'org', name: 'migrate-giselle-subcomponent' },
   ]),
   stage('Words for the codebase', [
     { category: 'engineering', name: 'codebase-design' },
@@ -139,8 +141,6 @@ export const FLOW_STAGES = [
     { category: 'mentoring', name: 'teach' },
   ]),
   stage('LittleBranches specifics', [
-    { category: 'org', name: 'create-giselle-component' },
-    { category: 'org', name: 'migrate-giselle-subcomponent' },
     { category: 'org', name: 'audit-giselle-tests' },
     { category: 'org', name: 'respond-giselle-pr-review' },
     { category: 'org', name: 'load-oss-standards' },

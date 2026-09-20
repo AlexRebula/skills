@@ -28,6 +28,9 @@ const CATEGORY_TO_PERSONAS: Record<CategoryKey, readonly PersonaKey[]> = {
   wiki: ['personal-knowledge-work'],
   personal: ['personal-knowledge-work'],
   misc: [],
+  // Cross-cutting view over skills that already live in (and get their
+  // persona from) `framework`/`org` — no persona of its own, same as `misc`.
+  components: [],
 };
 
 /**

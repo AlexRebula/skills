@@ -19,6 +19,7 @@ export const TARGET_CATEGORIES = [
   'git',
   'framework',
   'org',
+  'components',
   'personal',
   'misc',
 ] as const;
@@ -41,6 +42,7 @@ export const CATEGORY_INFO: Record<CategoryKey, CategoryInfo> = {
   git: { heading: 'Git', label: 'Git' },
   framework: { heading: 'Framework', label: 'Framework' },
   org: { heading: 'Organisation (LittleBranches)', label: 'Organisation' },
+  components: { heading: 'Components', label: 'Components' },
   personal: { heading: 'Personal', label: 'Personal' },
   misc: { heading: 'Misc', label: 'Misc' },
 };

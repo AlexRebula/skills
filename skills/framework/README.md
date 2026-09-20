@@ -1,6 +1,6 @@
 # Framework
 
-Framework-specific scaffolding skills. Each skill creates a complete component from scratch (types, tests, stories, and barrel) following the conventions of its target framework.
+Framework-specific component-authoring skills, at different stages of a component's life: scaffolding a new one from scratch (`create-*`), restructuring an existing one (`migrate-react-subcomponent`), or diagnosing and fixing debt on any existing one (`cleanup-component`). See `skills/org/` for the LittleBranches-specific counterparts to the `create`/`migrate` pair.
 
 - **[cleanup-component](./cleanup-component/SKILL.md)**: Diagnose and fix a component's structural debt (OSS §5/§6) and naming/decomposition debt (naming-conventions.md, component-refactor-conventions.md) independently, applying only the fixes it actually needs; never assumes either axis applies.
 - **[create-angular-component](./create-angular-component/SKILL.md)**: Scaffold and TDD a new Angular 17+ standalone component. Uses signal-based inputs/outputs and Angular Testing Library.
