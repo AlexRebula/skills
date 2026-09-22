@@ -111,18 +111,28 @@ Contract, `component-structure.md`, `typescript-conventions.md`, `component-api-
 - Inline `sx={{ ... }}` — including one buried inside an `sx` array
   (`sx={[someSx, { ... }]}`), not only the literal `sx={{` shape — left in the component
   file instead of extracted to `<name>.styles.ts` (§5.4 / §6.2)
-- **Inline configuration-object (or configuration-call) literals on any prop other than
-  `sx`** — not only a responsive breakpoint object passed directly to `size`, `rowSpacing`,
-  `columnSpacing`, `spacing`, or any other layout-shaping prop (e.g.
-  `<Grid size={{ xs: 12, md: 6, lg: 5 }}>`), but the same shape of violation on an
-  animation/motion prop too: `variants={{ initial: {...}, animate: {...} }}` written
-  inline, or a call like `variants={fade("inUp", { distance: 24 })}` invoked directly in
-  the JSX with its literal arguments in place, instead of a named export in
-  `<name>.const.ts`. Same extraction principle as `sx` above, generalized further: `sx`
-  isn't the only prop that carries an inline literal worth naming and reusing, and layout
-  props aren't the only *other* category either — any prop taking a hardcoded
-  configuration value (layout, animation timing/easing, or any other non-content setting)
-  qualifies. Name each extracted constant in `SCREAMING_SNAKE_CASE` in the component's own
+- **Any inline literal — scalar, object/array, or a factory call producing one — on any
+  prop other than `sx` or a content prop already covered by the data-sourcing bullet
+  below** — not only a responsive breakpoint object passed directly to `size`,
+  `rowSpacing`, `columnSpacing`, `spacing`, or any other layout-shaping prop (e.g.
+  `<Grid size={{ xs: 12, md: 6, lg: 5 }}>`), and not only an animation/motion prop
+  (`variants={{ initial: {...}, animate: {...} }}` written inline, or a call like
+  `variants={fade("inUp", { distance: 24 })}` invoked directly in the JSX with its literal
+  arguments in place), but a single hardcoded scalar/enum-token prop value too — e.g.
+  `<SectionTitle titleComponent="h3" titleVariant="h3">`, or the same file's own
+  `<Button size="large" color="inherit" variant="outlined">` — left as a literal in the
+  JSX instead of a named export in `<name>.const.ts`. Same extraction principle as `sx`
+  above, generalized fully: `sx` isn't the only prop that carries an inline value worth
+  naming and reusing, layout and motion props aren't the only *other* categories either,
+  and a value doesn't have to be a multi-field object to qualify — a single hardcoded
+  string, number, or boolean handed straight to a prop is the same shape of violation, just
+  smaller. The one thing this bullet is never about is `children`/content props already
+  governed by the data-sourcing bullet below (copy, images, hrefs, lists of real data) —
+  that's a different axis (what to show), not this one (how a rendered element is
+  configured); a prop passed a component reference rather than a literal (e.g.
+  `component={m.div}`, pointing at an imported value, not a hardcoded value written in the
+  JSX itself) is exempt too, since there is no literal there to name. Name each extracted
+  constant in `SCREAMING_SNAKE_CASE` in the component's own
   `.const.ts`, not `camelCase` — this is a deliberate, distinct convention from
   `.styles.ts`'s own `camelCase` `sx` exports, chosen so every tunable setting for a
   component is visible in one glance down that one file, making repeated patterns across
