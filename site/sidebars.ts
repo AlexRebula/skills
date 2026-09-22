@@ -75,6 +75,7 @@ export const FLOW_STAGES = [
     { category: 'framework', name: 'port-mui-theme-override' },
     { category: 'org', name: 'create-giselle-component' },
     { category: 'org', name: 'migrate-giselle-subcomponent' },
+    { category: 'org', name: 'port-giselle-component' },
   ]),
   stage('Words for the codebase', [
     { category: 'engineering', name: 'codebase-design' },
