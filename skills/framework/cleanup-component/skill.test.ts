@@ -265,6 +265,31 @@ describe('cleanup-component', () => {
     expect(SKILL).toMatch(/layout and motion props aren't the only \*other\* categories either/i);
   });
 
+  it('flags an sx array combining already-named exports as still needing extraction, keeping only the unavoidable cast at the JSX call site', () => {
+    // A real run left `sx={[fooSx, barSx(1)] as SxProps<Theme>}` inline even though both
+    // array elements were already named exports — the array-combining itself is still
+    // inline composition logic. Verified directly against a real component: removing the
+    // `as SxProps<Theme>` cast breaks the build (component={m.div} narrows the sx prop
+    // type to reject arrays), and neither a wrapper function nor a pre-typed variable
+    // avoids needing the cast — only moving the combining logic into .styles.ts while
+    // keeping the cast at the JSX site actually works.
+    expect(SKILL).toMatch(/This includes an array\s+that combines already-named `sx` exports/i);
+    expect(SKILL).toMatch(/even when every individual element is\s+already a named export, the array-combining itself is still inline composition logic/i);
+    expect(SKILL).toMatch(/that\s+part of the escape hatch can't move into `\.styles\.ts`, since the typing gap is on the\s+consuming prop, not on where the value is built/i);
+  });
+
+  it('holds `style={{ ... }}` on a motion/component={m.*} element to the same extraction standard as `sx`, including a MotionValue-factory pattern', () => {
+    // Same principle as sx, extended to style: a MotionValue-based style object (style={{
+    // x: x1 }}, style={{ background }}) needs a named factory in .styles.ts that accepts
+    // the MotionValue and returns the style object, called from JSX — style isn't governed
+    // by MUI's sx resolver (a MotionValue can't resolve through it), so it needs its own
+    // factories rather than folding into an sx export.
+    expect(SKILL).toMatch(/`style={{ \.\.\. }}` on a\s+`motion\.\*` element/i);
+    expect(SKILL).toMatch(/held to the exact same standard as\s+`sx`/i);
+    expect(SKILL).toMatch(/a `MotionValue`-based `style` object/);
+    expect(SKILL).toMatch(/the factory call happens in JSX, identical to how a\s+dynamic `sx` factory is already called in JSX/i);
+  });
+
   it('extends the extraction rule further to a single hardcoded scalar/enum-token prop value, not only object/array literals or calls', () => {
     // A real run left `titleComponent="h3"`/`titleVariant="h3"` and a sibling `Button`'s
     // own `size="large" color="inherit" variant="outlined"` inline — no repo precedent
