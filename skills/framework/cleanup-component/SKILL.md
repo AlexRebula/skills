@@ -111,14 +111,58 @@ Contract, `component-structure.md`, `typescript-conventions.md`, `component-api-
 - Inline `sx={{ ... }}` — including one buried inside an `sx` array
   (`sx={[someSx, { ... }]}`), not only the literal `sx={{` shape — left in the component
   file instead of extracted to `<name>.styles.ts` (§5.4 / §6.2)
-- **Inline layout-prop object literals that aren't `sx`** — a responsive breakpoint object
-  passed directly to `size`, `rowSpacing`, `columnSpacing`, `spacing`, or any other
-  layout-shaping prop (e.g. `<Grid size={{ xs: 12, md: 6, lg: 5 }}>`), left as a literal in
-  the JSX instead of a named export in `<name>.const.ts`. Same extraction principle as
-  `sx` above, generalized: `sx` isn't the only prop that carries an inline layout literal
-  worth naming and reusing. This is layout/structure, not content — it stays a named
+- **Any inline literal — scalar, object/array, or a factory call producing one — on any
+  prop other than `sx` or a content prop already covered by the data-sourcing bullet
+  below** — not only a responsive breakpoint object passed directly to `size`,
+  `rowSpacing`, `columnSpacing`, `spacing`, or any other layout-shaping prop (e.g.
+  `<Grid size={{ xs: 12, md: 6, lg: 5 }}>`), and not only an animation/motion prop
+  (`variants={{ initial: {...}, animate: {...} }}` written inline, or a call like
+  `variants={fade("inUp", { distance: 24 })}` invoked directly in the JSX with its literal
+  arguments in place), but a single hardcoded scalar/enum-token prop value too — e.g.
+  `<SectionTitle titleComponent="h3" titleVariant="h3">`, or the same file's own
+  `<Button size="large" color="inherit" variant="outlined">` — left as a literal in the
+  JSX instead of a named export in `<name>.const.ts`. Same extraction principle as `sx`
+  above, generalized fully: `sx` isn't the only prop that carries an inline value worth
+  naming and reusing, layout and motion props aren't the only *other* categories either,
+  and a value doesn't have to be a multi-field object to qualify — a single hardcoded
+  string, number, or boolean handed straight to a prop is the same shape of violation, just
+  smaller. The one thing this bullet is never about is `children`/content props already
+  governed by the data-sourcing bullet below (copy, images, hrefs, lists of real data) —
+  that's a different axis (what to show), not this one (how a rendered element is
+  configured); a prop passed a component reference rather than a literal (e.g.
+  `component={m.div}`, pointing at an imported value, not a hardcoded value written in the
+  JSX itself) is exempt too, since there is no literal there to name. Name each extracted
+  constant in `SCREAMING_SNAKE_CASE` in the component's own
+  `.const.ts`, not `camelCase` — this is a deliberate, distinct convention from
+  `.styles.ts`'s own `camelCase` `sx` exports, chosen so every tunable setting for a
+  component is visible in one glance down that one file, making repeated patterns across
+  components easier to spot later, and so any of these constants can later become a real
+  component prop (caller-overridable) with the extracted constant demoted to just its
+  default value, without a rename. This is layout/behavior, not content — it stays a named
   constant in the component's own `.const.ts`, not something sourced from `sections-api`
-  or any other data layer (see the data-sourcing bullet below for where that line sits)
+  or any other data layer (see the data-sourcing bullet below for where that line sits).
+  **Every extracted configuration constant, whatever its own right-hand side looks like,
+  must carry an explicit type annotation naming the exact prop type it configures** (e.g.
+  `const HUGEPACK_ELEMENTS_GRID_ROW_SPACING: GridProps["rowSpacing"] = { xs: 3, md: 0 }`,
+  importing `GridProps` — or the equivalent named type the library exports — from the same
+  library the prop belongs to), never left to bare inference, even when the value comes
+  from a typed function call whose own return type happens to already match (e.g.
+  `const HUGEPACK_ELEMENTS_ENTRANCE_VARIANTS: Variants = fade("inUp", { distance: 24 })`).
+  Three reasons, the third applying regardless of whether the right-hand side is a plain
+  literal or a call: (1) inference alone means a plain literal only gets checked against
+  the real prop type at its JSX usage site, so a copy-paste into the wrong prop, or a shape
+  that's valid object-literal TypeScript but wrong for that specific prop, still typechecks
+  at the `.const.ts` declaration and only surfaces (if at all) somewhere else in the file;
+  an explicit annotation catches that mismatch at the declaration itself. (2) the constant
+  becomes self-documenting — a reader of `.const.ts` alone, without cross-referencing the
+  component's JSX, can already see which prop's shape this value has to satisfy. (3) a
+  developer who wants to change the value later shouldn't have to go trace a third-party
+  function's own declaration file to learn what type they're allowed to produce — the
+  return type of a call like `fade(...)` being correct today is an implementation detail
+  of that call, not something the next editor of this constant should need to know or rely
+  on; the file's own annotation is the one place that answer has to live, consistently,
+  for every constant in it, not only the ones whose right-hand side happens to need it to
+  typecheck.
 - Constants or utility logic defined directly in the `.tsx` instead of extracted to
   `<name>.const.ts` / `<name>.utils.ts` (§5.4). When the extracted logic returns JSX (a
   render-helper function), use `<name>.utils.tsx` instead — `.ts` cannot hold JSX, and the
