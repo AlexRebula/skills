@@ -102,19 +102,24 @@ describe('cleanup-component', () => {
     expect(SKILL).toContain('documentation-strategy.md');
     expect(SKILL).toMatch(/§15\.3/);
     expect(SKILL).toMatch(/§T\.1/);
+    expect(SKILL).toContain('component-configuration-conventions.md');
+    expect(SKILL).toMatch(/§16 Component Configuration Conventions/);
   });
 
-  it('fetches all six expanded standards docs and explains why a fixed excerpt list goes stale', () => {
+  it('fetches all seven expanded standards docs and explains why a fixed excerpt list goes stale', () => {
     // Root cause of the original gap: the skill's own checklist was a fixed, hand-typed
     // list that never grew when the upstream standards docs did, and whole documents
     // (typescript-conventions.md, then later component-api-contract.md and
-    // documentation-strategy.md) were never fetched in the first place. The fix is
-    // twofold: fetch every relevant doc, and tell the reader to check the doc's full text
-    // rather than treat the named bullets as exhaustive.
+    // documentation-strategy.md, then later still component-configuration-conventions.md)
+    // were never fetched in the first place. The fix is twofold: fetch every relevant doc,
+    // and tell the reader to check the doc's full text rather than treat the named bullets
+    // as exhaustive.
     expect(SKILL).toMatch(/fixed excerpt list goes stale/i);
     expect(SKILL).toMatch(/read each document's full text/i);
     expect(SKILL).toMatch(/not a fixed excerpt/i);
     expect(SKILL).toMatch(/floor, not a ceiling/i);
+    expect(SKILL).toMatch(/Fetch all seven of the following/i);
+    expect(SKILL).toMatch(/not the full content of the seven documents/i);
   });
 
   it('mirrors the --standards-url flag and default-URL convention from review-pr, without inventing a new one', () => {
@@ -202,19 +207,26 @@ describe('cleanup-component', () => {
     expect(SKILL).toMatch(/still\s+doesn't get to carry a multi-paragraph history lecture inline/i);
   });
 
-  it('requires splitting a second independently-consumed component out of a shared file, matching create-giselle-component\'s own precedent', () => {
+  it('requires splitting a second independently-consumed component out of a shared file into its own subfolder, unconditionally, now pointing at the upstreamed AGENTS.md §5.6 instead of restating a flat-file fallback that no longer exists', () => {
     // New LittleBranches convention: one exported, independently-consumed component per
     // file. A private, first-only internal helper sharing the file is fine; a second
-    // export some other file imports directly is not. This isn't invented from nothing —
-    // create-giselle-component's "Multi-component features" convention already gives every
-    // internal sub-component its own subfolder from the moment it's scaffolded, with no
-    // exception for internal/unexported pieces; this skill's own wording should say so
-    // rather than presenting the rule as if no LittleBranches precedent existed for it.
+    // export some other file imports directly is not. wiki#973 upstreamed the "every
+    // sub-component gets its own subfolder, unconditionally, no flat-file fallback" rule
+    // into AGENTS.md §5.6 / component-structure.md: this bullet used to offer a "lighter
+    // flat-file split" option for a non-standalone second export, which the upstreamed
+    // rule now forecloses; the bullet points at §5.6 instead of restating (and
+    // contradicting) it.
     expect(SKILL).toMatch(/More than one independently-consumed component exported from one file/i);
     expect(SKILL).toMatch(/imported directly by some \*other\* file/i);
     expect(SKILL).toMatch(/not a private,\s+first-only helper/i);
-    expect(SKILL).toContain('create-giselle-component');
-    expect(SKILL).toMatch(/no exception for pieces that are internal or unexported/i);
+    expect(SKILL).toMatch(/its own\s+named\s+subfolder, always, regardless of how small/i);
+    expect(SKILL).toMatch(/§5\.6,\s+Standalone vs\. sub-component test/);
+    expect(SKILL).toMatch(/no flat-file\s+fallback for a sub-component/i);
+    expect(SKILL).toMatch(/read that section's own text rather than a\s+restatement here/i);
+    // The old conditional "lighter flat-file split" escape hatch is gone now that the
+    // upstreamed rule forecloses it: guard against it silently creeping back in.
+    expect(SKILL).not.toMatch(/lighter flat-file split/i);
+    expect(SKILL).not.toMatch(/or into its own flat\s+sibling file \(still separate from the primary export\)/i);
   });
 
   it('requires .utils.tsx instead of .utils.ts for extracted logic that returns JSX', () => {
@@ -233,36 +245,50 @@ describe('cleanup-component', () => {
     expect(SKILL).toMatch(/already-established data-sourcing pattern/i);
   });
 
-  it('extends the data-sourcing check to hardcoded heading/caption/copy text, not only list/demo content, by comparing against sibling components', () => {
-    // A real run flagged a hardcoded showcase-content array as a §15.3 violation but missed
-    // that the same component (and a sibling PageSection-composing section) also hardcoded
-    // their own heading/caption/intro/CTA copy, while a third sibling sourced the identical
-    // *kind* of content (title/caption/txtGradient into the same SectionTitle component)
-    // from sections-api. The check must compare against sibling shape, not just look for
-    // "a big list".
+  it('extends the data-sourcing check to hardcoded heading/caption/copy text, not only list/demo content, by comparing against sibling components, now pointing at the upstreamed AGENTS.md §15.3', () => {
+    // Originally this skill's own checklist carried the sibling-comparison method in full
+    // prose (a real run flagged a hardcoded showcase-content array as a violation but missed
+    // that a sibling section also hardcoded its own heading/caption copy, detected only by
+    // comparing against sibling shape). wiki#973 upstreamed that exact method into AGENTS.md
+    // §15.3 / component-refactor-conventions.md, so this skill's own bullet is thinned down
+    // to a pointer rather than restating the method in full.
     expect(SKILL).toMatch(/heading\/caption copy/i);
-    expect(SKILL).toMatch(/do not scope this check to "the big list of\s+content" alone/i);
-    expect(SKILL).toMatch(/comparing the target against every sibling component of a similar shape/i);
-    expect(SKILL).toMatch(/regardless of whether the hardcoded\s+value is a whole array or a single heading string/i);
+    expect(SKILL).toMatch(/comparing the target against\s+every sibling component of a similar shape/i);
+    expect(SKILL).toMatch(/applying equally to a single hardcoded\s+heading\/caption string as to a whole content array/i);
+    expect(SKILL).toMatch(/AGENTS\.md\s+§15\.3,\s+Extracting demo and fixture data to a dedicated module/);
+    expect(SKILL).toMatch(/read that section's own text rather than a\s+restatement here/i);
+    // The old in-skill anecdote/rationale prose this rule used to restate is gone now that
+    // it lives upstream: guard against it silently creeping back in.
+    expect(SKILL).not.toMatch(/do not scope this check to "the big list of\s+content" alone/i);
+    expect(SKILL).not.toMatch(/PageSection/);
   });
 
-  it('extracts inline Grid/Stack layout-prop object literals (size, rowSpacing, columnSpacing) to .const.ts, generalizing the sx-extraction rule', () => {
-    // Same principle as the inline-sx rule: sx isn't the only prop that carries a literal
-    // worth naming and extracting. A responsive breakpoint object passed directly to size/
-    // rowSpacing/columnSpacing/spacing is the same shape of violation.
-    expect(SKILL).toMatch(/Any inline literal — scalar, object\/array, or a factory call producing one — on any\s+prop other than `sx`/i);
-    expect(SKILL).toMatch(/rowSpacing.*columnSpacing/);
-    expect(SKILL).toMatch(/Same extraction principle as `sx`\s+above, generalized fully/i);
+  it('extracts inline Grid/Stack layout-prop object literals (size, rowSpacing, columnSpacing) to .const.ts, now pointing at the upstreamed AGENTS.md §16.1 instead of restating it', () => {
+    // wiki#975 upstreamed this exact rule (a Grid/layout literal on size/rowSpacing/
+    // columnSpacing/spacing must be extracted to <name>.const.ts) into AGENTS.md §16.1 /
+    // component-configuration-conventions.md. This skill's own bullet now points there
+    // instead of restating the full rule and its rationale in its own prose.
+    expect(SKILL).toMatch(/rowSpacing[\s\S]*columnSpacing/);
+    expect(SKILL).toMatch(/§16\.1 Grid\/layout/);
+    expect(SKILL).toMatch(/AGENTS\.md\s+§16, Component Configuration Conventions/);
+    expect(SKILL).toMatch(/component-configuration-conventions\.md/);
+    // The old full restatement of this rule's own reasoning is gone now that it lives
+    // upstream: guard against it silently creeping back in.
+    expect(SKILL).not.toMatch(/Same extraction principle as `sx`\s+above, generalized fully/i);
   });
 
-  it('extends the same extraction rule to inline animation/motion config literals (variants, fade(...) calls), not only layout props', () => {
-    // A real run also inlined `variants={fade("inUp", { distance: 24 })}` and a sibling
-    // component inlined its own `variants={{ initial: {...}, animate: {...} }}` — the same
-    // shape of un-extracted configuration literal as the Grid layout props, just on a
-    // motion prop instead. The rule generalizes to any prop carrying a hardcoded
-    // configuration value, not only layout-shaping ones.
-    expect(SKILL).toMatch(/variants=\{fade\("inUp", \{ distance: 24 \}\)\}/);
-    expect(SKILL).toMatch(/layout and motion props aren't the only \*other\* categories either/i);
+  it('extends the same extraction rule to inline animation/motion config literals (variants, animate, transition), now pointing at the upstreamed AGENTS.md §16.2 instead of restating it', () => {
+    // wiki#975 upstreamed the motion-config extraction rule (variants always extracted;
+    // animate/transition extracted at two-or-more keys; the 1-key/2-key threshold this
+    // skill's own checklist never even stated) into AGENTS.md §16.2 /
+    // component-configuration-conventions.md. This skill's own bullet now points there
+    // instead of restating (and under-specifying) the rule itself.
+    expect(SKILL).toMatch(/variants.*animate.*transition/);
+    expect(SKILL).toMatch(/§16\.2 motion/);
+    expect(SKILL).toMatch(/component-configuration-conventions\.md/);
+    // The old, now-superseded exact example text is gone: guard against it creeping back
+    // as a restatement instead of a pointer.
+    expect(SKILL).not.toMatch(/variants=\{fade\("inUp", \{ distance: 24 \}\)\}/);
   });
 
   it('flags an sx array combining already-named exports as still needing extraction, keeping only the unavoidable cast at the JSX call site', () => {
@@ -278,62 +304,79 @@ describe('cleanup-component', () => {
     expect(SKILL).toMatch(/that\s+part of the escape hatch can't move into `\.styles\.ts`, since the typing gap is on the\s+consuming prop, not on where the value is built/i);
   });
 
-  it('holds `style={{ ... }}` on a motion/component={m.*} element to the same extraction standard as `sx`, including a MotionValue-factory pattern', () => {
-    // Same principle as sx, extended to style: a MotionValue-based style object (style={{
-    // x: x1 }}, style={{ background }}) needs a named factory in .styles.ts that accepts
-    // the MotionValue and returns the style object, called from JSX — style isn't governed
-    // by MUI's sx resolver (a MotionValue can't resolve through it), so it needs its own
-    // factories rather than folding into an sx export.
-    expect(SKILL).toMatch(/`style={{ \.\.\. }}` on a\s+`motion\.\*` element/i);
-    expect(SKILL).toMatch(/held to the exact same standard as\s+`sx`/i);
-    expect(SKILL).toMatch(/a `MotionValue`-based `style` object/);
-    expect(SKILL).toMatch(/the factory call happens in JSX, identical to how a\s+dynamic `sx` factory is already called in JSX/i);
+  it('holds `style={{ ... }}` on a motion/component={m.*} element to the same extraction standard as `sx`, now pointing at the upstreamed AGENTS.md §16.2 instead of restating the MotionValue-factory pattern', () => {
+    // wiki#975 upstreamed this skill's own MotionValue-factory pattern into AGENTS.md
+    // §16.2 / component-configuration-conventions.md. The bullet now points there instead
+    // of restating the factory example in the skill's own prose.
+    expect(SKILL).toMatch(/`style={{ \.\.\. }}` on a `motion\.\*` element/i);
+    expect(SKILL).toMatch(/zero-tolerance extraction standard as\s+`sx`/i);
+    expect(SKILL).toMatch(/`MotionValue`-factory\s+pattern for a dynamic style value/i);
+    expect(SKILL).toMatch(/§16\.2,\s+Motion configuration extraction/);
+    expect(SKILL).toMatch(/component-configuration-conventions\.md/);
+    // The old full factory-example restatement is gone now that it lives upstream: guard
+    // against it silently creeping back in.
+    expect(SKILL).not.toMatch(/fooTrackXStyle/);
   });
 
-  it('extends the extraction rule further to a single hardcoded scalar/enum-token prop value, not only object/array literals or calls', () => {
-    // A real run left `titleComponent="h3"`/`titleVariant="h3"` and a sibling `Button`'s
-    // own `size="large" color="inherit" variant="outlined"` inline — no repo precedent
-    // anywhere extracts a single scalar prop value, but the same "hardcoded config left in
-    // JSX instead of named in .const.ts" violation applies regardless of whether the value
-    // is a multi-field object or a single string.
-    expect(SKILL).toMatch(/a value doesn't have to be a multi-field object to qualify/i);
+  it('extends the extraction rule further to a single hardcoded scalar/enum-token prop value, now pointing at the upstreamed AGENTS.md §16.3 instead of restating it', () => {
+    // wiki#975 upstreamed this exact rule, including this skill's own `titleComponent="h3"`
+    // example, into AGENTS.md §16.3 / component-configuration-conventions.md. The bullet
+    // keeps the one example that still identifies the rule at a glance but points to the
+    // upstream doc for the full rationale instead of restating it.
+    expect(SKILL).toMatch(/single hardcoded scalar\/enum-token prop value/i);
     expect(SKILL).toMatch(/titleComponent="h3" titleVariant="h3"/);
-    expect(SKILL).toMatch(/size="large" color="inherit" variant="outlined"/);
-    // children/content props stay governed by the data-sourcing bullet, not this one, and
-    // a prop holding a component reference (not a literal) is exempt.
-    expect(SKILL).toMatch(/never about is\s+`children`\/content props already/i);
-    expect(SKILL).toMatch(/a prop passed a component reference rather than a literal/i);
+    expect(SKILL).toMatch(/§16\.3\s+scalar\/enum/);
+    expect(SKILL).toMatch(/content-vs-configuration\s+boundary/i);
+    expect(SKILL).toMatch(/a component-reference prop like `component={m\.div}` is exempt/i);
+    // The old second (Button) example and the full "never about children" restatement are
+    // gone now that the rule lives upstream: guard against them creeping back in.
+    expect(SKILL).not.toMatch(/size="large" color="inherit" variant="outlined"/);
   });
 
-  it('requires extracted .const.ts settings to use SCREAMING_SNAKE_CASE, distinct from .styles.ts camelCase, so they can later become caller-overridable props with the constant demoted to a default', () => {
-    expect(SKILL).toMatch(/`SCREAMING_SNAKE_CASE`\s+in the component's own\s+`\.const\.ts`, not `camelCase`/i);
-    expect(SKILL).toMatch(/every tunable setting for a\s+component is visible in one glance down that one file/i);
-    expect(SKILL).toMatch(/can later become a real\s+component prop \(caller-overridable\) with the extracted constant demoted to just its\s+default value, without a rename/i);
+  it('requires extracted .const.ts settings to use SCREAMING_SNAKE_CASE, now pointing at the upstreamed AGENTS.md §16 instead of restating the caller-overridable-prop rationale', () => {
+    // wiki#975 upstreamed this skill's own SCREAMING_SNAKE_CASE-naming and
+    // caller-overridable-prop rationale into component-configuration-conventions.md. The
+    // bullet now names both concerns and points to the doc instead of restating the full
+    // reasoning.
+    expect(SKILL).toMatch(/`SCREAMING_SNAKE_CASE` naming\s+convention/i);
+    expect(SKILL).toMatch(/caller-overridable-prop rationale/i);
+    expect(SKILL).toMatch(/component-configuration-conventions\.md/);
+    // The old, fully-restated rationale prose is gone now that it lives upstream: guard
+    // against it silently creeping back in.
+    expect(SKILL).not.toMatch(/every tunable setting for a\s+component is visible in one glance down that one file/i);
   });
 
-  it('requires every extracted configuration constant to carry an explicit prop-type annotation, even one produced by a typed function call, not bare inference', () => {
-    // Without an explicit annotation, a wrong-shaped plain literal only fails to typecheck
-    // (if at all) at its JSX usage site, not at its own declaration, and a reader of
-    // .const.ts alone can't tell which prop's shape a bare-inferred constant is meant to
-    // satisfy — true even when the value comes from a typed call like fade(...) whose
-    // return type happens to already match: the next editor of that constant shouldn't
-    // have to go trace a third-party function's own declaration file to learn its type.
-    expect(SKILL).toMatch(/must carry an explicit\s+type annotation\s+naming the exact prop type it configures/i);
-    expect(SKILL).toMatch(/GridProps\["rowSpacing"\]/);
-    expect(SKILL).toMatch(/importing `GridProps`.*from the same\s+library the prop belongs to/i);
-    expect(SKILL).toMatch(/never left to bare inference, even when the value comes\s+from a typed function call/i);
-    expect(SKILL).toMatch(/HUGEPACK_ELEMENTS_ENTRANCE_VARIANTS: Variants = fade\("inUp", \{ distance: 24 \}\)/);
-    expect(SKILL).toMatch(/shouldn't have to go trace a third-party\s+function's own declaration file/i);
+  it('requires every extracted configuration constant to carry an explicit prop-type annotation, now pointing at the upstreamed AGENTS.md §16 shared requirement instead of restating the three reasons', () => {
+    // wiki#975 upstreamed this skill's own explicit-typing requirement, including its
+    // three reasons and its fade(...)/GridProps examples, into
+    // component-configuration-conventions.md's shared "explicit-typing requirement"
+    // section. The bullet now points there instead of restating the reasoning and examples.
+    expect(SKILL).toMatch(/the shared\s+explicit-typing requirement/i);
+    expect(SKILL).toMatch(/component-configuration-conventions\.md/);
+    // The old, fully-restated three-reasons rationale and examples are gone now that they
+    // live upstream: guard against them silently creeping back in. The negative match below
+    // deliberately avoids hardcoding the old example's vendor-specific constant name (slated
+    // for its own rename elsewhere): it matches on the generic _ENTRANCE_VARIANTS/fade(...)
+    // shape instead, so no vendor-specific identifier needs to live in this skill's own test
+    // file.
+    expect(SKILL).not.toMatch(/GridProps\["rowSpacing"\]/);
+    expect(SKILL).not.toMatch(/_ENTRANCE_VARIANTS: Variants = fade\("inUp", \{ distance: 24 \}\)/);
+    expect(SKILL).not.toMatch(/shouldn't have to go trace a third-party\s+function's own declaration file/i);
   });
 
-  it('keeps layout/structure out of the data-sourcing rule: Grid/Stack breakpoints stay in .const.ts, never in sections-api', () => {
-    // A real run proposed extending the content-data-sourcing rule to layout props too.
-    // That's the wrong axis: no sibling component anywhere sources Grid/Stack breakpoints
-    // from sections-api, including the component the data-sourcing rule's own precedent
-    // check is modeled on. This guards against conflating "content" with "layout" again.
-    expect(SKILL).toMatch(/This bullet is about content, not\s+layout/i);
-    expect(SKILL).toMatch(/no sibling anywhere in that\s+same codebase sources layout breakpoints from `sections-api`/i);
-    expect(SKILL).toMatch(/is a far bigger call than\s+this skill has standing to make unilaterally/i);
+  it('keeps layout/configuration out of the data-sourcing rule: content moves to a data layer, configuration stays in .const.ts, now pointing back at the §16 bullet instead of restating the boundary', () => {
+    // The old bullet restated the content-vs-layout boundary with a full anecdote (no
+    // sibling sources Grid/Stack breakpoints from sections-api). That boundary is now
+    // stated once, at the top of the §16 bullet's own replacement text
+    // (component-configuration-conventions.md's own "what counts as configuration, not
+    // content" section states it upstream too): the data-sourcing bullet just points back
+    // to it instead of re-arguing it.
+    expect(SKILL).toMatch(/This bullet is about content, not\s+layout\/configuration/i);
+    expect(SKILL).toMatch(/see the\s+Grid\/motion\/scalar bullet above \(§16\) for that axis/i);
+    // The old anecdotal restatement is gone now that the boundary is stated once: guard
+    // against it silently creeping back in.
+    expect(SKILL).not.toMatch(/no sibling anywhere in that\s+same codebase sources layout breakpoints from `sections-api`/i);
+    expect(SKILL).not.toMatch(/is a far bigger call than\s+this skill has standing to make unilaterally/i);
   });
 
   it('broadens the types.ts check to any type the module declares, not only props, per typescript-conventions.md §T.1', () => {
