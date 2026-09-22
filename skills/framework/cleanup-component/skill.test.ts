@@ -14,78 +14,112 @@ describe('cleanup-component', () => {
     expect(SKILL).toMatch(/refactor component X/);
   });
 
+  it('declares itself LittleBranches\' own opinionated skill, not a neutral org-agnostic one', () => {
+    // Reverses an earlier, deliberate decision (fedb84a) to make this skill fully
+    // organization-agnostic. That decision is being reversed on purpose: this skill now
+    // states plainly that it encodes LittleBranches' own opinions, so a future reader
+    // doesn't mistake the LittleBranches-specific rules below for a neutral default.
+    expect(SKILL).toMatch(/LittleBranches' own opinionated component-cleanup skill/i);
+    expect(SKILL).toMatch(/encodes LittleBranches' own opinionated best practices/i);
+  });
+
   it('disambiguates from migrate-react-subcomponent and structural-only migration skills in general', () => {
     // A structural-only migration skill mechanically moves an already-correctly-named,
     // already-correctly-decomposed component into its own folder; it never inspects
     // handler names, prop-bag naming, or cascading state logic. This skill's entire
     // reason to exist is that it diagnoses both axes instead of assuming one is already
-    // done, so it must say so explicitly, not just imply it. This skill is generic and
-    // org-agnostic: it must not name any specific organization's own structural-migration
-    // skill (e.g. an org-scoped variant of migrate-react-subcomponent) by name.
+    // done, so it must say so explicitly, not just imply it.
     expect(SKILL).toContain('migrate-react-subcomponent');
     expect(SKILL).toMatch(/structural-only mechanical/i);
     expect(SKILL).toMatch(/already correctly named/i);
-    expect(SKILL).not.toMatch(/giselle/i);
   });
 
   it('states the diagnose-before-fix ordering explicitly', () => {
     // The core behavioural contract: never assume either axis applies or doesn't;
     // check both, independently, then fix only what the diagnosis actually found.
-    expect(SKILL).toMatch(/diagnoses before it fixes/i);
+    expect(SKILL).toMatch(/diagnoses before it\s+fixes/i);
     expect(SKILL).toMatch(/never assume/i);
     expect(SKILL).toMatch(/one axis, the other, both, or neither/i);
     expect(SKILL).toMatch(/Apply only the fixes the diagnosis actually found/i);
   });
 
-  it('cites two fully generic contrasting cases for the disambiguation, naming no real project', () => {
+  it('cites two contrasting cases for the disambiguation, naming no real component', () => {
     // These two contrasting cases are what actually prove the diagnose-both-axes
     // requirement is necessary rather than theoretical: a naming/decomposition-only
-    // target and a structural-only target. Both must be entirely invented/generic —
-    // this is a public skill for any React component in any project, so it must not
-    // reference any specific real component, repo, or organization at all, not even a
-    // de-identified paraphrase of one.
+    // target and a structural-only target. They stay invented/generic rather than
+    // referencing a real component by name — an old, since-fixed regression named a real
+    // component ("TimelineTwoColumn") here, which this guards against.
     expect(SKILL).toMatch(/zero structural debt/i);
     expect(SKILL).toMatch(/zero[\s\S]{0,40}naming\/decomposition debt/i);
-    expect(SKILL).not.toMatch(/giselle/i);
     expect(SKILL).not.toMatch(/TimelineTwoColumn/);
   });
 
-  it('never references any specific organization, private repo, or delegates to an org-specific skill', () => {
-    // This is the core regression this test guards against: an earlier version of this
-    // skill named a specific organization ("Giselle"), two of that organization's private
-    // repos, and delegated back into an org-specific sibling skill for a conditional
-    // extra phase. All of that is architecturally wrong for a skill meant to be generic
-    // and installable by anyone: an org that wants extra org-specific behavior should
-    // build that into their OWN org-scoped caller skill (which calls this one), never the
-    // other way around. This skill itself must stay completely silent on any organization.
-    expect(SKILL).not.toMatch(/giselle/i);
-    expect(SKILL).not.toMatch(/migrate-giselle-subcomponent/);
-    expect(SKILL).not.toMatch(/create-giselle-component/);
-    expect(SKILL).not.toMatch(/DoD scoring/);
-    expect(SKILL).not.toMatch(/brand tokens/);
-    expect(SKILL).not.toMatch(/yalc/i);
+  it('keeps a single project\'s own extra tooling (DoD scoring, brand tokens, yalc) delegated to that project\'s own caller skill, not absorbed here', () => {
+    // This is the reworked core regression guard: an earlier version of this skill
+    // absorbed one specific project's (giselle-mui's) own extra enforcement logic
+    // directly into its checklist. That's still wrong today, even after this skill
+    // started naming LittleBranches and giselle-mui by name in its "Out of scope"
+    // section as an example of what stays elsewhere — the terms may appear there, as
+    // something explicitly deferred to that project's own caller skill, but must never
+    // appear anywhere in the actual diagnostic steps (1-4) as if this skill enforces them.
+    const outOfScopeIndex = SKILL.indexOf('## Out of scope');
+    expect(outOfScopeIndex).toBeGreaterThan(-1);
+    const outOfScopeSection = SKILL.slice(outOfScopeIndex);
+    const beforeOutOfScope = SKILL.slice(0, outOfScopeIndex);
+
+    expect(outOfScopeSection).toMatch(/DoD scoring/);
+    expect(outOfScopeSection).toMatch(/caller skill/i);
+
+    expect(beforeOutOfScope).not.toMatch(/DoD scoring/);
+    expect(beforeOutOfScope).not.toMatch(/brand tokens/);
+    expect(beforeOutOfScope).not.toMatch(/yalc/i);
   });
 
-  it('references the specific OSS Quality Standards doc/section names by name', () => {
+  it('references the specific OSS Quality Standards docs/sections it checks against, including the ones added in this pass', () => {
     // Acceptance criteria require naming the exact docs/sections this skill depends on:
     // a vague "check the standards" instruction would leave the diagnostic pass
-    // unverifiable against what actually shipped in wiki#944/#945.
+    // unverifiable. component-structure.md, typescript-conventions.md, §15.3, and §T.1
+    // are all newly required here — a prior version of this skill fetched only two of
+    // the four relevant docs and its own checklist stopped short of §15.3 even though it
+    // sits in a document already being fetched in full; both gaps are fixed in this pass.
+    // component-api-contract.md and documentation-strategy.md were added in a second pass,
+    // found only when someone asked directly whether a "one component per file" rule
+    // existed anywhere and the answer required checking every doc in the standards repo,
+    // not just the ones already being fetched.
     expect(SKILL).toMatch(/§5 Component Structure Rules/);
-    expect(SKILL).toMatch(/§6 Component API Contract/);
+    expect(SKILL).toMatch(/§6 Component API\s+Contract/);
     expect(SKILL).toContain('naming-conventions.md');
-    expect(SKILL).toMatch(/Element-first handler naming/);
+    expect(SKILL).toMatch(/Element-first handler\s+naming/);
     expect(SKILL).toMatch(/Inputs prop-bag naming/);
     expect(SKILL).toContain('component-refactor-conventions.md');
     expect(SKILL).toMatch(/§15\.1/);
     expect(SKILL).toMatch(/Decomposing cascading state-sync logic/);
     expect(SKILL).toMatch(/§15\.2/);
     expect(SKILL).toMatch(/Sequencing one group at a time/);
+    expect(SKILL).toContain('component-structure.md');
+    expect(SKILL).toContain('typescript-conventions.md');
+    expect(SKILL).toContain('component-api-contract.md');
+    expect(SKILL).toContain('documentation-strategy.md');
+    expect(SKILL).toMatch(/§15\.3/);
+    expect(SKILL).toMatch(/§T\.1/);
+  });
+
+  it('fetches all six expanded standards docs and explains why a fixed excerpt list goes stale', () => {
+    // Root cause of the original gap: the skill's own checklist was a fixed, hand-typed
+    // list that never grew when the upstream standards docs did, and whole documents
+    // (typescript-conventions.md, then later component-api-contract.md and
+    // documentation-strategy.md) were never fetched in the first place. The fix is
+    // twofold: fetch every relevant doc, and tell the reader to check the doc's full text
+    // rather than treat the named bullets as exhaustive.
+    expect(SKILL).toMatch(/fixed excerpt list goes stale/i);
+    expect(SKILL).toMatch(/read each document's full text/i);
+    expect(SKILL).toMatch(/not a fixed excerpt/i);
+    expect(SKILL).toMatch(/floor, not a ceiling/i);
   });
 
   it('mirrors the --standards-url flag and default-URL convention from review-pr, without inventing a new one', () => {
-    // The ticket explicitly warns not to invent a new flag/URL convention: this must be
-    // the same flag name and the same public LittleBranches default review-pr already
-    // uses, not a lookalike.
+    // This must be the same flag name and the same public LittleBranches default
+    // review-pr already uses, not a lookalike.
     expect(SKILL).toContain('--standards-url');
     expect(SKILL).toContain(
       'https://raw.githubusercontent.com/LittleBranches/oss-quality-standards/main/docs/AGENTS.md',
@@ -97,16 +131,18 @@ describe('cleanup-component', () => {
     expect(SKILL).toMatch(/target repo's own quality gate/i);
   });
 
-  it('requires test coverage for whatever it extracts, per artifact type, discovered from the target repo', () => {
+  it('requires test coverage for whatever it extracts, per artifact type, including the JSX-bearing utils case', () => {
     // A real run against a live component created .styles.ts/.const.ts/.utils.ts with zero
     // accompanying tests, even though both loaded standards (AGENTS.md §5.4's
     // <name>.styles.test.ts convention and component-refactor-conventions.md §15.1's
     // "independently unit-tested derivation functions" requirement) already say tests are
-    // part of the fix, not a separate step. This guards against repeating that gap.
+    // part of the fix, not a separate step. This guards against repeating that gap, and
+    // extends it to the newly-added .utils.tsx case.
     expect(SKILL).toMatch(/[Tt]est coverage is part of applying a fix/);
     expect(SKILL).toMatch(/styles\.test\.ts/);
     expect(SKILL).toMatch(/not a separate `<name>\.const\.test\.ts` file/);
     expect(SKILL).toMatch(/utils\.test\.ts/);
+    expect(SKILL).toMatch(/utils\.tsx/);
     expect(SKILL).toMatch(/find this target repo's own existing test framework and pattern/i);
     expect(SKILL).toMatch(/independently unit-tested/i);
   });
@@ -126,7 +162,7 @@ describe('cleanup-component', () => {
     expect(SKILL).toMatch(/Update every import site across the repo/i);
   });
 
-  it('gates README/roadmap/stories scaffolding on the standalone-vs-sub-component test, not a blanket rule', () => {
+  it('gates the full README/roadmap/stories scaffolding suite on the standalone-vs-sub-component test, not a blanket rule', () => {
     // The full library-scaffolding ceremony (README, roadmap, stories) exists to document
     // and preview a reusable published component for other consumers; a single-caller
     // app-local component doesn't need it. This must be an explicit, checkable rule, not
@@ -134,14 +170,83 @@ describe('cleanup-component', () => {
     // a one-off page section as if it were a new library component.
     expect(SKILL).toMatch(/§5\.6/);
     expect(SKILL).toMatch(/standalone-vs-sub-component test/i);
-    expect(SKILL).toMatch(/exactly one caller/i);
-    expect(SKILL).not.toMatch(/giselle/i);
+    expect(SKILL).toMatch(/exactly one\s+caller/i);
   });
 
-  it('states its own out-of-scope boundaries: no real-component run, no organization awareness', () => {
+  it('states the real, written README rule correctly: non-obvious setup requirements only, rare, most components need none', () => {
+    // Correction found when the README-for-rationale rule below was checked against its
+    // claimed source: documentation-strategy.md's actual "Component folder READMEs"
+    // section is narrower than and different from what an earlier version of this skill
+    // said — it's about setup requirements (a required context provider, a separately
+    // installed peer dependency, an accessibility constraint), calls these "rare," and
+    // says "most components do not need one." The rationale-extraction rule below is a
+    // distinct, separately-justified LittleBranches convention layered on top of this one,
+    // not a restatement of it — this test guards against the two being conflated again.
+    expect(SKILL).toMatch(/non-obvious setup requirement/i);
+    expect(SKILL).toMatch(/"rare"/);
+    expect(SKILL).toMatch(/most components do not need one/i);
+    expect(SKILL).toContain('documentation-strategy.md');
+  });
+
+  it('requires a plain README for a long rationale comment block even on a one-off component, as a second, independent reason to have one', () => {
+    // New LittleBranches convention: a multi-paragraph "how did this code get this way"
+    // comment block belongs in the component's own README.md, not inline in the source —
+    // regardless of whether the component is standalone or single-caller, and regardless
+    // of whether it also has a non-obvious setup requirement. This is deliberately scoped
+    // narrower than, and doesn't conflict with, the README/roadmap/stories gate above:
+    // that gate is about full library-scaffolding ceremony; this rule is about not letting
+    // a source file carry a history lecture inline.
+    expect(SKILL).toMatch(/long historical or migration-rationale comment block/i);
+    expect(SKILL).toMatch(/not the setup-requirement README rule above and not\s+a restatement of it/i);
+    expect(SKILL).toMatch(/does not override,\s+the standalone-vs-sub-\s*component gate/i);
+    expect(SKILL).toMatch(/still\s+doesn't get to carry a multi-paragraph history lecture inline/i);
+  });
+
+  it('requires splitting a second independently-consumed component out of a shared file, matching create-giselle-component\'s own precedent', () => {
+    // New LittleBranches convention: one exported, independently-consumed component per
+    // file. A private, first-only internal helper sharing the file is fine; a second
+    // export some other file imports directly is not. This isn't invented from nothing —
+    // create-giselle-component's "Multi-component features" convention already gives every
+    // internal sub-component its own subfolder from the moment it's scaffolded, with no
+    // exception for internal/unexported pieces; this skill's own wording should say so
+    // rather than presenting the rule as if no LittleBranches precedent existed for it.
+    expect(SKILL).toMatch(/More than one independently-consumed component exported from one file/i);
+    expect(SKILL).toMatch(/imported directly by some \*other\* file/i);
+    expect(SKILL).toMatch(/not a private,\s+first-only helper/i);
+    expect(SKILL).toContain('create-giselle-component');
+    expect(SKILL).toMatch(/no exception for pieces that are internal or unexported/i);
+  });
+
+  it('requires .utils.tsx instead of .utils.ts for extracted logic that returns JSX', () => {
+    // The written standards only name the .ts extension for utilities, which can't hold
+    // JSX. This skill fills that gap directly since no written doc resolves it yet.
+    expect(SKILL).toMatch(/utils\.tsx/);
+    expect(SKILL).toMatch(/cannot hold JSX/i);
+  });
+
+  it('prefers a project\'s own established data-sourcing pattern (e.g. sections-api) over hardcoded demo/list data', () => {
+    // component-refactor-conventions.md §15.3 already states this rule and even names
+    // LittleBranches' own sections-api pattern as its reference implementation, but this
+    // skill's own checklist never checked for it before this pass.
+    expect(SKILL).toMatch(/§15\.3/);
+    expect(SKILL).toMatch(/sections-api/i);
+    expect(SKILL).toMatch(/already-established data-sourcing pattern/i);
+  });
+
+  it('broadens the types.ts check to any type the module declares, not only props, per typescript-conventions.md §T.1', () => {
+    // The prior checklist only checked for an inline props interface. §T.1 is broader:
+    // every declared type owns a companion types file, promoted only on a second consumer
+    // per §T.2. A module-local, non-props type (e.g. a shared item-shape interface) was
+    // being missed under the narrower, props-only reading.
+    expect(SKILL).toMatch(/any type the module declares/i);
+    expect(SKILL).toMatch(/§T\.1/);
+    expect(SKILL).toMatch(/§T\.2/);
+  });
+
+  it('states its own out-of-scope boundaries: no real-component run, single-project extras stay in that project\'s own caller skill', () => {
     expect(SKILL).toMatch(/## Out of scope/);
     expect(SKILL).toMatch(/Running this skill against any real component/i);
-    expect(SKILL).toMatch(/any specific organization's own repos/i);
-    expect(SKILL).toMatch(/never[\s\S]{0,10}the other way around/i);
+    expect(SKILL).toMatch(/own \*extra\* checks beyond the LittleBranches-wide conventions/i);
+    expect(SKILL).toMatch(/never the other way around/i);
   });
 });

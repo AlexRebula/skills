@@ -1,15 +1,23 @@
 ---
 name: cleanup-component
-description: "Diagnose and fix component quality debt across two independent axes, structural (OSS Quality Standards §5 Component Structure Rules / §6 Component API Contract: inline `sx`, un-extracted constants/utils, missing `types.ts`, folder-per-component) and naming/decomposition (`naming-conventions.md`'s element-first handler naming and `Inputs` prop-bag sections, `component-refactor-conventions.md`'s cascading-state-decomposition and one-group-at-a-time sequencing sections), applying only the fixes a target actually needs, since a real component may need one axis, the other, both, or neither. Not `migrate-react-subcomponent` or any similar structural-only migration skill: those assume the component is already correctly named and decomposed and only relocate it. Use when asked to \"cleanup component X\" or \"refactor component X\" for any target file or folder, in any project."
+description: "LittleBranches' own opinionated component-cleanup skill. Diagnoses and fixes component quality debt across two independent axes — structural (folder-per-component, `types.ts`/`.const.ts`/`.utils.ts` extraction, one-component-per-file, README-for-rationale, sourcing demo/list data from a dedicated module) and naming/decomposition (element-first handlers, `Inputs` prop-bags, cascading-state decomposition, refactor sequencing) — checked against the full text of every relevant LittleBranches OSS Quality Standards doc, not a fixed excerpt, plus this skill's own conventions the standards docs don't yet cover. Applies only the fixes a target actually needs, since a real component may need one axis, the other, both, or neither. Not `migrate-react-subcomponent` or any similar structural-only migration skill: those assume the component is already correctly named and decomposed and only relocate it. Use when asked to \"cleanup component X\" or \"refactor component X\" for any target file or folder in a LittleBranches repo."
 ---
 
 # Cleanup Component
 
 Triggered by **"cleanup component X"** or **"refactor component X"**, for any target
-component file or folder in any project. This skill **diagnoses before it fixes**: it
-never assumes a target has structural debt, naming/decomposition debt, both, or neither.
-It checks each axis independently against the loaded standards, then applies only the
-fixes the diagnosis actually found.
+component file or folder in a LittleBranches repo. This skill **diagnoses before it
+fixes**: it never assumes a target has structural debt, naming/decomposition debt, both,
+or neither. It checks each axis independently against the full text of the loaded
+standards — not a fixed excerpt of them — then applies only the fixes the diagnosis
+actually found.
+
+This skill encodes LittleBranches' own opinionated best practices. It is not meant to be a
+neutral, organization-agnostic tool a different company would install as-is; the specific
+rules below (one-component-per-file, README-for-rationale, `.utils.tsx` for JSX-bearing
+helpers, preferring a project's own dedicated data-sourcing module) are LittleBranches
+conventions, some written in the OSS Quality Standards docs already, some added directly
+here because no written doc covers them yet.
 
 ## Not `migrate-react-subcomponent` or any similar structural-only migration skill
 
@@ -41,13 +49,15 @@ file or folder.
 Standards raw URL,
 `https://raw.githubusercontent.com/LittleBranches/oss-quality-standards/main/docs/AGENTS.md`.
 Mirrors `review-pr`'s own `--standards-url` flag and default-URL convention exactly: this
-skill does not invent a new flag name or a new default-URL scheme.
+skill does not invent a new flag name or a new default-URL scheme. Override this only when
+a specific repo's own standards live somewhere else — the LittleBranches-only conventions
+this skill adds directly (below) apply regardless of which URL is loaded.
 
 ---
 
 ## Process
 
-### 1. Load OSS Quality Standards
+### 1. Load the full OSS Quality Standards
 
 Fetch the barrel document from `--standards-url` (or the default URL above) the same way
 `review-pr`'s "Org / external standards" step does:
@@ -56,36 +66,110 @@ Fetch the barrel document from `--standards-url` (or the default URL above) the 
 curl -sS "<standards-url>"
 ```
 
-Step 2's naming/decomposition diagnosis needs two expanded docs the barrel only summarizes:
-`naming-conventions.md` and `component-refactor-conventions.md`. Fetch both from the same
-base path (swap `AGENTS.md` in `--standards-url` for each filename, per the barrel's own
-"Raw base URL for expanded docs" convention), not just their section names cited below.
+Step 2's diagnosis needs the full text of every doc the barrel only summarizes — not just
+the sections named below. A fixed excerpt list goes stale the moment the org adds a new
+section upstream and nobody remembers to update this skill to match, or the moment a doc
+this skill never fetches at all turns out to be the one that actually covers a gap: this
+has already happened twice — `component-refactor-conventions.md` grew a §15.3 this skill's
+own checklist never mentioned; `typescript-conventions.md` was never fetched at all despite
+AGENTS.md's own cross-reference table pointing to it; and, a pass later, `component-api-
+contract.md` (the actual expansion of §6, an axis this skill already claimed to check) and
+`documentation-strategy.md` (which owns the real README rule this skill cites) were *both*
+still missing, found only when someone asked directly whether this rule existed anywhere.
+Fetch all six of the following from the same base path (swap `AGENTS.md` in
+`--standards-url` for each filename, per the barrel's own "Raw base URL for expanded docs"
+convention), and read each one's full text, not just the section names cited in step 2:
+
+- `naming-conventions.md`
+- `component-refactor-conventions.md`
+- `component-structure.md`
+- `typescript-conventions.md`
+- `component-api-contract.md`
+- `documentation-strategy.md`
 
 If any fetch fails with a non-200 status, note the failure and stop: the diagnostic pass in
 step 2 has nothing to check against until the standards docs are reachable, so a failed
 fetch is a hard stop for this skill (unlike `review-pr`, which can fall back to repo-local
 standards alone).
 
-### 2. Diagnose both axes: never assume either one
+### 2. Diagnose both axes: never assume either one, and never treat the lists below as exhaustive
 
 Run both checks below **independently**. Do not infer one from the other, and do not skip
 either check just because the target "looks like" it only needs one kind of work; confirm
 it.
 
+**The bullets below are a floor, not a ceiling.** They name violations worth calling out
+explicitly, but they are not the full content of the six documents fetched in step 1 —
+read each document's full text and treat every rule stated there as in scope, not only the
+ones named here.
+
 **Structural-rule violations** (AGENTS.md §5 Component Structure Rules / §6 Component API
-Contract):
+Contract, `component-structure.md`, `typescript-conventions.md`, `component-api-contract.md`,
+`documentation-strategy.md`):
 
-- Inline `sx={{ ... }}` left in the component file instead of extracted to
-  `<name>.styles.ts` (§5.4 / §6.2)
+- Inline `sx={{ ... }}` — including one buried inside an `sx` array
+  (`sx={[someSx, { ... }]}`), not only the literal `sx={{` shape — left in the component
+  file instead of extracted to `<name>.styles.ts` (§5.4 / §6.2)
 - Constants or utility logic defined directly in the `.tsx` instead of extracted to
-  `<name>.const.ts` / `<name>.utils.ts` (§5.4)
-- Missing `types.ts`: a props interface declared inline instead of in its own file
-  (§5.4 / §5.5)
+  `<name>.const.ts` / `<name>.utils.ts` (§5.4). When the extracted logic returns JSX (a
+  render-helper function), use `<name>.utils.tsx` instead — `.ts` cannot hold JSX, and the
+  written standards only name the `.ts` extension; this is this skill's own extension of
+  that rule to the JSX case
+- Missing `types.ts`: **any type the module declares**, not only a props interface
+  (`typescript-conventions.md` §T.1 — a companion types file is owed to every declared
+  type, promoted to a shared `types.ts` only on a second real consumer per §T.2), left
+  inline instead of in its own companion file
 - Not living in its own folder-per-component (§5.1)
+- **More than one independently-consumed component exported from one file.** If a second
+  component in the same file is imported directly by some *other* file (not a private,
+  first-only helper the primary component itself renders internally), that export has its
+  own external caller and needs its own file, at minimum — split it out, following the
+  folder-per-component treatment below if it's standalone per §5.6, or into its own flat
+  sibling file (still separate from the primary export) if it's a tightly-scoped,
+  single-caller companion that doesn't clear that bar. This matches this org's own
+  precedent for exactly this shape: `create-giselle-component`'s "Multi-component
+  features" convention already gives every internal sub-component its own subfolder from
+  the moment it's scaffolded, "no exception for pieces that are internal or unexported" —
+  the question for an *already-existing* violation is only whether it needs that same full
+  folder treatment (§5.6-gated) or the lighter flat-file split, never whether splitting is
+  warranted at all. Two components sharing one file only because they happen to share a
+  few local helpers or constants is not reason enough to keep them merged: extract the
+  shared helpers to `<name>.utils.ts`/`.const.ts` instead, so each component's own file
+  only imports what it needs. Detect this by checking, for every top-level exported
+  component in the target file, whether some file *other than* the target itself imports
+  it directly.
+- **Missing `README.md` for a documented reason to have one** (`documentation-strategy.md`
+  — "Component folder READMEs"): a component folder *may* have its own `README.md`, but
+  only when it has a non-obvious setup requirement — a required context provider, a peer
+  dependency that must be installed separately, a known accessibility constraint. These
+  are "rare"; "most components do not need one" — do not add a README just because a
+  component exists, and do not treat an existing README as license to also dump unrelated
+  content into it.
+- **A long historical or migration-rationale comment block** — explaining how the code
+  arrived at its current shape across more than one past change, not a short, local *why*
+  for the current line — sitting inline in the source. This is this skill's own
+  convention, not the setup-requirement README rule above and not a restatement of it: even
+  a component with no non-obvious setup requirement at all can still be carrying a
+  multi-paragraph history lecture inline that doesn't belong there. Extract it to the
+  component's own `README.md` (create one, or add a short "History"/"Design rationale"
+  section to an existing one — a second, independent reason a README may exist,
+  alongside the setup-requirement one above, not instead of it) and leave only a 1–2 line
+  pointer comment behind in the source. This is also separate from, and does not override,
+  the standalone-vs-sub-component gate below for the *full* scaffolding suite (README +
+  roadmap + stories): a one-off, single-caller component still doesn't need that full
+  suite, but it still doesn't get to carry a multi-paragraph history lecture inline
+  either.
+- **Demo, list, or other content data hardcoded directly in the component's own
+  render/build logic**, instead of sourced from a dedicated data module (§15.3) — prefer
+  this repo's own already-established data-sourcing pattern (e.g. a `sections-api`/
+  equivalent module already used by sibling components in the same repo) over inventing a
+  new one; fall back to a dedicated fixtures file per §8.4 only when no such pattern exists
+  yet in this repo.
 
-**Naming/decomposition-rule violations**: `naming-conventions.md`'s "Element-first handler naming" section
-and its "Inputs prop-bag naming" section, plus `component-refactor-conventions.md`'s §15.1
-"Decomposing cascading state-sync logic" section and its §15.2 "Sequencing one group at a time" section:
+**Naming/decomposition-rule violations**: `naming-conventions.md`'s "Element-first handler
+naming" section and its "Inputs prop-bag naming" section, plus
+`component-refactor-conventions.md`'s §15.1 "Decomposing cascading state-sync logic"
+section and its §15.2 "Sequencing one group at a time" section:
 
 - Handlers not named element-first (`<Element><Event>`, e.g. `metricCardExpand`); a
   `handle*`-prefixed or bare name used instead
@@ -93,9 +177,9 @@ and its "Inputs prop-bag naming" section, plus `component-refactor-conventions.m
   holding one that isn't the exact camelCase of its type name
 - A cascading state update (a child toggle that may flip a parent's state, which may
   cascade further) left inline in a callback instead of split into named, independently
-  tested pure sync steps
+  tested pure sync steps (§15.1)
 - A batched, tree-wide refactor pass with no quality-gate checkpoint between components,
-  instead of one tightly-coupled group at a time
+  instead of one tightly-coupled group at a time (§15.2)
 
 **Apply only the fixes the diagnosis actually found.** A real target may need one axis,
 the other, both, or neither. Never assume: consider two contrasting cases that show why
@@ -110,9 +194,11 @@ both checks must always run, independently, every time:
   the actual problem entirely.
 - A page-composition component with zero handlers, zero prop-bags, zero state (**zero
   naming/decomposition debt**) but with inline `sx={{}}` blocks, un-extracted layout
-  constants, and a small utility function all defined directly in the file, needing
-  extraction per §5/§6. Naming/decomposition fixes here would have been a no-op; skipping
-  the structural check would have missed the actual problem entirely.
+  constants, a second independently-imported component sharing its file, a hardcoded
+  content array instead of a dedicated data module, and a small utility function all
+  defined directly in the file, needing extraction per §5/§6/§15.3. Naming/decomposition
+  fixes here would have been a no-op; skipping the structural check would have missed the
+  actual problem entirely.
 
 If neither check finds a violation, the target is already compliant: report that and stop
 without changing anything.
@@ -142,13 +228,25 @@ other framework.
   only for a constant that carries a real invariant worth guarding (a minimum size, a
   required format) as a describe block inside the component's own existing `<name>.test.ts`
   — a plain configuration or tuning value with no invariant to violate needs no test.
-- **Extracted `<name>.utils.ts`** → a real `<name>.utils.test.ts` unit-testing each pure
-  function's actual behavior, not merely that it exists. Verify the correct behavior
-  yourself (e.g. by running the function directly) before asserting it — do not guess at a
-  language edge case and write an assertion for the guess.
+- **Extracted `<name>.utils.ts` or `<name>.utils.tsx`** → a real `<name>.utils.test.ts` (or
+  `.test.tsx` for the JSX-returning case) unit-testing each function's actual behavior, not
+  merely that it exists. Verify the correct behavior yourself (e.g. by running the function
+  directly) before asserting it — do not guess at a language edge case and write an
+  assertion for the guess.
 - **Pure derivation functions extracted while decomposing cascading state-sync logic**
   (§15.1) → unit tests for each one, independent of any framework/rendering dependency,
   exactly as that section's own rule already requires.
+- **A second component split out of a shared file into its own file** → verify every
+  import site of the moved export is updated (grep for it; don't rely on the type checker
+  alone to surface every call site), and that the moved component's own existing tests, if
+  any, still pass unchanged — this is a relocation, not a behavior change.
+- **Demo/list data moved to a dedicated data module** (a `sections-api`/equivalent module,
+  or a new fixtures file) → spot-check every affected render to confirm it still renders
+  exactly as before the data relocation (§15.3's own instruction) — a pure data move, not a
+  design change, so any visible diff is a bug in the extraction.
+- **A rationale block extracted to `README.md`** → no test needed, since it's documentation
+  rather than runtime code; just confirm the short pointer comment left behind in the
+  source still makes sense read on its own.
 
 **Not living in its own folder-per-component (§5.1): perform the move yourself unless a
 delegate skill already covers this exact case.** Check whether this target repo has a
@@ -163,27 +261,33 @@ covers this exact case, do the move yourself:
 
 1. Create `<name>/`, move `<name>.tsx` into it unchanged (only import specifiers that need
    an extra `./` level change), and move every already-extracted or newly-extracted
-   `<name>.styles.ts`/`.const.ts`/`.utils.ts`/`.defaults.tsx` (with their tests) into the
-   same folder, dropping the now-redundant `<name>.` file-name prefix as they land inside
-   `<name>/` (e.g. `<name>.styles.ts` becomes `styles.ts`) unless this repo's own existing
-   convention for a comparable component already keeps the prefix — check one real sibling
-   example first, the same reconnaissance step 3 already does for test framework/pattern.
-2. Extract the props interface into `<name>/types.ts` if it isn't already in one.
-3. Create `<name>/index.ts`, re-exporting the component and its props type — this is the
+   `<name>.styles.ts`/`.const.ts`/`.utils.ts`/`.utils.tsx`/`.defaults.tsx` (with their
+   tests) into the same folder, dropping the now-redundant `<name>.` file-name prefix as
+   they land inside `<name>/` (e.g. `<name>.styles.ts` becomes `styles.ts`) unless this
+   repo's own existing convention for a comparable component already keeps the prefix —
+   check one real sibling example first, the same reconnaissance step 3 already does for
+   test framework/pattern.
+2. Extract every type the module declares (not only its props interface, per §T.1 above)
+   into `<name>/types.ts` if it isn't already in one.
+3. Create `<name>/index.ts`, re-exporting the component and its types — this is the
    only import path every external caller should use afterward.
 4. Move the component's existing test file into the folder alongside it.
 5. Update every import site across the repo that referenced the old flat path (grep for it;
    don't rely on the type checker alone to surface every call site, since a JS-only consumer
    or a dynamic import won't fail typecheck).
 
-**Whether to also add `README.md`, `roadmap.md`, or a `.stories.tsx`**: use §5.6's own
-standalone-vs-sub-component test, not a blanket rule. These three exist to document and
-preview a *reusable, published* component for other consumers — add them only when §5.6's
-signals say this target is standalone (exported from a public barrel, listed in a component
-inventory/tracking doc). A component with exactly one caller inside one application gets the
-folder, `types.ts`, barrel, and tests above, and nothing more; treating every folder-per-
-component move as if it were scaffolding a new library component adds ceremony the target
-never asked for and this skill has no standing to impose.
+**Whether to also add the full `README.md` + `roadmap.md` + `.stories.tsx` scaffolding
+suite**: use §5.6's own standalone-vs-sub-component test, not a blanket rule. These three
+exist to document and preview a *reusable, published* component for other consumers — add
+the full suite only when §5.6's signals say this target is standalone (exported from a
+public barrel, listed in a component inventory/tracking doc). A component with exactly one
+caller inside one application gets the folder, `types.ts`, barrel, and tests above, and
+does not get `roadmap.md` or `.stories.tsx`; treating every folder-per-component move as if
+it were scaffolding a new library component adds ceremony the target never asked for and
+this skill has no standing to impose. This is unrelated to, and doesn't excuse, the
+narrower README-for-rationale rule above: even a one-off, single-caller component still
+gets a plain `README.md` the moment it's carrying a long rationale block worth extracting —
+that's a documentation-hygiene fix, not scaffolding ceremony.
 
 ### 4. Run the target repo's own quality gate
 
@@ -196,13 +300,12 @@ before finishing.
 ## Out of scope
 
 - Running this skill against any real component as part of authoring it.
-- Knowing about, or behaving differently for, any specific organization's own repos,
-  branding, or tooling. Any project that wants extra project-specific checks layered on
-  top (its own additional structural conventions, its own scoring or tracking system, its
-  own extra validation step) should build that into its own project-scoped caller skill,
-  which calls this one for the generic pass and then continues with its own steps — never
-  the other way around. This skill stays silent on every specific project it's ever used
-  in, by design.
+- A project's own *extra* checks beyond the LittleBranches-wide conventions above — e.g.
+  `giselle-mui`'s own DoD scoring, its `docs/component-inventory.md` tracking, or its
+  layer/category taxonomy — still belong in that project's own caller skill, which calls
+  this one first and then continues with its own steps, never the other way around. This
+  skill's own job is the LittleBranches-wide conventions above; it does not reinvent any
+  single project's own additional tooling.
 
 Other component-authoring skills in a given repository may delegate to this skill for its
 diagnostic-and-fix pass; see their own `SKILL.md` files for which ones do, in that
