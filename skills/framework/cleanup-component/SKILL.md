@@ -111,12 +111,24 @@ Contract, `component-structure.md`, `typescript-conventions.md`, `component-api-
 - Inline `sx={{ ... }}` — including one buried inside an `sx` array
   (`sx={[someSx, { ... }]}`), not only the literal `sx={{` shape — left in the component
   file instead of extracted to `<name>.styles.ts` (§5.4 / §6.2)
-- **Inline layout-prop object literals that aren't `sx`** — a responsive breakpoint object
-  passed directly to `size`, `rowSpacing`, `columnSpacing`, `spacing`, or any other
-  layout-shaping prop (e.g. `<Grid size={{ xs: 12, md: 6, lg: 5 }}>`), left as a literal in
-  the JSX instead of a named export in `<name>.const.ts`. Same extraction principle as
-  `sx` above, generalized: `sx` isn't the only prop that carries an inline layout literal
-  worth naming and reusing. This is layout/structure, not content — it stays a named
+- **Inline configuration-object (or configuration-call) literals on any prop other than
+  `sx`** — not only a responsive breakpoint object passed directly to `size`, `rowSpacing`,
+  `columnSpacing`, `spacing`, or any other layout-shaping prop (e.g.
+  `<Grid size={{ xs: 12, md: 6, lg: 5 }}>`), but the same shape of violation on an
+  animation/motion prop too: `variants={{ initial: {...}, animate: {...} }}` written
+  inline, or a call like `variants={fade("inUp", { distance: 24 })}` invoked directly in
+  the JSX with its literal arguments in place, instead of a named export in
+  `<name>.const.ts`. Same extraction principle as `sx` above, generalized further: `sx`
+  isn't the only prop that carries an inline literal worth naming and reusing, and layout
+  props aren't the only *other* category either — any prop taking a hardcoded
+  configuration value (layout, animation timing/easing, or any other non-content setting)
+  qualifies. Name each extracted constant in `SCREAMING_SNAKE_CASE` in the component's own
+  `.const.ts`, not `camelCase` — this is a deliberate, distinct convention from
+  `.styles.ts`'s own `camelCase` `sx` exports, chosen so every tunable setting for a
+  component is visible in one glance down that one file, making repeated patterns across
+  components easier to spot later, and so any of these constants can later become a real
+  component prop (caller-overridable) with the extracted constant demoted to just its
+  default value, without a rename. This is layout/behavior, not content — it stays a named
   constant in the component's own `.const.ts`, not something sourced from `sections-api`
   or any other data layer (see the data-sourcing bullet below for where that line sits)
 - Constants or utility logic defined directly in the `.tsx` instead of extracted to
