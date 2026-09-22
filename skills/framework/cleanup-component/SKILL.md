@@ -101,7 +101,7 @@ either check just because the target "looks like" it only needs one kind of work
 it.
 
 **The bullets below are a floor, not a ceiling.** They name violations worth calling out
-explicitly, but they are not the full content of the seven documents fetched in step 1 —
+explicitly, but they are not the full content of the seven documents fetched in step 1:
 read each document's full text and treat every rule stated there as in scope, not only the
 ones named here.
 
@@ -129,21 +129,21 @@ Contract / §15.3 Component Refactor Conventions / §16 Component Configuration 
   part of the escape hatch can't move into `.styles.ts`, since the typing gap is on the
   consuming prop, not on where the value is built — but the combining logic itself always
   can and should.
-- `style={{ ... }}` on a `motion.*` element (or any element using a `component={m.*}` prop)
-  — the same zero-tolerance extraction standard as `sx`, including the `MotionValue`-factory
-  pattern for a dynamic style value. This is now fully specified in AGENTS.md
-  §16.2 — Motion configuration extraction, `component-configuration-conventions.md`; read
-  that section's own text rather than a restatement here.
-- Any other inline configuration literal — a Grid/layout prop (`size`, `rowSpacing`,
-  `columnSpacing`, `spacing`, or similar), a motion `variants`/`animate`/`transition`
-  object, or a single hardcoded scalar/enum-token prop value (e.g.
-  `<SectionTitle titleComponent="h3" titleVariant="h3">`) — left inline in JSX on any prop
+- `style={{ ... }}` on a `motion.*` element (or any element using a `component={m.*}` prop),
+  held to the same zero-tolerance extraction standard as `sx`, including the
+  `MotionValue`-factory pattern for a dynamic style value. This is now fully specified in
+  AGENTS.md §16.2, Motion configuration extraction, `component-configuration-conventions.md`;
+  read that section's own text rather than a restatement here.
+- Any other inline configuration literal (a Grid/layout prop such as `size`, `rowSpacing`,
+  `columnSpacing`, or `spacing`; a motion `variants`/`animate`/`transition` object; or a
+  single hardcoded scalar/enum-token prop value, e.g.
+  `<SectionTitle titleComponent="h3" titleVariant="h3">`), left inline in JSX on any prop
   other than `sx`/`style` above or a content prop already covered by the data-sourcing
   bullet below, instead of a named, explicitly-typed constant in the component's own
   `<name>.const.ts` / `<name>.animations.ts`. This is now fully specified in AGENTS.md
-  §16 — Component Configuration Conventions (§16.1 Grid/layout, §16.2 motion, §16.3
+  §16, Component Configuration Conventions (§16.1 Grid/layout, §16.2 motion, §16.3
   scalar/enum, and the shared explicit-typing requirement),
-  `component-configuration-conventions.md` — including the `SCREAMING_SNAKE_CASE` naming
+  `component-configuration-conventions.md`, including the `SCREAMING_SNAKE_CASE` naming
   convention, the caller-overridable-prop rationale, and the content-vs-configuration
   boundary (a component-reference prop like `component={m.div}` is exempt). Read that
   document's own text; do not restate it here.
@@ -160,21 +160,23 @@ Contract / §15.3 Component Refactor Conventions / §16 Component Configuration 
 - **More than one independently-consumed component exported from one file.** If a second
   component in the same file is imported directly by some *other* file (not a private,
   first-only helper the primary component itself renders internally), that export has its
-  own external caller and needs its own file, at minimum — split it out, following the
-  folder-per-component treatment below if it's standalone per §5.6, or into its own flat
-  sibling file (still separate from the primary export) if it's a tightly-scoped,
-  single-caller companion that doesn't clear that bar. This matches this org's own
-  precedent for exactly this shape: `create-giselle-component`'s "Multi-component
-  features" convention already gives every internal sub-component its own subfolder from
-  the moment it's scaffolded, "no exception for pieces that are internal or unexported" —
-  the question for an *already-existing* violation is only whether it needs that same full
-  folder treatment (§5.6-gated) or the lighter flat-file split, never whether splitting is
-  warranted at all. Two components sharing one file only because they happen to share a
-  few local helpers or constants is not reason enough to keep them merged: extract the
-  shared helpers to `<name>.utils.ts`/`.const.ts` instead, so each component's own file
-  only imports what it needs. Detect this by checking, for every top-level exported
-  component in the target file, whether some file *other than* the target itself imports
-  it directly.
+  own external caller and needs its own file, at minimum: split it out into its own named
+  subfolder, always, regardless of how small or single-purpose that second component
+  looks. This is now the one canonical rule, with no conditional flat-file fallback.
+  AGENTS.md §5.6, Standalone vs. sub-component test, and `component-structure.md`'s
+  "Deciding whether a component is standalone or a sub-component" section ("every
+  sub-component extracted out of a parent gets its own further-nested subfolder,
+  unconditionally, with no size or complexity threshold that changes this... no flat-file
+  fallback for a sub-component, no matter how small or trivial it looks") cover this; read
+  that section's own text rather than a restatement here. §5.6's own
+  standalone-vs-sub-component test still decides *which* subfolder treatment applies (the
+  full standalone scaffolding suite, or the lighter sub-component-only folder, see Step 3
+  below), never *whether* to fold the second export into its own subfolder at all. Two
+  components sharing one file only because they happen to share a few local helpers or
+  constants is not reason enough to keep them merged: extract the shared helpers to
+  `<name>.utils.ts`/`.const.ts` instead, so each component's own file only imports what it
+  needs. Detect this by checking, for every top-level exported component in the target
+  file, whether some file *other than* the target itself imports it directly.
 - **Missing `README.md` for a documented reason to have one** (`documentation-strategy.md`
   — "Component folder READMEs"): a component folder *may* have its own `README.md`, but
   only when it has a non-obvious setup requirement — a required context provider, a peer
@@ -197,16 +199,16 @@ Contract / §15.3 Component Refactor Conventions / §16 Component Configuration 
   suite, but it still doesn't get to carry a multi-paragraph history lecture inline
   either.
 - **Demo, list, heading/caption copy, or any other content data hardcoded directly in the
-  component's own render/build logic**, instead of sourced from a dedicated data module —
+  component's own render/build logic**, instead of sourced from a dedicated data module:
   prefer this repo's own already-established data-sourcing pattern (e.g. a
   `sections-api`/equivalent module already used by sibling components in the same repo)
   over inventing a new one; fall back to a dedicated fixtures file per §8.4 only when no
-  such pattern exists yet in this repo. The detection method — comparing the target against
+  such pattern exists yet in this repo. The detection method (comparing the target against
   every sibling component of a similar shape, applying equally to a single hardcoded
-  heading/caption string as to a whole content array — is now fully specified in AGENTS.md
-  §15.3 — Extracting demo and fixture data to a dedicated module,
+  heading/caption string as to a whole content array) is now fully specified in AGENTS.md
+  §15.3, Extracting demo and fixture data to a dedicated module,
   `component-refactor-conventions.md`; read that section's own text rather than a
-  restatement here. This bullet is about content, not layout/configuration — see the
+  restatement here. This bullet is about content, not layout/configuration; see the
   Grid/motion/scalar bullet above (§16) for that axis.
 
 **Naming/decomposition-rule violations**: `naming-conventions.md`'s "Element-first handler

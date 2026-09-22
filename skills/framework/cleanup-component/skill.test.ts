@@ -207,19 +207,26 @@ describe('cleanup-component', () => {
     expect(SKILL).toMatch(/still\s+doesn't get to carry a multi-paragraph history lecture inline/i);
   });
 
-  it('requires splitting a second independently-consumed component out of a shared file, matching create-giselle-component\'s own precedent', () => {
+  it('requires splitting a second independently-consumed component out of a shared file into its own subfolder, unconditionally, now pointing at the upstreamed AGENTS.md §5.6 instead of restating a flat-file fallback that no longer exists', () => {
     // New LittleBranches convention: one exported, independently-consumed component per
     // file. A private, first-only internal helper sharing the file is fine; a second
-    // export some other file imports directly is not. This isn't invented from nothing —
-    // create-giselle-component's "Multi-component features" convention already gives every
-    // internal sub-component its own subfolder from the moment it's scaffolded, with no
-    // exception for internal/unexported pieces; this skill's own wording should say so
-    // rather than presenting the rule as if no LittleBranches precedent existed for it.
+    // export some other file imports directly is not. wiki#973 upstreamed the "every
+    // sub-component gets its own subfolder, unconditionally, no flat-file fallback" rule
+    // into AGENTS.md §5.6 / component-structure.md: this bullet used to offer a "lighter
+    // flat-file split" option for a non-standalone second export, which the upstreamed
+    // rule now forecloses; the bullet points at §5.6 instead of restating (and
+    // contradicting) it.
     expect(SKILL).toMatch(/More than one independently-consumed component exported from one file/i);
     expect(SKILL).toMatch(/imported directly by some \*other\* file/i);
     expect(SKILL).toMatch(/not a private,\s+first-only helper/i);
-    expect(SKILL).toContain('create-giselle-component');
-    expect(SKILL).toMatch(/no exception for pieces that are internal or unexported/i);
+    expect(SKILL).toMatch(/its own\s+named\s+subfolder, always, regardless of how small/i);
+    expect(SKILL).toMatch(/§5\.6,\s+Standalone vs\. sub-component test/);
+    expect(SKILL).toMatch(/no flat-file\s+fallback for a sub-component/i);
+    expect(SKILL).toMatch(/read that section's own text rather than a\s+restatement here/i);
+    // The old conditional "lighter flat-file split" escape hatch is gone now that the
+    // upstreamed rule forecloses it: guard against it silently creeping back in.
+    expect(SKILL).not.toMatch(/lighter flat-file split/i);
+    expect(SKILL).not.toMatch(/or into its own flat\s+sibling file \(still separate from the primary export\)/i);
   });
 
   it('requires .utils.tsx instead of .utils.ts for extracted logic that returns JSX', () => {
@@ -248,10 +255,10 @@ describe('cleanup-component', () => {
     expect(SKILL).toMatch(/heading\/caption copy/i);
     expect(SKILL).toMatch(/comparing the target against\s+every sibling component of a similar shape/i);
     expect(SKILL).toMatch(/applying equally to a single hardcoded\s+heading\/caption string as to a whole content array/i);
-    expect(SKILL).toMatch(/AGENTS\.md\s+§15\.3\s+—\s+Extracting demo and fixture data to a dedicated module/);
+    expect(SKILL).toMatch(/AGENTS\.md\s+§15\.3,\s+Extracting demo and fixture data to a dedicated module/);
     expect(SKILL).toMatch(/read that section's own text rather than a\s+restatement here/i);
     // The old in-skill anecdote/rationale prose this rule used to restate is gone now that
-    // it lives upstream — guard against it silently creeping back in.
+    // it lives upstream: guard against it silently creeping back in.
     expect(SKILL).not.toMatch(/do not scope this check to "the big list of\s+content" alone/i);
     expect(SKILL).not.toMatch(/PageSection/);
   });
@@ -263,10 +270,10 @@ describe('cleanup-component', () => {
     // instead of restating the full rule and its rationale in its own prose.
     expect(SKILL).toMatch(/rowSpacing[\s\S]*columnSpacing/);
     expect(SKILL).toMatch(/§16\.1 Grid\/layout/);
-    expect(SKILL).toMatch(/AGENTS\.md\s+§16 — Component Configuration Conventions/);
+    expect(SKILL).toMatch(/AGENTS\.md\s+§16, Component Configuration Conventions/);
     expect(SKILL).toMatch(/component-configuration-conventions\.md/);
     // The old full restatement of this rule's own reasoning is gone now that it lives
-    // upstream — guard against it silently creeping back in.
+    // upstream: guard against it silently creeping back in.
     expect(SKILL).not.toMatch(/Same extraction principle as `sx`\s+above, generalized fully/i);
   });
 
@@ -279,7 +286,7 @@ describe('cleanup-component', () => {
     expect(SKILL).toMatch(/variants.*animate.*transition/);
     expect(SKILL).toMatch(/§16\.2 motion/);
     expect(SKILL).toMatch(/component-configuration-conventions\.md/);
-    // The old, now-superseded exact example text is gone — guard against it creeping back
+    // The old, now-superseded exact example text is gone: guard against it creeping back
     // as a restatement instead of a pointer.
     expect(SKILL).not.toMatch(/variants=\{fade\("inUp", \{ distance: 24 \}\)\}/);
   });
@@ -304,9 +311,9 @@ describe('cleanup-component', () => {
     expect(SKILL).toMatch(/`style={{ \.\.\. }}` on a `motion\.\*` element/i);
     expect(SKILL).toMatch(/zero-tolerance extraction standard as\s+`sx`/i);
     expect(SKILL).toMatch(/`MotionValue`-factory\s+pattern for a dynamic style value/i);
-    expect(SKILL).toMatch(/§16\.2 — Motion configuration extraction/);
+    expect(SKILL).toMatch(/§16\.2,\s+Motion configuration extraction/);
     expect(SKILL).toMatch(/component-configuration-conventions\.md/);
-    // The old full factory-example restatement is gone now that it lives upstream — guard
+    // The old full factory-example restatement is gone now that it lives upstream: guard
     // against it silently creeping back in.
     expect(SKILL).not.toMatch(/fooTrackXStyle/);
   });
@@ -322,7 +329,7 @@ describe('cleanup-component', () => {
     expect(SKILL).toMatch(/content-vs-configuration\s+boundary/i);
     expect(SKILL).toMatch(/a component-reference prop like `component={m\.div}` is exempt/i);
     // The old second (Button) example and the full "never about children" restatement are
-    // gone now that the rule lives upstream — guard against them creeping back in.
+    // gone now that the rule lives upstream: guard against them creeping back in.
     expect(SKILL).not.toMatch(/size="large" color="inherit" variant="outlined"/);
   });
 
@@ -334,22 +341,26 @@ describe('cleanup-component', () => {
     expect(SKILL).toMatch(/`SCREAMING_SNAKE_CASE` naming\s+convention/i);
     expect(SKILL).toMatch(/caller-overridable-prop rationale/i);
     expect(SKILL).toMatch(/component-configuration-conventions\.md/);
-    // The old, fully-restated rationale prose is gone now that it lives upstream — guard
+    // The old, fully-restated rationale prose is gone now that it lives upstream: guard
     // against it silently creeping back in.
     expect(SKILL).not.toMatch(/every tunable setting for a\s+component is visible in one glance down that one file/i);
   });
 
   it('requires every extracted configuration constant to carry an explicit prop-type annotation, now pointing at the upstreamed AGENTS.md §16 shared requirement instead of restating the three reasons', () => {
-    // wiki#975 upstreamed this skill's own explicit-typing requirement — including its
-    // three reasons and its fade(...)/GridProps examples — into
+    // wiki#975 upstreamed this skill's own explicit-typing requirement, including its
+    // three reasons and its fade(...)/GridProps examples, into
     // component-configuration-conventions.md's shared "explicit-typing requirement"
     // section. The bullet now points there instead of restating the reasoning and examples.
     expect(SKILL).toMatch(/the shared\s+explicit-typing requirement/i);
     expect(SKILL).toMatch(/component-configuration-conventions\.md/);
     // The old, fully-restated three-reasons rationale and examples are gone now that they
-    // live upstream — guard against them silently creeping back in.
+    // live upstream: guard against them silently creeping back in. The negative match below
+    // deliberately avoids hardcoding the old example's vendor-specific constant name (slated
+    // for its own rename elsewhere): it matches on the generic _ENTRANCE_VARIANTS/fade(...)
+    // shape instead, so no vendor-specific identifier needs to live in this skill's own test
+    // file.
     expect(SKILL).not.toMatch(/GridProps\["rowSpacing"\]/);
-    expect(SKILL).not.toMatch(/HUGEPACK_ELEMENTS_ENTRANCE_VARIANTS: Variants = fade\("inUp", \{ distance: 24 \}\)/);
+    expect(SKILL).not.toMatch(/_ENTRANCE_VARIANTS: Variants = fade\("inUp", \{ distance: 24 \}\)/);
     expect(SKILL).not.toMatch(/shouldn't have to go trace a third-party\s+function's own declaration file/i);
   });
 
@@ -358,11 +369,11 @@ describe('cleanup-component', () => {
     // sibling sources Grid/Stack breakpoints from sections-api). That boundary is now
     // stated once, at the top of the §16 bullet's own replacement text
     // (component-configuration-conventions.md's own "what counts as configuration, not
-    // content" section states it upstream too) — the data-sourcing bullet just points back
+    // content" section states it upstream too): the data-sourcing bullet just points back
     // to it instead of re-arguing it.
     expect(SKILL).toMatch(/This bullet is about content, not\s+layout\/configuration/i);
     expect(SKILL).toMatch(/see the\s+Grid\/motion\/scalar bullet above \(§16\) for that axis/i);
-    // The old anecdotal restatement is gone now that the boundary is stated once — guard
+    // The old anecdotal restatement is gone now that the boundary is stated once: guard
     // against it silently creeping back in.
     expect(SKILL).not.toMatch(/no sibling anywhere in that\s+same codebase sources layout breakpoints from `sections-api`/i);
     expect(SKILL).not.toMatch(/is a far bigger call than\s+this skill has standing to make unilaterally/i);
