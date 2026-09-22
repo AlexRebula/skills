@@ -1,6 +1,7 @@
 ---
 name: cleanup-component
-description: "LittleBranches' own opinionated component-cleanup skill. Diagnoses and fixes component quality debt across two independent axes — structural (folder-per-component, `types.ts`/`.const.ts`/`.utils.ts` extraction, one-component-per-file, README-for-rationale, sourcing demo/list data from a dedicated module) and naming/decomposition (element-first handlers, `Inputs` prop-bags, cascading-state decomposition, refactor sequencing) — checked against the full text of every relevant LittleBranches OSS Quality Standards doc, not a fixed excerpt, plus this skill's own conventions the standards docs don't yet cover. Applies only the fixes a target actually needs, since a real component may need one axis, the other, both, or neither. Not `migrate-react-subcomponent` or any similar structural-only migration skill: those assume the component is already correctly named and decomposed and only relocate it. Use when asked to \"cleanup component X\" or \"refactor component X\" for any target file or folder in a LittleBranches repo."
+description: "LittleBranches' own opinionated component-cleanup skill. Diagnoses and fixes component quality debt across two independent axes — structural (folder-per-component, `types.ts`/`.const.ts`/`.utils.ts` extraction, one-component-per-file, README-for-rationale, sourcing demo/list/heading-copy data from a dedicated module, compared against sibling
+components of a similar shape) and naming/decomposition (element-first handlers, `Inputs` prop-bags, cascading-state decomposition, refactor sequencing) — checked against the full text of every relevant LittleBranches OSS Quality Standards doc, not a fixed excerpt, plus this skill's own conventions the standards docs don't yet cover. Applies only the fixes a target actually needs, since a real component may need one axis, the other, both, or neither. Not `migrate-react-subcomponent` or any similar structural-only migration skill: those assume the component is already correctly named and decomposed and only relocate it. Use when asked to \"cleanup component X\" or \"refactor component X\" for any target file or folder in a LittleBranches repo."
 ---
 
 # Cleanup Component
@@ -110,6 +111,14 @@ Contract, `component-structure.md`, `typescript-conventions.md`, `component-api-
 - Inline `sx={{ ... }}` — including one buried inside an `sx` array
   (`sx={[someSx, { ... }]}`), not only the literal `sx={{` shape — left in the component
   file instead of extracted to `<name>.styles.ts` (§5.4 / §6.2)
+- **Inline layout-prop object literals that aren't `sx`** — a responsive breakpoint object
+  passed directly to `size`, `rowSpacing`, `columnSpacing`, `spacing`, or any other
+  layout-shaping prop (e.g. `<Grid size={{ xs: 12, md: 6, lg: 5 }}>`), left as a literal in
+  the JSX instead of a named export in `<name>.const.ts`. Same extraction principle as
+  `sx` above, generalized: `sx` isn't the only prop that carries an inline layout literal
+  worth naming and reusing. This is layout/structure, not content — it stays a named
+  constant in the component's own `.const.ts`, not something sourced from `sections-api`
+  or any other data layer (see the data-sourcing bullet below for where that line sits)
 - Constants or utility logic defined directly in the `.tsx` instead of extracted to
   `<name>.const.ts` / `<name>.utils.ts` (§5.4). When the extracted logic returns JSX (a
   render-helper function), use `<name>.utils.tsx` instead — `.ts` cannot hold JSX, and the
@@ -159,12 +168,31 @@ Contract, `component-structure.md`, `typescript-conventions.md`, `component-api-
   roadmap + stories): a one-off, single-caller component still doesn't need that full
   suite, but it still doesn't get to carry a multi-paragraph history lecture inline
   either.
-- **Demo, list, or other content data hardcoded directly in the component's own
-  render/build logic**, instead of sourced from a dedicated data module (§15.3) — prefer
-  this repo's own already-established data-sourcing pattern (e.g. a `sections-api`/
-  equivalent module already used by sibling components in the same repo) over inventing a
-  new one; fall back to a dedicated fixtures file per §8.4 only when no such pattern exists
-  yet in this repo.
+- **Demo, list, heading/caption copy, or any other content data hardcoded directly in the
+  component's own render/build logic**, instead of sourced from a dedicated data module
+  (§15.3) — prefer this repo's own already-established data-sourcing pattern (e.g. a
+  `sections-api`/equivalent module already used by sibling components in the same repo)
+  over inventing a new one; fall back to a dedicated fixtures file per §8.4 only when no
+  such pattern exists yet in this repo. **Do not scope this check to "the big list of
+  content" alone** — a real run against a live target flagged a hardcoded showcase-content
+  array but missed that the very same component, and its own sibling `PageSection`-
+  composing section, both hardcoded their own heading/caption/intro/CTA copy inline, while
+  a third sibling section sourced the identical *kind* of content (title/caption/txtGradient
+  passed straight to the same `SectionTitle` component) from that repo's own `sections-api`.
+  Detect this by comparing the target against every sibling component of a similar shape
+  (e.g. every other `PageSection`-composing section in the same folder tree): if siblings
+  take a given kind of content as a props-sourced value and the target hardcodes that same
+  kind of content instead, that is a violation too, regardless of whether the hardcoded
+  value is a whole array or a single heading string. **This bullet is about content, not
+  layout** — a real run also proposed extending it to `Grid`/`Stack` layout props (`size`,
+  `rowSpacing`, `columnSpacing`), and that's the wrong axis: no sibling anywhere in that
+  same codebase sources layout breakpoints from `sections-api`, including the exact
+  component this rule's own precedent-check is modeled on. Content (text, images, hrefs,
+  lists of real data) is what moves to a data layer; layout/structure (breakpoints,
+  spacing) stays a named constant in the component's own `.const.ts` (see the bullet above)
+  — never in `sections-api` or an equivalent data layer, unless a real, repo-wide decision
+  to make layout itself data-driven has actually been made, which is a far bigger call than
+  this skill has standing to make unilaterally.
 
 **Naming/decomposition-rule violations**: `naming-conventions.md`'s "Element-first handler
 naming" section and its "Inputs prop-bag naming" section, plus

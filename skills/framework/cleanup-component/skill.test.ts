@@ -233,6 +233,38 @@ describe('cleanup-component', () => {
     expect(SKILL).toMatch(/already-established data-sourcing pattern/i);
   });
 
+  it('extends the data-sourcing check to hardcoded heading/caption/copy text, not only list/demo content, by comparing against sibling components', () => {
+    // A real run flagged a hardcoded showcase-content array as a §15.3 violation but missed
+    // that the same component (and a sibling PageSection-composing section) also hardcoded
+    // their own heading/caption/intro/CTA copy, while a third sibling sourced the identical
+    // *kind* of content (title/caption/txtGradient into the same SectionTitle component)
+    // from sections-api. The check must compare against sibling shape, not just look for
+    // "a big list".
+    expect(SKILL).toMatch(/heading\/caption copy/i);
+    expect(SKILL).toMatch(/do not scope this check to "the big list of\s+content" alone/i);
+    expect(SKILL).toMatch(/comparing the target against every sibling component of a similar shape/i);
+    expect(SKILL).toMatch(/regardless of whether the hardcoded\s+value is a whole array or a single heading string/i);
+  });
+
+  it('extracts inline Grid/Stack layout-prop object literals (size, rowSpacing, columnSpacing) to .const.ts, generalizing the sx-extraction rule', () => {
+    // Same principle as the inline-sx rule: sx isn't the only prop that carries a literal
+    // worth naming and extracting. A responsive breakpoint object passed directly to size/
+    // rowSpacing/columnSpacing/spacing is the same shape of violation.
+    expect(SKILL).toMatch(/Inline layout-prop object literals that aren't `sx`/i);
+    expect(SKILL).toMatch(/rowSpacing.*columnSpacing/);
+    expect(SKILL).toMatch(/Same extraction principle as\s+`sx` above, generalized/i);
+  });
+
+  it('keeps layout/structure out of the data-sourcing rule: Grid/Stack breakpoints stay in .const.ts, never in sections-api', () => {
+    // A real run proposed extending the content-data-sourcing rule to layout props too.
+    // That's the wrong axis: no sibling component anywhere sources Grid/Stack breakpoints
+    // from sections-api, including the component the data-sourcing rule's own precedent
+    // check is modeled on. This guards against conflating "content" with "layout" again.
+    expect(SKILL).toMatch(/This bullet is about content, not\s+layout/i);
+    expect(SKILL).toMatch(/no sibling anywhere in that\s+same codebase sources layout breakpoints from `sections-api`/i);
+    expect(SKILL).toMatch(/is a far bigger call than\s+this skill has standing to make unilaterally/i);
+  });
+
   it('broadens the types.ts check to any type the module declares, not only props, per typescript-conventions.md §T.1', () => {
     // The prior checklist only checked for an inline props interface. §T.1 is broader:
     // every declared type owns a companion types file, promoted only on a second consumer
