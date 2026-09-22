@@ -271,6 +271,18 @@ describe('cleanup-component', () => {
     expect(SKILL).toMatch(/can later become a real\s+component prop \(caller-overridable\) with the extracted constant demoted to just its\s+default value, without a rename/i);
   });
 
+  it('requires an extracted plain object/array literal to carry an explicit prop-type annotation, not bare inference, so a shape mismatch is caught at the .const.ts declaration and the file stays self-documenting', () => {
+    // Without an explicit annotation, a wrong-shaped literal only fails to typecheck (if at
+    // all) at its JSX usage site, not at its own declaration, and a reader of .const.ts
+    // alone can't tell which prop's shape a bare-inferred constant is meant to satisfy.
+    expect(SKILL).toMatch(/must carry an explicit\s+type annotation\s+naming the exact prop type it configures/i);
+    expect(SKILL).toMatch(/GridProps\["rowSpacing"\]/);
+    expect(SKILL).toMatch(/importing `GridProps`.*from the same\s+library the prop belongs to/i);
+    // A typed function call already carries the guarantee via its own return type, so the
+    // annotation requirement is scoped to the plain-literal case only.
+    expect(SKILL).toMatch(/already carries\s+this guarantee from the call's own return type/i);
+  });
+
   it('keeps layout/structure out of the data-sourcing rule: Grid/Stack breakpoints stay in .const.ts, never in sections-api', () => {
     // A real run proposed extending the content-data-sourcing rule to layout props too.
     // That's the wrong axis: no sibling component anywhere sources Grid/Stack breakpoints

@@ -130,7 +130,23 @@ Contract, `component-structure.md`, `typescript-conventions.md`, `component-api-
   component prop (caller-overridable) with the extracted constant demoted to just its
   default value, without a rename. This is layout/behavior, not content — it stays a named
   constant in the component's own `.const.ts`, not something sourced from `sections-api`
-  or any other data layer (see the data-sourcing bullet below for where that line sits)
+  or any other data layer (see the data-sourcing bullet below for where that line sits).
+  **A plain object/array literal extracted this way must carry an explicit type annotation
+  naming the exact prop type it configures** (e.g.
+  `const HUGEPACK_ELEMENTS_GRID_ROW_SPACING: GridProps["rowSpacing"] = { xs: 3, md: 0 }`,
+  importing `GridProps` — or the equivalent named type the library exports — from the same
+  library the prop belongs to), not left to bare structural inference. Two independent
+  reasons: (1) inference alone means the constant only gets checked against the real prop
+  type at its JSX usage site, so a copy-paste into the wrong prop, or a shape that's valid
+  object-literal TypeScript but wrong for that specific prop, still typechecks at the
+  `.const.ts` declaration and only surfaces (if at all) somewhere else in the file; an
+  explicit annotation catches that mismatch at the declaration itself. (2) the constant
+  becomes self-documenting — a reader of `.const.ts` alone, without cross-referencing the
+  component's JSX, can already see which prop's shape this value has to satisfy. A value
+  produced by a typed function call instead of a raw literal (e.g.
+  `const HUGEPACK_ELEMENTS_INTRO_VARIANTS = fade("inUp", { distance: 24 })`) already carries
+  this guarantee from the call's own return type — the explicit-annotation requirement is
+  specifically for the plain-literal case, where nothing else supplies a type.
 - Constants or utility logic defined directly in the `.tsx` instead of extracted to
   `<name>.const.ts` / `<name>.utils.ts` (§5.4). When the extracted logic returns JSX (a
   render-helper function), use `<name>.utils.tsx` instead — `.ts` cannot hold JSX, and the
