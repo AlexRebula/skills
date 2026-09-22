@@ -110,7 +110,34 @@ Contract, `component-structure.md`, `typescript-conventions.md`, `component-api-
 
 - Inline `sx={{ ... }}` — including one buried inside an `sx` array
   (`sx={[someSx, { ... }]}`), not only the literal `sx={{` shape — left in the component
-  file instead of extracted to `<name>.styles.ts` (§5.4 / §6.2)
+  file instead of extracted to `<name>.styles.ts` (§5.4 / §6.2). **This includes an array
+  that combines already-named `sx` exports** (e.g.
+  `sx={[fooSx, barSx(1)] as SxProps<Theme>}`) — even when every individual element is
+  already a named export, the array-combining itself is still inline composition logic
+  left in the component; move the combination into its own named `<name>.styles.ts`
+  factory (e.g. `fooBarSx(1)`) and reference that from the component instead. Where the
+  destination prop's own type genuinely rejects an array (a real library-typing gap — e.g.
+  MUI's `Box` `sx` prop narrows to a stricter, array-rejecting shape specifically when
+  `component={m.div}` is used, a known MUI/framer-motion typing overlap, not a runtime
+  constraint — verified directly: removing the cast breaks the real build, and no wrapper
+  function or pre-typed variable avoids it either, only a literal `as` expression at the
+  JSX attribute itself satisfies this particular overload resolution), an unavoidable
+  type-widening cast (`as SxProps<Theme>`) still has to stay at the JSX call site — that
+  part of the escape hatch can't move into `.styles.ts`, since the typing gap is on the
+  consuming prop, not on where the value is built — but the combining logic itself always
+  can and should.
+- **`style={{ ... }}` on a `motion.*` element (or any element using a `component={m.*}`
+  prop) is held to the exact same standard as `sx`** — no inline object literal, ever,
+  regardless of property count. A static `style` object is a named export in
+  `<name>.styles.ts`, same as a static `sx` object; a `MotionValue`-based `style` object
+  (e.g. `style={{ x: x1 }}`, `style={{ background }}`) is a factory function in
+  `<name>.styles.ts` that accepts the `MotionValue` argument(s) and returns the style
+  object (e.g. `export const fooTrackXStyle = (x: MotionValue<number>) => ({ x });`, called
+  as `style={fooTrackXStyle(x1)}`) — the factory call happens in JSX, identical to how a
+  dynamic `sx` factory is already called in JSX. `style` isn't governed by MUI's `sx`
+  resolver (a `MotionValue` can't resolve through it), which is why it needs its own named
+  factories in `.styles.ts` rather than being folded into an `sx` export, but the
+  underlying principle — no inline object literal in the component file — is identical.
 - **Any inline literal — scalar, object/array, or a factory call producing one — on any
   prop other than `sx` or a content prop already covered by the data-sourcing bullet
   below** — not only a responsive breakpoint object passed directly to `size`,
