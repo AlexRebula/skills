@@ -111,6 +111,14 @@ Contract, `component-structure.md`, `typescript-conventions.md`, `component-api-
 - Inline `sx={{ ... }}` — including one buried inside an `sx` array
   (`sx={[someSx, { ... }]}`), not only the literal `sx={{` shape — left in the component
   file instead of extracted to `<name>.styles.ts` (§5.4 / §6.2)
+- **Inline layout-prop object literals that aren't `sx`** — a responsive breakpoint object
+  passed directly to `size`, `rowSpacing`, `columnSpacing`, `spacing`, or any other
+  layout-shaping prop (e.g. `<Grid size={{ xs: 12, md: 6, lg: 5 }}>`), left as a literal in
+  the JSX instead of a named export in `<name>.const.ts`. Same extraction principle as
+  `sx` above, generalized: `sx` isn't the only prop that carries an inline layout literal
+  worth naming and reusing. This is layout/structure, not content — it stays a named
+  constant in the component's own `.const.ts`, not something sourced from `sections-api`
+  or any other data layer (see the data-sourcing bullet below for where that line sits)
 - Constants or utility logic defined directly in the `.tsx` instead of extracted to
   `<name>.const.ts` / `<name>.utils.ts` (§5.4). When the extracted logic returns JSX (a
   render-helper function), use `<name>.utils.tsx` instead — `.ts` cannot hold JSX, and the
@@ -175,7 +183,16 @@ Contract, `component-structure.md`, `typescript-conventions.md`, `component-api-
   (e.g. every other `PageSection`-composing section in the same folder tree): if siblings
   take a given kind of content as a props-sourced value and the target hardcodes that same
   kind of content instead, that is a violation too, regardless of whether the hardcoded
-  value is a whole array or a single heading string.
+  value is a whole array or a single heading string. **This bullet is about content, not
+  layout** — a real run also proposed extending it to `Grid`/`Stack` layout props (`size`,
+  `rowSpacing`, `columnSpacing`), and that's the wrong axis: no sibling anywhere in that
+  same codebase sources layout breakpoints from `sections-api`, including the exact
+  component this rule's own precedent-check is modeled on. Content (text, images, hrefs,
+  lists of real data) is what moves to a data layer; layout/structure (breakpoints,
+  spacing) stays a named constant in the component's own `.const.ts` (see the bullet above)
+  — never in `sections-api` or an equivalent data layer, unless a real, repo-wide decision
+  to make layout itself data-driven has actually been made, which is a far bigger call than
+  this skill has standing to make unilaterally.
 
 **Naming/decomposition-rule violations**: `naming-conventions.md`'s "Element-first handler
 naming" section and its "Inputs prop-bag naming" section, plus
