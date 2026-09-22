@@ -131,22 +131,28 @@ Contract, `component-structure.md`, `typescript-conventions.md`, `component-api-
   default value, without a rename. This is layout/behavior, not content — it stays a named
   constant in the component's own `.const.ts`, not something sourced from `sections-api`
   or any other data layer (see the data-sourcing bullet below for where that line sits).
-  **A plain object/array literal extracted this way must carry an explicit type annotation
-  naming the exact prop type it configures** (e.g.
+  **Every extracted configuration constant, whatever its own right-hand side looks like,
+  must carry an explicit type annotation naming the exact prop type it configures** (e.g.
   `const HUGEPACK_ELEMENTS_GRID_ROW_SPACING: GridProps["rowSpacing"] = { xs: 3, md: 0 }`,
   importing `GridProps` — or the equivalent named type the library exports — from the same
-  library the prop belongs to), not left to bare structural inference. Two independent
-  reasons: (1) inference alone means the constant only gets checked against the real prop
-  type at its JSX usage site, so a copy-paste into the wrong prop, or a shape that's valid
-  object-literal TypeScript but wrong for that specific prop, still typechecks at the
-  `.const.ts` declaration and only surfaces (if at all) somewhere else in the file; an
-  explicit annotation catches that mismatch at the declaration itself. (2) the constant
+  library the prop belongs to), never left to bare inference, even when the value comes
+  from a typed function call whose own return type happens to already match (e.g.
+  `const HUGEPACK_ELEMENTS_ENTRANCE_VARIANTS: Variants = fade("inUp", { distance: 24 })`).
+  Three reasons, the third applying regardless of whether the right-hand side is a plain
+  literal or a call: (1) inference alone means a plain literal only gets checked against
+  the real prop type at its JSX usage site, so a copy-paste into the wrong prop, or a shape
+  that's valid object-literal TypeScript but wrong for that specific prop, still typechecks
+  at the `.const.ts` declaration and only surfaces (if at all) somewhere else in the file;
+  an explicit annotation catches that mismatch at the declaration itself. (2) the constant
   becomes self-documenting — a reader of `.const.ts` alone, without cross-referencing the
-  component's JSX, can already see which prop's shape this value has to satisfy. A value
-  produced by a typed function call instead of a raw literal (e.g.
-  `const HUGEPACK_ELEMENTS_INTRO_VARIANTS = fade("inUp", { distance: 24 })`) already carries
-  this guarantee from the call's own return type — the explicit-annotation requirement is
-  specifically for the plain-literal case, where nothing else supplies a type.
+  component's JSX, can already see which prop's shape this value has to satisfy. (3) a
+  developer who wants to change the value later shouldn't have to go trace a third-party
+  function's own declaration file to learn what type they're allowed to produce — the
+  return type of a call like `fade(...)` being correct today is an implementation detail
+  of that call, not something the next editor of this constant should need to know or rely
+  on; the file's own annotation is the one place that answer has to live, consistently,
+  for every constant in it, not only the ones whose right-hand side happens to need it to
+  typecheck.
 - Constants or utility logic defined directly in the `.tsx` instead of extracted to
   `<name>.const.ts` / `<name>.utils.ts` (§5.4). When the extracted logic returns JSX (a
   render-helper function), use `<name>.utils.tsx` instead — `.ts` cannot hold JSX, and the

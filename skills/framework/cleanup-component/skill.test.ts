@@ -271,16 +271,19 @@ describe('cleanup-component', () => {
     expect(SKILL).toMatch(/can later become a real\s+component prop \(caller-overridable\) with the extracted constant demoted to just its\s+default value, without a rename/i);
   });
 
-  it('requires an extracted plain object/array literal to carry an explicit prop-type annotation, not bare inference, so a shape mismatch is caught at the .const.ts declaration and the file stays self-documenting', () => {
-    // Without an explicit annotation, a wrong-shaped literal only fails to typecheck (if at
-    // all) at its JSX usage site, not at its own declaration, and a reader of .const.ts
-    // alone can't tell which prop's shape a bare-inferred constant is meant to satisfy.
+  it('requires every extracted configuration constant to carry an explicit prop-type annotation, even one produced by a typed function call, not bare inference', () => {
+    // Without an explicit annotation, a wrong-shaped plain literal only fails to typecheck
+    // (if at all) at its JSX usage site, not at its own declaration, and a reader of
+    // .const.ts alone can't tell which prop's shape a bare-inferred constant is meant to
+    // satisfy — true even when the value comes from a typed call like fade(...) whose
+    // return type happens to already match: the next editor of that constant shouldn't
+    // have to go trace a third-party function's own declaration file to learn its type.
     expect(SKILL).toMatch(/must carry an explicit\s+type annotation\s+naming the exact prop type it configures/i);
     expect(SKILL).toMatch(/GridProps\["rowSpacing"\]/);
     expect(SKILL).toMatch(/importing `GridProps`.*from the same\s+library the prop belongs to/i);
-    // A typed function call already carries the guarantee via its own return type, so the
-    // annotation requirement is scoped to the plain-literal case only.
-    expect(SKILL).toMatch(/already carries\s+this guarantee from the call's own return type/i);
+    expect(SKILL).toMatch(/never left to bare inference, even when the value comes\s+from a typed function call/i);
+    expect(SKILL).toMatch(/HUGEPACK_ELEMENTS_ENTRANCE_VARIANTS: Variants = fade\("inUp", \{ distance: 24 \}\)/);
+    expect(SKILL).toMatch(/shouldn't have to go trace a third-party\s+function's own declaration file/i);
   });
 
   it('keeps layout/structure out of the data-sourcing rule: Grid/Stack breakpoints stay in .const.ts, never in sections-api', () => {
