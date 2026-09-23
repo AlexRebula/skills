@@ -258,6 +258,7 @@ Skills specific to the [LittleBranches](https://github.com/LittleBranches) organ
 - **[load-dependency-chain](./skills/org/load-dependency-chain/SKILL.md)**: Read the `dependency-chain.md` file and extract the hard deadline, critical path, and phase status for each active repo.
 - **[load-oss-standards](./skills/org/load-oss-standards/SKILL.md)**: Verify access to the public and private LittleBranches AGENTS.md barrels and print a session health-check table.
 - **[migrate-giselle-subcomponent](./skills/org/migrate-giselle-subcomponent/SKILL.md)**: Migrate an existing, already-implemented flat sub-component into its own Scenario A subfolder per `cleanup-workflow.md` — a mechanical move of working code, not a scaffold-from-scratch rebuild.
+- **[port-giselle-component](./skills/org/port-giselle-component/SKILL.md)**: Bring an already-built, already-tested component in from an external repo without a from-scratch TDD rebuild. Guarded: only applies when the source's existing tests pass in their new home with import-path edits alone; any behavioral change required hands off to `create-giselle-component` instead.
 - **[respond-giselle-pr-review](./skills/org/respond-giselle-pr-review/SKILL.md)**: Respond to an existing Copilot PR review in a LittleBranches repo: pre-load AGENTS.md + workflow rules, triage every thread, reply inline before fixing, batch valid fixes, and post SHA follow-ups.
 - **[sync-roadmap](./skills/org/sync-roadmap/SKILL.md)**: Pull current task statuses from Asana and write them back into each repo's `docs/roadmap.md` and `data.tsx` `done` flags. Asana is the master; this skill flows changes downstream.
 
@@ -265,12 +266,13 @@ Skills specific to the [LittleBranches](https://github.com/LittleBranches) organ
 
 ## Components
 
-A cross-cutting view over the whole component-authoring family, spanning [Framework](#framework) and [Organisation](#organisation-littlebranches) above: five skills covering scaffold-new, restructure-existing, and diagnose-and-fix-debt, split by whether they need LittleBranches' own `giselle-mui` repo tooling. Each entry below links to its one real folder — nothing here is a physical copy. `cleanup-component` is the shared engine: the other four delegate their naming/decomposition check to it instead of re-deriving it.
+A cross-cutting view over the whole component-authoring family, spanning [Framework](#framework) and [Organisation](#organisation-littlebranches) above: six skills covering scaffold-new, restructure-existing, port-from-external-repo, and diagnose-and-fix-debt, split by whether they need LittleBranches' own `giselle-mui` repo tooling. Each entry below links to its one real folder — nothing here is a physical copy. `cleanup-component` is the shared engine: the other five delegate their naming/decomposition check to it instead of re-deriving it.
 
 - **[create-react-component](./skills/framework/create-react-component/SKILL.md)**: Scaffold and TDD a new React component from scratch. Framework-agnostic, no MUI dependency.
 - **[create-giselle-component](./skills/org/create-giselle-component/SKILL.md)**: Scaffold and TDD a new `giselle-mui` component following OSS Quality Standards rules, two-phase: scaffold (types, test stubs, README), then implement (TDD vertical slices with real ThemeProvider).
 - **[migrate-react-subcomponent](./skills/framework/migrate-react-subcomponent/SKILL.md)**: Migrate an existing, already-implemented flat sub-component into its own subfolder — a mechanical move of working code, not a scaffold-from-scratch rebuild.
 - **[migrate-giselle-subcomponent](./skills/org/migrate-giselle-subcomponent/SKILL.md)**: Migrate an existing, already-implemented flat sub-component into its own Scenario A subfolder per `cleanup-workflow.md` — a mechanical move of working code, not a scaffold-from-scratch rebuild.
+- **[port-giselle-component](./skills/org/port-giselle-component/SKILL.md)**: Bring an already-built, already-tested component in from a different repo entirely (not already inside `giselle-mui`) without a from-scratch TDD rebuild — guarded so it can't become a general TDD-skipping loophole.
 - **[cleanup-component](./skills/framework/cleanup-component/SKILL.md)**: Diagnose and fix a component's structural debt (OSS §5/§6) and naming/decomposition debt (naming-conventions.md, component-refactor-conventions.md) independently, applying only the fixes it actually needs; never assumes either axis applies, and never behaves differently for any specific organization.
 
 ---
