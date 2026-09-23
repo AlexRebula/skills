@@ -61,6 +61,12 @@ while IFS= read -r -d '' skill_md; do
       > /dev/null
   else
     # macOS / Linux: real directory symlink — no special permissions needed.
+    # `ln -sfn` silently fails to replace $dest_dir when it's already a real
+    # directory (not a symlink): it nests the new symlink inside it instead
+    # of replacing it, leaving a stale copy in place. Clear it first.
+    if [[ -e "$dest_dir" && ! -L "$dest_dir" ]]; then
+      rm -rf "$dest_dir"
+    fi
     ln -sfn "$skill_dir" "$dest_dir"
   fi
 
