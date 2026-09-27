@@ -54,6 +54,18 @@ npx changeset add            # only if no changeset is already pending for the m
 npx changeset version --snapshot canary
 ```
 
+**If the repo's `.changeset/config.json` uses `@changesets/changelog-github`, this step needs a `GITHUB_TOKEN`** to look up PR info, and it fails without one (in CI the workflow provides it; locally nothing does). Pass it inline: `GITHUB_TOKEN=$(gh auth token) npx changeset version --snapshot canary`.
+
+**Never pipe this step's output (`| tail`, `| grep`) or chain it with `&&` straight into `publish`.** In `a | tail && b`, the `&&` checks `tail`'s exit code, not `a`'s, so a failed version step reads as success and the next line publishes the unbumped real version. Redirect to a log file instead, check `$?`, and confirm the version is actually a snapshot before going on:
+
+```bash
+npx changeset version --snapshot canary > /tmp/changeset-version.log 2>&1
+echo "exit: $?"   # must be 0; if not, read the log and stop
+node -p "require('./package.json').version"   # must look like 0.0.0-canary-<timestamp>
+```
+
+Do not continue to publish unless both checks pass. A real version number published by mistake can't be taken back: deleting a registry version is permanent, and the number stays used.
+
 Publishing needs a token in `NODE_AUTH_TOKEN` with both read and write package-registry scope (GitHub Packages: `read:packages` + `write:packages`; classic PATs have more reliable registry support than fine-grained ones, which also need org-owner approval for org-owned resources). Store it in the user-level `~/.npmrc` (global, outside every repo):
 ```
 //<registry-host>/:_authToken=<token>
@@ -61,16 +73,20 @@ Publishing needs a token in `NODE_AUTH_TOKEN` with both read and write package-r
 **Check whether the source repo's own project-level `.npmrc` overrides this** — a line like `//<registry-host>/:_authToken=${NODE_AUTH_TOKEN}` there beats the user-level file for that key, so export the token into the shell instead of relying on `~/.npmrc` alone:
 ```bash
 export NODE_AUTH_TOKEN=$(grep _authToken ~/.npmrc | sed 's/.*_authToken=//')
+node -p "require('./package.json').version" | grep -q '^0\.0\.0-canary-' \
+  || { echo "ABORT: version is not a canary snapshot"; exit 1; }
 npx changeset publish --tag canary
 ```
 
 **You just ran a CI step on a real, permanent checkout, not a throwaway runner — undo the side effects it would never leave behind:**
 ```bash
 git tag -d $(git tag --points-at HEAD)     # changeset publish tags the commit it published from
-git checkout -- package.json
-rm -f CHANGELOG.md
-git status --short   # only the new changeset entry under .changeset/ should be gone —
-                      # NEVER delete .changeset/README.md, that one's permanent
+git checkout -- package.json .changeset    # `changeset version` consumes EVERY pending changeset,
+                                            # not just yours; they belong to main and must come back
+git ls-files --error-unmatch CHANGELOG.md >/dev/null 2>&1 \
+  && git checkout -- CHANGELOG.md || rm -f CHANGELOG.md   # restore if tracked, else delete the new one
+git status --short   # must be empty (a changeset you created with `changeset add` above was
+                      # untracked, so `changeset version` consumed it for good; that's expected)
 ```
 
 Completion: `git status --short` on the source repo shows clean, and the registry's `dist-tags` for the package show a `canary` (or equivalent) version newer than what the target consumer currently pins.
@@ -82,10 +98,10 @@ cd <consumers[consumer-name]>
 # edit package.json: the package's dependency line -> the new version from Phase 1
 export NODE_AUTH_TOKEN=$(grep _authToken ~/.npmrc | sed 's/.*_authToken=//')
 npm install
-rm -rf .next    # or the consumer's own framework build-cache dir, if its typecheck reads stale
-                # generated types referencing a since-moved/renamed source path
 <consumerVerifyCommand>
 ```
+
+If typecheck fails on stale generated types that point at a since-moved or renamed source path, clear the framework's build cache (e.g. `.next`) and re-run. **Before deleting it, check that no dev server is running from this checkout** (e.g. `lsof -i :<port>` then `lsof -p <pid> -d cwd`). Deleting the build cache out from under a live dev server can break it, and that server may be the user's, not yours.
 
 Completion: the whole verify command exits clean. Then:
 ```bash
