@@ -15,14 +15,16 @@ Reads `.canary-publish-config.json` from the source repo's root (gitignored, nev
 2. **Consumers** — one or more `{ name, path }` pairs: apps that pin this package's canary and need bumping. Ask for at least a `default`.
 3. **Source quality-gate command** — the command that must pass before publishing (e.g. `npm run check:verify`). Package-script names vary per project; don't assume one.
 4. **Consumer verify command** — the command(s), run in a consumer after bumping, that decide whether the bump actually worked (e.g. `npm run typecheck && npm run lint && npm run test && npm run build`).
+5. **Source build command** — the command that writes the package's build output (e.g. `npm run build`). Read the source `package.json`'s `scripts.build` first and propose it; only ask if there isn't one.
 
-Write the answers to `.canary-publish-config.json` and add it to `.gitignore` if not already there. On every later run, load it silently — never re-interview once it exists.
+Write the answers to `.canary-publish-config.json` and add it to `.gitignore` if not already there. On every later run, load it silently — never re-interview once it exists. An existing config written before `buildCommand` existed: use the source's `scripts.build` if it has one, otherwise ask for that one field alone, and add it to the file.
 
 ```json
 {
   "sourceRepo": "/absolute/path/to/source-repo",
   "consumers": { "default": "/absolute/path/to/consumer-repo" },
   "qualityGateCommand": "npm run check:verify",
+  "buildCommand": "npm run build",
   "consumerVerifyCommand": "npm run typecheck && npm run lint && npm run test && npm run build"
 }
 ```
@@ -45,6 +47,18 @@ npm ci
 ```
 
 **Gotcha to check for, not assume away**: if the quality gate includes any local-only safety check (gitignored, not part of the repo's real CI — e.g. a personal banned-terms list), a failure there can be that check being stricter than what CI actually enforces, not a real gate failure. Confirm by moving the local-only file aside, re-running the gate, and restoring it immediately after — never leave it moved, and never treat a genuine failure (one that persists with the file moved aside) as anything but a real blocker.
+
+**Build right before versioning, every time, even if you already ran the gate or decided to skip it.** `changeset publish` packs whatever is in the build output (`dist/`, or whatever the package's `files` lists) at that moment. It does not build, and neither does `npm publish` unless the package has its own `prepack`/`prepublishOnly` build script. A checkout's leftover build from an older commit ships as-is. The quality gate may build as a side effect, but don't count on that. Skipping the gate for a sound reason (for example, the same tree already passed it elsewhere) silently skips the build too, and a stale `dist/` goes out under a new version number.
+
+```bash
+<buildCommand>
+```
+
+Then check the build actually has the merged work, **before** publishing. Pick one or more exports (or other names) that the merged PRs added, and confirm each one appears in the built type declarations, or in the built JS if the package ships no types:
+
+```bash
+grep -c "<NewExportName>" dist/<entry>.d.ts   # must be > 0 for every name checked; 0 means stop
+```
 
 ```bash
 npx changeset add            # only if no changeset is already pending for the merged work —
@@ -89,7 +103,20 @@ git status --short   # must be empty (a changeset you created with `changeset ad
                       # untracked, so `changeset version` consumed it for good; that's expected)
 ```
 
-Completion: `git status --short` on the source repo shows clean, and the registry's `dist-tags` for the package show a `canary` (or equivalent) version newer than what the target consumer currently pins.
+Then verify what the registry actually holds, not the local build. Download the tarball you just published and repeat the export check against it:
+
+```bash
+cd "$(mktemp -d)"
+npm pack <package-name>@<new-version> --<scope>:registry=<registry-url>   # a scoped package on a
+                                            # private registry needs the scope mapping here, or npm
+                                            # asks the public registry and gets a 404
+tar xzf *.tgz
+grep -c "<NewExportName>" package/dist/<entry>.d.ts   # must be > 0, same names as before publishing
+```
+
+If a name is missing from the registry tarball, that version is broken: rebuild, publish a fresh snapshot so it takes over the `canary` tag, verify that one, and tell the user which version not to use. Don't try to delete the bad version; that's permanent and the number stays used anyway.
+
+Completion: `git status --short` on the source repo shows clean, the registry tarball contains the merged work's exports, and the registry's `dist-tags` for the package show a `canary` (or equivalent) version newer than what the target consumer currently pins (`npm view <package-name> dist-tags --<scope>:registry=<registry-url>`).
 
 ## Phase 2: Bump the consumer
 
