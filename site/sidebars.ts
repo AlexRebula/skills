@@ -24,10 +24,16 @@ function skillItem({ category, name }: SkillRef): SidebarItem {
   return { type: 'doc', id: `${category}/${name}`, label: name };
 }
 
-function stage(label: string, skills: SkillRef[]): SidebarItem {
+/**
+ * `ordered` means what `FlowStageSection.ordered` documents
+ * (./src/data/flow-sections.types.ts). It rides in `customProps`, the
+ * sidebar item's own slot for extra data, where `buildFlowSections` reads it.
+ */
+function stage(label: string, { ordered }: { ordered: boolean }, skills: SkillRef[]): SidebarItem {
   return {
     type: 'category',
     label,
+    customProps: { ordered },
     items: skills.map(skillItem),
   };
 }
@@ -42,7 +48,7 @@ function stage(label: string, skills: SkillRef[]): SidebarItem {
 // list is exhaustive, non-redundant coverage, and that's easy to silently
 // drift out of sync as skills get added, renamed, or re-categorised.
 export const FLOW_STAGES = [
-  stage('Start the day', [
+  stage('Start the day', { ordered: true }, [
     { category: 'engineering', name: 'ask-alex' },
     { category: 'daily-workflow', name: 'standup-prep' },
     { category: 'daily-workflow', name: 'standup-prep-preflight' },
@@ -50,7 +56,7 @@ export const FLOW_STAGES = [
     { category: 'daily-workflow', name: 'load-session-context' },
     { category: 'daily-workflow', name: 'load-session-guidelines' },
   ]),
-  stage('Shape it', [
+  stage('Shape it', { ordered: false }, [
     { category: 'thinking-tools', name: 'grill-me' },
     { category: 'engineering', name: 'grill-with-docs' },
     { category: 'thinking-tools', name: 'grilling' },
@@ -60,7 +66,7 @@ export const FLOW_STAGES = [
     { category: 'engineering', name: 'to-tickets' },
     { category: 'engineering', name: 'wayfinder' },
   ]),
-  stage('Build it', [
+  stage('Build it', { ordered: false }, [
     { category: 'engineering', name: 'setup-engineering-skills' },
     { category: 'engineering', name: 'implement' },
     { category: 'engineering', name: 'implement-tickets' },
@@ -77,12 +83,12 @@ export const FLOW_STAGES = [
     { category: 'org', name: 'migrate-giselle-subcomponent' },
     { category: 'org', name: 'port-giselle-component' },
   ]),
-  stage('Words for the codebase', [
+  stage('Words for the codebase', { ordered: false }, [
     { category: 'engineering', name: 'codebase-design' },
     { category: 'engineering', name: 'domain-modeling' },
     { category: 'engineering', name: 'writing-for-agents' },
   ]),
-  stage('Land it', [
+  stage('Land it', { ordered: false }, [
     { category: 'git', name: 'commit-wip' },
     { category: 'git', name: 'wip-sweep' },
     { category: 'git', name: 'create-pr' },
@@ -97,12 +103,12 @@ export const FLOW_STAGES = [
     { category: 'git', name: 'respond-pr-review' },
     { category: 'git', name: 'sync-branches' },
   ]),
-  stage('When it breaks', [
+  stage('When it breaks', { ordered: false }, [
     { category: 'engineering', name: 'triage' },
     { category: 'engineering', name: 'diagnosing-bugs' },
     { category: 'engineering', name: 'resolving-merge-conflicts' },
   ]),
-  stage('Sweep for debt', [
+  stage('Sweep for debt', { ordered: false }, [
     { category: 'engineering', name: 'improve-codebase-architecture' },
     { category: 'engineering', name: 'research' },
     { category: 'engineering', name: 'deslopify' },
@@ -115,7 +121,7 @@ export const FLOW_STAGES = [
     { category: 'git', name: 'sync-down' },
     { category: 'git', name: 'sync-up' },
   ]),
-  stage('Run the wiki', [
+  stage('Run the wiki', { ordered: false }, [
     { category: 'wiki', name: 'ingest' },
     { category: 'wiki', name: 'query' },
     { category: 'wiki', name: 'wiki-lint' },
@@ -125,7 +131,7 @@ export const FLOW_STAGES = [
     { category: 'wiki', name: 'log-incident' },
     { category: 'wiki', name: 'archive-file' },
   ]),
-  stage('Close the session', [
+  stage('Close the session', { ordered: false }, [
     { category: 'daily-workflow', name: 'session-wrap' },
     { category: 'daily-workflow', name: 'handoff' },
     { category: 'daily-workflow', name: 'collapse-session-folder' },
@@ -135,20 +141,20 @@ export const FLOW_STAGES = [
     { category: 'daily-workflow', name: 'sync' },
     { category: 'daily-workflow', name: 'asana-sync' },
   ]),
-  stage('Grow a contributor', [
+  stage('Grow a contributor', { ordered: false }, [
     { category: 'mentoring', name: 'audit-issue' },
     { category: 'mentoring', name: 'learner-history' },
     { category: 'mentoring', name: 'next-issue' },
     { category: 'mentoring', name: 'teach' },
   ]),
-  stage('LittleBranches specifics', [
+  stage('LittleBranches specifics', { ordered: false }, [
     { category: 'org', name: 'audit-giselle-tests' },
     { category: 'org', name: 'respond-giselle-pr-review' },
     { category: 'org', name: 'load-oss-standards' },
     { category: 'org', name: 'load-dependency-chain' },
     { category: 'org', name: 'sync-roadmap' },
   ]),
-  stage('Reach for on their own', [
+  stage('Reach for on their own', { ordered: false }, [
     { category: 'personal', name: 'anonimise' },
     { category: 'personal', name: 'caveman' },
     { category: 'personal', name: 'edit-article' },

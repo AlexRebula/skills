@@ -17,27 +17,14 @@
  *   1: a real skill's docs page has no "## What it does" section
  */
 
-import { existsSync, readFileSync, writeFileSync, mkdirSync } from 'node:fs';
+import { readFileSync, writeFileSync, mkdirSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { TARGET_CATEGORIES } from '../site/src/data/categories.ts';
-import { listSkillsInCategory } from './check-docs-completeness.ts';
 import { extractSection } from './generate-landing-data.ts';
+import { listSkillDocs, parseSkillDocsGeneratorArgs } from './skill-docs.ts';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const REPO_ROOT = join(__dirname, '..');
-
-function parseArgs(argv: string[]): { skillsRoot: string; docsRoot: string; out: string } {
-  const getFlag = (name: string, fallback: string): string => {
-    const idx = argv.indexOf(name);
-    return idx !== -1 && argv[idx + 1] ? argv[idx + 1] : fallback;
-  };
-  return {
-    skillsRoot: getFlag('--skills-root', join(REPO_ROOT, 'skills')),
-    docsRoot: getFlag('--docs-root', join(REPO_ROOT, 'docs')),
-    out: getFlag('--out', join(REPO_ROOT, 'site/src/data/skill-summaries.json')),
-  };
-}
 
 /**
  * The "## What it does" section's own paragraphs, in order - table rows and
@@ -64,32 +51,31 @@ export function generateSkillSummaries(skillsRoot: string, docsRoot: string): Ge
   const summaries: Record<string, string[]> = {};
   const missing: string[] = [];
 
-  for (const category of TARGET_CATEGORIES) {
-    for (const skill of listSkillsInCategory(skillsRoot, category)) {
-      const docsPath = join(docsRoot, category, `${skill}.md`);
-      if (!existsSync(docsPath)) continue; // covered separately by check-docs-completeness.ts
-
-      const docContent = readFileSync(docsPath, 'utf-8');
-      let paragraphs: string[];
-      try {
-        paragraphs = extractWhatItDoesParagraphs(docContent);
-      } catch {
-        missing.push(`${category}/${skill}`);
-        continue;
-      }
-      if (paragraphs.length === 0) {
-        missing.push(`${category}/${skill}`);
-        continue;
-      }
-      summaries[`${category}/${skill}`] = paragraphs;
+  for (const { key, docsPath } of listSkillDocs(skillsRoot, docsRoot)) {
+    const docContent = readFileSync(docsPath, 'utf-8');
+    let paragraphs: string[];
+    try {
+      paragraphs = extractWhatItDoesParagraphs(docContent);
+    } catch {
+      missing.push(key);
+      continue;
     }
+    if (paragraphs.length === 0) {
+      missing.push(key);
+      continue;
+    }
+    summaries[key] = paragraphs;
   }
 
   return { summaries, missing };
 }
 
 function main(): void {
-  const { skillsRoot, docsRoot, out } = parseArgs(process.argv.slice(2));
+  const { skillsRoot, docsRoot, out } = parseSkillDocsGeneratorArgs(process.argv.slice(2), {
+    skillsRoot: join(REPO_ROOT, 'skills'),
+    docsRoot: join(REPO_ROOT, 'docs'),
+    out: join(REPO_ROOT, 'site/src/data/skill-summaries.json'),
+  });
   const { summaries, missing } = generateSkillSummaries(skillsRoot, docsRoot);
 
   if (missing.length > 0) {

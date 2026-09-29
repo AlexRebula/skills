@@ -29,6 +29,11 @@ function stageSkillRefs(items: unknown): StageSkillRef[] {
   return refs;
 }
 
+/** `item[key]` when `item` is an object carrying that key, otherwise `undefined`. */
+function readProp(item: unknown, key: string): unknown {
+  return item && typeof item === 'object' && key in item ? (item as Record<string, unknown>)[key] : undefined;
+}
+
 /** The fields `buildSkillLookup` resolves per `"category/name"` key. */
 interface SkillLookupEntry {
   description: string;
@@ -75,11 +80,11 @@ export function buildFlowSections(
   if (!Array.isArray(flowStages)) return [];
 
   return flowStages.map((stageItem): FlowStageSection => {
-    const label =
-      stageItem && typeof stageItem === 'object' && 'label' in stageItem && typeof stageItem.label === 'string'
-        ? stageItem.label
-        : '';
-    const items = stageItem && typeof stageItem === 'object' && 'items' in stageItem ? stageItem.items : undefined;
+    const rawLabel = readProp(stageItem, 'label');
+    const label = typeof rawLabel === 'string' ? rawLabel : '';
+    const items = readProp(stageItem, 'items');
+    // Only a literal `true` counts, so a stage missing the flag never reads as ordered.
+    const ordered = readProp(readProp(stageItem, 'customProps'), 'ordered') === true;
 
     const original: FlowSkill[] = [];
     const lineage: FlowSkill[] = [];
@@ -112,7 +117,7 @@ export function buildFlowSections(
       (LINEAGE_STATUSES.has(status) ? lineage : original).push(skill);
     }
 
-    return { label, original, lineage };
+    return { label, ordered, original, lineage };
   });
 }
 
@@ -146,7 +151,7 @@ export function filterFlowSections(
     const original = section.original.filter((skill) => skillMatchesFilter(skill, activePersonas));
     const lineage = section.lineage.filter((skill) => skillMatchesFilter(skill, activePersonas));
     if (original.length === 0 && lineage.length === 0) continue;
-    filtered.push({ label: section.label, original, lineage });
+    filtered.push({ ...section, original, lineage });
   }
   return filtered;
 }
