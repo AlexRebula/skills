@@ -31,6 +31,13 @@ export interface FlowSkill {
  */
 export interface FlowStageSection {
   label: string;
+  /**
+   * `true` when the stage's skills run as a fixed sequence (so a consumer
+   * can number them and draw arrows between them), `false` when they're a
+   * set to pick from. Set by hand per stage in `FLOW_STAGES`
+   * (site/sidebars.ts): only a stage the docs call a fixed sequence is `true`.
+   */
+  ordered: boolean;
   original: FlowSkill[];
   lineage: FlowSkill[];
 }

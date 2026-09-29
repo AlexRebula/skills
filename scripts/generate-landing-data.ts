@@ -41,15 +41,22 @@ export interface RawSkillEntry {
   description: string;
 }
 
-export function extractSection(readme: string, heading: string): string {
+/** The body of the `## <heading>` section, up to the next `## ` heading; `undefined` when there is no such heading. */
+export function findSection(markdown: string, heading: string): string | undefined {
   const headingLine = `## ${heading}`;
-  const start = readme.indexOf(`${headingLine}\n`);
-  if (start === -1) {
-    throw new Error(`Could not find "${headingLine}" heading in README.md`);
-  }
-  const rest = readme.slice(start + headingLine.length);
+  const start = markdown.indexOf(`${headingLine}\n`);
+  if (start === -1) return undefined;
+  const rest = markdown.slice(start + headingLine.length);
   const nextHeadingIdx = rest.indexOf('\n## ');
   return nextHeadingIdx === -1 ? rest : rest.slice(0, nextHeadingIdx);
+}
+
+export function extractSection(readme: string, heading: string): string {
+  const section = findSection(readme, heading);
+  if (section === undefined) {
+    throw new Error(`Could not find "## ${heading}" heading in README.md`);
+  }
+  return section;
 }
 
 export function extractDescription(section: string): string {

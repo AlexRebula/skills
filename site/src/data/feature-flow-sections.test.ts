@@ -24,7 +24,7 @@ const LINEAGE_SKILL: FlowSkill = {
 };
 
 const SECTIONS: FlowStageSection[] = [
-  { label: 'Shape it', original: [ORIGINAL_SKILL], lineage: [LINEAGE_SKILL] },
+  { label: 'Shape it', ordered: false, original: [ORIGINAL_SKILL], lineage: [LINEAGE_SKILL] },
 ];
 
 const MEDIA_SRC = '/img/flow-skill-card-backdrop.svg';
@@ -75,6 +75,7 @@ describe('buildFeatureFlowItems', () => {
     const realLabels = FLOW_STAGES.map((item) => (item as { label: string }).label);
     const realSections: FlowStageSection[] = realLabels.map((label) => ({
       label,
+      ordered: false,
       original: [],
       lineage: [],
     }));

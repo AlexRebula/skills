@@ -1,4 +1,5 @@
 import { describe, expect, it } from 'vitest';
+import { FLOW_STAGES } from '../../sidebars';
 import { buildFlowSections, filterFlowSections } from './flow-sections';
 import type { ProvenanceMap } from './provenance.types';
 import type { SkillsLandingData } from './skills-landing.types';
@@ -178,10 +179,38 @@ describe('buildFlowSections', () => {
   });
 });
 
+describe('buildFlowSections: the per-stage "ordered" flag', () => {
+  it('exposes a stage\'s ordered flag from its customProps', () => {
+    const flowStages = [
+      { type: 'category', label: 'Start the day', customProps: { ordered: true }, items: [] },
+      { type: 'category', label: 'Shape it', customProps: { ordered: false }, items: [] },
+    ];
+    const sections = buildFlowSections(flowStages, LANDING, {});
+    expect(sections.map((s) => s.ordered)).toEqual([true, false]);
+  });
+
+  it('treats a stage with no ordered flag as unordered', () => {
+    const sections = buildFlowSections(FLOW_STAGES_FIXTURE, LANDING, PROVENANCE_MAP);
+    expect(sections.map((s) => s.ordered)).toEqual([false, false]);
+  });
+
+  it('marks only the stages the docs describe as a fixed sequence as ordered, in the real FLOW_STAGES', () => {
+    for (const stage of FLOW_STAGES) {
+      expect(typeof (stage as { customProps?: { ordered?: unknown } }).customProps?.ordered).toBe('boolean');
+    }
+    const ordered = buildFlowSections(FLOW_STAGES, LANDING, {})
+      .filter((s) => s.ordered)
+      .map((s) => s.label);
+    // docs/daily-workflow/standup-prep.md: "The fixed order matters".
+    expect(ordered).toEqual(['Start the day']);
+  });
+});
+
 describe('filterFlowSections', () => {
   const SECTIONS: FlowStageSection[] = [
     {
       label: 'Build it',
+      ordered: true,
       original: [
         { category: 'engineering', name: 'tdd', description: 'TDD.', status: 'original', personas: ['software-engineering'] },
       ],
@@ -189,6 +218,7 @@ describe('filterFlowSections', () => {
     },
     {
       label: 'Teach it',
+      ordered: false,
       original: [
         { category: 'mentoring', name: 'teach', description: 'Teach.', status: 'original', personas: ['teaching-mentoring'] },
       ],
@@ -196,6 +226,7 @@ describe('filterFlowSections', () => {
     },
     {
       label: 'Misc stage',
+      ordered: false,
       original: [{ category: 'misc', name: 'grab-bag', description: 'Grab bag.', status: 'original', personas: [] }],
       lineage: [],
     },
@@ -218,6 +249,14 @@ describe('filterFlowSections', () => {
   it('always keeps a misc (no-persona) skill regardless of the active filter', () => {
     const filtered = filterFlowSections(SECTIONS, new Set(['personal-knowledge-work']));
     expect(filtered.map((s) => s.label)).toEqual(['Misc stage']);
+  });
+
+  it('keeps each surviving stage\'s ordered flag', () => {
+    const filtered = filterFlowSections(SECTIONS, new Set(['software-engineering']));
+    expect(filtered.map((s) => [s.label, s.ordered])).toEqual([
+      ['Build it', true],
+      ['Misc stage', false],
+    ]);
   });
 
   it('drops a stage entirely when none of its skills match, rather than rendering it empty', () => {
