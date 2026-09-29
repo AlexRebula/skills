@@ -134,6 +134,15 @@ describe('.githooks/post-merge', () => {
     expect(output).toContain('notify-consumers: no notify-consumers.config.json, skipping');
     expect(existsSync(logFile())).toBe(false);
   });
+
+  it('--help prints usage to stdout, starts nothing, and exits 0', () => {
+    writeConfig();
+    const result = spawnSync('sh', [HOOK, '--help'], { cwd: repo, env: gitEnv(), encoding: 'utf8' });
+    expect(result.status).toBe(0);
+    expect(result.stdout).toMatch(/^Usage: \.githooks\/post-merge/);
+    expect(result.stderr).toBe('');
+    expect(existsSync(logFile())).toBe(false);
+  });
 });
 
 describe('notify-consumers.config.example.json', () => {

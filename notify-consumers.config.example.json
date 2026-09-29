@@ -3,12 +3,12 @@
     {
       "name": "example-consumer",
       "path": "/path/to/example-consumer",
-      "command": "npm run sync:example -- --pr"
+      "command": ["npm", "run", "sync:example", "--", "--pr"]
     },
     {
       "name": "another-consumer",
       "path": "/path/to/another-consumer",
-      "command": "npm run sync:another -- --pr"
+      "command": ["npm", "run", "sync:another", "--", "--pr"]
     }
   ]
 }

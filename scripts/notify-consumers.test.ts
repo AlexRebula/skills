@@ -1,23 +1,28 @@
-import { describe, expect, it } from 'vitest';
+import { spawnSync } from 'node:child_process';
+import { mkdtempSync, rmSync, writeFileSync } from 'node:fs';
+import { tmpdir } from 'node:os';
+import { dirname, join } from 'node:path';
+import { fileURLToPath } from 'node:url';
+import { afterEach, beforeEach, describe, expect, it } from 'vitest';
 import {
+  HELP,
   buildPlan,
   consumerEnv,
+  displayCommand,
   formatPlan,
-  parseArgs,
+  parseCliArgs,
   parseConfig,
   runPlan,
-  type NotifyConfig,
-  type Plan,
-  type Step,
 } from './notify-consumers';
+import type { NotifyConfig, Plan, Step } from './notify-consumers.types';
 
 const REPO_ROOT = '/path/to/skills';
 const CONFIG_PATH = `${REPO_ROOT}/notify-consumers.config.json`;
 
 const CONFIG: NotifyConfig = {
   consumers: [
-    { name: 'example-consumer', path: '/path/to/consumer', command: 'npm run sync:example -- --pr' },
-    { name: 'second-consumer', path: '/path/to/second', command: 'npm run sync:second -- --pr' },
+    { name: 'example-consumer', path: '/path/to/consumer', command: ['npm', 'run', 'sync:example', '--', '--pr'] },
+    { name: 'second-consumer', path: '/path/to/second', command: ['npm', 'run', 'sync:second', '--', '--pr'] },
   ],
 };
 
@@ -35,28 +40,41 @@ function plan(overrides: Partial<Parameters<typeof buildPlan>[0]> = {}): Plan {
 }
 
 // ---------------------------------------------------------------------------
-// parseArgs
+// parseCliArgs
 // ---------------------------------------------------------------------------
 
-describe('parseArgs', () => {
+describe('parseCliArgs', () => {
   it('defaults to a real run with the default config path', () => {
-    expect(parseArgs([])).toEqual({ dryRun: false, configPath: null });
+    expect(parseCliArgs([])).toEqual({ dryRun: false, help: false, configPath: null });
   });
 
   it('parses --dry-run', () => {
-    expect(parseArgs(['--dry-run'])).toEqual({ dryRun: true, configPath: null });
+    expect(parseCliArgs(['--dry-run'])).toEqual({ dryRun: true, help: false, configPath: null });
   });
 
   it('parses --config <path>', () => {
-    expect(parseArgs(['--config', '/path/to/other.json'])).toEqual({ dryRun: false, configPath: '/path/to/other.json' });
+    expect(parseCliArgs(['--config', '/path/to/other.json'])).toEqual({
+      dryRun: false,
+      help: false,
+      configPath: '/path/to/other.json',
+    });
+  });
+
+  it('parses --help and -h', () => {
+    expect(parseCliArgs(['--help']).help).toBe(true);
+    expect(parseCliArgs(['-h']).help).toBe(true);
   });
 
   it('throws when --config has no value', () => {
-    expect(() => parseArgs(['--config'])).toThrow(/--config/);
+    expect(() => parseCliArgs(['--config'])).toThrow(/--config/);
   });
 
   it('throws on an unknown flag', () => {
-    expect(() => parseArgs(['--pr'])).toThrow(/Unknown argument/);
+    expect(() => parseCliArgs(['--pr'])).toThrow(/--pr/);
+  });
+
+  it('throws on a positional argument', () => {
+    expect(() => parseCliArgs(['extra'])).toThrow(/extra/);
   });
 });
 
@@ -87,8 +105,18 @@ describe('parseConfig', () => {
   });
 
   it('rejects a relative consumer path', () => {
-    const bad = { consumers: [{ name: 'x', path: '../x', command: 'npm run sync' }] };
+    const bad = { consumers: [{ name: 'x', path: '../x', command: ['npm', 'run', 'sync'] }] };
     expect(() => parseConfig(JSON.stringify(bad))).toThrow(/absolute/);
+  });
+
+  it.each([
+    ['a string', 'npm run sync'],
+    ['an empty array', []],
+    ['an array with an empty string', ['npm', '']],
+    ['an array with a non-string', ['npm', 1]],
+  ])('rejects a command that is %s', (_label, command) => {
+    const bad = { consumers: [{ name: 'x', path: '/path/to/x', command }] };
+    expect(() => parseConfig(JSON.stringify(bad))).toThrow(/consumers\[0\] "command" must be a non-empty array/);
   });
 
   it('rejects duplicate consumer names', () => {
@@ -167,7 +195,7 @@ describe('buildPlan', () => {
     expect(result.regenerate).toEqual({
       label: 'regenerate site data',
       cwd: `${REPO_ROOT}/site`,
-      command: 'npm run precheck',
+      command: ['npm', 'run', 'precheck'],
     });
   });
 
@@ -178,13 +206,13 @@ describe('buildPlan', () => {
       {
         label: 'example-consumer',
         cwd: '/path/to/consumer',
-        command: 'npm run sync:example -- --pr',
+        command: ['npm', 'run', 'sync:example', '--', '--pr'],
         missing: false,
       },
       {
         label: 'second-consumer',
         cwd: '/path/to/second',
-        command: 'npm run sync:second -- --pr',
+        command: ['npm', 'run', 'sync:second', '--', '--pr'],
         missing: false,
       },
     ]);
@@ -198,8 +226,18 @@ describe('buildPlan', () => {
 });
 
 // ---------------------------------------------------------------------------
-// formatPlan (the dry-run output)
+// displayCommand / formatPlan (the dry-run output)
 // ---------------------------------------------------------------------------
+
+describe('displayCommand', () => {
+  it('prints plain arguments as they are', () => {
+    expect(displayCommand(['npm', 'run', 'sync:example', '--', '--pr'])).toBe('npm run sync:example -- --pr');
+  });
+
+  it('single-quotes arguments a shell would split or expand', () => {
+    expect(displayCommand(['echo', 'two words', "it's", '$HOME'])).toBe(`echo 'two words' 'it'\\''s' '$HOME'`);
+  });
+});
 
 describe('formatPlan', () => {
   it('prints the regeneration step, then each consumer with its cwd and command', () => {
@@ -237,16 +275,19 @@ describe('formatPlan', () => {
 
 function fakeRunner(exitCodes: Record<string, number> = {}) {
   const calls: Step[] = [];
-  const lines: string[] = [];
+  const progress: string[] = [];
+  const results: string[] = [];
   return {
     calls,
-    lines,
+    progress,
+    results,
     deps: {
       run: async (step: Step) => {
         calls.push(step);
         return exitCodes[step.label] ?? 0;
       },
-      log: (line: string) => lines.push(line),
+      progress: (line: string) => progress.push(line),
+      result: (line: string) => results.push(line),
     },
   };
 }
@@ -256,29 +297,32 @@ describe('runPlan', () => {
     const fake = fakeRunner();
     expect(await runPlan({ kind: 'skip', reason: 'CI detected' }, fake.deps)).toBe(0);
     expect(fake.calls).toEqual([]);
-    expect(fake.lines).toEqual(['notify-consumers: skipping: CI detected']);
+    expect(fake.results).toEqual(['notify-consumers: skipping: CI detected']);
+    expect(fake.progress).toEqual([]);
   });
 
   it('regenerates once, then runs each consumer, and exits 0 when all succeed', async () => {
     const fake = fakeRunner();
     expect(await runPlan(plan(), fake.deps)).toBe(0);
     expect(fake.calls.map((s) => s.label)).toEqual(['regenerate site data', 'example-consumer', 'second-consumer']);
+    expect(fake.results).toEqual(['notify-consumers: done: 2 ok, 0 failed, 0 skipped']);
   });
 
   it('stops before any consumer when regeneration fails, and exits 1', async () => {
     const fake = fakeRunner({ 'regenerate site data': 2 });
     expect(await runPlan(plan(), fake.deps)).toBe(1);
     expect(fake.calls.map((s) => s.label)).toEqual(['regenerate site data']);
-    expect(fake.lines.join('\n')).toMatch(/regenerate site data failed \(exit 2\)/);
+    expect(fake.progress).toContain('notify-consumers: regenerate site data failed (exit 2)');
+    expect(fake.results).toEqual(['notify-consumers: done: regeneration failed, no consumer was notified']);
   });
 
   it('keeps going after one consumer fails, then exits 1', async () => {
     const fake = fakeRunner({ 'example-consumer': 1 });
     expect(await runPlan(plan(), fake.deps)).toBe(1);
     expect(fake.calls.map((s) => s.label)).toEqual(['regenerate site data', 'example-consumer', 'second-consumer']);
-    expect(fake.lines).toContain('notify-consumers: example-consumer failed (exit 1)');
-    expect(fake.lines).toContain('notify-consumers: second-consumer ok');
-    expect(fake.lines.at(-1)).toBe('notify-consumers: done: 1 ok, 1 failed, 0 skipped');
+    expect(fake.progress).toContain('notify-consumers: example-consumer failed (exit 1)');
+    expect(fake.progress).toContain('notify-consumers: second-consumer ok');
+    expect(fake.results).toEqual(['notify-consumers: done: 1 ok, 1 failed, 0 skipped']);
   });
 
   it('skips a missing checkout without running it, and exits 1', async () => {
@@ -286,7 +330,88 @@ describe('runPlan', () => {
     const code = await runPlan(plan({ pathExists: (p) => p !== '/path/to/consumer' }), fake.deps);
     expect(code).toBe(1);
     expect(fake.calls.map((s) => s.label)).toEqual(['regenerate site data', 'second-consumer']);
-    expect(fake.lines).toContain('notify-consumers: example-consumer skipped: checkout not found at /path/to/consumer');
-    expect(fake.lines.at(-1)).toBe('notify-consumers: done: 1 ok, 0 failed, 1 skipped');
+    expect(fake.progress).toContain(
+      'notify-consumers: example-consumer skipped: checkout not found at /path/to/consumer'
+    );
+    expect(fake.results).toEqual(['notify-consumers: done: 1 ok, 0 failed, 1 skipped']);
+  });
+});
+
+// ---------------------------------------------------------------------------
+// The CLI itself, run for real, but only with --help, --dry-run and bad
+// input: none of these runs a generator, git, gh or any consumer command.
+// ---------------------------------------------------------------------------
+
+const SCRIPT_DIR = dirname(fileURLToPath(import.meta.url));
+const TSX = join(SCRIPT_DIR, '..', 'node_modules', '.bin', 'tsx');
+const SCRIPT = join(SCRIPT_DIR, 'notify-consumers.ts');
+
+function cli(args: string[], extraEnv: Record<string, string> = {}) {
+  const env: NodeJS.ProcessEnv = { ...process.env, ...extraEnv };
+  if (!('CI' in extraEnv)) delete env.CI;
+  const r = spawnSync(TSX, [SCRIPT, ...args], { env, encoding: 'utf8' });
+  return { code: r.status, stdout: r.stdout, stderr: r.stderr };
+}
+
+describe('notify-consumers CLI', () => {
+  let dir: string;
+  beforeEach(() => {
+    dir = mkdtempSync(join(tmpdir(), 'notify-consumers-cli-'));
+  });
+  afterEach(() => {
+    rmSync(dir, { recursive: true, force: true });
+  });
+
+  it('--help prints the help text to stdout and exits 0', () => {
+    const r = cli(['--help']);
+    expect(r.code).toBe(0);
+    expect(r.stdout).toBe(`${HELP}\n`);
+    expect(r.stderr).toBe('');
+  });
+
+  it('--dry-run prints the plan to stdout, exits 0, and runs nothing', () => {
+    const marker = join(dir, 'ran');
+    const config = join(dir, 'config.json');
+    const consumer = { name: 'example-consumer', path: dir, command: ['touch', marker] };
+    writeFileSync(config, JSON.stringify({ consumers: [consumer] }));
+    const r = cli(['--dry-run', '--config', config]);
+    expect(r.code).toBe(0);
+    expect(r.stdout).toContain('notify-consumers: plan (1 consumer)');
+    expect(r.stdout).toContain(`run: SKILLS_REPO=`);
+    expect(r.stdout).toContain(`touch ${marker}`);
+    expect(r.stderr).toBe('');
+    expect(spawnSync('test', ['-e', marker]).status).not.toBe(0);
+  });
+
+  it('reports a --config file that does not exist on stderr and exits 1', () => {
+    const absent = join(dir, 'absent.json');
+    const r = cli(['--config', absent]);
+    expect(r.code).toBe(1);
+    expect(r.stdout).toBe('');
+    expect(r.stderr).toContain(`--config file not found: ${absent} (see --help)`);
+  });
+
+  it('skips on CI with a reason on stdout and exits 0', () => {
+    const config = join(dir, 'config.json');
+    writeFileSync(config, JSON.stringify({ consumers: [] }));
+    const r = cli(['--config', config], { CI: 'true' });
+    expect(r.code).toBe(0);
+    expect(r.stdout).toMatch(/^notify-consumers: skipping: CI detected/);
+  });
+
+  it('reports an unknown flag on stderr and exits 1', () => {
+    const r = cli(['--bogus']);
+    expect(r.code).toBe(1);
+    expect(r.stdout).toBe('');
+    expect(r.stderr).toMatch(/--bogus.*\(see --help\)/);
+  });
+
+  it('reports an invalid config on stderr and exits 1', () => {
+    const config = join(dir, 'config.json');
+    writeFileSync(config, JSON.stringify({ consumers: [{ name: 'x', path: dir, command: 'npm run sync' }] }));
+    const r = cli(['--dry-run', '--config', config]);
+    expect(r.code).toBe(1);
+    expect(r.stdout).toBe('');
+    expect(r.stderr).toMatch(/"command" must be a non-empty array/);
   });
 });
