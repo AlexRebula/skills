@@ -10,3 +10,7 @@ node_modules/
 
 # Smart gate telemetry log — local only
 scripts/gate-timing.log
+
+# notify-consumers: local consumer list and its background log (see notify-consumers.config.example.json)
+notify-consumers.config.json
+notify-consumers.log
