@@ -6,8 +6,11 @@
  * Runs automatically after `npm install` (postinstall). Adapted from the
  * identical script in the giselle-mui repo.
  *
- * Safe to run on CI (no-ops when not inside a git repo or when
- * `git config` is not writable).
+ * Skipped on CI (`CI` set, as GitHub Actions does): a CI checkout never
+ * needs the local hooks, and a job that pushes (the changesets release bot
+ * pushing `changeset-release/main`) would otherwise run the pre-push quality
+ * gate without the site's dependencies installed and fail the push. Also
+ * no-ops when not inside a git repo or when `git config` is not writable.
  */
 
 import fs from 'fs';
@@ -19,6 +22,12 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 const projectRoot = path.resolve(__dirname, '..');
+
+// ── Skip on CI ─────────────────────────────────────────────────────────────
+if (process.env.CI) {
+  console.log('✓ CI detected: skipping git hook setup');
+  process.exit(0);
+}
 
 // ── Locate the git root ────────────────────────────────────────────────────
 let gitRoot;
