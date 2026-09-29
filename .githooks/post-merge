@@ -1,0 +1,88 @@
+#!/usr/bin/env sh
+# .githooks/post-merge
+#
+# When a merge or pull moves local `main` on, starts
+# scripts/notify-consumers.ts in the background so every consumer listed in
+# the local, gitignored notify-consumers.config.json refreshes its copy of
+# this repo's site data. The pull doesn't wait for it: output goes to
+# notify-consumers.log (gitignored) at the repo root, which keeps the
+# latest run only.
+#
+# git runs post-merge for merges and merging pulls, not for
+# `git pull --rebase` (or pull.rebase=true): after a rebasing pull, run
+# npm run notify-consumers by hand.
+#
+# Does nothing on CI, on any branch other than main, or when the config
+# file is missing. Run it by hand with: npm run notify-consumers
+# Preview what it would do with:        npm run notify-consumers -- --dry-run
+#
+# Usage:
+#   post-merge [<squash-flag>]   (git passes 1 for a squash merge, else 0)
+#   post-merge --help
+#
+# Exit codes:
+#   0  always: a hook that fails here can't undo the merge, so every
+#      "nothing to do" case says why (on stderr) and exits 0
+
+set -eu
+
+usage() {
+  cat <<'HELP'
+Usage: .githooks/post-merge [<squash-flag>]
+
+Run by git after a merge. When local main moved on, starts
+`npm run notify-consumers` in the background (log: notify-consumers.log).
+Skips on CI, off main, or without notify-consumers.config.json.
+Always exits 0.
+HELP
+}
+
+say() {
+  echo "notify-consumers: $*" >&2
+}
+
+main() {
+  case "${1:-}" in
+    -h | --help)
+      usage
+      return 0
+      ;;
+  esac
+
+  if [ -n "${CI:-}" ]; then
+    say "CI detected, skipping."
+    return 0
+  fi
+
+  branch=$(git symbolic-ref --quiet --short HEAD 2>/dev/null) || return 0
+  [ "$branch" = "main" ] || return 0
+
+  # Belt and braces: skip when ORIG_HEAD shows the merge didn't move HEAD.
+  # With no ORIG_HEAD at all, go ahead (git only runs this hook after a merge).
+  orig=$(git rev-parse --quiet --verify ORIG_HEAD 2>/dev/null) || orig=""
+  if [ -n "$orig" ] && [ "$orig" = "$(git rev-parse HEAD)" ]; then
+    return 0
+  fi
+
+  root=$(git rev-parse --show-toplevel) || return 0
+
+  if [ ! -f "$root/notify-consumers.config.json" ]; then
+    say "no notify-consumers.config.json, skipping (copy notify-consumers.config.example.json to set one up)."
+    return 0
+  fi
+
+  if ! command -v npm >/dev/null 2>&1; then
+    say "npm not found, skipping. Run by hand: npm run notify-consumers"
+    return 0
+  fi
+
+  # Detach fully: every fd of the background job is redirected, so git (and
+  # whatever is reading git's output) doesn't wait for it. Keep the `&` on a
+  # bare command, not on an `a && b` list: a backgrounded list forks a shell
+  # that still holds the hook's stdout/stderr open.
+  cd "$root" || return 0
+  nohup npm run --silent notify-consumers >notify-consumers.log 2>&1 </dev/null &
+  say "started in the background, log: notify-consumers.log"
+}
+
+main "$@"
