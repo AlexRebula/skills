@@ -1,3 +1,8 @@
+---
+tagline: "Bring in a tested component"
+outcome: "A tested component brought in from another repo."
+---
+
 ## What it does
 
 `port-giselle-component` brings an already-built, already-tested component in from a

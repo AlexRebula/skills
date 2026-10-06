@@ -1,3 +1,8 @@
+---
+tagline: "Test assertions to shoehorn"
+outcome: "Test type assertions moved to shoehorn."
+---
+
 ## What it does
 
 `migrate-to-shoehorn` rewrites `as` type assertions in test files into calls to [`@total-typescript/shoehorn`](https://www.npmjs.com/package/@total-typescript/shoehorn): `fromPartial()` in place of `as Type`, and `fromAny()` in place of the double-assertion `as unknown as Type`.

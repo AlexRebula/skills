@@ -1,3 +1,8 @@
+---
+tagline: "Publish and try a canary"
+outcome: "A canary published and the consumer bumped onto it."
+---
+
 ## What it does
 
 `canary-publish` runs the two-phase flow for getting recent work in a source package repo actually visible in a consumer app: **publish** a Changesets snapshot/canary release from the source repo to its registry, then **bump** a named consumer onto that version and verify it still resolves cleanly (install, typecheck, lint, test, build — whatever the consumer's own verify command covers).

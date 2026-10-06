@@ -1,3 +1,8 @@
+---
+tagline: "A learner's verified history"
+outcome: "A verified history of a learner's issues."
+---
+
 ## What it does
 
 `learner-history` builds a factual, source-verified history of a learner's GitHub issue work across an entire org, and hands back a structured table: what was completed, at what quality, evidenced by what. It never writes a file on its own; it is meant to be called by another skill and read straight out of context.

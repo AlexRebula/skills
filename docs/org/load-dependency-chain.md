@@ -1,3 +1,8 @@
+---
+tagline: "Deadlines and critical path"
+outcome: "The deadline, critical path and phase status."
+---
+
 ## What it does
 
 `load-dependency-chain` reads a single file, `dependency-chain.md`, and pulls three things out of it before anything else happens in the session: the hard deadline and what depends on it, the critical path (what is blocking what today), and a phase status for each active repo. It is a small skill on purpose. Its whole job is making sure that context is in front of you before you start checking repo state or writing a morning brief, not after.

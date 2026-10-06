@@ -1,3 +1,8 @@
+---
+tagline: "Reproduce, then fix for good"
+outcome: "The bug reproduced, fixed and covered by a test."
+---
+
 ## What it does
 
 `diagnosing-bugs` runs a six-phase diagnosis on a hard bug or a performance regression: build a repro, minimise it, rank hypotheses, instrument, fix with a regression test, clean up.

@@ -1,3 +1,8 @@
+---
+tagline: "Scaffold course exercises"
+outcome: "Exercise folders with problems and solutions."
+---
+
 ## What it does
 
 `scaffold-exercises` builds the directory structure for a course section: numbered section folders, numbered exercise folders inside them, and the `problem/`, `solution/`, and `explainer/` subfolders each exercise needs, each with a real (not empty) `readme.md`. The result is built to pass `pnpm ai-hero-cli internal lint` on the first try, not to be fixed up afterward.

@@ -1,3 +1,8 @@
+---
+tagline: "Build every ticket in order"
+outcome: "The change, built ticket by ticket, with its tests."
+---
+
 ## What it does
 
 `implement-tickets` closes the gap `implement`'s own docs name explicitly: `implement` builds exactly one ticket per invocation, on purpose, and has no batch mode. `implement-tickets` is the thin loop on top: point it at a parent issue whose children were already ticketed by [to-tickets](https://aihero.dev/skills-to-tickets), and it repeatedly computes the frontier — every child whose blockers are satisfied — and drives `/implement` on each, one at a time, until the whole batch is built.

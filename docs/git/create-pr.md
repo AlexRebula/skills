@@ -1,3 +1,8 @@
+---
+tagline: "Clean branch, complete PR"
+outcome: "A pull request with its description filled in."
+---
+
 ## What it does
 
 `create-pr` takes a branch that is ready to leave your machine and turns it into a proper pull request: it checks branch hygiene, runs the quality gate, fills in a complete PR description from the repo's own template (or a sensible fallback), and opens the PR through `gh pr create`. It never uses the GitHub web UI for creation, because the UI leaves every template section empty for you to fill by hand.

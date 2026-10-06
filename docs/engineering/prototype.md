@@ -1,3 +1,8 @@
+---
+tagline: "Throwaway answers to design questions"
+outcome: "A throwaway prototype that answers the design question."
+---
+
 ## What it does
 
 `prototype` writes **throwaway code that answers a question**: does this state model feel right, or what should this screen look like. The question comes first and decides the shape of everything that follows; a prototype that answers the wrong question is pure waste, however good it looks.

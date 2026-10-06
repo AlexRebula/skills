@@ -1,3 +1,8 @@
+---
+tagline: "Pay down component debt"
+outcome: "A component with its structural debt paid down."
+---
+
 ## What it does
 
 `cleanup-component` diagnoses a target component against two independent axes: structural

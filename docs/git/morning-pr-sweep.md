@@ -1,3 +1,8 @@
+---
+tagline: "Clear all PR review debt"
+outcome: "Every open PR's review threads cleared."
+---
+
 ## What it does
 
 `morning-pr-sweep` clears review debt across every open PR you own in one session, instead of running [respond-pr-review](./respond-pr-review.md) once per PR. It discovers every open PR, triages every thread on every one of them together before touching any code, batches fixes into one commit per PR, posts SHA confirmations, and reports which PRs are ready to merge. One context load, one standards load, one pass through all the code, rather than N of each.

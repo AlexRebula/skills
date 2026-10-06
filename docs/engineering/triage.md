@@ -1,3 +1,8 @@
+---
+tagline: "Sort issues into ready work"
+outcome: "Issues sorted and briefed, ready for an agent."
+---
+
 ## What it does
 
 `triage` works through the issues on your project's tracker, moving each one through a small state machine of **triage roles** (a category role and a state role) and leaving behind either an agent-ready brief, a specific question for the reporter, or a closed issue with a recorded reason.

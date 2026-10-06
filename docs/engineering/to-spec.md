@@ -1,3 +1,8 @@
+---
+tagline: "Conversation into a spec"
+outcome: "A spec that names each module and how it will be tested."
+---
+
 ## What it does
 
 `to-spec` turns the conversation you have just had into a **[spec](https://www.aihero.dev/ai-coding-dictionary/spec)**, and publishes it to your issue tracker as a single issue.

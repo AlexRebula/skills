@@ -1,3 +1,8 @@
+---
+tagline: "Block dangerous git commands"
+outcome: "Hooks that block dangerous git commands."
+---
+
 ## What it does
 
 `git-guardrails-claude-code` installs a `PreToolUse` hook that inspects every `Bash` command before Claude Code runs it, and blocks a fixed list of destructive git operations: `git push` (including `--force`), `git reset --hard`, `git clean -f` / `-fd`, `git branch -D`, and `git checkout .` / `git restore .`.

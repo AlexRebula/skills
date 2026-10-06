@@ -1,3 +1,8 @@
+---
+tagline: "Start the working day"
+outcome: "A morning brief with open PRs and what to do first."
+---
+
 ## What it does
 
 `standup-prep` is the daily session-startup coordinator. It runs a fixed sequence of sub-skills (preflight, session context, repo status, WIP sweep, open-PR sweep, and an optional Asana sync), then assembles everything into one morning brief, writes it to disk, and prints a per-repo summary you can act on immediately. It is meant to run before any coding work starts, not partway through a day.

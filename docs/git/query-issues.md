@@ -1,3 +1,8 @@
+---
+tagline: "List issues by label"
+outcome: "A list of issues with the labels you asked for."
+---
+
 ## What it does
 
 `query-issues` fetches GitHub issues from a given repo filtered by one or more labels, using strict AND logic: an issue has to carry every listed label to match, not just one. It prints a formatted list in chat and writes nothing anywhere.

@@ -1,3 +1,8 @@
+---
+tagline: "Refresh the master index"
+outcome: "A refreshed master index of every repo."
+---
+
 ## What it does
 
 `rebuild-root-index` regenerates the one file that gives any session awareness of every markdown document across every repo in your workspace, not just the wiki: `$AR_ROOT/index.md`. It discovers every repo under your workspace root by looking for a `.git` folder, treats the wiki repo specially (its own curated `index.md` is reproduced rather than rescanned), and for every other repo, diffs the current file set against a content-hash manifest so only new or changed files actually get read and re-summarized.

@@ -1,3 +1,8 @@
+---
+tagline: "Give writing a human voice"
+outcome: "Prose and code with the AI tells taken out."
+---
+
 ## What it does
 
 `deslopify` strips the tells that mark text or code as AI-generated and puts a human voice back. It runs as two independent passes that share one process: calibrate how dense the result should be, scan for a pattern, rewrite it, add back what generic output tends to strip out, then self-audit for anything left over.

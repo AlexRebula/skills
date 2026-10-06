@@ -1,3 +1,8 @@
+---
+tagline: "Grill and sharpen the docs"
+outcome: "A sharper glossary and decisions recorded as you go."
+---
+
 ## What it does
 
 `grill-with-docs` interviews you about a plan or design until you and the [agent](https://www.aihero.dev/ai-coding-dictionary/agent) share one understanding of it, and writes the vocabulary and the hard decisions into your repo while it does. It runs the same [grilling](https://aihero.dev/skills-grilling) primitive [grill-me](https://aihero.dev/skills-grill-me) does (a round of questions, then wait, then the next round), pointed at a codebase, and layers in [domain-modeling](https://aihero.dev/skills-domain-modeling) for the vocabulary work.

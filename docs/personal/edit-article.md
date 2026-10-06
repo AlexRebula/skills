@@ -1,3 +1,8 @@
+---
+tagline: "Tighten and restructure articles"
+outcome: "An article restructured and tightened."
+---
+
 ## What it does
 
 `edit-article` restructures and tightens an existing article draft. It works in two passes. First it divides the piece into sections based on its own headings and checks the order those sections appear in: information is treated as a graph, not a line, so a section that depends on an idea introduced later has to move before it, not after. That reordering gets confirmed with you before anything else happens.

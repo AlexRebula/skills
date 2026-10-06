@@ -1,3 +1,8 @@
+---
+tagline: "Promote files through a PR"
+outcome: "Chosen files promoted through a reviewed PR."
+---
+
 ## What it does
 
 `sync-up` promotes a chosen file list from your working repo into your target repo via a reviewed PR, but only after every configured gate passes: your own quality-gate command, a built-in privacy/secret scan (always on, no configuration needed), and an optional banned-content check (only if you've set one up). A single failing gate blocks the promotion entirely and leaves the target repo completely untouched. On a full pass, it opens a normal PR using your own already-authenticated `gh` session. It never merges that PR: reviewing and merging stays your own call.

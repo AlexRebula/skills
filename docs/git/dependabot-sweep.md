@@ -1,3 +1,8 @@
+---
+tagline: "Batch the safe dependency bumps"
+outcome: "Low-risk dependency bumps batched into one PR."
+---
+
 ## What it does
 
 `dependabot-sweep` clears a repo's pile of open Dependabot PRs by classifying each one on real risk

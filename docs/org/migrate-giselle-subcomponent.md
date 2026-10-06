@@ -1,3 +1,8 @@
+---
+tagline: "Move a Giselle sub-component"
+outcome: "A Giselle sub-component in its own folder."
+---
+
 ## What it does
 
 `migrate-giselle-subcomponent` moves an existing, already-implemented sub-component out of a flat sibling `.tsx` file and into its own named subfolder, matching `docs/components/cleanup-workflow.md`'s Scenario A structure in the `giselle-mui` repo. It is a mechanical move: `git mv` the file, split shared vs. private types, fix every import, then verify — never a rewrite, and never new tests written from scratch.

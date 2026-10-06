@@ -1,3 +1,8 @@
+---
+tagline: "Design deep, simple modules"
+outcome: "Deep modules behind small, testable interfaces."
+---
+
 ## What it does
 
 `codebase-design` fixes the words you use to design a module: **module**, **interface**, **depth**, **seam**, **adapter**, **leverage**, **locality**. It defines each one precisely, bans the loose substitutes ("component", "service", "API", "boundary"), and states the handful of principles that follow from them.

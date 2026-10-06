@@ -1,3 +1,8 @@
+---
+tagline: "Roadmaps from Asana statuses"
+outcome: "Roadmaps updated from Asana."
+---
+
 ## What it does
 
 `sync-roadmap` pulls task statuses out of Asana and writes them back into each repo's `docs/roadmap.md`, and into `data.tsx` where one exists, updating the `done` flags that drive a visual timeline. The direction is fixed and one-way: Asana is the master, and this skill only ever flows changes downstream from it. If a phase is already marked done in the markdown and Asana agrees, nothing gets touched.

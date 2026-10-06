@@ -1,3 +1,8 @@
+---
+tagline: "Find the workflow folders"
+outcome: "The workflow folders, found and named."
+---
+
 ## What it does
 
 `resolve-ai-paths` resolves the filesystem paths that a handful of other skills need before they can do anything: `SESSIONS_ROOT`, `PROMPTS_ROOT`, `MORNING_BRIEFS_ROOT`, and `SKILLS_ROOT`. It's called by those skills, not by you directly: a calling skill invokes it, gets back resolved values, and substitutes them through its own steps.

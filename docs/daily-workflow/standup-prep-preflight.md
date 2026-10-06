@@ -1,3 +1,8 @@
+---
+tagline: "Checks before the standup"
+outcome: "Prior work, standards and deadlines, checked and loaded."
+---
+
 ## What it does
 
 `standup-prep-preflight` is the composite first step of `/standup-prep`: it runs `/check-prior-work` and `/load-dependency-chain` in order, and optionally a standards-loading skill in between. On its own it produces no brief and makes no changes; it just gathers the context that everything after it depends on, so the rest of the day's work doesn't start from a blank slate.

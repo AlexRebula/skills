@@ -1,3 +1,8 @@
+---
+tagline: "Set up a repo once"
+outcome: "A repo set up for the engineering skills."
+---
+
 Quickstart:
 
 ```bash

@@ -1,3 +1,8 @@
+---
+tagline: "Record an AI incident"
+outcome: "An incident recorded in the incidents hub."
+---
+
 ## What it does
 
 `log-incident` turns an AI behavioural mistake into a structured, git-tracked record: what happened, the actual root cause, severity, and a set of suggested fixes tagged either **Mechanical** (a hook or script that enforces it) or **Behavioural** (relies on the model choosing to comply). It drafts the record from the conversation you're already in, shows it to you before writing anything, then files it, updates the incidents index, and opens a PR.

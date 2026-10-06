@@ -1,3 +1,8 @@
+---
+tagline: "Manage an Obsidian vault"
+outcome: "Notes found, written and linked in your vault."
+---
+
 ## What it does
 
 `obsidian-vault` finds, creates, and organises notes in an Obsidian vault, following the conventions that vault already uses: `[[wikilinks]]` for connecting notes, index notes that are little more than a list of links to a topic's members, and a flat folder layout where structure comes from links rather than directories.

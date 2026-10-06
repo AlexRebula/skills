@@ -1,3 +1,8 @@
+---
+tagline: "Cited answers from primary sources"
+outcome: "A cited answer from primary sources."
+---
+
 ## What it does
 
 `research` answers a question by reading the sources that own the answer, then leaves a cited Markdown file in the repo. It works only from **[primary sources](https://www.aihero.dev/ai-coding-dictionary/primary-source)**: official docs, source code, specs, first-party APIs. It follows every claim back to the source that owns it, so it will not repeat a blog post's account of an API when the API's own docs are reachable.

@@ -1,3 +1,8 @@
+---
+tagline: "Commit, push and draft PRs"
+outcome: "WIP committed, pushed and opened as draft PRs."
+---
+
 ## What it does
 
 `wip-sweep` takes the dirty state table [repo-status](./repo-status.md) produced and turns it into OSS-compliant snapshot branches, one confirmation gate at a time. It runs as a tiered action model: T2 commits locally, T3 pushes to remote, T4 opens a draft PR. Each tier asks before it runs, and each tier only processes what the previous one confirmed.

@@ -1,3 +1,8 @@
+---
+tagline: "Resume where you left"
+outcome: "The last wrap and today's brief, loaded."
+---
+
 ## What it does
 
 `load-session-context` gives a fresh session enough history to pick up where the last one left off, without reading everything that has ever happened. It opens the sessions index, reads the title and primary work of the five most recent rows, loads only the single latest wrap file from the most recent session, and surfaces whatever pending tasks or unresolved blockers that file contains, after checking each one is actually still relevant.

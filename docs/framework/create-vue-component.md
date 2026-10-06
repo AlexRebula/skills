@@ -1,3 +1,8 @@
+---
+tagline: "New Vue component, test-first"
+outcome: "A Vue component, its tests and README."
+---
+
 ## What it does
 
 `create-vue-component` builds a new Vue 3 single-file component in the same two phases as its React and Angular siblings: a scaffold you commit first, then an implementation built as a strict red-green loop. It targets the Composition API only, `<script setup lang="ts">`, `defineProps` and `defineEmits` in their type-generic form. No Options API, no `defineComponent`.

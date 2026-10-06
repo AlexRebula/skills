@@ -1,3 +1,8 @@
+---
+tagline: "New Angular component, test-first"
+outcome: "An Angular component, its tests and README."
+---
+
 ## What it does
 
 `create-angular-component` builds a new Angular 17+ standalone component in the same two phases as its React and Vue siblings: a scaffold committed on its own, then an implementation driven by a strict red-green loop. It assumes the signal-based API throughout: `input()`, `input.required<T>()`, `output()`, and `computed()` for anything derived. The decorator-based `@Input()` / `@Output()` style is a different world; if the project is on Angular below 17, say so and the skill asks rather than guessing.

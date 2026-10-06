@@ -1,3 +1,8 @@
+---
+tagline: "Archive a stale file"
+outcome: "A stale file archived, with its links flagged."
+---
+
 ## What it does
 
 `archive-file` moves one stale file into your repo's archive folder, stamps its frontmatter with just enough metadata to explain itself later (`created`, `summary`, `archived`/`archived_date`, and optional `parent`/`children`/`related` links), records the move in a running archive log, and flags — without touching — any other page that still links to it.

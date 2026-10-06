@@ -1,3 +1,8 @@
+---
+tagline: "Check the standards load"
+outcome: "A health check of the standards barrels."
+---
+
 ## What it does
 
 `load-oss-standards` is the session-start check for any work touching a LittleBranches repository. It verifies you can actually reach the OSS Quality Standards AGENTS.md files, public and private, prints a one-screen health check, and carries the handful of rules that matter every session (branch prefixes, commit format, who approves a new branch) directly in the skill body.

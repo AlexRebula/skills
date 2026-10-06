@@ -1,3 +1,8 @@
+---
+tagline: "Hand over to another agent"
+outcome: "A handoff doc another agent can pick up."
+---
+
 ## What it does
 
 `handoff` compacts the conversation you are in into a **handoff document**: one markdown file, written to your OS's temporary directory rather than into the workspace, that a fresh [agent](https://www.aihero.dev/ai-coding-dictionary/agent) can read to pick the work up.

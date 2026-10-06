@@ -1,3 +1,8 @@
+---
+tagline: "Wrap up the session"
+outcome: "A wrap of the session, ready for the next one."
+---
+
 ## What it does
 
 `session-wrap` closes out a working session: it writes a summary document of what happened, saves it into your sessions folder, updates the session index, and hands off to `/wip-sweep` to commit whatever the session actually touched. It is deliberately not a narrative recap. Anything already captured in a commit, a PR, an issue, or an ADR is referenced by path or URL rather than duplicated into the wrap itself.

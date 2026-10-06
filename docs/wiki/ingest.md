@@ -1,3 +1,8 @@
+---
+tagline: "Source into wiki pages"
+outcome: "A source summarised into linked wiki pages."
+---
+
 ## What it does
 
 `ingest` takes a raw source file (an article, a YouTube transcript, a gist, a podcast, a paper) and turns it into a proper wiki entry: it reads the source, pulls out metadata, writes a synthesis page under `wiki/sources/`, updates any wiki pages the source genuinely informs, and updates both `wiki/index.md` and `wiki/log.md` to reflect the addition. Pass `--deep` and it also writes a long-form deep dive at `wiki/deep/<slug>-deep.md` once the short source page is done.

@@ -1,3 +1,8 @@
+---
+tagline: "Stress-test every decision"
+outcome: "A plan tested against your questions, with the weak spots named."
+---
+
 ## What it does
 
 `grill-me` takes a **loose idea** and interviews you until you can commit to it, by running the [grilling](https://aihero.dev/skills-grilling) primitive as its stateless, user-invoked front door: `grill-me`'s own entire job is to guarantee this session is one you typed, never one the agent started on its own. You do not need a worked-out plan to start: producing one is what the [session](https://www.aihero.dev/ai-coding-dictionary/session) is for. It asks in **rounds**: each round is the whole **frontier** (every question whose prerequisites you have already settled), so you are never asked something that hinges on an answer it hasn't heard yet.

@@ -1,3 +1,8 @@
+---
+tagline: "Which repos have changes"
+outcome: "A table of which repos have uncommitted changes."
+---
+
 ## What it does
 
 `repo-status` finds every git repo in your workspace and prints a single dirty state table: repo, branch, dirty file count, clean or uncommitted. It does not touch anything. Its whole job is to answer one question before any other git skill runs: which repos actually need attention right now.
