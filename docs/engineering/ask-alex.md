@@ -1,3 +1,8 @@
+---
+tagline: "Find the right skill"
+outcome: "The skill or flow that fits your situation."
+---
+
 ## What it does
 
 `ask-alex` is the router over the skills in this repo, renamed from Matt Pocock's original `ask-matt`. You describe the situation you are in (an idea you cannot start, a pile of incoming bug reports, a [session](https://www.aihero.dev/ai-coding-dictionary/session) that has run long), and it names the skill or the sequence of skills that fits, plus where the human decisions in that sequence sit.

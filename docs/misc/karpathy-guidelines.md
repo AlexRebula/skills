@@ -1,3 +1,8 @@
+---
+tagline: "Guardrails for LLM coding"
+outcome: "Changes kept small, surgical and verified."
+---
+
 ## What it does
 
 `karpathy-guidelines` is a set of behavioral rules for how an agent should write and review code, drawn from Andrej Karpathy's public observations on where LLMs go wrong day to day: overcomplicating simple tasks, touching more code than the request called for, and declaring success without a way to check it.

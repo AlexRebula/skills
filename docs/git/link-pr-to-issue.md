@@ -1,3 +1,8 @@
+---
+tagline: "PR linked to its issue"
+outcome: "The PR linked to the issue it implements."
+---
+
 ## What it does
 
 `link-pr-to-issue` connects a PR to the issue it implements. It resolves which issue that is from

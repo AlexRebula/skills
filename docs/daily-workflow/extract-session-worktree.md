@@ -1,3 +1,8 @@
+---
+tagline: "Split a session's changes out"
+outcome: "One session's changes in a worktree of their own."
+---
+
 ## What it does
 
 `extract-session-worktree` pulls one session's uncommitted changes out of a working directory that several concurrent sessions are sharing, and moves that slice, and only that slice, into its own isolated git worktree, branch, and eventually a PR. Nothing belonging to any other session's pending work gets touched.

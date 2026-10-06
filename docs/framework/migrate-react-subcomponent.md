@@ -1,3 +1,8 @@
+---
+tagline: "Move a React sub-component"
+outcome: "A sub-component moved into its own folder."
+---
+
 ## What it does
 
 `migrate-react-subcomponent` moves an already-implemented, already-tested sub-component out of a flat sibling file and into its own named subfolder — a mechanical move, never a rewrite. `git mv` the file, decide which props are private to it versus shared with the parent, fix every import, then verify. No new tests get written from scratch, and nothing about the component's own logic changes.

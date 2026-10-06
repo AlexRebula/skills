@@ -1,3 +1,8 @@
+---
+tagline: "Map out a huge job"
+outcome: "A map of investigation tickets for a huge job."
+---
+
 ## What it does
 
 `wayfinder` takes an effort too big for one agent [session](https://www.aihero.dev/ai-coding-dictionary/session): an idea whose **destination** you can name but whose route you cannot yet see, and charts it as a shared **map** of **decision tickets** on your issue tracker, then resolves them one at a time until the way is clear.

@@ -1,3 +1,8 @@
+---
+tagline: "Standards and spec review"
+outcome: "A review of the diff against your standards and the spec."
+---
+
 ## What it does
 
 `review-pr` reviews a diff on two axes: **Standards**, whether the code follows the repo's documented conventions plus a fixed Fowler smell baseline that applies even when the repo documents nothing, and **Spec**, whether it implements what the originating issue or PRD actually asked for. It runs in two modes. PR mode reviews an already-open PR and posts findings through the GitHub PR Reviews API as inline comments. Branch mode (`--branch`) reviews a branch diff before any PR exists and reports findings in chat only, so you can catch problems before you open one.

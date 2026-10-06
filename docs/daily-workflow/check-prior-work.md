@@ -1,3 +1,8 @@
+---
+tagline: "Pick up earlier work"
+outcome: "Earlier session work, picked up where it stopped."
+---
+
 ## What it does
 
 `check-prior-work` is a small, single-purpose pre-flight check: before any session-startup skill does its own work, this one looks for a `<conversation-summary>` block already sitting in context and, if one is there, reads it as a record of earlier work from this same session that got compacted, not a different one.

@@ -1,3 +1,8 @@
+---
+tagline: "Pull changes from upstream"
+outcome: "Upstream changes pulled in, gated by your checks."
+---
+
 ## What it does
 
 `sync-down` pulls incoming changes from your configured source repo into your working repo, but only after your own quality-gate command passes against them staged in a throwaway copy of your working tree. A failing gate leaves your working tree completely untouched. It never commits anything: landing the files is as far as it goes, and reviewing and committing what landed stays your own manual step.

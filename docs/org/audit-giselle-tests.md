@@ -1,3 +1,8 @@
+---
+tagline: "Find weak AI-written tests"
+outcome: "A list of weak tests and what each is missing."
+---
+
 ## What it does
 
 `audit-giselle-tests` reviews the existing test files in `giselle-mui` and sorts every one of them into a bucket before proposing a single fix. It exists because AI-generated test suites in this codebase tend to fail in one of two specific, recognizable ways, and the audit is what tells you which files are actually broken before you start rewriting anything.

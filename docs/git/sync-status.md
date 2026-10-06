@@ -1,3 +1,8 @@
+---
+tagline: "Drift between paired repos"
+outcome: "The drift between two paired repos."
+---
+
 ## What it does
 
 `sync-status` reports drift between two repos you've paired up: files added, removed, or changed on either side, without touching either one. It's the read-only member of a three-skill family: `sync-status` reports, [sync-down](./sync-down.md) pulls incoming changes in behind a quality gate, and [sync-up](./sync-up.md) promotes your own changes back out behind a quality gate, a privacy scan, and a reviewed PR.

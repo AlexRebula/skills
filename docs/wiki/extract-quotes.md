@@ -1,3 +1,8 @@
+---
+tagline: "Collect a source's best quotes"
+outcome: "A source's best lines, quoted and filed."
+---
+
 ## What it does
 
 `extract-quotes` pulls the most quotable verbatim lines out of a source and writes them to a per-source quotes page, then rolls each quote into a vault-wide barrel grouped by speaker. It can work from an already-ingested `wiki/sources/<group>/<slug>.md` page, but it doesn't require one: a raw file, a URL, or pasted text with nothing saved yet all work too. A full `/ingest` is not a precondition.

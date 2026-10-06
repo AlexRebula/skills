@@ -1,3 +1,8 @@
+---
+tagline: "Health-check the wiki"
+outcome: "A ranked list of the wiki's gaps and contradictions."
+---
+
 ## What it does
 
 `wiki-lint` health-checks your personal wiki: contradictions between pages, orphan pages nothing links to, claims that look stale against a more recent ingest, missing cross-references, and gaps in the index's own structure. It produces a severity-ranked finding list, then two forward-looking lists: fixes to apply now, and sources worth ingesting to close the gaps it found.

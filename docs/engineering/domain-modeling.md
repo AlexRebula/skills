@@ -1,3 +1,8 @@
+---
+tagline: "Sharpen the project's vocabulary"
+outcome: "A domain model with its terms and decisions recorded."
+---
+
 ## What it does
 
 `domain-modeling` builds and sharpens a project's **ubiquitous language** while you are designing: challenging a term that conflicts with the glossary, forcing a precise word where you used a vague one, and stress-testing a relationship with a concrete scenario until the boundaries are exact.

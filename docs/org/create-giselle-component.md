@@ -1,3 +1,8 @@
+---
+tagline: "New Giselle component, test-first"
+outcome: "A Giselle component, test-first, with its README."
+---
+
 ## What it does
 
 `create-giselle-component` scaffolds and builds a new component in `giselle-mui` from nothing, in two phases that are not allowed to blur together. Phase 1 creates the folder, the types stub, and `it.todo` test stubs, then commits. Phase 2 fills all of it in through a strict red-green TDD loop. The gap between the phases is enforced by the repo's own quality gate, not just by convention: a new test file that skips the `it.todo` stubs fails CI immediately.

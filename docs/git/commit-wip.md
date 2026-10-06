@@ -1,3 +1,8 @@
+---
+tagline: "Commit loose work by topic"
+outcome: "Loose changes committed on the right branches."
+---
+
 ## What it does
 
 `commit-wip` scans every dirty repo in your workspace, groups the uncommitted files by topic (a component, docs, config, scripts, or an unclassifiable pile it calls `wip`), and commits each group to the branch it actually belongs on. It checks remote branches first: if an existing branch's name matches the topic (a keyword match, or today's dated WIP branch), the commit goes there. A brand new categorised branch only gets created when nothing on the remote fits.

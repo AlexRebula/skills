@@ -1,3 +1,8 @@
+---
+tagline: "Ask the wiki, with citations"
+outcome: "An answer from the wiki, with citations."
+---
+
 ## What it does
 
 `query` answers a question using your personal wiki. It reads the index to decide which pages are actually relevant before opening any of them, reads those pages (following one level of `[[wikilinks]]` when they lead somewhere directly useful), and writes an answer with citations back to the pages it used. Pass `--save` and the answer becomes a new wiki page in its own right, filed and indexed like any other.

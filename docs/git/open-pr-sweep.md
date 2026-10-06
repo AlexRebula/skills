@@ -1,3 +1,8 @@
+---
+tagline: "Find every open PR"
+outcome: "A list of every open PR across your orgs."
+---
+
 ## What it does
 
 `open-pr-sweep` discovers every non-draft open pull request across one or more GitHub organisations or users and prints a single table: repo, title, and what action is needed. It makes no writes of any kind. Its job ends at the table.

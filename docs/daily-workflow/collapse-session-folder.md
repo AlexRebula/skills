@@ -1,3 +1,8 @@
+---
+tagline: "Merge same-day session folders"
+outcome: "Same-day session folders merged into one."
+---
+
 ## What it does
 
 `collapse-session-folder` merges every same-day session wrap folder into one. When a day ends up with more than one `YYYY-MM-DD-*` folder because you ran several separate sessions, this skill scans for all of them, builds a combined slug out of the individual folder names, renumbers every file sequentially into the merged folder, repairs the "next" links between files that the renumbering would otherwise break, updates `sessions-index.md` to match, and deletes the now-empty originals.

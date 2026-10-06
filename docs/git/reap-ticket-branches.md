@@ -1,3 +1,8 @@
+---
+tagline: "Find leftover ticket branches"
+outcome: "A list of leftover branches safe to remove."
+---
+
 ## What it does
 
 `reap-ticket-branches` finds local git branches and worktrees left behind by a ticket that was closed or abandoned without ever getting a merged PR of its own — the case a PR-merge cleanup has no trigger for. Given a ticket reference (or an exact branch name) and one or more repo paths, it scans for every branch whose name contains that ticket's number as a delimited segment (`841` matches `fix/841-foo`, never `fix/8410-foo` or `fix/1841-foo`), finds any dedicated worktree it lives in via `git worktree list`, and classifies each match against GitHub: merged via PR, open PR never merged, closed PR never merged, no PR found, or PR state unavailable (no `gh`, no auth, no GitHub remote).

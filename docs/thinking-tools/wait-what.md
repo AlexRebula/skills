@@ -1,3 +1,8 @@
+---
+tagline: "Re-explain what didn't land"
+outcome: "The last message, re-explained in plain words."
+---
+
 ## What it does
 
 `wait-what` is what you type when a message didn't land. The [agent](https://www.aihero.dev/ai-coding-dictionary/agent) then re-pitches what it just said. It adds the context you were missing, writes in plain English, and uses the vocabulary from your project's `CONTEXT.md`.

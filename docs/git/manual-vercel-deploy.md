@@ -1,3 +1,8 @@
+---
+tagline: "Deploy straight to Vercel"
+outcome: "The app deployed to Vercel from your machine."
+---
+
 ## What it does
 
 `manual-vercel-deploy` ships an app straight to Vercel via the Vercel CLI, bypassing GitHub Actions and Vercel's own git-integration build entirely. `vercel deploy` (or `vercel deploy --prod`) uploads and builds the current local checkout directly against Vercel's API — nothing about that path goes through GitHub Actions, so it keeps working even when Actions can't run at all.

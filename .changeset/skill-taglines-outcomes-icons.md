@@ -1,0 +1,5 @@
+---
+'alexrebula-skills': minor
+---
+
+Every skill now carries a tagline and an outcome line, and one distinct icon, for consuming sites. Each docs page gains a frontmatter block with `tagline` (the skill in 3 to 5 words) and `outcome` (what a run of it produces, in one short line); Docusaurus reads it and doesn't show it on the page. Two new generators, `generate-skill-taglines.ts` and `generate-skill-outcomes.ts`, collect them into gitignored `skill-taglines.json` and `skill-outcomes.json`, keyed `category/name` like the summaries, and run before the site starts, builds and checks; each fails when a page is missing its line, or when a tagline is outside 3 to 5 words or an outcome longer than 70 characters, so a new skill can't ship without them. `skill-icons.ts` now gives all 93 skills an icon, every one distinct (it covered 75, one of them twice), and is the shared source for consuming sites as well as the landing page's cards, so 63 skills' cards show a new icon. What the site renders is otherwise unchanged.

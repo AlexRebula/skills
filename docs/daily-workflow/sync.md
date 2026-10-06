@@ -1,3 +1,8 @@
+---
+tagline: "Two-way Asana sync"
+outcome: "Asana and the local notes, in step."
+---
+
 ## What it does
 
 `sync` runs a bidirectional sync between a configured set of Asana projects and their local markdown files: it pulls new or updated tasks from Asana into local files, pushes local changes back to Asana, resolves any conflict in favor of the local file, and commits whatever changed. It's the skill you reach for on an Asana-backed content workspace where the markdown files and the Asana tasks are meant to represent the same state.

@@ -1,3 +1,8 @@
+---
+tagline: "Hide personal data safely"
+outcome: "Personal data replaced with vault placeholders."
+---
+
 ## What it does
 
 `anonimise` keeps sensitive personal data out of anything tracked by git while letting an agent keep full structural context. It works in two directions. Going one way, it reads a file, finds names, emails, addresses, employers, case details and other person-linked data, and replaces each value with a `{{SCREAMING_SNAKE_CASE}}` placeholder. Going the other way, it reads the same placeholders back and substitutes the real values inline, for local work only, without ever writing the resolved text to disk.

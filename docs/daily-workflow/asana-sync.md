@@ -1,3 +1,8 @@
+---
+tagline: "Morning briefs into Asana"
+outcome: "The morning brief posted to Asana."
+---
+
 ## What it does
 
 `asana-sync` takes a finished morning brief and pushes it into Asana as one three-level task tree: it finds or bootstraps `.asana-config.json`, checks that you actually have write access to the project you are about to write into, creates a "Morning Briefs" section if one does not exist yet, then files a parent task (`Brief — YYYY-MM-DD #N`, its `html_notes` carrying the condensed narrative) with one subtask per brief section (Critical path today, What to skip today, Recent sessions, Suggested first task, Open PRs, WIP commits), and — for the four list-type sections — one further sub-subtask per individual item (a PR, a critical-path bullet, a past session). It posts the brief's narrative as a project Status Update, and appends a log of exactly what it wrote back into the brief file itself.

@@ -1,3 +1,8 @@
+---
+tagline: "New React component, test-first"
+outcome: "A React component, its tests and README."
+---
+
 ## What it does
 
 `create-react-component` builds a new React component from nothing, in two phases you commit separately. Phase one is a scaffold: types, an `it.todo` test file, a README, and a stub barrel, with no component file yet. Phase two is the implementation, done as a strict red-green loop, one test at a time.

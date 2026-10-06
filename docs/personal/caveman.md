@@ -1,3 +1,8 @@
+---
+tagline: "Say more with less"
+outcome: "Replies with every filler word gone."
+---
+
 ## What it does
 
 `caveman` is a response mode, not a task. Once triggered, it drops articles, filler words, pleasantries and hedging from every reply, while keeping every technical claim exactly as accurate as it would be in full prose. The reported effect is roughly a 75% cut in tokens spent on a response, because most of what gets cut was never carrying information: "sure", "just", "basically", "I'd be happy to help" are the words that die, not the facts.

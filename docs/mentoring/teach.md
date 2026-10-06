@@ -1,3 +1,8 @@
+---
+tagline: "Learn something over sessions"
+outcome: "A new skill learned over several sessions."
+---
+
 ## What it does
 
 `teach` turns the directory you run it in into a standing teaching workspace and teaches you one topic across many [sessions](https://www.aihero.dev/ai-coding-dictionary/session), in short self-contained HTML lessons.

@@ -1,3 +1,8 @@
+---
+tagline: "Bring branches up to date"
+outcome: "Every branch up to date with its default branch."
+---
+
 ## What it does
 
 `sync-branches` brings every local branch in a repo, or in several repos at once, up to date against both origin and the repo's own default branch. It resolves the default branch per repo rather than assuming `main` (some repos use `master`, `develop`, or `trunk`), flags branches already merged into that default, pulls stale branches from origin, and merges the default into every branch that is still active.

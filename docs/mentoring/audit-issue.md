@@ -1,3 +1,8 @@
+---
+tagline: "Check an issue against principles"
+outcome: "An issue checked against your principles, with fixes."
+---
+
 ## What it does
 
 `audit-issue` checks a GitHub issue body against a set of principles before it goes anywhere near a student, apprentice, or junior contributor. You paste the issue body and your principles (structured or free-form), and the skill scans the body against every principle, flags each failure with the exact offending text, drafts a replacement, and stops. Nothing touches GitHub. You get a corrected issue body to paste in yourself once you approve it.

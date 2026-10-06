@@ -1,3 +1,8 @@
+---
+tagline: "File a source's jargon"
+outcome: "A source's jargon, explained term by term."
+---
+
 ## What it does
 
 `extract-vocabulary` goes back over a source that has already been ingested into the wiki and pulls out every piece of jargon a complete beginner would stumble on, filing each term into a per-concept vocabulary cheat-sheet written at an ELI5 level. It is not a step inside `ingest`; it is a separate, deliberate pass you choose to run afterward, on the sources where unfamiliar terminology was actually the pain point.

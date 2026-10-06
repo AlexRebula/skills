@@ -1,3 +1,8 @@
+---
+tagline: "Answer a LittleBranches review"
+outcome: "Every review thread answered, by the house rules."
+---
+
 ## What it does
 
 `respond-giselle-pr-review` works through an open Copilot PR review on a LittleBranches repository, acting as the branch owner's assistant rather than the branch owner. It pre-loads the public and private OSS Quality Standards AGENTS.md files plus the standards repo's own PR-review workflow doc, triages every open thread, replies inline before touching any code, batches the valid fixes into one commit, and posts a follow-up on each fixed thread. It never resolves a thread itself; that stays the branch owner's call.

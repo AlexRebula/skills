@@ -118,7 +118,7 @@ function toHighlightCard(skill: FlowSkill, skillCardMediaSrc: string): FeatureFl
 /**
  * Falls back to a generic icon rather than a literal "undefined" glyph name
  * if a stage is ever added here without one. Reuses `widget-4`
- * (`framework/create-vue-component` in `SKILL_ICON_NAMES`) since it's
+ * (`framework/create-giselle-component` in `SKILL_ICON_NAMES`) since it's
  * already bundled into `solar-icons.json` - no icon base name should be
  * introduced here that isn't already extracted by `generate-skill-icons.ts`.
  */

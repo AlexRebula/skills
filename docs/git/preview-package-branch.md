@@ -1,3 +1,8 @@
+---
+tagline: "Preview a package branch live"
+outcome: "A live preview of the branch inside its app."
+---
+
 ## What it does
 
 `preview-package-branch` keeps a real, running preview of a package/library's feature branch live inside its consumer app (the actual consumer app, not an isolated component viewer like Storybook), refreshed after every commit. It builds the package, publishes it to the local yalc store, links it into a dedicated preview worktree, and does a full stop-and-restart of that worktree's dev server so the change is visible before the branch ever merges.

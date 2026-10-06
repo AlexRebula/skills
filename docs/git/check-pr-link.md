@@ -1,3 +1,8 @@
+---
+tagline: "Check a PR's issue link"
+outcome: "A report on the PR's issue link and checkboxes."
+---
+
 ## What it does
 
 `check-pr-link` verifies, read-only, that a PR is actually linked to the issue it implements, and

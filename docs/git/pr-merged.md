@@ -1,3 +1,8 @@
+---
+tagline: "Tidy up after a merge"
+outcome: "The issue closed and the merged branch cleaned up."
+---
+
 ## What it does
 
 `pr-merged` runs the local half of closing out a PR after you've already merged it on GitHub and deleted its remote branch yourself: it verifies the PR actually shows `MERGED` (never acts on an unconfirmed claim), closes any issue the PR referenced with a summary comment if one isn't already there, deletes the local branch (and its worktree, if it lived in one), prunes the now-stale remote-tracking ref, and fast-forwards the base branch if it's checked out.

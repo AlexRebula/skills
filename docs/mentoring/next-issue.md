@@ -1,3 +1,8 @@
+---
+tagline: "Prepare a learner's next issue"
+outcome: "The learner's next issue, audited and ready."
+---
+
 ## What it does
 
 `next-issue` picks the next GitHub issue to hand a student or apprentice, and audits it before it reaches them. It resolves the repo, the student, and a principles file; checks the candidate against a learner history so it doesn't repeat a concept or jump too many difficulty steps at once; then runs the issue body against a principles index and drafts fixes for anything that fails. Nothing touches GitHub until you approve the draft.

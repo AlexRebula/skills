@@ -1,3 +1,8 @@
+---
+tagline: "Answer every review thread"
+outcome: "Every review thread answered, fixes in one commit."
+---
+
 ## What it does
 
 `respond-pr-review` works through an existing Copilot review on one PR as the branch owner's assistant: it gathers every thread, assigns each one a verdict, replies inline before touching any code, batches every valid fix into a single commit, posts a SHA follow-up per fixed thread, and stops there. Resolving threads and merging is left to the branch owner every time.
