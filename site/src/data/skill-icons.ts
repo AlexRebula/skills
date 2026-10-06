@@ -28,6 +28,7 @@ export const SKILL_ICON_NAMES: Record<string, string> = {
   'daily-workflow/capture': 'lightbulb',
   'daily-workflow/sync': 'restart',
   'daily-workflow/asana-sync': 'calendar-mark',
+  'daily-workflow/handoff': 'hand-shake',
 
   'engineering/ask-alex': 'question-circle',
   'engineering/grill-with-docs': 'notebook',
@@ -101,8 +102,6 @@ export const SKILL_ICON_NAMES: Record<string, string> = {
   'wiki/rebuild-root-index': 'database',
   'wiki/log-incident': 'danger-triangle',
   'wiki/archive-file': 'archive',
-
-  'vocabulary/handoff': 'hand-shake',
 
   'mentoring/audit-issue': 'document-medicine',
   'mentoring/learner-history': 'graph-up',
