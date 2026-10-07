@@ -38,15 +38,20 @@ function stage(label: string, { ordered }: { ordered: boolean }, skills: SkillRe
   };
 }
 
-// Mirrors docs/overview.md's own stage breakdown exactly (see that page for
-// the prose reasoning behind each grouping). Kept as a second, independent
-// listing rather than generated from the prose: this is a routing config,
-// not a place to parse markdown out of a narrative page.
+// Mirrors docs/overview.md's own stage grouping exactly (see that page for
+// the prose reasoning behind each grouping; the order of skills inside a
+// stage is set here, not by the order the prose happens to walk them in).
+// Kept as a second, independent listing rather than generated from the
+// prose: this is a routing config, not a place to parse markdown out of a
+// narrative page.
 //
 // Exported so a test can walk it and assert it covers every real docs page
 // exactly once (see check-flow-stages.test.ts) - the whole point of this
 // list is exhaustive, non-redundant coverage, and that's easy to silently
 // drift out of sync as skills get added, renamed, or re-categorised.
+//
+// Every stage is `ordered: true` (see `FlowStageSection.ordered`), with its
+// skills in a suggested order; check-flow-stages.test.ts enforces the flag.
 export const FLOW_STAGES = [
   stage('Start the day', { ordered: true }, [
     { category: 'engineering', name: 'ask-alex' },
@@ -56,114 +61,114 @@ export const FLOW_STAGES = [
     { category: 'daily-workflow', name: 'load-session-context' },
     { category: 'daily-workflow', name: 'load-session-guidelines' },
   ]),
-  stage('Shape it', { ordered: false }, [
+  stage('Shape it', { ordered: true }, [
     { category: 'thinking-tools', name: 'grill-me' },
     { category: 'engineering', name: 'grill-with-docs' },
     { category: 'thinking-tools', name: 'grilling' },
-    { category: 'thinking-tools', name: 'wait-what' },
     { category: 'thinking-tools', name: 'to-questionnaire' },
+    { category: 'engineering', name: 'wayfinder' },
     { category: 'engineering', name: 'to-spec' },
     { category: 'engineering', name: 'to-tickets' },
-    { category: 'engineering', name: 'wayfinder' },
+    { category: 'thinking-tools', name: 'wait-what' },
   ]),
-  stage('Build it', { ordered: false }, [
+  stage('Build it', { ordered: true }, [
     { category: 'engineering', name: 'setup-engineering-skills' },
-    { category: 'engineering', name: 'implement' },
-    { category: 'engineering', name: 'implement-tickets' },
-    { category: 'engineering', name: 'tdd' },
-    { category: 'engineering', name: 'prototype' },
     { category: 'engineering', name: 'wizard' },
+    { category: 'engineering', name: 'prototype' },
+    { category: 'engineering', name: 'implement' },
+    { category: 'engineering', name: 'tdd' },
+    { category: 'engineering', name: 'implement-tickets' },
     { category: 'framework', name: 'create-react-component' },
     { category: 'framework', name: 'create-vue-component' },
     { category: 'framework', name: 'create-angular-component' },
-    { category: 'framework', name: 'migrate-react-subcomponent' },
-    { category: 'framework', name: 'cleanup-component' },
-    { category: 'framework', name: 'port-mui-theme-override' },
     { category: 'org', name: 'create-giselle-component' },
+    { category: 'framework', name: 'migrate-react-subcomponent' },
     { category: 'org', name: 'migrate-giselle-subcomponent' },
     { category: 'org', name: 'port-giselle-component' },
+    { category: 'framework', name: 'cleanup-component' },
+    { category: 'framework', name: 'port-mui-theme-override' },
   ]),
-  stage('Words for the codebase', { ordered: false }, [
-    { category: 'engineering', name: 'codebase-design' },
+  stage('Words for the codebase', { ordered: true }, [
     { category: 'engineering', name: 'domain-modeling' },
+    { category: 'engineering', name: 'codebase-design' },
     { category: 'engineering', name: 'writing-for-agents' },
   ]),
-  stage('Land it', { ordered: false }, [
+  stage('Land it', { ordered: true }, [
     { category: 'git', name: 'commit-wip' },
     { category: 'git', name: 'wip-sweep' },
+    { category: 'git', name: 'preview-package-branch' },
+    { category: 'git', name: 'review-pr' },
     { category: 'git', name: 'create-pr' },
     { category: 'git', name: 'link-pr-to-issue' },
+    { category: 'git', name: 'respond-pr-review' },
+    { category: 'git', name: 'check-pr-link' },
     { category: 'git', name: 'pr-merged' },
+    { category: 'git', name: 'sync-branches' },
     { category: 'git', name: 'reap-ticket-branches' },
     { category: 'git', name: 'canary-publish' },
-    { category: 'git', name: 'preview-package-branch' },
     { category: 'git', name: 'manual-vercel-deploy' },
-    { category: 'git', name: 'check-pr-link' },
-    { category: 'git', name: 'review-pr' },
-    { category: 'git', name: 'respond-pr-review' },
-    { category: 'git', name: 'sync-branches' },
   ]),
-  stage('When it breaks', { ordered: false }, [
+  stage('When it breaks', { ordered: true }, [
     { category: 'engineering', name: 'triage' },
     { category: 'engineering', name: 'diagnosing-bugs' },
     { category: 'engineering', name: 'resolving-merge-conflicts' },
   ]),
-  stage('Sweep for debt', { ordered: false }, [
-    { category: 'engineering', name: 'improve-codebase-architecture' },
-    { category: 'engineering', name: 'research' },
-    { category: 'engineering', name: 'deslopify' },
-    { category: 'git', name: 'dependabot-sweep' },
-    { category: 'git', name: 'morning-pr-sweep' },
-    { category: 'git', name: 'open-pr-sweep' },
+  stage('Sweep for debt', { ordered: true }, [
     { category: 'git', name: 'repo-status' },
+    { category: 'git', name: 'open-pr-sweep' },
+    { category: 'git', name: 'morning-pr-sweep' },
+    { category: 'git', name: 'dependabot-sweep' },
     { category: 'git', name: 'query-issues' },
     { category: 'git', name: 'sync-status' },
     { category: 'git', name: 'sync-down' },
     { category: 'git', name: 'sync-up' },
+    { category: 'engineering', name: 'improve-codebase-architecture' },
+    { category: 'engineering', name: 'research' },
+    { category: 'engineering', name: 'deslopify' },
   ]),
-  stage('Run the wiki', { ordered: false }, [
+  stage('Run the wiki', { ordered: true }, [
     { category: 'wiki', name: 'ingest' },
-    { category: 'wiki', name: 'query' },
-    { category: 'wiki', name: 'wiki-lint' },
+    { category: 'wiki', name: 'rebuild-root-index' },
     { category: 'wiki', name: 'extract-quotes' },
     { category: 'wiki', name: 'extract-vocabulary' },
-    { category: 'wiki', name: 'rebuild-root-index' },
-    { category: 'wiki', name: 'log-incident' },
+    { category: 'wiki', name: 'query' },
+    { category: 'wiki', name: 'wiki-lint' },
     { category: 'wiki', name: 'archive-file' },
+    { category: 'wiki', name: 'log-incident' },
   ]),
-  stage('Close the session', { ordered: false }, [
+  stage('Close the session', { ordered: true }, [
+    { category: 'daily-workflow', name: 'capture' },
+    { category: 'daily-workflow', name: 'extract-session-worktree' },
     { category: 'daily-workflow', name: 'session-wrap' },
     { category: 'daily-workflow', name: 'handoff' },
     { category: 'daily-workflow', name: 'collapse-session-folder' },
-    { category: 'daily-workflow', name: 'extract-session-worktree' },
-    { category: 'daily-workflow', name: 'resolve-ai-paths' },
-    { category: 'daily-workflow', name: 'capture' },
     { category: 'daily-workflow', name: 'sync' },
     { category: 'daily-workflow', name: 'asana-sync' },
+    { category: 'daily-workflow', name: 'resolve-ai-paths' },
   ]),
-  stage('Grow a contributor', { ordered: false }, [
-    { category: 'mentoring', name: 'audit-issue' },
+  stage('Grow a contributor', { ordered: true }, [
     { category: 'mentoring', name: 'learner-history' },
+    { category: 'mentoring', name: 'audit-issue' },
     { category: 'mentoring', name: 'next-issue' },
     { category: 'mentoring', name: 'teach' },
   ]),
-  stage('LittleBranches specifics', { ordered: false }, [
-    { category: 'org', name: 'audit-giselle-tests' },
-    { category: 'org', name: 'respond-giselle-pr-review' },
+  stage('LittleBranches specifics', { ordered: true }, [
     { category: 'org', name: 'load-oss-standards' },
     { category: 'org', name: 'load-dependency-chain' },
+    { category: 'org', name: 'audit-giselle-tests' },
+    { category: 'org', name: 'respond-giselle-pr-review' },
     { category: 'org', name: 'sync-roadmap' },
   ]),
-  stage('Reach for on their own', { ordered: false }, [
-    { category: 'personal', name: 'anonimise' },
-    { category: 'personal', name: 'caveman' },
-    { category: 'personal', name: 'edit-article' },
-    { category: 'personal', name: 'obsidian-vault' },
-    { category: 'misc', name: 'git-guardrails-claude-code' },
+  stage('Reach for on their own', { ordered: true }, [
     { category: 'misc', name: 'karpathy-guidelines' },
+    { category: 'personal', name: 'caveman' },
+    { category: 'personal', name: 'anonimise' },
+    { category: 'misc', name: 'git-guardrails-claude-code' },
+    { category: 'misc', name: 'setup-pre-commit' },
+    { category: 'personal', name: 'obsidian-vault' },
+    { category: 'personal', name: 'edit-article' },
     { category: 'misc', name: 'migrate-to-shoehorn' },
     { category: 'misc', name: 'scaffold-exercises' },
-    { category: 'misc', name: 'setup-pre-commit' },
   ]),
 ];
 

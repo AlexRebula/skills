@@ -127,15 +127,17 @@ const FALLBACK_ICON_NAME = 'widget-4';
 /**
  * Maps `FlowStageSection[]` (already persona-filtered - see
  * `filterFlowSections`) into `FeatureFlowItem[]` for `FeatureFlowSection`:
- * one item per stage. Original and lineage skills flatten into a single
- * `highlightCards` carousel, original-then-lineage order, no visual divider
- * - the diff-viewing affordance those skills lose from the old
- * `SkillTimeline` footer isn't actually lost, just relocated to each
- * skill's own doc page (`ProvenanceButton` in `DocItem/Content`), which the
- * card's `href` already links to. `skillCardMediaSrc` is the base-url-
- * resolved backdrop image (`useBaseUrl` is a hook, so the caller resolves it
- * and passes the plain string in - this module has no component to call it
- * from).
+ * one item per stage. Each stage's `highlightCards` follow its `skills` in
+ * FLOW_STAGES order (the stage's suggested order, so a consumer that numbers
+ * them numbers that sequence), original and lineage skills interleaved as
+ * the stage lists them, no visual divider (a view that groups them, like
+ * `FlowSkillAccordionList`, partitions the cards itself). The diff-viewing
+ * affordance those skills lose from the old `SkillTimeline` footer isn't
+ * actually lost, just relocated to each skill's own doc page
+ * (`ProvenanceButton` in `DocItem/Content`), which the card's `href` already
+ * links to. `skillCardMediaSrc` is the base-url-resolved backdrop image
+ * (`useBaseUrl` is a hook, so the caller resolves it and passes the plain
+ * string in - this module has no component to call it from).
  */
 export function buildFeatureFlowItems(
   flowSections: readonly FlowStageSection[],
@@ -147,8 +149,6 @@ export function buildFeatureFlowItems(
     title: section.label,
     description: FLOW_STAGE_DESCRIPTIONS[section.label] ?? '',
     longDescription: FLOW_STAGE_LONG_DESCRIPTIONS[section.label],
-    highlightCards: [...section.original, ...section.lineage].map((skill) =>
-      toHighlightCard(skill, skillCardMediaSrc)
-    ),
+    highlightCards: section.skills.map((skill) => toHighlightCard(skill, skillCardMediaSrc)),
   }));
 }

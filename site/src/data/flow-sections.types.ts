@@ -25,20 +25,30 @@ export interface FlowSkill {
 }
 
 /**
- * One flow-stage section: skills split into "Original" (mine) first, then
- * everything with real Matt Pocock lineage (upstream/modified/inherited)
- * second - a physical re-sort, not just a color cue (issue #156).
+ * One flow-stage section. `skills` holds every skill in the stage's own
+ * suggested order (FLOW_STAGES, site/sidebars.ts), which is the order to
+ * number or list them in. `original` and `lineage` hold the same skills
+ * split into "Original" (mine) and everything with real Matt Pocock lineage
+ * (upstream/modified/inherited), each keeping that relative order, for a
+ * view that groups them (issue #156).
  */
 export interface FlowStageSection {
   label: string;
   /**
-   * `true` when the stage's skills run as a fixed sequence (so a consumer
-   * can number them and draw arrows between them), `false` when they're a
-   * set to pick from. Set by hand per stage in `FLOW_STAGES`
-   * (site/sidebars.ts): only a stage the docs call a fixed sequence is `true`.
+   * `true` when the stage's skills are listed in a suggested order (so a
+   * consumer can number them and draw arrows between them), `false` when
+   * they're a set to pick from. Set by hand per stage in `FLOW_STAGES`
+   * (site/sidebars.ts), where every stage is `true`: the order is a
+   * suggestion to the reader, not a fixed sequence. The `false` case stays
+   * because the flag is the library's own contract; the every-stage rule is
+   * a content rule on this repo's data (scripts/check-flow-stages.test.ts).
    */
   ordered: boolean;
+  /** Every skill in the stage, in FLOW_STAGES order. */
+  skills: FlowSkill[];
+  /** The `skills` with no Matt Pocock lineage, in the same relative order. */
   original: FlowSkill[];
+  /** The `skills` with Matt Pocock lineage, in the same relative order. */
   lineage: FlowSkill[];
 }
 

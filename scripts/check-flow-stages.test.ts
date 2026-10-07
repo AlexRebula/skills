@@ -27,6 +27,15 @@ describe('FLOW_STAGES data integrity (issue #155)', () => {
     expect(report.realSkills.length).toBeGreaterThan(0);
     expect(flowStagesCount + 1).toBe(report.realSkills.length);
   });
+
+  it('marks every stage as ordered, so its skills always read as a suggested sequence', () => {
+    const unordered = FLOW_STAGES.filter(
+      (stage) => (stage as { customProps?: { ordered?: unknown } }).customProps?.ordered !== true,
+    ).map((stage) => (stage as { label?: unknown }).label);
+
+    expect(FLOW_STAGES.length).toBeGreaterThan(0);
+    expect(unordered, 'every stage must be `ordered: true` (only a literal true counts)').toEqual([]);
+  });
 });
 
 describe('checkFlowStagesCoverage (unit, fixture-based)', () => {
