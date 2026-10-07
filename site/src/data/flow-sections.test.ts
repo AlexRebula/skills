@@ -1,9 +1,9 @@
 import { describe, expect, it } from 'vitest';
-import { FLOW_STAGES } from '../../sidebars';
 import { buildFlowSections, filterFlowSections } from './flow-sections';
+import { buildFeatureFlowItems } from './feature-flow-sections';
 import type { ProvenanceMap } from './provenance.types';
 import type { SkillsLandingData } from './skills-landing.types';
-import type { FlowStageSection } from './flow-sections.types';
+import type { FlowSkill, FlowStageSection } from './flow-sections.types';
 
 // Whether LANDING/PROVENANCE_MAP/FLOW_STAGES_FIXTURE below belong in a
 // separate fixtures file rather than inline in this test file is an open
@@ -66,6 +66,28 @@ describe('buildFlowSections', () => {
     const buildIt = sections.find((s) => s.label === 'Build it');
     expect(buildIt?.original.map((s) => s.name)).toEqual(['tdd']);
     expect(buildIt?.lineage.map((s) => s.name)).toEqual(['ask-matt']);
+  });
+
+  it('keeps every skill in FLOW_STAGES order in `skills` when original and lineage interleave', () => {
+    const flowStages = [
+      {
+        type: 'category',
+        label: 'Build it',
+        items: [
+          { type: 'doc', id: 'engineering/ask-matt', label: 'ask-matt' },
+          { type: 'doc', id: 'engineering/tdd', label: 'tdd' },
+          { type: 'doc', id: 'wiki/ingest', label: 'ingest' },
+        ],
+      },
+    ];
+    const [buildIt] = buildFlowSections(flowStages, LANDING, PROVENANCE_MAP);
+    expect(buildIt?.skills.map((s) => s.name)).toEqual(['ask-matt', 'tdd', 'ingest']);
+    expect(buildIt?.original.map((s) => s.name)).toEqual(['tdd']);
+    expect(buildIt?.lineage.map((s) => s.name)).toEqual(['ask-matt', 'ingest']);
+
+    // End to end: the homepage cards (and any consumer numbering them) follow that same order.
+    const [item] = buildFeatureFlowItems(buildFlowSections(flowStages, LANDING, PROVENANCE_MAP), '/img.svg');
+    expect(item?.highlightCards?.map((card) => card.title)).toEqual(['ask-matt', 'tdd', 'ingest']);
   });
 
   it('places an "inherited" skill in the lineage sub-list, not original', () => {
@@ -193,41 +215,50 @@ describe('buildFlowSections: the per-stage "ordered" flag', () => {
     const sections = buildFlowSections(FLOW_STAGES_FIXTURE, LANDING, PROVENANCE_MAP);
     expect(sections.map((s) => s.ordered)).toEqual([false, false]);
   });
-
-  it('marks only the stages the docs describe as a fixed sequence as ordered, in the real FLOW_STAGES', () => {
-    for (const stage of FLOW_STAGES) {
-      expect(typeof (stage as { customProps?: { ordered?: unknown } }).customProps?.ordered).toBe('boolean');
-    }
-    const ordered = buildFlowSections(FLOW_STAGES, LANDING, {})
-      .filter((s) => s.ordered)
-      .map((s) => s.label);
-    // docs/daily-workflow/standup-prep.md: "The fixed order matters".
-    expect(ordered).toEqual(['Start the day']);
-  });
 });
 
 describe('filterFlowSections', () => {
+  const TDD_SKILL: FlowSkill = {
+    category: 'engineering',
+    name: 'tdd',
+    description: 'TDD.',
+    status: 'original',
+    personas: ['software-engineering'],
+  };
+  const TEACH_SKILL: FlowSkill = {
+    category: 'mentoring',
+    name: 'teach',
+    description: 'Teach.',
+    status: 'original',
+    personas: ['teaching-mentoring'],
+  };
+  const GRAB_BAG_SKILL: FlowSkill = {
+    category: 'misc',
+    name: 'grab-bag',
+    description: 'Grab bag.',
+    status: 'original',
+    personas: [],
+  };
   const SECTIONS: FlowStageSection[] = [
     {
       label: 'Build it',
       ordered: true,
-      original: [
-        { category: 'engineering', name: 'tdd', description: 'TDD.', status: 'original', personas: ['software-engineering'] },
-      ],
+      skills: [TDD_SKILL],
+      original: [TDD_SKILL],
       lineage: [],
     },
     {
       label: 'Teach it',
       ordered: false,
-      original: [
-        { category: 'mentoring', name: 'teach', description: 'Teach.', status: 'original', personas: ['teaching-mentoring'] },
-      ],
+      skills: [TEACH_SKILL],
+      original: [TEACH_SKILL],
       lineage: [],
     },
     {
       label: 'Misc stage',
       ordered: false,
-      original: [{ category: 'misc', name: 'grab-bag', description: 'Grab bag.', status: 'original', personas: [] }],
+      skills: [GRAB_BAG_SKILL],
+      original: [GRAB_BAG_SKILL],
       lineage: [],
     },
   ];

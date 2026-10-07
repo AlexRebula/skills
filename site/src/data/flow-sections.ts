@@ -64,8 +64,10 @@ function buildSkillLookup(landing: SkillsLandingData): Map<string, SkillLookupEn
 /**
  * Regroups `FLOW_STAGES` (the routing config in site/sidebars.ts) by real
  * skill metadata (skills-landing.json, provenance.json) for the homepage:
- * one section per stage, in stage order, each split into "Original" then
- * "Matt-lineage" sub-lists (issue #156). Pure/no React, so the grouping
+ * one section per stage, in stage order. `skills` keeps the stage's own
+ * (suggested) order from FLOW_STAGES; `original` and `lineage` split the
+ * same skills into "Original" then "Matt-lineage" sub-lists (issue #156),
+ * each in that same relative order. Pure/no React, so the grouping
  * logic is unit-testable without mounting the page. `flowStages` is typed
  * `unknown` (rather than importing FLOW_STAGES's own type) so tests can
  * pass small fixtures the same way scripts/check-flow-stages.ts's own
@@ -86,6 +88,7 @@ export function buildFlowSections(
     // Only a literal `true` counts, so a stage missing the flag never reads as ordered.
     const ordered = readProp(readProp(stageItem, 'customProps'), 'ordered') === true;
 
+    const skills: FlowSkill[] = [];
     const original: FlowSkill[] = [];
     const lineage: FlowSkill[] = [];
 
@@ -114,10 +117,11 @@ export function buildFlowSections(
         diff,
         personas,
       };
+      skills.push(skill);
       (LINEAGE_STATUSES.has(status) ? lineage : original).push(skill);
     }
 
-    return { label, ordered, original, lineage };
+    return { label, ordered, skills, original, lineage };
   });
 }
 
@@ -148,10 +152,15 @@ export function filterFlowSections(
 
   const filtered: FlowStageSection[] = [];
   for (const section of flowSections) {
-    const original = section.original.filter((skill) => skillMatchesFilter(skill, activePersonas));
-    const lineage = section.lineage.filter((skill) => skillMatchesFilter(skill, activePersonas));
-    if (original.length === 0 && lineage.length === 0) continue;
-    filtered.push({ ...section, original, lineage });
+    const matches = (skill: FlowSkill) => skillMatchesFilter(skill, activePersonas);
+    const skills = section.skills.filter(matches);
+    if (skills.length === 0) continue;
+    filtered.push({
+      ...section,
+      skills,
+      original: section.original.filter(matches),
+      lineage: section.lineage.filter(matches),
+    });
   }
   return filtered;
 }

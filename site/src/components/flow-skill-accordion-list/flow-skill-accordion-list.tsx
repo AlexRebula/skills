@@ -177,12 +177,13 @@ function SkillAccordionGroup({
  * one-liner (as a single paragraph) if a skill has no doc-page summary.
  *
  * Splits into two visually distinct groups, "Original" then "From Matt
- * Pocock" (AlexRebula/skills#146): a stage's own skills are already sorted
- * original-then-lineage by `buildFlowSections`, but that order alone reads
- * as arbitrary without a heading marking where one group ends and the next
- * begins. A heading only earns its place once there's an actual boundary to
- * mark, so a stage that's entirely one kind renders with no heading at all,
- * exactly like before this split existed.
+ * Pocock" (AlexRebula/skills#146): the cards arrive in the stage's own
+ * suggested order, with original and lineage skills interleaved, so this
+ * partitions them here (each group keeps that relative order) and marks
+ * where one group ends and the next begins. A heading only earns its place
+ * once there's an actual boundary to mark, so a stage that's entirely one
+ * kind renders with no heading at all, exactly like before this split
+ * existed.
  */
 export function FlowSkillAccordionList({
   item,

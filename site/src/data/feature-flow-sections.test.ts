@@ -24,7 +24,13 @@ const LINEAGE_SKILL: FlowSkill = {
 };
 
 const SECTIONS: FlowStageSection[] = [
-  { label: 'Shape it', ordered: false, original: [ORIGINAL_SKILL], lineage: [LINEAGE_SKILL] },
+  {
+    label: 'Shape it',
+    ordered: true,
+    skills: [ORIGINAL_SKILL, LINEAGE_SKILL],
+    original: [ORIGINAL_SKILL],
+    lineage: [LINEAGE_SKILL],
+  },
 ];
 
 const MEDIA_SRC = '/img/flow-skill-card-backdrop.svg';
@@ -47,7 +53,21 @@ describe('buildFeatureFlowItems', () => {
     expect(item.longDescription).not.toBe(item.description);
   });
 
-  it('flattens original then lineage skills into highlightCards, in that order, no group divider', () => {
+  it("follows the stage's own order when lineage comes before original, not original-then-lineage", () => {
+    const interleaved: FlowStageSection[] = [
+      {
+        label: 'Shape it',
+        ordered: true,
+        skills: [LINEAGE_SKILL, ORIGINAL_SKILL],
+        original: [ORIGINAL_SKILL],
+        lineage: [LINEAGE_SKILL],
+      },
+    ];
+    const [item] = buildFeatureFlowItems(interleaved, MEDIA_SRC);
+    expect(item.highlightCards?.map((card) => card.title)).toEqual(['to-spec', 'grilling']);
+  });
+
+  it("maps the stage's skills into highlightCards in its own order, no group divider", () => {
     const [item] = buildFeatureFlowItems(SECTIONS, MEDIA_SRC);
     expect(item.highlightCards).toEqual([
       {
@@ -75,7 +95,8 @@ describe('buildFeatureFlowItems', () => {
     const realLabels = FLOW_STAGES.map((item) => (item as { label: string }).label);
     const realSections: FlowStageSection[] = realLabels.map((label) => ({
       label,
-      ordered: false,
+      ordered: true,
+      skills: [],
       original: [],
       lineage: [],
     }));
