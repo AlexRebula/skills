@@ -1,3 +1,7 @@
+import { execFileSync } from 'node:child_process';
+import { mkdirSync, mkdtempSync, rmSync, writeFileSync } from 'node:fs';
+import { tmpdir } from 'node:os';
+import { join } from 'node:path';
 import { describe, expect, it } from 'vitest';
 import {
   buildHistoryPathspecs,
@@ -5,9 +9,11 @@ import {
   buildUpstreamUrl,
   deriveStatus,
   namesToSearch,
+  numstatArgs,
   parseHistoryLog,
   parseNumstat,
   pickCurrentUpstreamPath,
+  readFileOrEmpty,
   toSkillFolderPath,
 } from './generate-provenance';
 
@@ -182,6 +188,58 @@ describe('parseNumstat', () => {
 
   it('returns an empty array for empty output', () => {
     expect(parseNumstat('', SKILL_PATH)).toEqual([]);
+  });
+
+});
+
+describe('numstatArgs', () => {
+  it('lists a renamed file as removed under its old name and added under its new one, each a real path', () => {
+    const repo = mkdtempSync(join(tmpdir(), 'provenance-numstat-'));
+    const git = (...args: string[]) =>
+      execFileSync('git', args, { cwd: repo, encoding: 'utf-8', stdio: ['ignore', 'pipe', 'pipe'] });
+    try {
+      git('init', '-q');
+      mkdirSync(join(repo, 'old'));
+      mkdirSync(join(repo, 'new'));
+      const body = Array.from({ length: 20 }, (_, i) => `line ${i}`).join('\n') + '\n';
+      writeFileSync(join(repo, 'old', 'GLOSSARY-FORMAT.md'), body);
+      writeFileSync(join(repo, 'new', 'CONTEXT-FORMAT.md'), body);
+      git('add', '.');
+      git('-c', 'user.name=test', '-c', 'user.email=test@example.com', 'commit', '-q', '-m', 'fixture');
+
+      const numstat = git(...numstatArgs('HEAD:old', 'HEAD:new'));
+
+      expect(parseNumstat(numstat, '')).toEqual([
+        { file: 'CONTEXT-FORMAT.md', added: 20, removed: 0 },
+        { file: 'GLOSSARY-FORMAT.md', added: 0, removed: 20 },
+      ]);
+    } finally {
+      rmSync(repo, { recursive: true, force: true });
+    }
+  });
+});
+
+describe('readFileOrEmpty', () => {
+  const show = (ref: string, path: string) => `content of ${ref}:${path}`;
+
+  it("reads the file's content when it exists at that ref", () => {
+    expect(readFileOrEmpty('HEAD', 'SKILL.md', { exists: () => true, show })).toBe('content of HEAD:SKILL.md');
+  });
+
+  it('reads a file missing at that ref as empty, so an added or removed file diffs as wholly added or removed', () => {
+    const neverShown = () => {
+      throw new Error('show should not run for a missing file');
+    };
+    expect(readFileOrEmpty('abc1234', 'skill.test.ts', { exists: () => false, show: neverShown })).toBe('');
+  });
+
+  it('fails, rather than reading as empty, when git fails on a file that exists', () => {
+    const failing = () => {
+      throw new Error('git show failed');
+    };
+    expect(() => readFileOrEmpty('HEAD', 'SKILL.md', { exists: () => true, show: failing })).toThrow(
+      'git show failed',
+    );
   });
 });
 
