@@ -4,6 +4,7 @@ import { render, screen } from '@testing-library/react';
 import { FlowStageHoverPanel } from './flow-stage-hover-panel';
 import type { FeatureFlowItem } from '@littlebranches/giselle-mui';
 import type { ProvenanceMap } from '../../data/provenance.types';
+import { FLOW_STAGE_ORDER_NOTE } from '../../data/index-page-copy';
 
 const ITEM: FeatureFlowItem = {
   id: 'shape-it',
@@ -46,6 +47,18 @@ describe('FlowStageHoverPanel', () => {
   it('renders nothing extra when a stage has no highlightCards', () => {
     render(<FlowStageHoverPanel item={{ ...ITEM, highlightCards: undefined }} isExpanded={false} />);
     expect(screen.queryByRole('listitem')).not.toBeInTheDocument();
+  });
+
+  it('says the order of a stage\'s skills is a suggestion, whether or not the stage is expanded', () => {
+    const { rerender } = render(<FlowStageHoverPanel item={ITEM} isExpanded={false} />);
+    expect(screen.getByText(FLOW_STAGE_ORDER_NOTE)).toBeInTheDocument();
+    rerender(<FlowStageHoverPanel item={ITEM} isExpanded />);
+    expect(screen.getByText(FLOW_STAGE_ORDER_NOTE)).toBeInTheDocument();
+  });
+
+  it('leaves out the order note when a stage has no skills to order', () => {
+    render(<FlowStageHoverPanel item={{ ...ITEM, highlightCards: undefined }} isExpanded={false} />);
+    expect(screen.queryByText(FLOW_STAGE_ORDER_NOTE)).not.toBeInTheDocument();
   });
 
   it('shows a hint to select the stage when not expanded', () => {
