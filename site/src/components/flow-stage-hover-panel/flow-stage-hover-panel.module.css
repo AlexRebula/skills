@@ -55,6 +55,13 @@
   font-size: 0.9rem;
 }
 
+.orderNote {
+  margin: 1rem 0 0;
+  font-size: 0.9rem;
+  font-style: italic;
+  color: var(--ifm-color-emphasis-700);
+}
+
 .hint {
   margin: 1.5rem 0 0;
   font-size: 0.8rem;

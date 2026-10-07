@@ -3,6 +3,7 @@ import Stack from '@mui/material/Stack';
 import Heading from '@theme/Heading';
 import Link from '@docusaurus/Link';
 import { ProvenanceIcon } from '../provenance-icon';
+import { FLOW_STAGE_ORDER_NOTE } from '../../data/index-page-copy';
 import type { FlowStageHoverPanelProps } from './types';
 import styles from './flow-stage-hover-panel.module.css';
 
@@ -16,9 +17,12 @@ import styles from './flow-stage-hover-panel.module.css';
  * here (that's always the full list); expanding a stage instead reveals the
  * same skills one at a time, in more depth, in the detail panel below (see
  * `FeatureFlowHighlightCarousel`) - `isExpanded` only changes this panel's
- * own hint line.
+ * own hint line. A stage with skills also gets a one-line note that their
+ * order is a suggestion, so the list doesn't read as a required sequence.
  */
 export function FlowStageHoverPanel({ item, isExpanded, provenanceMap }: FlowStageHoverPanelProps): ReactNode {
+  const skills = item.highlightCards ?? [];
+
   return (
     <div className={styles.panel}>
       <Heading as="h3" className={styles.title}>
@@ -26,7 +30,7 @@ export function FlowStageHoverPanel({ item, isExpanded, provenanceMap }: FlowSta
       </Heading>
       <p className={styles.description}>{item.description}</p>
       <ul className={styles.skillList}>
-        {(item.highlightCards ?? []).map((card) => (
+        {skills.map((card) => (
           <li key={card.title} className={styles.skillItem}>
             <Stack direction="row" spacing={1} sx={{ alignItems: 'center' }}>
               {card.href && <ProvenanceIcon slug={card.href} provenanceMap={provenanceMap} />}
@@ -42,6 +46,7 @@ export function FlowStageHoverPanel({ item, isExpanded, provenanceMap }: FlowSta
           </li>
         ))}
       </ul>
+      {skills.length > 0 && <p className={styles.orderNote}>{FLOW_STAGE_ORDER_NOTE}</p>}
       <p className={styles.hint}>
         {isExpanded
           ? 'Browse each skill in more depth below.'

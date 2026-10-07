@@ -30,6 +30,10 @@ export const HARNESS_COMPARISON_LINK_HREF = '/skills-flows-harnesses';
 
 export const FLOW_SECTION_TITLE = 'The Flow';
 
+/** Shown under a stage's skill list: the numbered order is a suggestion, not a rule. */
+export const FLOW_STAGE_ORDER_NOTE =
+  'The order above is a suggestion. Skip a skill, or run them in whatever order fits your work.';
+
 export const OVERVIEW_LINK_PREFIX = 'You just saw the shape.';
 export const OVERVIEW_LINK_TEXT = 'Read the Flow in detail';
 export const OVERVIEW_LINK_DESCRIPTION = 'for why these stages actually fit together.';
