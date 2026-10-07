@@ -79,9 +79,10 @@ function ensureUpstreamRemote(): void {
   }
 }
 
-function pathExistsInUpstream(path: string, upstreamSha: string): boolean {
+/** Whether `path` exists at `ref` (a commit sha or `HEAD`). Quiet: a missing path is an answer, not an error. */
+function pathExistsAt(ref: string, path: string): boolean {
   try {
-    execFileSync('git', ['cat-file', '-e', `${upstreamSha}:${path}`], {
+    execFileSync('git', ['cat-file', '-e', `${ref}:${path}`], {
       cwd: REPO_ROOT,
       stdio: 'pipe',
     });
@@ -155,7 +156,7 @@ function historyOccurrences(names: string[], upstreamSha: string): HistoricalOcc
  */
 function findLastUpstreamOccurrence(name: string, upstreamSha: string): HistoricalOccurrence | null {
   for (const occurrence of historyOccurrences(namesToSearch(name), upstreamSha)) {
-    if (pathExistsInUpstream(occurrence.path, occurrence.sha)) return occurrence;
+    if (pathExistsAt(occurrence.sha, occurrence.path)) return occurrence;
   }
   return null;
 }
@@ -186,7 +187,7 @@ export function pickCurrentUpstreamPath(candidatePaths: string[], existsNow: (pa
  */
 function findCurrentUpstreamPath(name: string, upstreamSha: string): string | null {
   const candidates = [...new Set(historyOccurrences(namesToSearch(name), upstreamSha).map((o) => toSkillFolderPath(o.path)))];
-  return pickCurrentUpstreamPath(candidates, (path) => pathExistsInUpstream(path, upstreamSha));
+  return pickCurrentUpstreamPath(candidates, (path) => pathExistsAt(upstreamSha, path));
 }
 
 /**
@@ -210,6 +211,15 @@ function isUnchangedVsUpstream({ upstreamPath, localPath }: SkillPathPair, upstr
     encoding: 'utf-8',
   }).trim();
   return diff === '';
+}
+
+/**
+ * The `git diff` arguments for per-file line counts between two trees. `--no-renames`
+ * lists a renamed file as removed under its old name and added under its new one,
+ * each a real path, instead of as one "old => new" line that names no readable file.
+ */
+export function numstatArgs(from: string, to: string): string[] {
+  return ['diff', '--numstat', '--no-renames', from, to];
 }
 
 /** Pure parsing, kept separate from the git I/O so it's unit-testable. */
@@ -237,11 +247,10 @@ export function parseNumstat(numstatOutput: string, skillPath: string): DiffStat
 // nothing for parseNumstat's prefix-stripping to do here; pass '' rather than
 // a path that reads as if it mattered.
 function computeDiffStat({ upstreamPath, localPath }: SkillPathPair, upstreamSha: string): DiffStatEntry[] {
-  const numstat = execFileSync(
-    'git',
-    ['diff', '--numstat', atRef(upstreamSha, upstreamPath), atRef('HEAD', localPath)],
-    { cwd: REPO_ROOT, encoding: 'utf-8' },
-  );
+  const numstat = execFileSync('git', numstatArgs(atRef(upstreamSha, upstreamPath), atRef('HEAD', localPath)), {
+    cwd: REPO_ROOT,
+    encoding: 'utf-8',
+  });
   return parseNumstat(numstat, '');
 }
 
@@ -373,19 +382,33 @@ function computeFileDiffs(
       // A file added or deleted outright (not modified in place) has no content on one
       // side; treat that side as empty so it diffs as wholly added/removed, the same as
       // any other add/remove, rather than being silently dropped.
-      const oldContent = readFileAtRef(upstreamSha, `${upstreamPath}/${file}`) ?? '';
-      const newContent = readFileAtRef('HEAD', `${localPath}/${file}`) ?? '';
+      const oldContent = readFileOrEmpty(upstreamSha, `${upstreamPath}/${file}`, GIT_FILE_READER);
+      const newContent = readFileOrEmpty('HEAD', `${localPath}/${file}`, GIT_FILE_READER);
       return { file, rows: buildLineDiff(oldContent, newContent) };
     });
 }
 
-function readFileAtRef(ref: string, path: string): string | null {
-  try {
-    return execFileSync('git', ['show', `${ref}:${path}`], { cwd: REPO_ROOT, encoding: 'utf-8' });
-  } catch {
-    return null; // file doesn't exist at that ref (added/removed/renamed)
-  }
+/** How readFileOrEmpty asks git about a file; injected so the rule is testable without a repo. */
+export interface FileReader {
+  /** Whether the file exists at that ref. */
+  exists: (ref: string, path: string) => boolean;
+  /** The file's content at that ref; throws if git fails. */
+  show: (ref: string, path: string) => string;
 }
+
+/**
+ * A file's content at a ref, or '' when the file doesn't exist there (added or
+ * removed on one side), so it diffs as wholly added or removed. Any other git
+ * failure throws: a diff built from a read that silently failed would be wrong.
+ */
+export function readFileOrEmpty(ref: string, path: string, reader: FileReader): string {
+  return reader.exists(ref, path) ? reader.show(ref, path) : '';
+}
+
+const GIT_FILE_READER: FileReader = {
+  exists: pathExistsAt,
+  show: (ref, path) => execFileSync('git', ['show', atRef(ref, path)], { cwd: REPO_ROOT, encoding: 'utf-8' }),
+};
 
 /**
  * IO: the ISO 8601 author date of the most recent commit that touched this
