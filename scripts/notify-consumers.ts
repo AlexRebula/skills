@@ -21,6 +21,9 @@
  * Each `command` is an argument list (program first), spawned without a
  * shell, with its consumer's `path` as the working directory.
  *
+ * One run at a time, and SIGINT/SIGTERM stops the running command's whole
+ * process group: see the lock and stop sections of notify-consumers.md.
+ *
  * Each command runs with `SKILLS_REPO` set to this checkout's root, so it
  * reads the freshly regenerated data from here. Git's repo-local variables
  * (`GIT_DIR`, `GIT_WORK_TREE`, `GIT_CONFIG_PARAMETERS`, ...) and the outer
@@ -34,7 +37,7 @@
  *   stdout: the result. That is the help text, the dry-run plan, the skip
  *           reason when there is nothing to do, and the final summary line
  *           ("done: N ok, N failed, N skipped").
- *   stderr: everything else. Argument and config errors, the start
+ *   stderr: everything else. Argument, config and lock errors, the start
  *           timestamp, each step as it starts, and each step's ok/failed/
  *           skipped line.
  *   Each command's own output goes to the same stdout/stderr it inherits.
@@ -42,21 +45,36 @@
  * Exit codes:
  *   0: every step succeeded, or there was nothing to do (skipped), or
  *      --help / --dry-run
- *   1: bad arguments or config, the regeneration failed (no consumer runs),
- *      or at least one consumer failed or its checkout was not found
- *      (the others still run)
+ *   1: bad arguments or config, another run holds the lock, the
+ *      regeneration failed (no consumer runs), or at least one consumer
+ *      failed or its checkout was not found (the others still run)
+ *   130 / 143: stopped by SIGINT / SIGTERM (128 + the signal number)
  */
 
 import { spawn } from 'node:child_process';
-import { existsSync, readFileSync } from 'node:fs';
+import { existsSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
+import { constants as osConstants } from 'node:os';
 import { dirname, isAbsolute, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { parseArgs } from 'node:util';
-import type { CliArgs, Consumer, NotifyConfig, Plan, PlanInput, RunDeps, Step } from './notify-consumers.types';
+import type {
+  CliArgs,
+  Consumer,
+  LockFile,
+  LockHolder,
+  NotifyConfig,
+  Plan,
+  PlanInput,
+  RunDeps,
+  Step,
+  StopHandler,
+  StopSignal,
+} from './notify-consumers.types';
 
 const REPO_ROOT = join(dirname(fileURLToPath(import.meta.url)), '..');
 const CONFIG_FILE = 'notify-consumers.config.json';
 const EXAMPLE_CONFIG_FILE = 'notify-consumers.config.example.json';
+const LOCK_FILE = 'notify-consumers.lock';
 const PREFIX = 'notify-consumers:';
 
 export const HELP = `Usage: npm run notify-consumers -- [options]
@@ -75,10 +93,17 @@ Options:
 Does nothing (and says why) on CI, when the default config file is missing, or when
 it lists no consumers.
 
+Only one run at a time: a run holds ${LOCK_FILE} at the repo root
+(gitignored) and a second run stops at once. A lock left by a process that
+is no longer running is replaced. --dry-run and --help take no lock.
+SIGINT or SIGTERM stops the running command and everything it started.
+
 Exit codes:
-  0  every step succeeded, there was nothing to do, or --help / --dry-run
-  1  bad arguments or config, the regeneration failed, or a consumer failed
-     or its checkout was not found`;
+  0    every step succeeded, there was nothing to do, or --help / --dry-run
+  1    bad arguments or config, another run is in progress, the regeneration
+       failed, or a consumer failed or its checkout was not found
+  130  stopped by SIGINT
+  143  stopped by SIGTERM`;
 
 // ---------------------------------------------------------------------------
 // CLI parsing
@@ -255,31 +280,114 @@ export function formatPlan(plan: Plan, repoRoot: string): string {
 // Execution
 // ---------------------------------------------------------------------------
 
-export async function runPlan(plan: Plan, { run, progress, result }: RunDeps): Promise<number> {
+/**
+ * Takes the lock for this run. Returns the content written into it, or null
+ * (after saying why) when another live run holds it. A lock whose process is
+ * no longer running is stale and replaced. Two runs replacing the same stale
+ * lock at the same instant could both remove it; a run is started by a
+ * post-merge hook or by hand, so that window is accepted.
+ */
+function takeLock(lock: LockFile, progress: RunDeps['progress']): string | null {
+  const ownLockContent = JSON.stringify({ pid: lock.pid, started: new Date().toISOString() } satisfies LockHolder);
+  for (let attempt = 0; attempt < 2; attempt++) {
+    if (lock.create(ownLockContent)) return ownLockContent;
+    const text = lock.read();
+    if (text === null) continue; // released between the two calls
+    const holder = parseLockHolder(text);
+    if (holder === null) {
+      progress(`${PREFIX} the lock file ${lock.path} is unreadable. If no run is in progress, delete it and retry.`);
+      return null;
+    }
+    if (lock.isRunning(holder.pid)) {
+      progress(
+        `${PREFIX} another run is in progress (pid ${holder.pid}, started ${holder.started}), not starting a second one. ` +
+          `Lock: ${lock.path}`
+      );
+      return null;
+    }
+    progress(`${PREFIX} replacing a stale lock left by pid ${holder.pid}, which is no longer running`);
+    lock.remove();
+  }
+  progress(`${PREFIX} could not take the lock at ${lock.path}, retry in a moment`);
+  return null;
+}
+
+function parseLockHolder(text: string): LockHolder | null {
+  try {
+    const raw: unknown = JSON.parse(text);
+    if (isRecord(raw) && typeof raw.pid === 'number' && Number.isInteger(raw.pid) && typeof raw.started === 'string') {
+      return { pid: raw.pid, started: raw.started };
+    }
+  } catch {
+    // fall through: unreadable
+  }
+  return null;
+}
+
+/** Removes the lock, but only while it is still the one this run wrote. */
+function releaseLock(lock: LockFile, ownLockContent: string): void {
+  if (lock.read() === ownLockContent) lock.remove();
+}
+
+export async function runPlan(plan: Plan, deps: RunDeps): Promise<number> {
   if (plan.kind === 'skip') {
-    result(`${PREFIX} skipping: ${plan.reason}`);
+    deps.result(`${PREFIX} skipping: ${plan.reason}`);
     return 0;
   }
+  const ownLockContent = takeLock(deps.lock, deps.progress);
+  if (ownLockContent === null) return 1;
+  deps.progress(`${PREFIX} started ${new Date().toISOString()}`);
+
+  const stopper = new AbortController();
+  const stopListening = deps.onStopSignal((signal) => {
+    if (stopper.signal.aborted) return;
+    deps.progress(`${PREFIX} ${signal} received, stopping the running command`);
+    stopper.abort(signal);
+  });
+  try {
+    return await runSteps(plan, deps, stopper.signal);
+  } finally {
+    stopListening();
+    releaseLock(deps.lock, ownLockContent);
+  }
+}
+
+async function runSteps(
+  plan: Extract<Plan, { kind: 'run' }>,
+  { run, progress, result }: RunDeps,
+  stop: AbortSignal
+): Promise<number> {
+  let ok = 0;
+  let failed = 0;
+  let skipped = 0;
+  // After a stop signal: says which step was cut short, and returns the
+  // conventional 128 + signal number exit code.
+  const stopped = (step: Step | null): number => {
+    const signal = stop.reason as StopSignal;
+    if (step) progress(`${PREFIX} ${step.label} stopped`);
+    result(`${PREFIX} done: stopped by ${signal} after ${ok} ok, ${failed} failed, ${skipped} skipped`);
+    return 128 + osConstants.signals[signal];
+  };
 
   progress(`${PREFIX} ${plan.regenerate.label}`);
-  const regenCode = await run(plan.regenerate);
+  const regenCode = await run(plan.regenerate, stop);
+  if (stop.aborted) return stopped(plan.regenerate);
   if (regenCode !== 0) {
     progress(`${PREFIX} ${plan.regenerate.label} failed (exit ${regenCode})`);
     result(`${PREFIX} done: regeneration failed, no consumer was notified`);
     return 1;
   }
 
-  let ok = 0;
-  let failed = 0;
-  let skipped = 0;
   for (const consumer of plan.consumers) {
+    if (stop.aborted) return stopped(null);
     if (consumer.missing) {
       progress(`${PREFIX} ${consumer.label} skipped: checkout not found at ${consumer.cwd}`);
       skipped++;
       continue;
     }
     progress(`${PREFIX} ${consumer.label}: ${displayCommand(consumer.command)}`);
-    const code = await run(consumer);
+    const code = await run(consumer, stop);
+    if (stop.aborted) return stopped(consumer);
     if (code === 0) {
       progress(`${PREFIX} ${consumer.label} ok`);
       ok++;
@@ -289,20 +397,106 @@ export async function runPlan(plan: Plan, { run, progress, result }: RunDeps): P
     }
   }
 
+  if (stop.aborted) return stopped(null);
   result(`${PREFIX} done: ${ok} ok, ${failed} failed, ${skipped} skipped`);
   return failed === 0 && skipped === 0 ? 0 : 1;
 }
 
-function spawnStep(step: Step, env: NodeJS.ProcessEnv): Promise<number> {
+/** How long a stopped step's process group gets to exit before SIGKILL. */
+const STOP_GRACE_MS = 10_000;
+const IS_POSIX = process.platform !== 'win32';
+
+/**
+ * Spawns a step in its own process group (POSIX), so a stop signal reaches
+ * the command and everything it started (npm, git, gh, ...) at once. Stdin
+ * is not passed on: a background process group that reads the terminal
+ * would be suspended, and the commands run unattended anyway. On Windows
+ * there are no process groups, so only the command itself is signalled.
+ */
+function spawnStep(step: Step, env: NodeJS.ProcessEnv, stop: AbortSignal): Promise<number> {
   const [program, ...args] = step.command;
   return new Promise((resolve) => {
-    const child = spawn(program, args, { cwd: step.cwd, env, stdio: 'inherit' });
+    const child = spawn(program, args, {
+      cwd: step.cwd,
+      env,
+      stdio: ['ignore', 'inherit', 'inherit'],
+      detached: IS_POSIX,
+    });
+    let killTimer: NodeJS.Timeout | undefined;
+    const signalGroup = (signal: NodeJS.Signals) => {
+      if (child.pid === undefined) return;
+      try {
+        if (IS_POSIX) process.kill(-child.pid, signal);
+        else child.kill(signal);
+      } catch {
+        // the group has already exited
+      }
+    };
+    const onStop = () => {
+      signalGroup(stop.reason as StopSignal);
+      killTimer = setTimeout(() => signalGroup('SIGKILL'), STOP_GRACE_MS);
+      killTimer.unref();
+    };
+    const finish = (code: number) => {
+      stop.removeEventListener('abort', onStop);
+      clearTimeout(killTimer);
+      // A stopped command may have exited before something it started did:
+      // nothing in its group outlives it.
+      if (stop.aborted) signalGroup('SIGKILL');
+      resolve(code);
+    };
+    if (stop.aborted) onStop();
+    else stop.addEventListener('abort', onStop, { once: true });
     child.on('error', (err) => {
       process.stderr.write(`${PREFIX} ${step.label} could not start: ${err.message}\n`);
-      resolve(1);
+      finish(1);
     });
-    child.on('close', (code) => resolve(code ?? 1));
+    child.on('close', (code) => finish(code ?? 1));
   });
+}
+
+function isProcessRunning(pid: number): boolean {
+  try {
+    process.kill(pid, 0);
+    return true;
+  } catch (err) {
+    // EPERM: it exists but belongs to another user.
+    return (err as NodeJS.ErrnoException).code === 'EPERM';
+  }
+}
+
+function fileLock(path: string): LockFile {
+  return {
+    path,
+    pid: process.pid,
+    create: (content) => {
+      try {
+        writeFileSync(path, content, { flag: 'wx' });
+        return true;
+      } catch (err) {
+        if ((err as NodeJS.ErrnoException).code === 'EEXIST') return false;
+        throw err;
+      }
+    },
+    read: () => {
+      try {
+        return readFileSync(path, 'utf8');
+      } catch (err) {
+        if ((err as NodeJS.ErrnoException).code === 'ENOENT') return null;
+        throw err;
+      }
+    },
+    remove: () => rmSync(path, { force: true }),
+    isRunning: isProcessRunning,
+  };
+}
+
+function onProcessStopSignal(handler: StopHandler): () => void {
+  const signals: StopSignal[] = ['SIGINT', 'SIGTERM'];
+  for (const signal of signals) process.on(signal, handler);
+  return () => {
+    for (const signal of signals) process.off(signal, handler);
+  };
 }
 
 // ---------------------------------------------------------------------------
@@ -347,9 +541,14 @@ async function main(argv: string[]): Promise<number> {
     return 0;
   }
 
-  if (plan.kind === 'run') toStderr(`${PREFIX} started ${new Date().toISOString()}`);
   const env = consumerEnv(process.env, REPO_ROOT);
-  return runPlan(plan, { run: (step) => spawnStep(step, env), progress: toStderr, result: toStdout });
+  return runPlan(plan, {
+    run: (step, stop) => spawnStep(step, env, stop),
+    progress: toStderr,
+    result: toStdout,
+    lock: fileLock(join(REPO_ROOT, LOCK_FILE)),
+    onStopSignal: onProcessStopSignal,
+  });
 }
 
 // Only run when executed directly (not when imported by tests).
