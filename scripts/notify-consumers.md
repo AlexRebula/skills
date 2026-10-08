@@ -2,7 +2,7 @@
 
 **You only need this if another project of yours keeps its own copy of this repo's skills data** (for example a site that shows the skills flow from a saved snapshot, and has a command that refreshes that snapshot). Using the skills, or a component library, doesn't make a project a consumer. Without such a project, there is nothing to set up: the script does nothing, and you can ignore this page.
 
-Other projects can keep a static copy of this repo's generated site data, such as a snapshot of the skills flow that a portfolio or a component library's stories read. `scripts/notify-consumers.ts` tells each of them to refresh that copy whenever local `main` moves on. Each consumer owns its own sync command (for example, one that rebuilds its snapshot and opens a PR when something changed); this script only starts it and reports the result.
+Other projects can keep a static copy of this repo's generated site data, such as a snapshot of the skills flow that a portfolio or a component library's stories read. `scripts/notify-consumers.ts` tells each of them to refresh that copy when you run it (after a pull moves local `main` on, the post-merge hook reminds you). Each consumer owns its own sync command (for example, one that rebuilds its snapshot and opens a PR when something changed); this script only starts it and reports the result.
 
 It runs locally on purpose. This repo is public, so it holds no tokens and names no consumer. Which projects consume the data, and where their checkouts live, is personal machine setup.
 
@@ -70,7 +70,7 @@ A run prints to the terminal you started it from, after a `notify-consumers: sta
 - **The hook printed the commands but no consumer was updated.** That's expected: the hook never starts a run. Run `npm run notify-consumers`.
 
 - **A consumer failed or was skipped.** A skipped consumer's checkout wasn't found at its `path`. To retry a failed one, run its command from its own checkout with `SKILLS_REPO` pointing here; most consumer syncs take `--dry-run` too, so you can see their plan first.
-- **"another run is in progress".** A run already holds the lock, for example one the post-merge hook started in the background. The message names its process id and start time. Wait for it to finish (watch `notify-consumers.log`), or stop it with `kill <pid>`, which also stops the consumer command it is running. Don't delete the lock while that process is still running: two runs at once can collide on a consumer's sync branch.
+- **"another run is in progress".** A run already holds the lock, for example one started in another terminal. The message names its process id and start time. Wait for it to finish, or stop it with `kill <pid>`, which also stops the consumer command it is running. Don't delete the lock while that process is still running: two runs at once can collide on a consumer's sync branch.
 - **A stale lock.** A lock whose process is no longer running (the machine restarted, or the run was killed with SIGKILL) doesn't block anything: the next run says it is replacing it and goes ahead. If the message says the lock file is unreadable, or names a process id that now belongs to an unrelated program, check that no run is in progress (`ps -p <pid>`), then delete `notify-consumers.lock` and run again.
 - **A sync PR from an earlier run is still open.** Merge or close it before running again: a second run on the same commit may try to open the same PR.
 - **Use a different config file:** `npm run notify-consumers -- --config <path>`.
