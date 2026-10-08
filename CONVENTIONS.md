@@ -35,6 +35,18 @@ abstraction is premature; two real callers is the signal to extract.
   (a comment repeating what a type already says, a README restating what JSDoc already
   covers).
 
+## Tests that run git
+
+A test that runs `git` must pass `env: cleanGitEnv()` (from `scripts/git-env.ts`) to every
+`git` child process, even against a throwaway repo in a tmpdir. Inside a git hook (the
+pre-push gate runs the suite), git sets environment variables such as `GIT_DIR` (when the
+push comes from a linked worktree) and `GIT_INDEX_FILE` (in the commit hooks). `GIT_DIR`
+overrides a child process's `cwd` and `-C`, so a test that runs `git` with the inherited
+environment acts on this repository instead of its throwaway one. `cleanGitEnv()` removes
+every `GIT_*` variable. The gate's `check:test-git-env` step fails a test file that skips
+it, and a Vitest `globalSetup` fails the run if this checkout's `.git/config`, `HEAD` or
+branch tip changed.
+
 ## React-specific rules
 
 - Extract style objects with more than 3 properties into a dedicated `.styles.ts` file

@@ -23,6 +23,7 @@
  *
  * Checks performed (in order):
  *   1. Provenance script lint — eslint on scripts/generate-provenance.ts (always runs — fast)
+ *   1b. Test git env check: no test runs git without an explicit env (always runs, fast)
  *   2. Root tests — vitest run (smart: skipped when every changed file is
  *      site-only or a root docs file with no bearing on root tests)
  *   3. Site typecheck — tsc (smart: skipped when nothing site-relevant changed)
@@ -243,6 +244,12 @@ console.log('══════════════════════�
 // 1. Provenance script lint — always runs, fast, no compilation.
 if (!run('Provenance script lint', 'npm run lint:provenance-script')) {
   failures.push('Provenance script lint — fix eslint errors above');
+}
+
+// 1b. Test git env check: always runs, fast. A test that runs git with the
+// inherited environment acts on this repo when a git hook runs the suite.
+if (!run('Test git env check', 'npm run check:test-git-env')) {
+  failures.push('Test git env check: pass `env: cleanGitEnv()` to every git call listed above');
 }
 
 // 2. Root tests — smart: skipped when only site/ or root docs changed.

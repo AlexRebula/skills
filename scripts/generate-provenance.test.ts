@@ -3,6 +3,7 @@ import { mkdirSync, mkdtempSync, rmSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { describe, expect, it } from 'vitest';
+import { cleanGitEnv } from './git-env';
 import {
   buildHistoryPathspecs,
   buildLineDiff,
@@ -195,11 +196,8 @@ describe('parseNumstat', () => {
 describe('numstatArgs', () => {
   it('lists a renamed file as removed under its old name and added under its new one, each a real path', () => {
     const repo = mkdtempSync(join(tmpdir(), 'provenance-numstat-'));
-    // Without git's own variables: inside a git hook (the pre-push gate runs this test)
-    // GIT_DIR and friends point at the real repo, and would send every command there.
-    const env = Object.fromEntries(Object.entries(process.env).filter(([key]) => !key.startsWith('GIT_')));
     const git = (...args: string[]) =>
-      execFileSync('git', args, { cwd: repo, env, encoding: 'utf-8', stdio: ['ignore', 'pipe', 'pipe'] });
+      execFileSync('git', args, { cwd: repo, env: cleanGitEnv(), encoding: 'utf-8', stdio: ['ignore', 'pipe', 'pipe'] });
     try {
       git('init', '-q');
       mkdirSync(join(repo, 'old'));

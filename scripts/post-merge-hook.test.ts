@@ -9,6 +9,7 @@ import { tmpdir } from 'node:os';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { afterEach, beforeEach, describe, expect, it } from 'vitest';
+import { cleanGitEnv } from './git-env';
 import { parseConfig } from './notify-consumers';
 
 const REPO_ROOT = join(dirname(fileURLToPath(import.meta.url)), '..');
@@ -22,10 +23,8 @@ let repo: string;
 
 /** A clean env: no CI, no global/system git config, no inherited GIT_* vars. */
 function gitEnv(extra: Record<string, string> = {}): NodeJS.ProcessEnv {
-  const env: NodeJS.ProcessEnv = {};
-  for (const [key, value] of Object.entries(process.env)) {
-    if (key !== 'CI' && !key.startsWith('GIT_')) env[key] = value;
-  }
+  const env = cleanGitEnv();
+  delete env.CI;
   return {
     ...env,
     GIT_CONFIG_GLOBAL: '/dev/null',
