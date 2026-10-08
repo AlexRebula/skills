@@ -1,5 +1,7 @@
 # Keeping consumers in sync: `notify-consumers`
 
+**You only need this if another project of yours keeps its own copy of this repo's skills data** (for example a site that shows the skills flow from a saved snapshot, and has a command that refreshes that snapshot). Using the skills, or a component library, doesn't make a project a consumer. Without such a project, there is nothing to set up: the script does nothing, and you can ignore this page.
+
 Other projects can keep a static copy of this repo's generated site data, such as a snapshot of the skills flow that a portfolio or a component library's stories read. `scripts/notify-consumers.ts` tells each of them to refresh that copy whenever local `main` moves on. Each consumer owns its own sync command (for example, one that rebuilds its snapshot and opens a PR when something changed); this script only starts it and reports the result.
 
 It runs locally on purpose. This repo is public, so it holds no tokens and names no consumer. Which projects consume the data, and where their checkouts live, is personal machine setup.
