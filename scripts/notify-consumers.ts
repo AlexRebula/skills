@@ -10,9 +10,8 @@
  * (open a PR, rewrite a snapshot, nothing at all when unchanged) is up to
  * the consumer: this script only starts it and reports its exit code.
  *
- * Runs automatically from `.githooks/post-merge` (in the background, with a
- * log) when a merge or pull moves local `main` on, and by hand with
- * `npm run notify-consumers`.
+ * Runs only by hand, with `npm run notify-consumers`. `.githooks/post-merge`
+ * prints that command when a merge or pull moves local `main` on.
  *
  * Config: a local, gitignored `notify-consumers.config.json` at the repo
  * root, in the shape of `NotifyConfig` (see notify-consumers.types.ts; copy

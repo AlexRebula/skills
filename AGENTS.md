@@ -92,9 +92,10 @@ from the rest of this repo:
 - A repo-root `.githooks/pre-push` (wired via `scripts/setup-hooks.js`, run automatically by
   `postinstall`) runs root tests, lints `scripts/generate-provenance.ts`, and runs `site/`'s full
   `check` before every push. `git push --no-verify` bypasses it if you must.
-- `.githooks/post-merge` starts `npm run notify-consumers` in the background when a merge or
-  pull moves local `main` on, so projects that keep a copy of the site data refresh it. Setup,
-  the log and troubleshooting: [`scripts/notify-consumers.md`](./scripts/notify-consumers.md).
+- `.githooks/post-merge` prints the commands to see the plan of `npm run notify-consumers` and
+  to start it when a merge or pull moves local `main` on; it runs no code itself. The run lets
+  projects that keep a copy of the site data refresh it. Setup, output and troubleshooting:
+  [`scripts/notify-consumers.md`](./scripts/notify-consumers.md).
 - Before adding a component to `site/`, check whether the same leaf widget already exists
   (`src/components/`) rather than redeclaring it inline in a page: `CopyableCommand` and
   `GitHubStars` were pulled out of `index.tsx` for exactly this reason.
