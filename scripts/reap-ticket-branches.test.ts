@@ -1,7 +1,8 @@
-import { execFileSync } from 'node:child_process';
+import { execFileSync, spawnSync } from 'node:child_process';
 import { mkdtempSync, rmSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
+import { fileURLToPath } from 'node:url';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { cleanGitEnv } from './git-env';
 import {
@@ -228,6 +229,26 @@ describe('findBranchesInRepo (integration, real git, no GitHub remote)', () => {
     const findings = findBranchesInRepo(repoPath, (name: string) => branchMatchesTicket(name, '841'));
     expect(findings[0].isCurrentlyCheckedOut).toBe(true);
     expect(recommendedCommands(findings[0])[0]).toContain('switch away first');
+  });
+
+  it('writes nothing to stderr when git fails in a way it expects (no origin remote)', () => {
+    // git writes straight to the inherited stderr file descriptor, which a spy on
+    // process.stderr can't see, so run the lookup in a child process and read its stderr.
+    const modulePath = fileURLToPath(new URL('./reap-ticket-branches.ts', import.meta.url));
+    const script = [
+      `import { findBranchesInRepo } from ${JSON.stringify(modulePath)};`,
+      `const findings = findBranchesInRepo(${JSON.stringify(repoPath)}, (name) => name === 'fix/841-hero-background');`,
+      'process.stdout.write(findings[0].prState);',
+    ].join('\n');
+
+    const child = spawnSync(process.execPath, ['--import', 'tsx', '--input-type=module', '-e', script], {
+      encoding: 'utf8',
+      env: cleanGitEnv(),
+    });
+
+    expect(child.status).toBe(0);
+    expect(child.stdout).toBe('unavailable');
+    expect(child.stderr).toBe('');
   });
 });
 
