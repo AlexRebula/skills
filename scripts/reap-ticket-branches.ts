@@ -140,13 +140,20 @@ export function branchMatchesTicket(branchName: string, ticketNumber: string): b
 
 // Invoked from this repo's own pre-push hook (among other contexts), whose GIT_* variables would
 // override `-C <repoPath>` and point this script at the wrong repository: see cleanGitEnv.
-function runGit(repoPath: string, args: string[]): string {
-  return execFileSync('git', ['-C', repoPath, ...args], { encoding: 'utf8', env: cleanGitEnv() }).trim();
+// `quiet` captures git's stderr instead of passing it through, for failures the caller expects
+// and handles.
+function runGit(repoPath: string, args: string[], { quiet = false } = {}): string {
+  return execFileSync('git', ['-C', repoPath, ...args], {
+    encoding: 'utf8',
+    env: cleanGitEnv(),
+    ...(quiet ? { stdio: 'pipe' as const } : {}),
+  }).trim();
 }
 
+// For git calls whose failure is an expected answer (no origin remote, not a repository).
 function tryRunGit(repoPath: string, args: string[]): string | null {
   try {
-    return runGit(repoPath, args);
+    return runGit(repoPath, args, { quiet: true });
   } catch {
     return null;
   }
