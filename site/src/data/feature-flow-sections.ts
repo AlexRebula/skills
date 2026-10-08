@@ -59,6 +59,40 @@ export const FLOW_STAGE_LONG_DESCRIPTIONS: Record<string, string> = {
 };
 
 /**
+ * One sentence (about 110 characters) per flow stage: what the flow is, who
+ * it is for, and what its skills achieve. Distinct from
+ * `FLOW_STAGE_DESCRIPTIONS`' blurb (the row's own heading) and
+ * `FLOW_STAGE_LONG_DESCRIPTIONS`' detail prose. The two catch-all stages
+ * describe their reader plainly rather than naming a persona.
+ */
+export const FLOW_STAGE_SUMMARIES: Record<string, string> = {
+  'Start the day':
+    'For anyone opening a work session: skills that reload prior notes and repo state into one brief to act on.',
+  'Shape it':
+    'For anyone with a rough idea: skills that interview you, then turn the answers into a spec and tickets.',
+  'Build it':
+    'For developers writing a feature: skills that scaffold components and build them test-first from a ticket.',
+  'Words for the codebase':
+    'For teams that want a readable codebase: skills that sharpen names, module seams and recorded decisions.',
+  'Land it':
+    'For developers shipping finished work: skills that commit cleanly, open the PR and carry it through review.',
+  'When it breaks':
+    'For whoever is facing a bug: skills that triage the report, find the cause and untangle merge conflicts.',
+  'Sweep for debt':
+    'For maintainers of a busy codebase: skills that find stale PRs, dirty repos and sloppy prose, then clear them.',
+  'Run the wiki':
+    'For anyone keeping a personal wiki: skills that ingest sources, answer from them and flag stale claims.',
+  'Close the session':
+    'For anyone ending a work session: skills that write the wrap-up and save loose work for whoever is next.',
+  'Grow a contributor':
+    'For mentors of a junior engineer: skills that vet issues, track progress and teach so lessons stick.',
+  'LittleBranches specifics':
+    'For people working in LittleBranches repos: skills that apply its component, test and review conventions.',
+  'Reach for on their own':
+    'For anyone with an occasional or personal need: skills that redact data, shorten replies and block risky git.',
+};
+
+/**
  * One `FeatureFlowItem.icon` base name per flow stage, each reused from an
  * existing skill already in that stage (`SKILL_ICON_NAMES`,
  * `site/src/data/skill-icons.ts`) rather than a newly invented icon: every
@@ -125,6 +159,15 @@ function toHighlightCard(skill: FlowSkill, skillCardMediaSrc: string): FeatureFl
 const FALLBACK_ICON_NAME = 'widget-4';
 
 /**
+ * `FeatureFlowItem` plus the stage `summary`. The installed library's
+ * `FeatureFlowItem` has no `summary` field yet, so it is carried alongside
+ * here (and on into the generated snapshot) instead of widening the library's
+ * type; once the library ships the optional field this collapses to
+ * `FeatureFlowItem`.
+ */
+export type FlowStageItem = FeatureFlowItem & { summary: string };
+
+/**
  * Maps `FlowStageSection[]` (already persona-filtered - see
  * `filterFlowSections`) into `FeatureFlowItem[]` for `FeatureFlowSection`:
  * one item per stage. Each stage's `highlightCards` follow its `skills` in
@@ -142,13 +185,14 @@ const FALLBACK_ICON_NAME = 'widget-4';
 export function buildFeatureFlowItems(
   flowSections: readonly FlowStageSection[],
   skillCardMediaSrc: string
-): FeatureFlowItem[] {
+): FlowStageItem[] {
   return flowSections.map((section) => ({
     id: slugify(section.label),
     icon: `solar:${FLOW_STAGE_ICON_NAMES[section.label] ?? FALLBACK_ICON_NAME}-bold-duotone`,
     title: section.label,
     description: FLOW_STAGE_DESCRIPTIONS[section.label] ?? '',
     longDescription: FLOW_STAGE_LONG_DESCRIPTIONS[section.label],
+    summary: FLOW_STAGE_SUMMARIES[section.label] ?? '',
     highlightCards: section.skills.map((skill) => toHighlightCard(skill, skillCardMediaSrc)),
   }));
 }
