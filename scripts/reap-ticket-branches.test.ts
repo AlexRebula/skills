@@ -3,6 +3,7 @@ import { mkdtempSync, rmSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
+import { cleanGitEnv } from './git-env';
 import {
   branchMatchesTicket,
   extractTicketNumber,
@@ -190,19 +191,13 @@ describe('formatReport', () => {
 // so PR classification is exercised in its graceful "unavailable" path).
 // ---------------------------------------------------------------------------
 
-// A test process invoked from a git hook (e.g. this repo's own pre-push) inherits GIT_DIR /
-// GIT_WORK_TREE / GIT_INDEX_FILE etc. in its environment. Those env vars override `cwd`/`-C`
-// entirely, so a child `git` call below would silently operate on the real repo instead of the
-// isolated tmpdir fixture. Stripping every GIT_* var keeps these fixtures genuinely isolated.
-const CLEAN_GIT_ENV = Object.fromEntries(Object.entries(process.env).filter(([key]) => !key.startsWith('GIT_')));
-
 describe('findBranchesInRepo (integration, real git, no GitHub remote)', () => {
   let repoPath: string;
 
   beforeEach(() => {
     repoPath = mkdtempSync(join(tmpdir(), 'reap-ticket-branches-fixture-'));
     const git = (...args: string[]) =>
-      execFileSync('git', args, { cwd: repoPath, encoding: 'utf8', env: CLEAN_GIT_ENV });
+      execFileSync('git', args, { cwd: repoPath, encoding: 'utf8', env: cleanGitEnv() });
     git('init', '--quiet', '--initial-branch=main');
     git('config', 'user.email', 'test@example.com');
     git('config', 'user.name', 'Test');
@@ -227,7 +222,7 @@ describe('findBranchesInRepo (integration, real git, no GitHub remote)', () => {
   it('flags the currently checked out branch and excludes it from delete recommendations', () => {
     execFileSync('git', ['-C', repoPath, 'checkout', 'fix/841-hero-background'], {
       encoding: 'utf8',
-      env: CLEAN_GIT_ENV,
+      env: cleanGitEnv(),
     });
 
     const findings = findBranchesInRepo(repoPath, (name: string) => branchMatchesTicket(name, '841'));
@@ -239,8 +234,8 @@ describe('findBranchesInRepo (integration, real git, no GitHub remote)', () => {
 // ---------------------------------------------------------------------------
 // Regression: this module must not inherit ambient GIT_* env vars (e.g. from
 // the real git hook that invokes it) into its own `-C <repoPath>` git calls,
-// or it silently inspects the wrong repository. See the module's own
-// CLEAN_GIT_ENV comment for the full scenario this guards against.
+// or it silently inspects the wrong repository. See cleanGitEnv in
+// git-env.ts for the full scenario this guards against.
 // ---------------------------------------------------------------------------
 
 describe('findBranchesInRepo (regression: does not leak ambient GIT_* env into its own git calls)', () => {
@@ -251,7 +246,7 @@ describe('findBranchesInRepo (regression: does not leak ambient GIT_* env into i
   beforeEach(() => {
     repoPath = mkdtempSync(join(tmpdir(), 'reap-ticket-branches-fixture-'));
     const git = (...args: string[]) =>
-      execFileSync('git', args, { cwd: repoPath, encoding: 'utf8', env: CLEAN_GIT_ENV });
+      execFileSync('git', args, { cwd: repoPath, encoding: 'utf8', env: cleanGitEnv() });
     git('init', '--quiet', '--initial-branch=main');
     git('config', 'user.email', 'test@example.com');
     git('config', 'user.name', 'Test');
@@ -270,8 +265,7 @@ describe('findBranchesInRepo (regression: does not leak ambient GIT_* env into i
 
   it('still finds the fixture repo\'s own branch when GIT_DIR/GIT_WORK_TREE point elsewhere in the ambient environment', async () => {
     // Poison the environment the way a real git hook invocation would, THEN
-    // (re-)import the module — CLEAN_GIT_ENV is captured once at module load,
-    // matching how a real short-lived CLI process actually runs.
+    // (re-)import the module, matching how a real short-lived CLI process runs.
     process.env.GIT_DIR = '/nonexistent/poisoned-git-dir';
     process.env.GIT_WORK_TREE = '/nonexistent/poisoned-work-tree';
     vi.resetModules();
