@@ -48,11 +48,48 @@ export interface PlanInput {
   pathExists: (path: string) => boolean;
 }
 
+/** The signals that stop a run (and the consumer command it is running). */
+export type StopSignal = 'SIGINT' | 'SIGTERM';
+
+export type StopHandler = (signal: StopSignal) => void;
+
+/**
+ * The run's lock file, so only one real run happens at a time. Its content
+ * is `LockHolder` as JSON.
+ */
+export interface LockFile {
+  /** Where the lock lives, for messages. */
+  path: string;
+  /** This process's id, written into the lock. */
+  pid: number;
+  /** Creates the file with `content` only when it doesn't exist yet; false when it does. */
+  create: (content: string) => boolean;
+  /** The file's content, or null when it doesn't exist. */
+  read: () => string | null;
+  /** Deletes the file (no error when it is already gone). */
+  remove: () => void;
+  /** Whether a process with this id is still running. */
+  isRunning: (pid: number) => boolean;
+}
+
+export interface LockHolder {
+  pid: number;
+  /** ISO timestamp of when the holding run started. */
+  started: string;
+}
+
 export interface RunDeps {
-  /** Runs one step and resolves with its exit code. */
-  run: (step: Step) => Promise<number>;
+  /**
+   * Runs one step and resolves with its exit code. When `stop` aborts (its
+   * `reason` is the `StopSignal`), it stops the step's whole process group
+   * and resolves once the step has exited.
+   */
+  run: (step: Step, stop: AbortSignal) => Promise<number>;
   /** A progress or failure line, for stderr. */
   progress: (line: string) => void;
   /** The run's outcome (the skip reason, or the final summary), for stdout. */
   result: (line: string) => void;
+  lock: LockFile;
+  /** Calls `handler` on SIGINT or SIGTERM until the returned function is called. */
+  onStopSignal: (handler: StopHandler) => () => void;
 }

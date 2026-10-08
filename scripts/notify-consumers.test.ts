@@ -14,7 +14,7 @@ import {
   parseConfig,
   runPlan,
 } from './notify-consumers';
-import type { NotifyConfig, Plan, Step } from './notify-consumers.types';
+import type { LockFile, NotifyConfig, Plan, RunDeps, Step, StopHandler } from './notify-consumers.types';
 
 const REPO_ROOT = '/path/to/skills';
 const CONFIG_PATH = `${REPO_ROOT}/notify-consumers.config.json`;
@@ -273,22 +273,59 @@ describe('formatPlan', () => {
 // runPlan (with an injected fake runner: nothing real is ever spawned)
 // ---------------------------------------------------------------------------
 
-function fakeRunner(exitCodes: Record<string, number> = {}) {
+const LOCK_PATH = `${REPO_ROOT}/notify-consumers.lock`;
+const OWN_PID = 4242;
+
+/** An in-memory lock file, and the set of process ids the fake treats as running. */
+function fakeLock(initial: string | null = null, running: number[] = [OWN_PID]) {
+  const state = { content: initial, created: [] as string[], removed: 0 };
+  const lock: LockFile = {
+    path: LOCK_PATH,
+    pid: OWN_PID,
+    create: (content) => {
+      if (state.content !== null) return false;
+      state.content = content;
+      state.created.push(content);
+      return true;
+    },
+    read: () => state.content,
+    remove: () => {
+      state.content = null;
+      state.removed++;
+    },
+    isRunning: (pid) => running.includes(pid),
+  };
+  return { state, lock };
+}
+
+function fakeRunner(exitCodes: Record<string, number> = {}, lockFile = fakeLock()) {
   const calls: Step[] = [];
   const progress: string[] = [];
   const results: string[] = [];
+  /** The lock file's content at the moment each step started. */
+  const lockDuringRun: (string | null)[] = [];
+  const signalHandlers = new Set<StopHandler>();
   return {
     calls,
     progress,
     results,
+    lockDuringRun,
+    lockState: lockFile.state,
+    signalHandlers,
     deps: {
       run: async (step: Step) => {
         calls.push(step);
+        lockDuringRun.push(lockFile.state.content);
         return exitCodes[step.label] ?? 0;
       },
       progress: (line: string) => progress.push(line),
       result: (line: string) => results.push(line),
-    },
+      lock: lockFile.lock,
+      onStopSignal: (handler: StopHandler) => {
+        signalHandlers.add(handler);
+        return () => signalHandlers.delete(handler);
+      },
+    } satisfies RunDeps,
   };
 }
 
@@ -334,6 +371,132 @@ describe('runPlan', () => {
       'notify-consumers: example-consumer skipped: checkout not found at /path/to/consumer'
     );
     expect(fake.results).toEqual(['notify-consumers: done: 1 ok, 0 failed, 1 skipped']);
+  });
+});
+
+describe('runPlan lock', () => {
+  it('takes the lock for the whole run, holding this process id, and releases it at the end', async () => {
+    const fake = fakeRunner();
+    expect(await runPlan(plan(), fake.deps)).toBe(0);
+    expect(fake.lockState.created).toHaveLength(1);
+    expect(JSON.parse(fake.lockState.created[0])).toMatchObject({ pid: OWN_PID });
+    expect(fake.lockDuringRun).toEqual([
+      fake.lockState.created[0],
+      fake.lockState.created[0],
+      fake.lockState.created[0],
+    ]);
+    expect(fake.lockState.content).toBeNull();
+  });
+
+  it('releases the lock when the run fails', async () => {
+    const fake = fakeRunner({ 'regenerate site data': 2 });
+    expect(await runPlan(plan(), fake.deps)).toBe(1);
+    expect(fake.lockState.created).toHaveLength(1);
+    expect(fake.lockState.content).toBeNull();
+  });
+
+  it('refuses a second run while a live run holds the lock: runs nothing, leaves the lock alone, exits 1', async () => {
+    const held = JSON.stringify({ pid: 777, started: '2026-10-07T09:00:00.000Z' });
+    const fake = fakeRunner({}, fakeLock(held, [OWN_PID, 777]));
+    expect(await runPlan(plan(), fake.deps)).toBe(1);
+    expect(fake.calls).toEqual([]);
+    expect(fake.lockState.content).toBe(held);
+    expect(fake.lockState.removed).toBe(0);
+    expect(fake.progress).toEqual([
+      `notify-consumers: another run is in progress (pid 777, started 2026-10-07T09:00:00.000Z), not starting a second one. Lock: ${LOCK_PATH}`,
+    ]);
+    expect(fake.results).toEqual([]);
+  });
+
+  it('replaces a stale lock (its process is no longer running), runs, then releases it', async () => {
+    const stale = JSON.stringify({ pid: 777, started: '2026-10-07T09:00:00.000Z' });
+    const fake = fakeRunner({}, fakeLock(stale, [OWN_PID]));
+    expect(await runPlan(plan(), fake.deps)).toBe(0);
+    expect(fake.progress[0]).toBe(
+      'notify-consumers: replacing a stale lock left by pid 777, which is no longer running'
+    );
+    expect(fake.calls).toHaveLength(3);
+    expect(JSON.parse(fake.lockDuringRun[0] ?? '')).toMatchObject({ pid: OWN_PID });
+    expect(fake.lockState.content).toBeNull();
+  });
+
+  it('refuses to run over an unreadable lock file, and says how to clear it', async () => {
+    const fake = fakeRunner({}, fakeLock('not json'));
+    expect(await runPlan(plan(), fake.deps)).toBe(1);
+    expect(fake.calls).toEqual([]);
+    expect(fake.lockState.content).toBe('not json');
+    expect(fake.progress).toEqual([
+      `notify-consumers: the lock file ${LOCK_PATH} is unreadable. If no run is in progress, delete it and retry.`,
+    ]);
+  });
+
+  it('takes no lock for a skip plan', async () => {
+    const fake = fakeRunner();
+    await runPlan({ kind: 'skip', reason: 'CI detected' }, fake.deps);
+    expect(fake.lockState.created).toEqual([]);
+  });
+});
+
+describe('runPlan on SIGINT / SIGTERM', () => {
+  /**
+   * A runner whose first consumer only exits once it is told to stop, like a
+   * real command interrupted mid-run. Every other step exits 0 at once.
+   */
+  function runnerWithHangingConsumer() {
+    const fake = fakeRunner();
+    const stopReasons: unknown[] = [];
+    let consumerStarted: () => void = () => {};
+    const started = new Promise<void>((resolve) => {
+      consumerStarted = resolve;
+    });
+    const run = (step: Step, stop: AbortSignal): Promise<number> => {
+      fake.calls.push(step);
+      if (step.label !== 'example-consumer') return Promise.resolve(0);
+      consumerStarted();
+      return new Promise((resolve) => {
+        stop.addEventListener('abort', () => {
+          stopReasons.push(stop.reason);
+          resolve(143);
+        });
+      });
+    };
+    return { ...fake, stopReasons, started, deps: { ...fake.deps, run } };
+  }
+
+  it.each([
+    ['SIGTERM', 143],
+    ['SIGINT', 130],
+  ] as const)(
+    'on %s stops the running consumer, runs nothing after it, releases the lock and exits %i',
+    async (signal, exitCode) => {
+      const fake = runnerWithHangingConsumer();
+      const outcome = runPlan(plan(), fake.deps);
+      await fake.started;
+      expect(fake.signalHandlers.size).toBe(1);
+      fake.signalHandlers.forEach((handler) => handler(signal));
+
+      expect(await outcome).toBe(exitCode);
+      expect(fake.stopReasons).toEqual([signal]);
+      expect(fake.calls.map((s) => s.label)).toEqual(['regenerate site data', 'example-consumer']);
+      expect(fake.progress).toContain(`notify-consumers: ${signal} received, stopping the running command`);
+      expect(fake.progress).toContain('notify-consumers: example-consumer stopped');
+      expect(fake.results).toEqual([`notify-consumers: done: stopped by ${signal} after 0 ok, 0 failed, 0 skipped`]);
+      expect(fake.lockState.content).toBeNull();
+      expect(fake.signalHandlers.size).toBe(0);
+    }
+  );
+
+  it('listens for signals only while the run holds the lock', async () => {
+    const fake = fakeRunner();
+    let handlersDuringRun = 0;
+    const run = async (step: Step) => {
+      handlersDuringRun = fake.signalHandlers.size;
+      fake.calls.push(step);
+      return 0;
+    };
+    await runPlan(plan(), { ...fake.deps, run });
+    expect(handlersDuringRun).toBe(1);
+    expect(fake.signalHandlers.size).toBe(0);
   });
 });
 
