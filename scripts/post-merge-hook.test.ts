@@ -1,7 +1,9 @@
 /**
  * Exercises .githooks/post-merge for real, but only inside a throwaway git
- * repo in the OS temp dir. That repo's `notify-consumers` npm script is a
- * fake that just writes a marker file, so no real consumer is ever run.
+ * repo in the OS temp dir. The hook must run no code at all: an `npm` put
+ * first on PATH only logs its calls, so the tests can assert it never ran.
+ * The repo's `notify-consumers` npm script is a logging fake as well, as
+ * defence in depth should a real npm be reached some other way.
  */
 import { execFileSync, spawnSync } from 'node:child_process';
 import { copyFileSync, existsSync, mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
@@ -15,9 +17,17 @@ import { parseConfig } from './notify-consumers';
 const REPO_ROOT = join(dirname(fileURLToPath(import.meta.url)), '..');
 const HOOK = join(REPO_ROOT, '.githooks', 'post-merge');
 
-// The fake waits before writing its marker, so a hook that blocked on it
-// would make the merge take at least this long.
-const FAKE_DELAY_SECONDS = 4;
+// Each fake appends one line to calls.txt in the repo when called.
+const fake = (name: string) => `#!/bin/sh\necho "${name} $*" >> "$FAKE_CALLS"\n`;
+
+const MOVED_MESSAGE =
+  "notify-consumers: this repo's main moved. See the plan: npm run notify-consumers -- --dry-run\n" +
+  'notify-consumers: run it: npm run notify-consumers\n';
+const NOT_SET_UP_MESSAGE =
+  "notify-consumers: not set up. Only needed if another project of yours keeps a copy of this repo's skills data; see scripts/notify-consumers.md.\n";
+
+// How long to wait for a background run the hook must not have started.
+const BACKGROUND_GRACE_MS = 1500;
 
 let repo: string;
 
@@ -27,6 +37,8 @@ function gitEnv(extra: Record<string, string> = {}): NodeJS.ProcessEnv {
   delete env.CI;
   return {
     ...env,
+    PATH: `${join(repo, 'fake-bin')}:${env.PATH ?? ''}`,
+    FAKE_CALLS: join(repo, 'calls.txt'),
     GIT_CONFIG_GLOBAL: '/dev/null',
     GIT_CONFIG_NOSYSTEM: '1',
     GIT_AUTHOR_NAME: 'Test',
@@ -47,34 +59,26 @@ function commit(file: string): void {
   git(['commit', '--quiet', '--no-verify', '-m', file]);
 }
 
-/** Merges branch `incoming` into the current branch; returns output and elapsed ms. */
-function mergeIncoming(extra: Record<string, string> = {}): { output: string; ms: number } {
-  const start = Date.now();
+/** Merges branch `incoming` into the current branch; returns the hook's output (git's stderr). */
+function mergeIncoming(extra: Record<string, string> = {}): string {
   const result = spawnSync('git', ['merge', '--no-edit', 'incoming'], {
     cwd: repo,
     env: gitEnv(extra),
     encoding: 'utf8',
   });
-  const ms = Date.now() - start;
   if (result.status !== 0) throw new Error(`git merge failed: ${result.stderr}`);
-  // git sends a hook's output to stderr.
-  return { output: result.stdout + result.stderr, ms };
+  // git sends a hook's output to stderr; its own merge summary goes to stdout.
+  return result.stderr;
 }
 
-const marker = () => join(repo, 'marker.txt');
-
-// The hook's shell creates the log (by redirecting into it) before the hook
-// returns, so a missing log right after the merge means nothing was started.
-const logFile = () => join(repo, 'notify-consumers.log');
-
-async function waitForMarker(timeoutMs = 15000): Promise<boolean> {
-  const deadline = Date.now() + timeoutMs;
-  while (Date.now() < deadline) {
-    if (existsSync(marker())) return true;
-    await new Promise((r) => setTimeout(r, 100));
-  }
-  return false;
+/** Every call of a fake (`npm ...` or `notify-consumers ...`), one entry per call. */
+function fakeCalls(): string[] {
+  const file = join(repo, 'calls.txt');
+  return existsSync(file) ? readFileSync(file, 'utf8').trim().split('\n') : [];
 }
+
+// The old hook wrote a background run's output here.
+const staleLogFile = () => join(repo, 'notify-consumers.log');
 
 beforeEach(() => {
   repo = mkdtempSync(join(tmpdir(), 'post-merge-hook-'));
@@ -84,10 +88,12 @@ beforeEach(() => {
   copyFileSync(HOOK, join(hooks, 'post-merge'));
   git(['config', 'core.hooksPath', hooks]);
 
-  // The fake notify-consumers: sleep, then leave a marker.
-  const fake = `sleep ${FAKE_DELAY_SECONDS} && echo ran > marker.txt`;
-  writeFileSync(join(repo, 'package.json'), JSON.stringify({ scripts: { 'notify-consumers': fake } }));
-  writeFileSync(join(repo, '.gitignore'), 'marker.txt\nnotify-consumers.log\nnotify-consumers.config.json\n');
+  mkdirSync(join(repo, 'fake-bin'));
+  writeFileSync(join(repo, 'fake-bin', 'npm'), fake('npm'), { mode: 0o755 });
+  writeFileSync(join(repo, 'fake-notify.sh'), fake('notify-consumers'));
+  const scripts = { 'notify-consumers': 'sh fake-notify.sh' };
+  writeFileSync(join(repo, 'package.json'), JSON.stringify({ scripts }));
+  writeFileSync(join(repo, '.gitignore'), 'calls.txt\nnotify-consumers.log\nnotify-consumers.config.json\n');
   commit('base.txt');
 
   git(['checkout', '--quiet', '-b', 'incoming']);
@@ -102,36 +108,45 @@ afterEach(() => {
 const writeConfig = () => writeFileSync(join(repo, 'notify-consumers.config.json'), '{"consumers": []}');
 
 describe('.githooks/post-merge', () => {
-  it('starts notify-consumers in the background when a merge moves main on', async () => {
+  it('prints where to see the plan and how to run it when a merge moves main on, and runs nothing', async () => {
     writeConfig();
-    const { output, ms } = mergeIncoming();
-    expect(output).toContain('notify-consumers: started in the background');
-    // The merge returned before the fake finished its delay.
-    expect(ms).toBeLessThan(FAKE_DELAY_SECONDS * 1000);
-    expect(existsSync(logFile())).toBe(true);
-    expect(existsSync(marker())).toBe(false);
-    expect(await waitForMarker()).toBe(true);
-  }, 20000);
+    expect(mergeIncoming()).toBe(MOVED_MESSAGE);
+    // Give a background run time to show up: none may.
+    await new Promise((r) => setTimeout(r, BACKGROUND_GRACE_MS));
+    expect(fakeCalls()).toEqual([]);
+    expect(existsSync(staleLogFile())).toBe(false);
+  }, 10000);
+
+  it('exits 0 after printing the message', () => {
+    writeConfig();
+    mergeIncoming();
+    // Run the hook again by hand to see its exit code (ORIG_HEAD still differs from HEAD).
+    const result = spawnSync('sh', [HOOK, '0'], { cwd: repo, env: gitEnv(), encoding: 'utf8' });
+    expect(result.status).toBe(0);
+    expect(result.stdout).toBe('');
+    expect(result.stderr).toBe(MOVED_MESSAGE);
+    expect(fakeCalls()).toEqual([]);
+  });
 
   it('does nothing on a branch other than main', () => {
     writeConfig();
     git(['checkout', '--quiet', '-b', 'feature']);
-    const { output } = mergeIncoming();
+    const output = mergeIncoming();
     expect(output).not.toContain('notify-consumers');
-    expect(existsSync(logFile())).toBe(false);
+    expect(fakeCalls()).toEqual([]);
   });
 
   it('does nothing on CI, and says why', () => {
     writeConfig();
-    const { output } = mergeIncoming({ CI: 'true' });
+    const output = mergeIncoming({ CI: 'true' });
     expect(output).toContain('notify-consumers: CI detected, skipping.');
-    expect(existsSync(logFile())).toBe(false);
+    expect(fakeCalls()).toEqual([]);
   });
 
-  it('does nothing without a config, and says why', () => {
-    const { output } = mergeIncoming();
-    expect(output).toContain('notify-consumers: no notify-consumers.config.json, skipping');
-    expect(existsSync(logFile())).toBe(false);
+  it('does nothing without a config, and says it is not set up and when it is needed', () => {
+    const output = mergeIncoming();
+    expect(output).toBe(NOT_SET_UP_MESSAGE);
+    expect(fakeCalls()).toEqual([]);
   });
 
   it('--help prints usage to stdout, starts nothing, and exits 0', () => {
@@ -140,7 +155,7 @@ describe('.githooks/post-merge', () => {
     expect(result.status).toBe(0);
     expect(result.stdout).toMatch(/^Usage: \.githooks\/post-merge/);
     expect(result.stderr).toBe('');
-    expect(existsSync(logFile())).toBe(false);
+    expect(fakeCalls()).toEqual([]);
   });
 });
 
@@ -153,7 +168,7 @@ describe('notify-consumers.config.example.json', () => {
 });
 
 describe('.gitignore', () => {
-  it('ignores the local config and the background log', () => {
+  it('ignores the local config and the old background log', () => {
     const ignored = readFileSync(join(REPO_ROOT, '.gitignore'), 'utf8').split('\n');
     expect(ignored).toContain('notify-consumers.config.json');
     expect(ignored).toContain('notify-consumers.log');

@@ -1,28 +1,21 @@
 #!/usr/bin/env sh
 # .githooks/post-merge
 #
-# When a merge or pull moves local `main` on, starts
-# scripts/notify-consumers.ts in the background so every consumer listed in
-# the local, gitignored notify-consumers.config.json refreshes its copy of
-# this repo's site data. The pull doesn't wait for it: output goes to
-# notify-consumers.log (gitignored) at the repo root, which keeps the
-# latest run only.
+# What it prints and when: see usage() below (or run it with --help).
+#
+# It runs no code at all, on purpose (no npm, no script from the pull); why
+# is in scripts/notify-consumers.md, "When it runs".
 #
 # git runs post-merge for merges and merging pulls, not for
-# `git pull --rebase` (or pull.rebase=true): after a rebasing pull, run
-# npm run notify-consumers by hand.
-#
-# Does nothing on CI, on any branch other than main, or when the config
-# file is missing. Run it by hand with: npm run notify-consumers
-# Preview what it would do with:        npm run notify-consumers -- --dry-run
+# `git pull --rebase` (or pull.rebase=true), so a rebasing pull prints
+# nothing.
 #
 # Usage:
 #   post-merge [<squash-flag>]   (git passes 1 for a squash merge, else 0)
 #   post-merge --help
 #
 # Exit codes:
-#   0  always: a hook that fails here can't undo the merge, so every
-#      "nothing to do" case says why (on stderr) and exits 0
+#   0  always: a hook that fails here can't undo the merge
 
 set -eu
 
@@ -30,10 +23,12 @@ usage() {
   cat <<'HELP'
 Usage: .githooks/post-merge [<squash-flag>]
 
-Run by git after a merge. When local main moved on, starts
-`npm run notify-consumers` in the background (log: notify-consumers.log).
-Skips on CI, off main, or without notify-consumers.config.json.
-Always exits 0.
+Run by git after a merge. When local main moved on and
+notify-consumers.config.json exists, prints the commands that show the
+plan (npm run notify-consumers -- --dry-run) and start the run
+(npm run notify-consumers). Runs nothing itself. On CI, or without the
+config, says why and does nothing; off main, or when HEAD didn't move,
+does nothing silently. Always exits 0.
 HELP
 }
 
@@ -67,22 +62,12 @@ main() {
   root=$(git rev-parse --show-toplevel) || return 0
 
   if [ ! -f "$root/notify-consumers.config.json" ]; then
-    say "no notify-consumers.config.json, skipping (copy notify-consumers.config.example.json to set one up)."
+    say "not set up. Only needed if another project of yours keeps a copy of this repo's skills data; see scripts/notify-consumers.md."
     return 0
   fi
 
-  if ! command -v npm >/dev/null 2>&1; then
-    say "npm not found, skipping. Run by hand: npm run notify-consumers"
-    return 0
-  fi
-
-  # Detach fully: every fd of the background job is redirected, so git (and
-  # whatever is reading git's output) doesn't wait for it. Keep the `&` on a
-  # bare command, not on an `a && b` list: a backgrounded list forks a shell
-  # that still holds the hook's stdout/stderr open.
-  cd "$root" || return 0
-  nohup npm run --silent notify-consumers >notify-consumers.log 2>&1 </dev/null &
-  say "started in the background, log: notify-consumers.log"
+  say "this repo's main moved. See the plan: npm run notify-consumers -- --dry-run"
+  say "run it: npm run notify-consumers"
 }
 
 main "$@"
