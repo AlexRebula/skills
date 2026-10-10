@@ -84,7 +84,7 @@ describe('create-giselle-component', () => {
     expect(SKILL).toMatch(/two-phase-scaffold\.test|two-phase-scaffold-legacy/i);
   });
 
-  // ── wiki#948: thin delegation to cleanup-component ─────────────────────
+  // ── Thin delegation to cleanup-component ───────────────────────────────
   it('delegates the naming/decomposition phase to cleanup-component instead of re-deriving it', () => {
     expect(SKILL).toContain('cleanup-component');
     expect(SKILL).toMatch(/naming\/decomposition/i);
