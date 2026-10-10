@@ -1,5 +1,15 @@
 # alexrebula-skills
 
+## 1.3.0
+
+### Minor Changes
+
+- [#284](https://github.com/AlexRebula/skills/pull/284) [`14f0d1a`](https://github.com/AlexRebula/skills/commit/14f0d1a289d2db5bd76c26190703f78756b2a8fc) Thanks [@AlexRebula](https://github.com/AlexRebula)! - Every skill now carries a tagline and an outcome line, and one distinct icon, for consuming sites. Each docs page gains a frontmatter block with `tagline` (the skill in 3 to 5 words) and `outcome` (what a run of it produces, in one short line); Docusaurus reads it and doesn't show it on the page. Two new generators, `generate-skill-taglines.ts` and `generate-skill-outcomes.ts`, collect them into gitignored `skill-taglines.json` and `skill-outcomes.json`, keyed `category/name` like the summaries, and run before the site starts, builds and checks; each fails when a page is missing its line, or when a tagline is outside 3 to 5 words or an outcome longer than 70 characters, so a new skill can't ship without them. `skill-icons.ts` now gives all 93 skills an icon, every one distinct (it covered 75, one of them twice), and is the shared source for consuming sites as well as the landing page's cards, so 63 skills' cards show a new icon. What the site renders is otherwise unchanged.
+
+### Patch Changes
+
+- [#294](https://github.com/AlexRebula/skills/pull/294) [`74e19f9`](https://github.com/AlexRebula/skills/commit/74e19f954c385bf8e196219a5e4a7ecff4f620ad) Thanks [@AlexRebula](https://github.com/AlexRebula)! - The `post-merge` git hook no longer starts `npm run notify-consumers` in the background, and it runs no code at all. When a merge or pull moves local `main` on, it prints the command that shows the plan (`npm run notify-consumers -- --dry-run`) and the one that starts the run (`npm run notify-consumers`). A run executes the code the pull just brought in, with your git and `gh` credentials, so you now always start it yourself. Without a `notify-consumers.config.json`, the hook says it isn't set up and that it's only needed when another project keeps a copy of this repo's skills data. It no longer writes `notify-consumers.log`. It still skips on CI, off `main` and when `HEAD` didn't move, and always exits 0.
+
 ## 1.2.0
 
 ### Minor Changes
