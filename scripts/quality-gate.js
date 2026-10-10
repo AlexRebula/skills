@@ -56,12 +56,12 @@
  * Yalc dependency-resolution leniency (local only, never in CI):
  *   The five site checks (typecheck/lint/stylelint/tests/build) all resolve
  *   modules and can fail because of an unrelated, in-progress breaking
- *   change in a yalc-linked dependency (e.g. giselle-mui-poc) rather than a
+ *   change in a yalc-linked dependency (e.g. a component library) rather than a
  *   real regression in this repo. When one of those steps fails locally and
  *   its output implicates a package currently linked via site/yalc.lock,
  *   the gate warns instead of blocking the push. CI always treats the same
- *   failure as blocking. See LittleBranches/wiki#929 and #855 for the
- *   incident and design that motivated this.
+ *   failure as blocking. It exists because such a failure once blocked
+ *   pushes that had nothing to do with it.
  */
 
 import { appendFileSync } from 'fs';

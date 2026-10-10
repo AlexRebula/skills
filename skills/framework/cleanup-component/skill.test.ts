@@ -210,7 +210,7 @@ describe('cleanup-component', () => {
   it('requires splitting a second independently-consumed component out of a shared file into its own subfolder, unconditionally, now pointing at the upstreamed AGENTS.md §5.6 instead of restating a flat-file fallback that no longer exists', () => {
     // New LittleBranches convention: one exported, independently-consumed component per
     // file. A private, first-only internal helper sharing the file is fine; a second
-    // export some other file imports directly is not. wiki#973 upstreamed the "every
+    // export some other file imports directly is not. an earlier change upstreamed the "every
     // sub-component gets its own subfolder, unconditionally, no flat-file fallback" rule
     // into AGENTS.md §5.6 / component-structure.md: this bullet used to offer a "lighter
     // flat-file split" option for a non-standalone second export, which the upstreamed
@@ -249,7 +249,7 @@ describe('cleanup-component', () => {
     // Originally this skill's own checklist carried the sibling-comparison method in full
     // prose (a real run flagged a hardcoded showcase-content array as a violation but missed
     // that a sibling section also hardcoded its own heading/caption copy, detected only by
-    // comparing against sibling shape). wiki#973 upstreamed that exact method into AGENTS.md
+    // comparing against sibling shape). an earlier change upstreamed that exact method into AGENTS.md
     // §15.3 / component-refactor-conventions.md, so this skill's own bullet is thinned down
     // to a pointer rather than restating the method in full.
     expect(SKILL).toMatch(/heading\/caption copy/i);
@@ -264,7 +264,7 @@ describe('cleanup-component', () => {
   });
 
   it('extracts inline Grid/Stack layout-prop object literals (size, rowSpacing, columnSpacing) to .const.ts, now pointing at the upstreamed AGENTS.md §16.1 instead of restating it', () => {
-    // wiki#975 upstreamed this exact rule (a Grid/layout literal on size/rowSpacing/
+    // an earlier change upstreamed this exact rule (a Grid/layout literal on size/rowSpacing/
     // columnSpacing/spacing must be extracted to <name>.const.ts) into AGENTS.md §16.1 /
     // component-configuration-conventions.md. This skill's own bullet now points there
     // instead of restating the full rule and its rationale in its own prose.
@@ -278,7 +278,7 @@ describe('cleanup-component', () => {
   });
 
   it('extends the same extraction rule to inline animation/motion config literals (variants, animate, transition), now pointing at the upstreamed AGENTS.md §16.2 instead of restating it', () => {
-    // wiki#975 upstreamed the motion-config extraction rule (variants always extracted;
+    // an earlier change upstreamed the motion-config extraction rule (variants always extracted;
     // animate/transition extracted at two-or-more keys; the 1-key/2-key threshold this
     // skill's own checklist never even stated) into AGENTS.md §16.2 /
     // component-configuration-conventions.md. This skill's own bullet now points there
@@ -305,7 +305,7 @@ describe('cleanup-component', () => {
   });
 
   it('holds `style={{ ... }}` on a motion/component={m.*} element to the same extraction standard as `sx`, now pointing at the upstreamed AGENTS.md §16.2 instead of restating the MotionValue-factory pattern', () => {
-    // wiki#975 upstreamed this skill's own MotionValue-factory pattern into AGENTS.md
+    // an earlier change upstreamed this skill's own MotionValue-factory pattern into AGENTS.md
     // §16.2 / component-configuration-conventions.md. The bullet now points there instead
     // of restating the factory example in the skill's own prose.
     expect(SKILL).toMatch(/`style={{ \.\.\. }}` on a `motion\.\*` element/i);
@@ -319,7 +319,7 @@ describe('cleanup-component', () => {
   });
 
   it('extends the extraction rule further to a single hardcoded scalar/enum-token prop value, now pointing at the upstreamed AGENTS.md §16.3 instead of restating it', () => {
-    // wiki#975 upstreamed this exact rule, including this skill's own `titleComponent="h3"`
+    // an earlier change upstreamed this exact rule, including this skill's own `titleComponent="h3"`
     // example, into AGENTS.md §16.3 / component-configuration-conventions.md. The bullet
     // keeps the one example that still identifies the rule at a glance but points to the
     // upstream doc for the full rationale instead of restating it.
@@ -334,7 +334,7 @@ describe('cleanup-component', () => {
   });
 
   it('requires extracted .const.ts settings to use SCREAMING_SNAKE_CASE, now pointing at the upstreamed AGENTS.md §16 instead of restating the caller-overridable-prop rationale', () => {
-    // wiki#975 upstreamed this skill's own SCREAMING_SNAKE_CASE-naming and
+    // an earlier change upstreamed this skill's own SCREAMING_SNAKE_CASE-naming and
     // caller-overridable-prop rationale into component-configuration-conventions.md. The
     // bullet now names both concerns and points to the doc instead of restating the full
     // reasoning.
@@ -347,7 +347,7 @@ describe('cleanup-component', () => {
   });
 
   it('requires every extracted configuration constant to carry an explicit prop-type annotation, now pointing at the upstreamed AGENTS.md §16 shared requirement instead of restating the three reasons', () => {
-    // wiki#975 upstreamed this skill's own explicit-typing requirement, including its
+    // an earlier change upstreamed this skill's own explicit-typing requirement, including its
     // three reasons and its fade(...)/GridProps examples, into
     // component-configuration-conventions.md's shared "explicit-typing requirement"
     // section. The bullet now points there instead of restating the reasoning and examples.

@@ -59,7 +59,7 @@ describe('migrate-giselle-subcomponent', () => {
   });
 
   it('delegates the naming/decomposition phase to cleanup-component instead of re-deriving it', () => {
-    // wiki#948: this skill assumes a flat sub-component is already correctly named and
+    // This skill assumes a flat sub-component is already correctly named and
     // decomposed, but that assumption isn't always true, so it must delegate the actual
     // check to cleanup-component rather than silently skipping it or re-implementing it.
     expect(SKILL).toContain('cleanup-component');
