@@ -45,6 +45,15 @@ gh pr view <N> --repo <owner>/<repo> --json state,mergedAt,headRefName,title,bod
 
 **Do not proceed past this point on an unconfirmed claim.** If `state` is not `MERGED`, stop and tell the user what the actual state is (`OPEN`, `CLOSED` without merging, or not found) — do not perform any of the steps below.
 
+Make the stop mechanical, not something you read off the output. `gh pr view` exits 0 for an open PR too, so a cleanup chained after it with `&&` runs anyway. Run the check as its own command, or gate on the value:
+
+```sh
+STATE=$(gh pr view <N> --repo <owner>/<repo> --json state --jq .state)
+[ "$STATE" = "MERGED" ] || { echo "PR #<N> is $STATE, not merged: stopping"; exit 1; }
+```
+
+Never put Step 4's worktree removal or branch deletion in the same command as this check.
+
 Save `headRefName` (the branch) and `baseRefName` (the base) for the rest of this skill.
 
 ---
