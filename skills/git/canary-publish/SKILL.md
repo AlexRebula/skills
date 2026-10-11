@@ -42,9 +42,12 @@ Check the source repo's CI first (e.g. `gh workflow list --repo <owner>/<source-
 ```bash
 cd <sourceRepo>
 git pull
+export NODE_AUTH_TOKEN=$(grep _authToken ~/.npmrc | sed 's/.*_authToken=//')   # see below
 npm ci
 <qualityGateCommand>
 ```
+
+**Export the token before the first npm command, not just before publishing.** When the repo's own `.npmrc` reads the registry token from `${NODE_AUTH_TOKEN}`, every npm command that touches the private registry (`npm ci`, `npm install`, `npm view`, `npm pack`) needs it in the shell, not only `publish`. A `401 Unauthorized` from any of them is most often this variable being unset in a fresh shell, not an expired token. Check `echo ${NODE_AUTH_TOKEN:+set}` before rotating the token.
 
 **Gotcha to check for, not assume away**: if the quality gate includes any local-only safety check (gitignored, not part of the repo's real CI — e.g. a personal banned-terms list), a failure there can be that check being stricter than what CI actually enforces, not a real gate failure. Confirm by moving the local-only file aside, re-running the gate, and restoring it immediately after — never leave it moved, and never treat a genuine failure (one that persists with the file moved aside) as anything but a real blocker.
 

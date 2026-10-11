@@ -38,7 +38,8 @@ This is the canonical resolution method — `check-pr-link` and `pr-merged` both
 reference rather than reimplementing it.
 
 1. Extract a ticket number from `headRefName` using this repo's branch-prefix convention (see
-   `create-pr`'s prefix table): `^(feature|fix|chore|refactor|docs)/(\d+)-`. If no number matches,
+   `create-pr`'s prefix table, plus the common short form `feat/`):
+   `^(feature|feat|fix|chore|refactor|docs)/(\d+)-`. If no number matches,
    **stop here** — report "no ticket number in branch name, nothing to link" and treat the PR as
    out of scope. This is not a failure: not every PR (a chore bump, a docs fix, this very skill's
    own incident-log housekeeping) has a tracked issue behind it.
