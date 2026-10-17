@@ -7,7 +7,7 @@ outcome: "Each conflict resolved by its intent, the merge finished."
 
 `resolving-merge-conflicts` works through an in-progress git merge or rebase, hunk by hunk, then runs the project's own checks and finishes the operation with a commit.
 
-It refuses to treat a conflict as a text problem. Before touching a hunk it traces each side back to its **[primary source](https://www.aihero.dev/ai-coding-dictionary/primary-source)** (the commit message, the PR, the original issue), so it is choosing between two intents rather than between two blocks of text, and it preserves both wherever they are compatible. Where they genuinely are not, it picks the side matching the merge's stated goal and names the trade-off. It invents no new behaviour to paper over a clash, and `--abort` is not an option it has: the merge is always carried to a finished commit.
+It refuses to treat a conflict as a text problem. Before touching a hunk it traces each side back to its **[primary source](https://www.aihero.dev/ai-coding-dictionary/primary-source)** (the commit message, the PR, the original issue), so it is choosing between two intents rather than between two blocks of text, and it preserves both wherever they are compatible. Where they are not, it picks the side matching the merge's stated goal and names the trade-off. It invents no new behaviour to paper over a clash, and `--abort` is not an option it has: the merge is always carried to a finished commit.
 
 ## When to reach for it
 

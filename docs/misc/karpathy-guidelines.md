@@ -9,7 +9,7 @@ outcome: "Changes kept small, surgical and verified."
 
 It isn't a workflow with steps to run through. There's no install, no files it creates, nothing it drives. It's a standing posture: think before coding, keep changes minimal, keep edits surgical, and define what "done" means before starting.
 
-**Tradeoff, stated up front:** these rules favor caution over speed. On a genuinely trivial task, applying all four in full is more overhead than the task deserves. Use judgment rather than treating the list as a checklist to satisfy every time.
+**Tradeoff, stated up front:** these rules favor caution over speed. On a trivial task, applying all four in full is more overhead than the task deserves. Use judgment rather than treating the list as a checklist to satisfy every time.
 
 ## When to reach for it
 
