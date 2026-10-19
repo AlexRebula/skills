@@ -207,7 +207,7 @@ For every thread in the triage table (in the order they appear), post a pre-fix 
 
 ```sh
 gh api --method POST \
-  /repos/<owner>/<repo>/pulls/comments/<comment-id>/replies \
+  /repos/<owner>/<repo>/pulls/<N>/comments/<comment-id>/replies \
   -f body="<response>"
 ```
 
@@ -289,7 +289,7 @@ After each push, reply to every fixed thread with the commit SHA:
 
 ```sh
 gh api --method POST \
-  /repos/<owner>/<repo>/pulls/comments/<comment-id>/replies \
+  /repos/<owner>/<repo>/pulls/<N>/comments/<comment-id>/replies \
   -f body="Fixed in <sha7>: <one sentence describing exactly what changed>."
 ```
 
