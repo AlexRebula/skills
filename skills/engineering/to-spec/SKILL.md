@@ -16,9 +16,11 @@ The issue tracker and triage label vocabulary should have been provided to you. 
 
 Check with the user that these seams match their expectations.
 
-3. Write the spec using the template below, then publish it to the project issue tracker. Apply the `ready-for-agent` triage label - no need for additional triage.
+3. **Pin the acceptance test with the user.** If the feature exists to serve a specific consumer (an app screen, a page, another module), open that consumer file and write, with the user, the exact code it should read like afterwards. Confirm it matches what they picture before writing the rest of the spec. A design that makes that code awkward is a design problem to raise now, not after tickets are built and merged.
 
-4. If this conversation reached this spec by way of an existing placeholder/queue issue on the tracker (e.g. a "Grill:" issue that requested the interview this spec now synthesizes, or any other issue whose sole purpose was to queue this work) — close that issue with a comment linking to the newly published spec. It has been superseded; do not leave it open as a stale duplicate of the same work. Do not close it if it's the kind of issue that should stay open on its own merits (a real bug report, a tracked feature request with its own life beyond this spec) — only close issues that existed purely to queue this exact conversation.
+4. Write the spec using the template below, then publish it to the project issue tracker. Apply the `ready-for-agent` triage label - no need for additional triage. Don't publish a spec whose `## Acceptance Test` section is missing or empty: either fill it, or state explicitly that there is no known consumer.
+
+5. If this conversation reached this spec by way of an existing placeholder/queue issue on the tracker (e.g. a "Grill:" issue that requested the interview this spec now synthesizes, or any other issue whose sole purpose was to queue this work) — close that issue with a comment linking to the newly published spec. It has been superseded; do not leave it open as a stale duplicate of the same work. Do not close it if it's the kind of issue that should stay open on its own merits (a real bug report, a tracked feature request with its own life beyond this spec) — only close issues that existed purely to queue this exact conversation.
 
 <spec-template>
 
@@ -29,6 +31,12 @@ The problem that the user is facing, from the user's perspective.
 ## Solution
 
 The solution to the problem, from the user's perspective.
+
+## Acceptance Test
+
+When the feature is built for a known consumer (an app screen, a page, another module), name the real consumer file and show the exact code it must be writable as once the work is done: the target call site, not an illustrative snippet. This is the one section of the spec where a real file path and exact code are expected. It is the definition of done for the whole spec: if the consumer can't be written this way, the spec isn't met, however many tickets pass.
+
+If there is genuinely no known consumer yet, say so explicitly and name the closest stand-in (for example, a story that reproduces the intended use case).
 
 ## User Stories
 

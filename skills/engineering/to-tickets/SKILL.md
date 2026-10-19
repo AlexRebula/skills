@@ -39,6 +39,10 @@ Break the work into **tracer bullet** tickets.
 
 </vertical-slice-rules>
 
+**Consumer-first tracer.** When the spec's Acceptance Test names a real consumer, the first ticket (or the first ticket after pure prefactoring) must make that consumer's code compile and render against the new API end to end, even crudely. For example: a local link of the package into the consumer, or a story that is a copy of the consumer's target code. Later tickets refine it. Don't leave the consumer until the end, behind library merges and releases, where a wrong API is only discovered after it has shipped.
+
+**No placeholder visual criteria.** For UI and layout work, story or demo criteria must depict the spec's stated real use case, with real-looking content and the real kinds of elements. Wording like "simple demo blocks", "placeholder boxes" or "grey blocks" is not an acceptable acceptance criterion: a demo that doesn't show the real use case can't show the owner that the design is wrong.
+
 Give each ticket its **blocking edges**: the other tickets that must complete before it can start. A ticket with no blockers can start immediately.
 
 **Wide refactors are the exception to vertical slicing.** A **wide refactor** is one mechanical change (rename a column, retype a shared symbol) whose **blast radius** fans across the whole codebase, so a single edit breaks thousands of call sites at once and no vertical slice can land green. Don't force it into a tracer bullet; sequence it as **expand–contract**. First expand: add the new form beside the old so nothing breaks. Then migrate the call sites over in batches sized by blast radius (per package, per directory), each batch its own ticket blocked by the expand, keeping CI green batch to batch because the old form still exists. Finally contract: delete the old form once no caller remains, in a ticket blocked by every migrate batch. When even the batches can't stay green alone, keep the sequence but let them share an integration branch that all block a final integrate-and-verify ticket; green is promised only there.
@@ -56,6 +60,7 @@ Ask the user:
 - Does the granularity feel right? (too coarse / too fine)
 - Are the blocking edges correct: does each ticket only depend on tickets that genuinely gate it?
 - Should any tickets be merged or split further?
+- Does the first ticket prove the spec's Acceptance Test against the real consumer? If not, why not?
 
 Iterate until the user approves the breakdown.
 
