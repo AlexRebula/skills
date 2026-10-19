@@ -145,9 +145,11 @@ For threads with no existing reply from you, use the nested reply endpoint. Do n
 
 ```sh
 gh api --method POST \
-  /repos/<owner>/<repo>/pulls/comments/<comment-id>/replies \
+  /repos/<owner>/<repo>/pulls/<N>/comments/<comment-id>/replies \
   -f body="<response>"
 ```
+
+The path needs the PR number (`<N>`): without it GitHub answers `404 Not Found` for every thread. If a reply returns 404, check that the PR number is in the path before concluding the thread cannot be replied to, and never fall back to a top-level review.
 
 Never use a general PR review submission API for these acknowledgements. Those create top-level reviews and break the thread-by-thread workflow.
 
@@ -208,7 +210,7 @@ For threads without an existing SHA reply:
 
 ```sh
 gh api --method POST \
-  /repos/<owner>/<repo>/pulls/comments/<comment-id>/replies \
+  /repos/<owner>/<repo>/pulls/<N>/comments/<comment-id>/replies \
   -f body="Fixed in <sha7>: <one sentence describing exactly what changed>."
 ```
 
@@ -226,7 +228,7 @@ If the fix batch changed the PR scope, update the PR description before handing 
 
 A thread becomes outdated when a new commit shifts the diff position of the lines it referenced. GitHub collapses outdated threads in the UI with an "Outdated" badge, and the `line` field on the comment is `null`.
 
-**Outdated threads are fully replyable inline.** The `POST .../pulls/comments/<id>/replies` endpoint works normally for outdated threads. No fallback to top-level PR comments is needed. Reply using Steps 5 and 7 exactly as you would for any active thread.
+**Outdated threads are fully replyable inline.** The `POST .../pulls/<N>/comments/<id>/replies` endpoint works normally for outdated threads. No fallback to top-level PR comments is needed. Reply using Steps 5 and 7 exactly as you would for any active thread.
 
 #### Top-level comments only
 
