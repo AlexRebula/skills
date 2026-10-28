@@ -9,11 +9,11 @@ outcome: "The issue closed and the merged branch cleaned up."
 
 Resolving *whether* a linked issue exists and closing it are two different concerns: [check-pr-link](./check-pr-link.md) does the resolution/verification (reused, not reimplemented, here), and [link-pr-to-issue](./link-pr-to-issue.md) establishes a missing link before this skill closes it out.
 
-It exists as its own skill so it can be triggered standalone, in a fresh session, without `create-pr` having opened the PR earlier in the same conversation — the common case being you merge on GitHub after the session that opened the PR has already ended. [create-pr](./create-pr.md) points here once a PR it opened is confirmed merged, rather than inlining the same cleanup steps itself.
+It exists as its own skill so it can be triggered standalone, in a fresh session, without `create-pr` having opened the PR earlier in the same conversation. The common case is that you merge on GitHub after the session that opened the PR has already ended. [create-pr](./create-pr.md) points here once a PR it opened is confirmed merged, rather than inlining the same cleanup steps itself.
 
 ## When to reach for it
 
-Say something like "PR 209 merged, remote branch deleted, cleanup locally" — the skill's own description is written to match that pattern directly. `/pr-merged <PR-number>` also works explicitly, with an optional `<owner>/<repo>` when the repo can't be inferred from the current directory or the conversation.
+Say something like "PR 209 merged, remote branch deleted, cleanup locally". The skill's own description is written to match that pattern directly. `/pr-merged <PR-number>` also works explicitly, with an optional `<owner>/<repo>` when the repo can't be inferred from the current directory or the conversation.
 
 Reach for it any time you merge on GitHub outside of an active `create-pr` session — the common case being: you close your laptop mid-review, merge later in your own time, then come back and want the local repo caught up.
 

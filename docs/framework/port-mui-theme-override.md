@@ -5,9 +5,9 @@ outcome: "A clean theme override, no copied values."
 
 ## What it does
 
-`port-mui-theme-override` turns a draft, not-yet-independent per-component MUI theme override — a placeholder, a hand-copied starting point, or an auto-generated draft that isn't safe to ship because its literal values came from somewhere else — into a real, independently-authored override that reproduces the same visual result without carrying any copied values forward.
+`port-mui-theme-override` turns a draft, not-yet-independent per-component MUI theme override (a placeholder, a hand-copied starting point, or an auto-generated draft that isn't safe to ship because its literal values came from somewhere else) into a real, independently-authored override that reproduces the same visual result without carrying any copied values forward.
 
-It works by triangulating three sources rather than trusting any single one: what the component actually does (functional target), the structural shape MUI's own documentation defines for that component's theme keys, and a live, rendered, computed-style comparison. A value only makes it into the output if it traces back to one of the last two — never to the draft file's own literal source.
+It works by triangulating three sources rather than trusting any single one: what the component actually does (functional target), the structural shape MUI's own documentation defines for that component's theme keys, and a live, rendered, computed-style comparison. A value only makes it into the output if it traces back to one of the last two, never to the draft file's own literal source.
 
 ## When to reach for it
 

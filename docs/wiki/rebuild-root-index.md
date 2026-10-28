@@ -5,7 +5,7 @@ outcome: "A refreshed master index of every repo."
 
 ## What it does
 
-`rebuild-root-index` regenerates the one file that gives any session awareness of every markdown document across every repo in your workspace, not just the wiki: `$AR_ROOT/index.md`. It discovers every repo under your workspace root by looking for a `.git` folder, treats the wiki repo specially (its own curated `index.md` is reproduced rather than rescanned), and for every other repo, diffs the current file set against a content-hash manifest so only new or changed files actually get read and re-summarized.
+`rebuild-root-index` regenerates the one file that gives any session awareness of every markdown document across every repo in your workspace, not just the wiki: `$AR_ROOT/index.md`. It discovers every repo under your workspace root by looking for a `.git` folder, treats the wiki repo specially (its own curated `index.md` is reproduced rather than rescanned), and for every other repo, diffs the current file set against a content-hash manifest so only new or changed files actually get read and re-summarised.
 
 It's chained automatically from the last step of `/ingest`, so the common case needs no separate invocation at all. Run it standalone when a doc changes somewhere `/ingest` doesn't reach: a component library's README, a project repo's roadmap.
 
@@ -18,7 +18,7 @@ Reach for it directly when you've edited or added documentation outside the wiki
 The manifest (`$AR_ROOT/.index-manifest.json`) maps every scanned file's relative path to its content hash and the one-line description already written for it. On each run:
 
 - unchanged hash → the existing description is reused, the file is never reopened
-- new or changed hash → the file gets read and genuinely re-summarized
+- new or changed hash → the file gets read and re-summarised
 - in the manifest but gone from disk → the entry drops
 
 That's what keeps repeated runs cheap. A workspace with hundreds of markdown files across a dozen repos doesn't mean hundreds of files get re-read every time; only the ones that actually moved do.

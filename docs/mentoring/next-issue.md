@@ -7,7 +7,7 @@ outcome: "The learner's next issue, audited and ready."
 
 `next-issue` picks the next GitHub issue to hand a student or apprentice, and audits it before it reaches them. It resolves the repo, the student, and a principles file; checks the candidate against a learner history so it doesn't repeat a concept or jump too many difficulty steps at once; then runs the issue body against a principles index and drafts fixes for anything that fails. Nothing touches GitHub until you approve the draft.
 
-It doesn't reach for itself. You invoke it by name, because deciding what a specific learner is ready for next is a judgment call, not something that should fire automatically off a keyword.
+It doesn't reach for itself. You invoke it by name, because deciding what a specific learner is ready for next is a judgement call, not something that should fire automatically off a keyword.
 
 ## When to reach for it
 

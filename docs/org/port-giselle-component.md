@@ -7,14 +7,14 @@ outcome: "A tested component brought in from another repo."
 
 `port-giselle-component` brings an already-built, already-tested component in from a
 different repo entirely into giselle-mui, without forcing it through a from-scratch TDD
-rebuild. It formalizes a convention that already existed informally in `giselle-mui`'s own
-docs (`docs/standalone-gap-analysis.md`, `docs/components/home-components-extraction-plan.md`
-— a "source / target / what already exists / blockers to fix" note, landed as one commit)
+rebuild. It formalises a convention that already existed informally in `giselle-mui`'s own
+docs (`docs/standalone-gap-analysis.md`, `docs/components/home-components-extraction-plan.md`,
+each a "source / target / what already exists / blockers to fix" note, landed as one commit)
 into a repeatable, guarded procedure.
 
-The guardrail is mechanical, not a judgment call: the ported tests must pass in their new
+The guardrail is mechanical, not a judgement call: the ported tests must pass in their new
 home with import-path edits alone. If a test needs its assertions, mocks, or setup rewritten
-to pass, the component isn't actually cheap to move — the skill stops and hands off to
+to pass, the component isn't actually cheap to move, and the skill stops and hands off to
 `create-giselle-component` instead of forcing a modified test through.
 
 ## When to reach for it

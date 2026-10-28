@@ -7,7 +7,7 @@ outcome: "The PR linked to the issue it implements."
 
 `link-pr-to-issue` connects a PR to the issue it implements. It resolves which issue that is from
 the PR's own branch name (this repo's `type/NNN-slug` convention), checking the PR's own repo
-first and falling back to a configured tracker repo — then links it the way that's actually
+first and falling back to a configured tracker repo, then links it the way that's actually
 reliable for the relationship: a real `Closes #N` keyword when the issue is in the same repo
 (GitHub auto-closes it on merge, no further action needed), or a comment posted on the issue
 itself, from inside the issue's own repo, when it's cross-repo.
@@ -15,13 +15,13 @@ itself, from inside the issue's own repo, when it's cross-repo.
 The cross-repo case exists because no combination of GitHub features gets you both an auto-close
 *and* a guarantee that a private repo's name never ends up written into a public repo's PR body.
 Cross-repo closing keywords don't reliably auto-close anyway (undocumented, unreliable in
-practice), and GitHub's manual "Development panel" link has no public API — so the one mechanism
+practice), and GitHub's manual "Development panel" link has no public API, so the one mechanism
 that's both reliable and always safe is the issue-side comment, and that's what this skill relies
 on rather than treating the keyword as a best-effort nicety.
 
 ## When to reach for it
 
-`create-pr` calls this automatically right after opening a PR — you don't normally invoke it
+`create-pr` calls this automatically right after opening a PR, so you don't normally invoke it
 directly for that path. Run it by hand to retroactively link a PR that was opened before this
 skill existed, or whenever `check-pr-link` reports a PR isn't linked yet.
 

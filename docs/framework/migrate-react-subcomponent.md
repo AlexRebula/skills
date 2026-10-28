@@ -5,13 +5,13 @@ outcome: "A sub-component moved into its own folder."
 
 ## What it does
 
-`migrate-react-subcomponent` moves an already-implemented, already-tested sub-component out of a flat sibling file and into its own named subfolder — a mechanical move, never a rewrite. `git mv` the file, decide which props are private to it versus shared with the parent, fix every import, then verify. No new tests get written from scratch, and nothing about the component's own logic changes.
+`migrate-react-subcomponent` moves an already-implemented, already-tested sub-component out of a flat sibling file and into its own named subfolder: a mechanical move, never a rewrite. `git mv` the file, decide which props are private to it versus shared with the parent, fix every import, then verify. No new tests get written from scratch, and nothing about the component's own logic changes.
 
-It also carries a caution that's easy to miss without deliberately looking for it: an automated "every component lives in its own folder" check can go silently stale after a directory reorganization, scanning a path that no longer exists and reporting success while checking nothing. That's exactly how flat sub-components accumulate undetected — not because anyone broke a rule, but because the gate stopped watching.
+It also carries a caution that's easy to miss without deliberately looking for it: an automated "every component lives in its own folder" check can go silently stale after a directory reorganisation, scanning a path that no longer exists and reporting success while checking nothing. That's exactly how flat sub-components accumulate undetected: not because anyone broke a rule, but because the gate stopped watching.
 
 ## When to reach for it
 
-Reach for it whenever a capital-letter, JSX-returning component sits flat next to its parent instead of in its own subfolder — whether an existing structure check caught it, or you found it by inspection.
+Reach for it whenever a capital-letter, JSX-returning component sits flat next to its parent instead of in its own subfolder, whether an existing structure check caught it, or you found it by inspection.
 
 | Your situation | Where to go |
 | --- | --- |

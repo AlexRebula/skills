@@ -7,12 +7,12 @@ outcome: "A report on the PR's issue link and checkboxes."
 
 `check-pr-link` verifies, read-only, that a PR is actually linked to the issue it implements, and
 that the issue's acceptance-criteria checkboxes reflect what the PR's own checklist already
-confirmed. It never edits a PR or an issue — it resolves the issue the same way
+confirmed. It never edits a PR or an issue. It resolves the issue the same way
 [link-pr-to-issue](./link-pr-to-issue.md) does (by reference, not by reimplementing that logic),
 then checks whether a working link already exists and whether the two checklists agree.
 
 It also catches a link that looks valid but isn't: a same-repo-style `Closes reponame#N` (no
-owner) reads as a cross-repo reference but is not valid GitHub auto-close syntax anywhere — this
+owner) reads as a cross-repo reference but is not valid GitHub auto-close syntax anywhere, and this
 skill flags that as **not linked**, not as a false positive.
 
 ## When to reach for it

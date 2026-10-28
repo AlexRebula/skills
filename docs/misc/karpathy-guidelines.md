@@ -5,11 +5,11 @@ outcome: "Changes kept small, surgical and verified."
 
 ## What it does
 
-`karpathy-guidelines` is a set of behavioral rules for how an agent should write and review code, drawn from Andrej Karpathy's public observations on where LLMs go wrong day to day: overcomplicating simple tasks, touching more code than the request called for, and declaring success without a way to check it.
+`karpathy-guidelines` is a set of behavioural rules for how an agent should write and review code, drawn from Andrej Karpathy's public observations on where LLMs go wrong day to day: overcomplicating simple tasks, touching more code than the request called for, and declaring success without a way to check it.
 
 It isn't a workflow with steps to run through. There's no install, no files it creates, nothing it drives. It's a standing posture: think before coding, keep changes minimal, keep edits surgical, and define what "done" means before starting.
 
-**Tradeoff, stated up front:** these rules favor caution over speed. On a trivial task, applying all four in full is more overhead than the task deserves. Use judgment rather than treating the list as a checklist to satisfy every time.
+**Tradeoff, stated up front:** these rules favour caution over speed. On a trivial task, applying all four in full is more overhead than the task deserves. Use judgement rather than treating the list as a checklist to satisfy every time.
 
 ## When to reach for it
 

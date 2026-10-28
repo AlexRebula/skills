@@ -5,7 +5,7 @@ outcome: "The change, built ticket by ticket, with its tests."
 
 ## What it does
 
-`implement-tickets` closes the gap `implement`'s own docs name explicitly: `implement` builds exactly one ticket per invocation, on purpose, and has no batch mode. `implement-tickets` is the thin loop on top: point it at a parent issue whose children were already ticketed by [to-tickets](https://aihero.dev/skills-to-tickets), and it repeatedly computes the frontier — every child whose blockers are satisfied — and drives `/implement` on each, one at a time, until the whole batch is built.
+`implement-tickets` closes the gap `implement`'s own docs name explicitly: `implement` builds exactly one ticket per invocation, on purpose, and has no batch mode. `implement-tickets` is the thin loop on top: point it at a parent issue whose children were already ticketed by [to-tickets](https://aihero.dev/skills-to-tickets), and it repeatedly computes the frontier (every child whose blockers are satisfied) and drives `/implement` on each, one at a time, until the whole batch is built.
 
 It does not reimplement TDD, review, or commit logic. All of that stays inside `/implement`. This skill's entire job is sequencing: working out which ticket can go next, and what to branch it off.
 
@@ -19,7 +19,7 @@ The output, at the end, is an ordered stack of unmerged PRs. Nothing gets merged
 
 ## When to reach for it
 
-You invoke this by typing `/implement-tickets` yourself — it ships with `disable-model-invocation: true`, the same as `implement` and `to-tickets`, so nothing reaches for it on your behalf.
+You invoke this by typing `/implement-tickets` yourself. It ships with `disable-model-invocation: true`, the same as `implement` and `to-tickets`, so nothing reaches for it on your behalf.
 
 | The work is… | Reach for |
 | --- | --- |

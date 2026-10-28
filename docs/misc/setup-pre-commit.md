@@ -5,7 +5,7 @@ outcome: "Pre-commit hooks for format, types and tests."
 
 ## What it does
 
-`setup-pre-commit` wires up Husky, lint-staged, and Prettier so that every commit runs formatting, a type check, and the test suite before it's allowed through. It detects your package manager, installs the three dependencies, initializes Husky, writes the pre-commit hook, and creates a Prettier config if one doesn't already exist.
+`setup-pre-commit` wires up Husky, lint-staged, and Prettier so that every commit runs formatting, a type check, and the test suite before it's allowed through. It detects your package manager, installs the three dependencies, initialises Husky, writes the pre-commit hook, and creates a Prettier config if one doesn't already exist.
 
 The result is a repo where "I forgot to run the formatter" or "I committed something that doesn't type-check" stops being possible, not just discouraged.
 
