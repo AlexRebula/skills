@@ -5,10 +5,10 @@ outcome: "Low-risk dependency bumps batched into one PR."
 
 ## What it does
 
-`dependabot-sweep` clears a repo's pile of open Dependabot PRs by classifying each one on real risk
-— dependency type (dev-only vs. shipped to consumers) crossed with semver bump size, not bump size
-alone — then merging every low-risk PR's branch into one combined branch, running the quality gate
-once against the result, and opening a single batch PR if it passes. High-risk PRs (a major bump to
+`dependabot-sweep` clears a repo's pile of open Dependabot PRs by classifying each one on real risk:
+dependency type (dev-only vs. shipped to consumers) crossed with semver bump size, not bump size
+alone. Then it merges every low-risk PR's branch into one combined branch, runs the quality gate
+once against the result, and opens a single batch PR if it passes. High-risk PRs (a major bump to
 something the repo actually ships, a failing check, a changelog that reads as breaking) are left
 open, untouched, each carrying a one-time comment explaining exactly why.
 
@@ -18,7 +18,7 @@ to a peer dependency your own consumers must also satisfy. Semver alone can't te
 
 ## When to reach for it
 
-Say something like "clean up dependabot PRs" or "sweep dependency updates" — the skill's own
+Say something like "clean up dependabot PRs" or "sweep dependency updates". The skill's own
 description is written to match. `/dependabot-sweep [owner/repo]` also works explicitly, with
 `auto` for the same unattended semantics `wip-sweep` uses (every classification still prints, only
 the confirmation prompts skip, and only for PRs the classifier actually marks eligible).

@@ -7,7 +7,7 @@ outcome: "A ranked list of the wiki's gaps and contradictions."
 
 `wiki-lint` health-checks your personal wiki: contradictions between pages, orphan pages nothing links to, claims that look stale against a more recent ingest, missing cross-references, and gaps in the index's own structure. It produces a severity-ranked finding list, then two forward-looking lists: fixes to apply now, and sources worth ingesting to close the gaps it found.
 
-`--fix` applies the safe, mechanical fixes automatically (missing wikilinks where the target page already exists, stale `updated:` dates) but still asks before anything structural: creating a stub page, removing or rewriting content, or resolving a contradiction, because those all require a judgment call about which version of the truth to keep.
+`--fix` applies the safe, mechanical fixes automatically (missing wikilinks where the target page already exists, stale `updated:` dates) but still asks before anything structural: creating a stub page, removing or rewriting content, or resolving a contradiction, because those all require a judgement call about which version of the truth to keep.
 
 ## When to reach for it
 

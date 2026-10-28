@@ -5,13 +5,13 @@ outcome: "The app deployed to Vercel from your machine."
 
 ## What it does
 
-`manual-vercel-deploy` ships an app straight to Vercel via the Vercel CLI, bypassing GitHub Actions and Vercel's own git-integration build entirely. `vercel deploy` (or `vercel deploy --prod`) uploads and builds the current local checkout directly against Vercel's API — nothing about that path goes through GitHub Actions, so it keeps working even when Actions can't run at all.
+`manual-vercel-deploy` ships an app straight to Vercel via the Vercel CLI, bypassing GitHub Actions and Vercel's own git-integration build entirely. `vercel deploy` (or `vercel deploy --prod`) uploads and builds the current local checkout directly against Vercel's API. Nothing about that path goes through GitHub Actions, so it keeps working even when Actions can't run at all.
 
-It also documents the diagnosis that has to happen first: confirming GitHub Actions really is the blocker (not just slow), and separately confirming Vercel's own build actually works once triggered — those are two independent failure points, and finding one doesn't rule out the other.
+It also documents the diagnosis that has to happen first: confirming GitHub Actions really is the blocker (not just slow), and separately confirming Vercel's own build actually works once triggered. Those are two independent failure points, and finding one doesn't rule out the other.
 
 ## When to reach for it
 
-Say something like "deploy manually" or "GitHub Actions budget ran out, get this live anyway" — the skill's own description is written to match. Reach for it whenever a real deploy needs to go out and the normal merge → CI → Vercel path is stalled because Actions itself can't run — most commonly a spending/budget limit being reached, but any Actions outage has the same shape.
+Say something like "deploy manually" or "GitHub Actions budget ran out, get this live anyway". The skill's own description is written to match. Reach for it whenever a real deploy needs to go out and the normal merge → CI → Vercel path is stalled because Actions itself can't run. Most commonly it's a spending/budget limit being reached, but any Actions outage has the same shape.
 
 ## Diagnosing before assuming this applies
 

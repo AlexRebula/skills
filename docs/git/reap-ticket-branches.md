@@ -5,15 +5,15 @@ outcome: "A list of leftover branches safe to remove."
 
 ## What it does
 
-`reap-ticket-branches` finds local git branches and worktrees left behind by a ticket that was closed or abandoned without ever getting a merged PR of its own — the case a PR-merge cleanup has no trigger for. Given a ticket reference (or an exact branch name) and one or more repo paths, it scans for every branch whose name contains that ticket's number as a delimited segment (`841` matches `fix/841-foo`, never `fix/8410-foo` or `fix/1841-foo`), finds any dedicated worktree it lives in via `git worktree list`, and classifies each match against GitHub: merged via PR, open PR never merged, closed PR never merged, no PR found, or PR state unavailable (no `gh`, no auth, no GitHub remote).
+`reap-ticket-branches` finds local git branches and worktrees left behind by a ticket that was closed or abandoned without ever getting a merged PR of its own: the case a PR-merge cleanup has no trigger for. Given a ticket reference (or an exact branch name) and one or more repo paths, it scans for every branch whose name contains that ticket's number as a delimited segment (`841` matches `fix/841-foo`, never `fix/8410-foo` or `fix/1841-foo`), finds any dedicated worktree it lives in via `git worktree list`, and classifies each match against GitHub: merged via PR, open PR never merged, closed PR never merged, no PR found, or PR state unavailable (no `gh`, no auth, no GitHub remote).
 
-It is strictly read-only. It never deletes anything itself — it prints findings and the exact `git` command(s) to run, so the actual destructive step stays a deliberate, visible action, still subject to whatever safety hooks gate a directly-run branch delete.
+It is strictly read-only. It never deletes anything itself. It prints findings and the exact `git` command(s) to run, so the actual destructive step stays a deliberate, visible action, still subject to whatever safety hooks gate a directly-run branch delete.
 
 [pr-merged](./pr-merged.md)'s own branch/worktree cleanup step (Step 4) delegates here in direct-branch mode, passing the exact branch it already knows rather than re-running ticket matching. That keeps one implementation behind both the "PR merged" and "ticket closed without a PR" paths instead of two that can drift apart.
 
 ## When to reach for it
 
-Say something like "check for stale branches for ticket 841" or "clean up leftover worktrees from issue 840" — the skill's own description matches that pattern directly. `/reap-ticket-branches <ticket-ref> --repo <path>` also works explicitly, repeating `--repo` for more than one repo.
+Say something like "check for stale branches for ticket 841" or "clean up leftover worktrees from issue 840". The skill's own description matches that pattern directly. `/reap-ticket-branches <ticket-ref> --repo <path>` also works explicitly, repeating `--repo` for more than one repo.
 
 Reach for it any time a ticket gets closed by hand (superseded, abandoned, fixed a different way) with no PR of its own — the exact gap `pr-merged` doesn't cover, since its cleanup only fires on a PR-merge event.
 

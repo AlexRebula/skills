@@ -5,13 +5,13 @@ outcome: "A canary published and the consumer bumped onto it."
 
 ## What it does
 
-`canary-publish` runs the two-phase flow for getting recent work in a source package repo actually visible in a consumer app: **publish** a Changesets snapshot/canary release from the source repo to its registry, then **bump** a named consumer onto that version and verify it still resolves cleanly (install, typecheck, lint, test, build — whatever the consumer's own verify command covers).
+`canary-publish` runs the two-phase flow for getting recent work in a source package repo actually visible in a consumer app: **publish** a Changesets snapshot/canary release from the source repo to its registry, then **bump** a named consumer onto that version and verify it still resolves cleanly (install, typecheck, lint, test, build: whatever the consumer's own verify command covers).
 
-Nothing about it is hardcoded to one repo pair. The first run bootstraps a `.canary-publish-config.json` at the source repo's root — same convention as this repo's own `sync-core` skills' `.sync-config.json` — asking for the source repo, one or more named consumer paths, the source's quality-gate command, and the consumer's verify command. The package name and registry are never asked for: those come straight from the source repo's own `package.json`, since restating an environment fact in config would just be a second place for it to go stale.
+Nothing about it is hardcoded to one repo pair. The first run bootstraps a `.canary-publish-config.json` at the source repo's root (the same convention as this repo's own `sync-core` skills' `.sync-config.json`), asking for the source repo, one or more named consumer paths, the source's quality-gate command, and the consumer's verify command. The package name and registry are never asked for: those come straight from the source repo's own `package.json`, since restating an environment fact in config would just be a second place for it to go stale.
 
 ## When to reach for it
 
-Say something like "publish a canary" or "bump the canary" — the skill's own description is written to match. `/canary-publish [consumer-name]` also works explicitly, with `--bump-only` or `--publish-only` when only one half of the flow is needed (the common case for `--bump-only`: the source repo's CI already auto-publishes on merge, so only the consumer side needs doing by hand).
+Say something like "publish a canary" or "bump the canary". The skill's own description is written to match. `/canary-publish [consumer-name]` also works explicitly, with `--bump-only` or `--publish-only` when only one half of the flow is needed (the common case for `--bump-only`: the source repo's CI already auto-publishes on merge, so only the consumer side needs doing by hand).
 
 It also fires on its own recognition of a specific symptom: a consumer's typecheck or build failing on missing exports from a package that has a canary/snapshot channel. That's what a stale pinned version looks like from the outside — the fix is exactly this skill's Phase 2, possibly preceded by Phase 1 if nothing newer has been published yet either.
 

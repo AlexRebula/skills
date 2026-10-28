@@ -16,7 +16,7 @@ export const FLOW_STAGE_DESCRIPTIONS: Record<string, string> = {
   'Land it': 'Commit, open the PR, and get it reviewed and merged.',
   'When it breaks': 'Triage, diagnose, and resolve the problem in front of you.',
   'Sweep for debt': 'Find and clear the debt a fast-moving codebase leaves behind.',
-  'Run the wiki': 'Ingest, query, and keep a personal knowledge base honest.',
+  'Run the wiki': 'Ingest, query, and keep a personal knowledge base accurate.',
   'Close the session': 'Wrap up cleanly and hand off context to whoever picks this up next.',
   'Grow a contributor': "Turn a junior engineer's work into real, lasting skill.",
   'LittleBranches specifics': "The house rules and workflows specific to this org's own repos.",
@@ -47,7 +47,7 @@ export const FLOW_STAGE_LONG_DESCRIPTIONS: Record<string, string> = {
   'Sweep for debt':
     "The maintenance work that a fast-moving codebase leaves behind: stale PRs waiting on review, dirty repos nobody's swept, prose that reads like it was never edited by a human, and architecture that's drifted from what the codebase needs. These skills are meant to run on a cadence, not just when something's on fire.",
   'Run the wiki':
-    "Keeping a personal knowledge base current and honest: ingesting a new source, querying what's already been captured, health-checking the wiki for contradictions and stale claims, and logging behavioral incidents so the next session doesn't repeat the same mistake.",
+    "Keeping a personal knowledge base current and accurate: ingesting a new source, querying what's already been captured, health-checking the wiki for contradictions and stale claims, and logging behavioural incidents so the next session doesn't repeat the same mistake.",
   'Close the session':
     "Ending a session in a state the next one, yours or someone else's, can pick up from: a written wrap-up, a clean handoff document, uncommitted work captured before it's lost, and any task-tracker sync kept current rather than left to drift.",
   'Grow a contributor':

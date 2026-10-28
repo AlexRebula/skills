@@ -7,13 +7,13 @@ outcome: "A wrap of the session, ready for the next one."
 
 `session-wrap` closes out a working session: it writes a summary document of what happened, saves it into your sessions folder, updates the session index, and hands off to `/wip-sweep` to commit whatever the session actually touched. It is deliberately not a narrative recap. Anything already captured in a commit, a PR, an issue, or an ADR is referenced by path or URL rather than duplicated into the wrap itself.
 
-This exists alongside Mat Pocock's `/handoff`, not as a replacement forced on anyone who already uses it: `handoff` compacts a conversation into one ephemeral document in the OS temp folder for another agent to pick up right now, and nothing more. `session-wrap` was built as its own, original skill rather than a fork of `handoff`, specifically to add what `handoff` was never meant to do: track the flow of an entire session across multiple wraps, store that history permanently inside a real wiki repository, and keep every session searchable and linked to the ones before and after it, not thrown away once the immediate handoff is read.
+This exists alongside Matt Pocock's `/handoff`, not as a replacement forced on anyone who already uses it: `handoff` compacts a conversation into one ephemeral document in the OS temp folder for another agent to pick up right now, and nothing more. `session-wrap` was built as its own, original skill rather than a fork of `handoff`, specifically to add what `handoff` was never meant to do: track the flow of an entire session across multiple wraps, store that history permanently inside a real wiki repository, and keep every session searchable and linked to the ones before and after it, not thrown away once the immediate handoff is read.
 
 Before it writes anything new, it runs a set of automatic housekeeping passes: collapsing any duplicate same-day session folders, repairing broken `→ Next` navigation links left by earlier renumbering, and recovering the full transcript history rather than trusting an in-context summary that may already be missing detail from an earlier compaction.
 
 ## Why session-wrap, not just handoff
 
-Mat Pocock's `/handoff` already existed long before I wrote this. It does one thing well: compact the current conversation into a single document, written to the OS temp folder, so a fresh agent can pick up the work. I didn't want to lock myself into that shape.
+Matt Pocock's `/handoff` already existed long before I wrote this. It does one thing well: compact the current conversation into a single document, written to the OS temp folder, so a fresh agent can pick up the work. I didn't want to lock myself into that shape.
 
 What I actually needed was something that behaved like `handoff` at the moment of writing — recover the full transcript, not just what survived context compaction — but that also did three things `handoff` was never designed to do:
 

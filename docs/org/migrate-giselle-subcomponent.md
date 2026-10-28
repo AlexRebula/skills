@@ -5,13 +5,13 @@ outcome: "A Giselle sub-component in its own folder."
 
 ## What it does
 
-`migrate-giselle-subcomponent` moves an existing, already-implemented sub-component out of a flat sibling `.tsx` file and into its own named subfolder, matching `docs/components/cleanup-workflow.md`'s Scenario A structure in the `giselle-mui` repo. It is a mechanical move: `git mv` the file, split shared vs. private types, fix every import, then verify — never a rewrite, and never new tests written from scratch.
+`migrate-giselle-subcomponent` moves an existing, already-implemented sub-component out of a flat sibling `.tsx` file and into its own named subfolder, matching `docs/components/cleanup-workflow.md`'s Scenario A structure in the `giselle-mui` repo. It is a mechanical move: `git mv` the file, split shared vs. private types, fix every import, then verify. It never rewrites the component or writes new tests from scratch.
 
 It also carries the parts of that migration that live only in `scripts/check-structure.js`'s source rather than in any doc: the structure gate's `PARENT_DIRS_TO_CHECK` list can go stale (pointing at a folder that no longer exists after a move), and it only recurses one level deep per registered domain, so a sub-component nested inside an already-compliant sub-component folder needs its own, deeper domain entry to ever become visible to the gate at all.
 
 ## When to reach for it
 
-Use it whenever a capital-letter, JSX-returning function is sitting flat next to its parent component instead of in its own subfolder — whether `npm run check`'s Structure check already caught it, or you found it by inspection.
+Use it whenever a capital-letter, JSX-returning function is sitting flat next to its parent component instead of in its own subfolder, whether `npm run check`'s Structure check already caught it, or you found it by inspection.
 
 | Your situation | Where to go |
 | --- | --- |

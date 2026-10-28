@@ -14,11 +14,11 @@ one-group-at-a-time sequencing rules), then fixes only what the diagnosis actual
 It never assumes a target needs one axis, the other, both, or neither; it checks both,
 every time, before writing a single fix.
 
-This skill is generic and organization-agnostic by design: it never behaves differently
-for a specific repo, brand, or organization's own tooling. A project that wants extra
+This skill is generic and organisation-agnostic by design: it never behaves differently
+for a specific repo, brand, or organisation's own tooling. A project that wants extra
 project-specific checks layered on top should build that into its own project-scoped
 caller skill, which calls this one for the generic pass and then continues with its own
-steps — never the other way around.
+steps, never the other way around.
 
 ## When to reach for it
 

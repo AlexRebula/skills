@@ -5,7 +5,7 @@ outcome: "A thought filed as a task and a note."
 
 ## What it does
 
-`capture` takes a freeform thought, task, or note typed mid-session and turns it into a real, tracked artifact without breaking whatever you were doing: it routes the text to the correct content project, creates an Asana task, writes a schema-compliant markdown file, and opens a PR on its own dedicated branch. One command, one round trip, and you are back to what you were doing.
+`capture` takes a freeform thought, task, or note typed mid-session and turns it into a real, tracked artefact without breaking whatever you were doing: it routes the text to the correct content project, creates an Asana task, writes a schema-compliant markdown file, and opens a PR on its own dedicated branch. One command, one round trip, and you are back to what you were doing.
 
 ## When to reach for it
 

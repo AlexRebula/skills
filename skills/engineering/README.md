@@ -7,14 +7,14 @@ Framework-agnostic skills for code craft, architecture, and problem-solving.
 Reachable only when you type them (`disable-model-invocation: true`).
 
 - **[ask-alex](./ask-alex/SKILL.md)**: Ask which skill or flow fits your situation. A router over the user-invoked skills in this repo.
-- **[grill-with-docs](./grill-with-docs/SKILL.md)**: Grilling session that also builds your project's domain model, sharpening terminology and updating `CONTEXT.md` and ADRs inline — the stateful front door onto the same `grilling` primitive `grill-me` uses, plus `domain-modeling`.
+- **[grill-with-docs](./grill-with-docs/SKILL.md)**: Grilling session that also builds your project's domain model, sharpening terminology and updating `CONTEXT.md` and ADRs inline. It's the stateful front door onto the same `grilling` primitive `grill-me` uses, plus `domain-modeling`.
 - **[triage](./triage/SKILL.md)**: Move issues through a state machine of triage roles.
 - **[improve-codebase-architecture](./improve-codebase-architecture/SKILL.md)**: Scan a codebase for deepening opportunities, present them as a visual HTML report, then grill through whichever one you pick.
 - **[setup-engineering-skills](./setup-engineering-skills/SKILL.md)**: Configure this repo for the engineering skills (issue tracker, triage labels, domain doc layout). Run once per repo.
 - **[to-spec](./to-spec/SKILL.md)**: Turn the current conversation into a spec and publish it to the issue tracker.
 - **[to-tickets](./to-tickets/SKILL.md)**: Break any plan, spec, or conversation into a set of tracer-bullet tickets, each declaring its blocking edges.
 - **[implement](./implement/SKILL.md)**: Build the work described by a spec or set of tickets, driving `/tdd` at pre-agreed seams and closing out with `/review-pr` before committing.
-- **[implement-tickets](./implement-tickets/SKILL.md)**: Given a parent issue with GitHub-native sub-issues, loop `/implement` across its children in dependency order until the whole batch is built, stacking branches rather than waiting for merges. Optional status-board artifact.
+- **[implement-tickets](./implement-tickets/SKILL.md)**: Given a parent issue with GitHub-native sub-issues, loop `/implement` across its children in dependency order until the whole batch is built, stacking branches rather than waiting for merges. Optional status-board artefact.
 - **[wayfinder](./wayfinder/SKILL.md)**: Plan a huge chunk of work (more than one agent session can hold) as a shared map of decision tickets on the issue tracker.
 
 ## Model-invoked

@@ -5,7 +5,7 @@ outcome: "A stale file archived, with its links flagged."
 
 ## What it does
 
-`archive-file` moves one stale file into your repo's archive folder, stamps its frontmatter with just enough metadata to explain itself later (`created`, `summary`, `archived`/`archived_date`, and optional `parent`/`children`/`related` links), records the move in a running archive log, and flags — without touching — any other page that still links to it.
+`archive-file` moves one stale file into your repo's archive folder, stamps its frontmatter with just enough metadata to explain itself later (`created`, `summary`, `archived`/`archived_date`, and optional `parent`/`children`/`related` links), records the move in a running archive log, and flags (without touching) any other page that still links to it.
 
 It is a minimal v1 primitive. It does not decide a file is stale for you, and it does not go rewrite every other page that referenced it. Both of those are explicitly out of scope for now.
 

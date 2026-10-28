@@ -5,7 +5,7 @@ outcome: "The coding rules and PR conventions, loaded."
 
 ## What it does
 
-`load-session-guidelines` loads every standing rule a session needs in one pass: Karpathy coding guidelines, OSS quality standards (public and private), PR conventions, and a commit/push approval gate, plus a few always-active reporting, skills-update, and skill-authoring rules carried inline rather than read from a file. It is deliberately minimal: no full document ingestion, just the rules that actually change behavior.
+`load-session-guidelines` loads every standing rule a session needs in one pass: Karpathy coding guidelines, OSS quality standards (public and private), PR conventions, and a commit/push approval gate, plus a few always-active reporting, skills-update, and skill-authoring rules carried inline rather than read from a file. It is deliberately minimal: no full document ingestion, just the rules that actually change behaviour.
 
 ## When to reach for it
 
