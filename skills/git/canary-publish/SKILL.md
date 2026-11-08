@@ -13,7 +13,7 @@ Reads `.canary-publish-config.json` from the source repo's root (gitignored, nev
 
 1. **Source repo path** — the package repo whose `main` gets published as a canary. Read its `package.json` for the package `name` and `publishConfig.registry`/`access` directly; never ask for these, they're already in the environment.
 2. **Consumers** — one or more `{ name, path }` pairs: apps that pin this package's canary and need bumping. Ask for at least a `default`.
-3. **Source quality-gate command** — the command that must pass before publishing (e.g. `npm run check:verify`). Package-script names vary per project; don't assume one.
+3. **Source quality-gate command**: the command that must pass before publishing, in the repo's smart (affected-only) mode when it has one (e.g. `npm run check:verify:smart`). Package-script names vary per project; don't assume one.
 4. **Consumer verify command** — the command(s), run in a consumer after bumping, that decide whether the bump actually worked (e.g. `npm run typecheck && npm run lint && npm run test && npm run build`).
 5. **Source build command** — the command that writes the package's build output (e.g. `npm run build`). Read the source `package.json`'s `scripts.build` first and propose it; only ask if there isn't one.
 
@@ -23,7 +23,7 @@ Write the answers to `.canary-publish-config.json` and add it to `.gitignore` if
 {
   "sourceRepo": "/absolute/path/to/source-repo",
   "consumers": { "default": "/absolute/path/to/consumer-repo" },
-  "qualityGateCommand": "npm run check:verify",
+  "qualityGateCommand": "npm run check:verify:smart",
   "buildCommand": "npm run build",
   "consumerVerifyCommand": "npm run typecheck && npm run lint && npm run test && npm run build"
 }

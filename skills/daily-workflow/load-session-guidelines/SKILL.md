@@ -10,7 +10,7 @@ disable-model-invocation: true
 
 # Load Session Guidelines
 
-Runs seven steps in sequence. Keep each step minimal.
+Runs eight steps in sequence. Keep each step minimal.
 
 ## Step 1: Karpathy guidelines
 
@@ -132,6 +132,14 @@ Inline chained blocks fail the human half completely.
 
 Reference implementation: `skills/git/sync-branches` (`scripts/triage.sh` holds the logic,
 SKILL.md documents and calls it, and the destructive phases stay inline as single commands).
+
+## Step 8: Quality gate (always active)
+
+In any repo, run the repo's **smart gate** whenever it has one. A smart gate runs only the checks that the changed files trigger. It is usually the script whose name says `smart` (for example `npm run check:verify:smart`), or the one the repo's pre-push hook and CI run. Find its name in the repo's `package.json` scripts and in its AGENTS.md.
+
+Run the full gate only when the owner asks for it, or when the repo has no smart gate. This applies to every agent and every skill that runs a quality gate.
+
+**Why:** the full gate rebuilds everything and can take many minutes. The smart gate is the one that decides whether a push and a PR pass, so running the full gate adds waiting without adding safety.
 
 ## Done
 
