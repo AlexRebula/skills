@@ -16,13 +16,13 @@ them that way.
 Reads `.dependabot-sweep-config.json` from the repo root (gitignored, never committed — same
 convention as `canary-publish`'s `.canary-publish-config.json`). If missing, run a short interview:
 
-1. **Quality-gate command** — the command that must pass on the combined branch (e.g.
-   `npm run check:verify`).
+1. **Quality-gate command**: the command that must pass on the combined branch, in the repo's smart (affected-only)
+   mode when it has one (e.g. `npm run check:verify:smart`).
 2. **Package manager** — `npm`/`pnpm`/`yarn` (decides the lockfile and install command).
 
 ```json
 {
-  "qualityGateCommand": "npm run check:verify",
+  "qualityGateCommand": "npm run check:verify:smart",
   "packageManager": "npm"
 }
 ```

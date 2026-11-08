@@ -335,9 +335,9 @@ that's a documentation-hygiene fix, not scaffolding ceremony.
 
 ### 4. Run the target repo's own quality gate
 
-Confirm nothing broke: run whatever this target repo's own quality gate script is (e.g.
-`npm run check` / `npm run check:verify`; check `package.json`). Fix anything it flags
-before finishing.
+Confirm nothing broke: run whatever this target repo's own quality gate script is, in its smart
+(affected-only) mode when it has one (e.g. `npm run check:verify:smart`; check `package.json`).
+Run the full gate only when the owner asks. Fix anything it flags before finishing.
 
 ---
 

@@ -17,7 +17,7 @@ Six points in this workflow are opinionated. They are called out inline with **�
 | # | Default behaviour | What to override |
 | --- | --- | --- |
 | 1 | Branch prefixes: `feature/`, `fix/`, `chore/`, `refactor/`, `docs/` | Add or remove prefixes to match your conventions |
-| 2 | Quality gate command: `npm run check:verify` | Replace with any command that exits 0 on pass |
+| 2 | Quality gate command: the repo's smart (affected-only) gate when it has one, for example `npm run check:verify:smart`; otherwise `npm run check:verify` | Replace with any command that exits 0 on pass |
 | 3 | Green-light gate: wait for explicit user approval before creating the PR | Pass `auto-approve` argument to skip the gate |
 | 4 | PR description uses `.github/pull_request_template.md` if present; falls back to a conventional set of sections | Provide your own template or skip the fallback |
 | 5 | PR title format: `<type>(<scope>): <short description>` (conventional commits) | Replace with your team's format |
@@ -111,15 +111,15 @@ git push --force-with-lease origin <branch>
 
 ### Step 3: Run the quality gate
 
-> **⚙️ Configurable (quality gate command):** The command below is a typical example. Replace it with your own gate command. A quality gate is any command that exits 0 when formatting, linting, type-checking, and tests all pass. Common alternatives:
+> **⚙️ Configurable (quality gate command):** The command below is a typical example. Replace it with your own gate command, and prefer its smart (affected-only) mode when the repo has one: run the full gate only when the owner asks. A quality gate is any command that exits 0 when formatting, linting, type-checking, and tests all pass. Common alternatives:
 >
 > - `npm run lint && npm run typecheck && npm test`
 > - `pnpm check`
 > - `make ci`
 
 ```sh
-# Replace with your project's quality gate command
-npm run check:verify
+# Replace with your project's quality gate command (smart mode when it has one)
+npm run check:verify:smart
 ```
 
 Do not continue to Phase 1 if the gate fails. Fix the failures first.
